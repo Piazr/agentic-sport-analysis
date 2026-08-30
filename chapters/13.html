@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 13 — Identity: Who Is Who - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-13" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 13</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 13 — Identity: Who Is Who</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Track IDs are not people: jersey OCR, ReID embeddings, team clustering, roster priors, and the consent line</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">35 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-13-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Identity Problem</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-13-1" data-section="s-13-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Identity Problem</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-13-1" data-section="s-13-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Identity Problem</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">13</span> Chapter 13 — Identity: Who Is Who</h1>
+    <p class="chapter-subtitle">Track IDs are not people: jersey OCR, ReID embeddings, team clustering, roster priors, and the consent line</p>
+  </header>
+
+<h3 id="s-13-1"><span class="section-num">13.1</span> The Identity Problem</h3>
+
+<p class="section-intro">Detection finds people. Tracking keeps boxes in a sequence. <strong>Identity answers who they are</strong> — and it is the hardest of the three. A track ID is a hypothesis about persistence, not a person: chapter 9's E02 produced 26 track IDs for 4 pickleball players, and E08's broadcast rugby clip spawned 295 track IDs for roughly 30 humans — 286 even after E14's global-motion-compensation repair. The tracker has no concept of "Tedesco" or "Anna Leigh Waters"; it has "track 147."</p>
+
+  <p>Three verbs the literature conflates, and this book keeps separate. <strong>Detection</strong> — where is a person in this frame (chapter 8); a solved purchasing decision for players. <strong>Tracking</strong> — which detection in the next frame is the same detection (chapter 9); track IDs are spatiotemporal continuations. <strong>Identity</strong> — which named, roster-listed person this track belongs to. Identity is <em>semantic binding</em>: it requires evidence the tracker never sees — a number, a kit, a role, a lineup sheet — and it must survive everything tracking cannot: camera cuts, a player off-frame for a full set, half-time, kit clashes, and the broadcast director.</p>
+
+  <p>Three consequences make this its own chapter. First, <strong>downstream stats are identity-typed, not track-typed</strong>: "player 6's running metres" is garbage if track 147 is 60% player 6 and 40% player 7. Identity-mixing inside a single track is the silent failure — no standard MOT metric counts it. Second, <strong>identity evidence is episodic</strong>: a rugby jersey number is legible in perhaps 5% of frames; the pickleball serve-side rule pins identity only at serve time. The system must bind when it can and propagate when it cannot. Third, <strong>identity is audience-dependent</strong>: a pro club has a roster, numbered kits, and wearable ground truth; a social pickleball player has four friends and a phone camera. There is no universal identity stack — §13.9 is the decision table this chapter serves.</p>
+
+  <p>The honest frame: identity is a <strong>fusion problem</strong>, not a single-model problem. The signals available: appearance (ReID), jersey numbers (OCR), team color (clustering), role/side (the sport's structure), roster (external data), and — the one to avoid for amateurs — faces. The design rule that governs everything below: <em>declarative signals create identity; probabilistic signals only propagate it.</em></p>
+
+  <h2 class="section-title"><span class="section-num">13.2</span> The Signal Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Signal</th>
+        <th>Strength</th>
+        <th>Weakness</th>
+        <th>Use Case</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Appearance ReID</strong></td>
+        <td>Works without numbers; per-session gallery</td>
+        <td>Fails on same-kit teammates; lighting drift</td>
+        <td>Pickleball doubles (4 people, distinct)</td>
+      </tr>
+      <tr>
+        <td><strong>Jersey OCR</strong></td>
+        <td>Explicit identity; durable across views</td>
+        <td>Needs localization (which region is a jersey); low-res broadcast</td>
+        <td>Rugby (13 same-color players)</td>
+      </tr>
+      <tr>
+        <td><strong>Team clustering</strong></td>
+        <td>Cheap; separates teams instantly</td>
+        <td>Fails when kits are similar (all-black pickleball)</td>
+        <td>First split before identity</td>
+      </tr>
+      <tr>
+        <td><strong>Role/side priors</strong></td>
+        <td>Zero-cost; the sport's structure</td>
+        <td>Only valid for structured moments (serve, formation)</td>
+        <td>Doubles serve order, rugby position</td>
+      </tr>
+      <tr>
+        <td><strong>Roster fusion</strong></td>
+        <td>External ground truth joins</td>
+        <td>Needs a roster source; pro-only</td>
+        <td>Professional team infrastructure</td>
+      </tr>
+      <tr>
+        <td><strong>Face</strong></td>
+        <td>Strongest identifier</td>
+        <td><strong>Ethics: consent, biometric law (C31)</strong></td>
+        <td>Never for amateurs without explicit consent</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Read the table as a fusion order, not a menu. In rugby league the stack runs: team clustering halves the search space → jersey OCR declares a number where legible → the roster constrains that number to who is actually on the field → position priors sanity-check it → ReID propagates the binding through the tackle and the ruck until the next declarative read. In pickleball the stack is shorter and stranger: no numbers exist, kits routinely clash, so gallery enrollment plus the serve-side rule do the declaring, and ReID does all the propagating. Same fusion shape, completely different evidence.</p>
+
+  <figure id="fig-13-01" class="full">
+    <img src="shared/images/identity-architecture.png" alt="Identity resolution architecture: three evidence lanes jersey OCR team clustering rules+roster dropping evidence onto a track timeline with confidence band. Recreate: white background, burnt-orange discs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.1</span>: Identity As Fusion. Three evidence lanes bind to a track timeline; the confidence band dips at stacking windows and cuts, then re-pins. No single model resolves identity.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.2b</span> The Transient Identity Problem and the Registry</h2>
+  <p>Identity in sport is <strong>transient</strong>: the mapping between bodies and names changes underneath the system while it runs. Rugby league rotates its 14–17 bench through interchange churn, sin-bins, and blood bins — the active set of 13 changes minute by minute. Kits change at half-time in social footage and between matches in tournaments. Broadcast coverage cuts between the wide tactical camera, the close-up, and the replay, resetting tracklets faster than any vote can accumulate — E08's 295 spawned IDs on nrl-001 are mostly the director's fault, not the tracker's. Even pickleball has its version: sides switch at 11 in a game to 21, stacking moves players across the net line mid-rally, and a player walking off to fetch a ball re-enters as a fresh detection.</p>
+
+  <p>The data structure that absorbs all of this is the <strong>identity registry</strong>: a table mapping <code>(track_id, t_start, t_end) → identity, confidence, provenance</code>. Two event types write to it. <em>Binding events</em> are declarative: a legible jersey read, a serve-side deduction, an enrollment match — each attaches a name to a track interval with a provenance tag. <em>Propagation intervals</em> are probabilistic: ReID similarity and motion continuity carry the last binding forward, with confidence decaying as a function of time-since-binding, occlusion density, and kit ambiguity. A broadcast cut or a detected substitution is a <em>registry boundary</em>: propagation stops, the interval closes, and the system waits for the next binding event instead of guessing. Association through tracking is what fills the intervals: the tracker hands the registry a continuous spine of boxes, and the registry's job is to attach names to segments of that spine — never to extend a name past the spine's breaks.</p>
+
+  <p><strong>Confidence calibration is the product.</strong> A registry that says "track 147 is player 9, confidence 0.91, bound by jersey read at 54:12, propagated 210 frames" is usable; one that emits bare names is a liability. The discipline mirrors chapter 20's: every identity claim carries its provenance (which module bound it) and every downstream stat joins against intervals, not bare track IDs. The silent compound failure — a hard prior plus no abstention channel producing a confident wrong name — is the one failure mode this chapter prohibits by construction.</p>
+
+  <figure id="fig-13-02" class="full">
+    <img src="shared/images/identity-pipeline.png" alt="Identity pipeline: detection boxes on a pickleball player and rugby player, embedding extraction, cosine matching against gallery, identity registry with confidence bars. Recreate: white background, black linework, burnt-orange stage labels." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.2</span>: The Identity Pipeline. Detect → embed → match → register. The registry is the deliverable: named intervals with confidence and provenance, not bare track integers.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.3</span> Jersey OCR: The Measured Reality (W3.5 Lab)</h2>
+  <p>Our lab ran digit-only OCR (EasyOCR, CPU, digits allowlist) on 6 nrl-001 broadcast frames (measured, C13-lab):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Result</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Frames analyzed</td>
+        <td>6</td>
+      </tr>
+      <tr>
+        <td>Frames with digit reads</td>
+        <td>6 (every frame — OCR is not the problem)</td>
+      </tr>
+      <tr>
+        <td>Digit regions per frame</td>
+        <td>6–13</td>
+      </tr>
+      <tr>
+        <td>What was read</td>
+        <td>"62114" (scoreboard), "5", "12", "17", "343", "41485" (conf 0.32–1.0)</td>
+      </tr>
+      <tr>
+        <td>Confidence distribution</td>
+        <td>0.32 to 1.00 — irrelevant digits pollute the reads</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The verdict is clear: OCR capability is not the bottleneck — localization is.</strong> Digits appear on scoreboards, advertising hoardings, and crowd signage at the same confidence as jersey numbers; the highest-confidence reads in the lab ("6" at 1.0, "4" at 1.0) are not on players. The evidence says jersey identity is load-bearing where it works: in the SoccerNet GSR ablation (source-backed, arXiv:2404.11335), jersey is the single most damaging identity attribute — image-only HOTA 57.64 steps down through pitch localization (42.65), role (40.76), and team (37.03) to 25.65 with jersey added, and 22.26 for the full GS-HOTA task. Adding the jersey requirement costs more than calibration, role, and team combined. The sn-jersey tracklet benchmark tops at <strong>92.85%</strong> against a 3.93% random baseline — and the winning systems win by knowing when <em>not</em> to read: its ground truth is one number per tracklet with "-1" for never-visible, so abstention is a first-class output. No public rugby or pickleball jersey dataset exists (searched 2026-09-01) — <strong>this book's jersey-OCR lab is the first rugby baseline of its kind.</strong></p>
+
+  <p>The fix is pipeline, not model: detect persons (chapter 8) → crop the upper torso (optionally pose-guided — E03's pose stack runs 82 fps on M4 and puts the read region on the back torso, not the whole box) → legibility gate → OCR inside the crop → digit-regex filter → <strong>tracklet majority vote</strong>. The vote is the load-bearing trick: per-frame reads are noise (motion blur, folds, occlusion), but the mode over 100–300 frames is signal. The GSR reference stack is YOLOv8 + StrongSORT + PRTreID + MMOCR detect/read + KMeans team affiliation, with abstain when illegible. Koshkina's CVPRW 2024 pipeline (legibility classifier → pose-guided RoI → PARSeq → tracklet consolidation, with a ReID outlier step that drops mis-associated crops before they poison the vote) is the clean reference — but <strong>CC BY-NC 3.0</strong>: reproduce to learn, rebuild with PARSeq (Apache-2.0) for shipping.</p>
+
+  <p>Rugby league is friendlier to jersey OCR than soccer: large back numbers 1–17, a smaller front number beside the crest, and broadcast close-ups after every try. The hostility comes from the ruck (numbers buried under bodies), mud, jersey deformation in the tackle, and cuts resetting tracklets. Pickleball has no numbered jerseys at all — this section simply does not transfer; §13.3b–§13.5 carry pickleball identity.</p>
+
+  <figure id="fig-13-03" class="full">
+    <img src="shared/images/rugby-jersey-ocr.png" alt="Rugby league jersey OCR: rear view of player wearing number 13, magnified torso crop with digit boxes, tracklet vote tally resolving to 13. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.3</span>: Jersey OCR On The Back. Crop the torso, read the digits, vote across the tracklet. The struck-through frames are the majority — the system wins by abstaining on them.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.3b</span> ReID Embeddings: Propagation, Not Declaration</h2>
+  <p>Appearance re-identification turns a player crop into a vector — 512 floats for OSNet, 2048 for ResNet50-ibn — such that crops of the same body land near each other under cosine distance. Chapter 9 owns the mechanics (OSNet-512 as the M4-native workhorse; the EMA-gallery drift-capture failure; the same-kit embedding collapse); this chapter owns what ReID can and cannot mean for identity. An embedding match says "probably the same body shape and kit." It cannot distinguish twin teammates in identical kit, and it has no concept of a name. The book's rule: <strong>ReID propagates identity between binding events; it almost never creates it.</strong></p>
+
+  <p>The upgrade that turns ReID from a similarity tool into an identity system is <strong>gallery enrollment</strong> — the amateur answer. Ten seconds of each known player alone in frame at session start builds a per-session gallery of named embeddings; every subsequent track is assigned to the nearest enrolled identity by cosine similarity with a rejection threshold, instead of to an anonymous integer. For pickleball doubles this is the entire declarative layer before the serve rule kicks in: four players, four cards, one 10-second walk-through each. For rugby it is nearly useless at match scale — 30 athletes in two identical kits put 15 near-duplicate bodies into one embedding neighborhood, which is exactly the same-kit collapse chapter 9 measured.</p>
+
+  <p>The sport-correct architecture is multi-task: PRTreID (the GSR baseline's ReID, source-backed) trains one backbone jointly for identity, team affiliation, and role — triplet losses on identity and team, focal loss on a role head — so the tracker, the team clustering, and the role priors all read structure out of the same vector. Single-purpose street ReID trained on Market-1501 is the bootstrap, not the destination. And the honest failure note: embeddings drift with lighting — a shadow band across the court moves every embedding mid-clip — so galleries update under an EMA with updates frozen during ambiguity, and every propagation interval re-pins at the next binding event rather than accumulating similarity indefinitely.</p>
+
+  <figure id="fig-13-04" class="full">
+    <img src="shared/images/reid-embedding-space.png" alt="ReID embedding space: four separated pickleball player clusters with centroids and a query point with cosine arrows, plus two merged same-kit rugby teammate clusters. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.4</span>: The Embedding Space. Four enrolled pickleball players separate cleanly; two rugby teammates in identical kits merge into one neighborhood. Distance propagates identity — it cannot declare it.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.4</span> Team Clustering: The Football_Analysis Pattern</h2>
+  <p>Before <em>who</em>, <em>which side</em>. Team affiliation halves the identity search space and gates every downstream prior. The transferable recipe comes in two generations. Classic color clustering: crop each player box, take the torso pixels, k-means them into 2 (or 3, with the referee) clusters in HSV space — zero training data, runs anywhere. Embedding clustering (roboflow/sports, MIT): SigLIP image embeddings of player crops → UMAP reduction → KMeans with k=2; semantic features survive shadows and sponsor clutter that break raw-color k-means. The GSR baseline does the learned version: average PRTreID embeddings over each tracklet, KMeans into two, label clusters left/right from mean pitch position.</p>
+
+  <p>It works when kits differ and <strong>collapses when they don't</strong> — and the collapse has three distinct mechanisms, all observed in this book's footage. <em>Similar kits merge the clusters</em>: pickleball's social reality — four players in dark athletic wear — puts everyone in one blob regardless of color space or embedding model; k=2 must be abandoned, not forced. <em>Lighting splits one team in two</em>: a shadow band across the pitch makes one team's centroids straddle. <em>Non-players contaminate k=2</em>: referees, ball kids, and the E01-style bench/crowd leak must be filtered before clustering (the court-polygon filter took E01 from 69 boxes to 11), or the clusters describe "players vs officials," not team vs team. On nrl-001 the kits are distinct and both generations work; on pb-003 they aren't and neither does — that asymmetry is the point.</p>
+
+  <p>Two disciplines keep clustering honest. Cluster identity is per-crop and flickers, so it gets the same tracklet majority-vote treatment as jersey numbers — a per-frame label never overwrites a confident tracklet-level assignment. And when the inputs declare themselves unclusterable (the all-black case), the system says so and falls through to enrollment and role priors instead of drawing an arbitrary boundary through one blob and believing it.</p>
+
+  <figure id="fig-13-05" class="full">
+    <img src="shared/images/team-clustering-collapse.png" alt="Team clustering comparison: two clean rugby kit clusters with decision boundary versus one merged all-black pickleball blob with a crossed-out forced split. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.5</span>: Same Algorithm, Two Realities. Distinct rugby kits split cleanly; all-black pickleball collapses to one blob. The forced k=2 boundary is arbitrary — abandon it, don't trust it.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.5</span> The Role-Prior Identity (Pickleball Doubles)</h2>
+  <p>From chapter 9, applied — and for a 4-player court this is <strong>the</strong> tractable identity path. Pickleball doubles is a <em>determinate</em> identity problem at serve time. Four known people, a fixed serving order, score parity pinning the server's court half (even score: right court; odd: left), and a net plane no feet cross: at each serve, at least two of the four identities — server and receiver — are <em>deduced</em>, not inferred, and the partners follow by elimination. With E05/E11-grade homography (3.82–4.65 cm RMSE) mapping feet to court coordinates, this is arithmetic, not machine learning.</p>
+
+  <p>The full mechanism runs as a state machine over the rally. At the serve: bind server and receiver from score state and court half; bind partners by elimination; write four binding events to the registry. During the rally: propagate with ReID and motion, confidence decaying. During the <strong>stacking window</strong> — the 1–2 seconds post-serve when a stacked team migrates to its preferred sides — identity claims carry lower confidence by design; the book renders this as a confidence timeline, not a boolean. At the next serve: re-pin. The net line is an identity barrier throughout: no legal play swaps a player across it, so any apparent crossing is a tracking error to repair, not an identity event to accept.</p>
+
+  <p>Rugby league has its own version of rules-as-identity: the 1–17 numbering is a position prior. The 9 sits at the play-the-ball, the 1 sweeps deep, the 6 and 7 run the halves, 13 locks the scrum, 14–17 are the bench. Number ↔ position ↔ spatial zone triangulates: a jersey read of "9" should sit at the ruck; a track in the fullback zone claiming "9" is a read error or an interchange event, and the system should say which. The rule for all rule-priors (restated from chapter 9): soft costs in the assignment, with explicit violation channels — interchanges, mid-game position swaps, stacking variants. Hard rules manufacture confident silent errors, the worst identity failure class.</p>
+
+  <figure id="fig-13-06" class="full">
+    <img src="shared/images/pickleball-reid-match.png" alt="Pickleball re-identification across a match: four enrollment cards, overhead doubles court, match timeline with serve pins and dashed propagation segments, stacking window highlighted. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.6</span>: Rules As Identity Evidence. Enrolled once, deduced at every serve, propagated through the rally, re-deduced at the next. For four players on a fixed court, arithmetic beats recognition.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.6</span> Roster Fusion (The Pro Pattern)</h2>
+  <p>The pro-sport multiplier: identity stops being open-world recognition and becomes a <strong>constrained assignment problem</strong> over a known, small set. With a roster, the assignment space caps at tracks × active players, solvable by Hungarian matching with edge weights from jersey reads, position zones, and ReID scores — before any open-world recognition runs at all.</p>
+
+  <p>Three fusions do the work. <strong>Roster-constrained jersey decoding</strong>: the roster turns OCR from open-set text recognition into classification over at most 17 valid numbers per team. A wobbly read of "1?" becomes "13" if 13 is on the field and 14/19 are benched — this single constraint is worth more than any recognizer upgrade, and it is free. <strong>Lineup state as a temporal index</strong>: interchange churn, sin-bins, and late scratches change the active set minute by minute; roster priors must be time-indexed or they confidently assign identities to players who are off the field. <strong>Wearable joins</strong>: Catapult GPS/LPS vests (the NRL-standard layer [verify current deployment terms]) and Kinexon-class UWB systems solve identity by construction — the device is registered to the athlete, so the roster join <em>is</em> the identity. Optical tracks cross-registered to wearable streams get names for free; the hard part is timestamp and clock sync, not recognition. The Sportlogiq / Second Spectrum-style fusion of optical tracking with official lineup data is the commercial form of this pattern [INFERENCE — proprietary internals, no citable specifics].</p>
+
+  <p>The amateur translation is the chapter-5 one-spine move: a roster CSV as the identity universe, position priors, visual evidence in fusion order. Even a social pickleball session has a degenerate roster — the four names typed in at enrollment — which is exactly what makes §13.5's deductions closed-world and exact. For rugby, the #7 sitting in the middle of the line is a spatial prior that resolves ruck ambiguity the same way the serve-side rule resolves the NVZ crowd: the sport's structure is free identity evidence everywhere you look.</p>
+
+  <h2 class="section-title"><span class="section-num">13.7</span> The Face Line</h2>
+  <p>Faces are the strongest identifier and the one with the sharpest legal boundary. Facial templates used for unique identification are <strong>biometric data — GDPR Article 9 special category</strong> (processing prohibited by default absent narrow exceptions like explicit consent, with DPIA obligations) and <em>sensitive information</em> under the Australian Privacy Act with the higher consent bar [verify post-2024-reform wording before print]. The consent problem is structural in sport: consent must be freely given, but a club's power over its athletes — and a coach's power over a social player who just wants a rally report — undermines voluntariness. A teammate cannot meaningfully refuse the club's face-enrollment. For amateurs there is no consent infrastructure at all: the person filming a social doubles game has no basis to biometrically enroll three other people.</p>
+
+  <p>The technical case is weaker than vendors admit, and pickleball shows both sides of it. The same sport appears in two camera regimes: <strong>court-side fixed cameras</strong> (this book's home case) give near-frontal, well-lit faces at enrollment distance — the one regime where face recognition would technically work; and <strong>broadcast</strong> (pro pickleball tours now have it) gives profile views, motion blur, visors, and 40-metre subject distances — the regime where it degrades to gambling. Rugby broadcast is worse: heads down in the ruck, headgear, mud, and a scrum cap on exactly the player you most need to separate. Meanwhile the error profile is unequal: NIST FRVT demographic-differentials studies document false-positive rates varying by factors of 10–100× across demographic groups in many algorithms (source-backed) — an identity system whose error rate depends on the player's face is a liability with a leaderboard. And a jersey number can be re-issued; a leaked face template is irrevocable.</p>
+
+  <p><strong>The book's rule: no face recognition in amateur footage. Period.</strong> Every identity need in this book has a non-biometric path — §13.3 to §13.6, plus enrolled appearance galleries with informed session consent, deletable on request. Faces are for broadcast graphics operators identifying public figures under league agreements; the pro-team roster+jersey+wearable stack is more accurate anyway. The pro case is a consent-managed infrastructure decision, not a CV choice (C31 rights discipline).</p>
+
+  <h2 class="section-title"><span class="section-num">13.8</span> Evaluation</h2>
+  <p>Measure identity, not tracking. The metric stack, in order of what it catches:</p>
+
+  <ul>
+    <li><strong>ID-switch rate</strong> (IDSW per 1,000 frames): raw identity-break frequency — the E09 14→2 story. A universal smoke signal; never sufficient alone, because it misses the silent failure.</li>
+    <li><strong>IDF1 / ClusteredIDF1</strong>: track fragmentation against ground-truth identities; the clustered variant (chapter 9's construction) scores per team/side/role, which is the only honest fragmentation metric for same-kit sport.</li>
+    <li><strong>GS-HOTA (IdSim)</strong>: localization × attribute-correct identification — role, team, and jersey must all match for identity similarity to count (source-backed, GSR). The end-to-end metric where a minimap ground truth exists.</li>
+    <li><strong>ReID retrieval mAP / CMC Rank-k</strong>: can the right identity be retrieved from the gallery — the honest embedding benchmark for validating enrollment before deployment.</li>
+    <li><strong>Jersey tracklet accuracy with abstention</strong>: one number per tracklet, "-1" counted correct only when truly illegible (the sn-jersey protocol). Report legibility-gate precision separately.</li>
+    <li><strong>Identity-mixing AUC</strong> (book construction, proposed): for each predicted track, the fraction of frames belonging to its modal ground-truth identity, swept over the purity threshold to an AUC. This catches the track that never "switches" but is 60/40 two people — the failure IDSW cannot see.</li>
+  </ul>
+
+  <p>Two protocol rules bind them all. Resample by clip, not frame (chapter 20): a jersey-vote accuracy computed over 900 consecutive frames is n = 1 rally, not n = 900. And publish <strong>binding coverage</strong> — the percentage of track-frames with a declarative binding versus propagation-only — next to every accuracy number: a 95%-accurate system over 20% of frames is worse than a 90%-accurate system over 90% of frames for typing stats downstream.</p>
+
+  <h2 class="section-title"><span class="section-num">13.8b</span> Failure Modes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Failure</th>
+        <th>Mechanism</th>
+        <th>Mitigation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Occlusion piles</strong> (ruck, tackle, NVZ crossing)</td>
+        <td>Crop contamination poisons tracklet votes; tracks merge</td>
+        <td>ReID-gated crop hygiene (outlier removal before the vote); net-line and position priors</td>
+      </tr>
+      <tr>
+        <td><strong>Motion blur</strong></td>
+        <td>Per-frame digit reads wrong with high confidence; embeddings smear</td>
+        <td>Legibility gate before OCR; vote over the tracklet, never the frame</td>
+      </tr>
+      <tr>
+        <td><strong>Glare / lighting shifts</strong></td>
+        <td>Specular patches erase digits; shadow bands drift embeddings and straddle k-means centroids</td>
+        <td>Embedding clustering over raw color; EMA gallery with updates frozen under ambiguity</td>
+      </tr>
+      <tr>
+        <td><strong>Identical kits</strong></td>
+        <td>Appearance space collapses to one blob; clustering and ReID cannot separate</td>
+        <td>Serve-side pinning; enrollment gallery; declare unclusterable rather than force k=2</td>
+      </tr>
+      <tr>
+        <td><strong>Fabric fold / mud</strong></td>
+        <td>Digits deform beyond the recognizer's training distribution</td>
+        <td>Pose-guided RoI; abstain ("-1") as a first-class output; never force a read</td>
+      </tr>
+      <tr>
+        <td><strong>Broadcast cuts / camera changes</strong></td>
+        <td>Track resets faster than votes accumulate (E08: 295 IDs)</td>
+        <td>GMC (E14); cut detection as a registry boundary; roster-constrained re-assignment after cuts</td>
+      </tr>
+      <tr>
+        <td><strong>Roster churn</strong></td>
+        <td>Active-set priors confidently wrong during interchange</td>
+        <td>Time-indexed lineup state; explicit violation channel; soft priors only</td>
+      </tr>
+      <tr>
+        <td><strong>Gallery drift-capture</strong></td>
+        <td>EMA gallery locks onto the wrong player after unresolved occlusion</td>
+        <td>Freeze updates under ambiguity; re-pin at the next binding event</td>
+      </tr>
+      <tr>
+        <td><strong>Confident silent wrong identity</strong> (the compound failure)</td>
+        <td>Hard priors plus no abstention channel</td>
+        <td>The design rule: every claim carries provenance and confidence; hard rules prohibited</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-13-07" class="full">
+    <img src="shared/images/identity-failure-modes.png" alt="Identity failure mode gallery: six cards showing rugby ruck occlusion, motion blur, jersey glare, identical kits, fabric fold, and broadcast camera cut. Recreate: white background, black linework, burnt-orange labels." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.7</span>: The Failure Gallery. Every identity module has a characteristic way to break; the registry's job is to degrade confidence, not to keep guessing at full confidence.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.9</span> Identity by Audience</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Audience</th>
+        <th>Available Evidence</th>
+        <th>Identity Stack</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Amateur pickleball (4 players)</strong></td>
+        <td>4 known people, fixed camera, serve rules, homography</td>
+        <td>Serve-side deterministic pinning + 10-second enrollment gallery + ReID propagation. No faces, no OCR, no forced k=2.</td>
+      </tr>
+      <tr>
+        <td><strong>Semi-pro / club</strong></td>
+        <td>Known small roster, kits (possibly clashing)</td>
+        <td>Per-session gallery enrollment + roster-constrained assignment; jersey OCR only if numbered kits.</td>
+      </tr>
+      <tr>
+        <td><strong>Club rugby (13 + 13)</strong></td>
+        <td>Numbered kits 1–17, roster, position structure</td>
+        <td>Jersey OCR (localized) + legibility gate + tracklet majority vote + time-indexed roster + position priors.</td>
+      </tr>
+      <tr>
+        <td><strong>Pro team</strong></td>
+        <td>The above + wearables + staff to verify</td>
+        <td>Wearable join as ground truth → the club stack → human verification loop on residuals (Catapult/Kinexon, chapter 30) in the one-spine.</td>
+      </tr>
+      <tr>
+        <td><strong>Minors / schools</strong></td>
+        <td>Nothing consentable</td>
+        <td><strong>No identity.</strong> Role-level analysis only ("near-side server"), anonymized aggregates.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">13.9b</span> The 10 Use Cases: Applied Identity Framework</h2>
+  <p>The use cases below are the applied bridge from the fusion stack above to the two sports. They follow three categories: <strong>Declarative Reads (UC 01–03)</strong> — the binding events that create identity; <strong>Propagation &amp; Retention (UC 04–07)</strong> — carrying identity through everything that tries to break it; and <strong>The Registry &amp; Its Limits (UC 08–10)</strong> — the data structure downstream chapters actually consume, and the honest edge where identity stops. Each case carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established). The tool stack they draw on, with the sport each serves:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Identity Role</th>
+        <th>License / M4</th>
+        <th>Sport Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>EasyOCR / PP-OCRv5</td>
+        <td>Jersey digit reads on torso crops (§13.3)</td>
+        <td>Apache-2.0; MPS ✅ / CPU ⚠️</td>
+        <td>Rugby league back numbers; no pickleball role</td>
+      </tr>
+      <tr>
+        <td>PARSeq STR</td>
+        <td>Per-sport fine-tuned jersey recognizer</td>
+        <td>Apache-2.0; train ⛔ GPU</td>
+        <td>Rugby league (the Koshkina recipe, clean-license rebuild)</td>
+      </tr>
+      <tr>
+        <td>OSNet-512 (torchreid)</td>
+        <td>Appearance embeddings, enrollment galleries</td>
+        <td>MIT; MPS ✅</td>
+        <td>Pickleball propagation; rugby propagation between reads</td>
+      </tr>
+      <tr>
+        <td>PRTreID</td>
+        <td>Multi-task identity + team + role embeddings</td>
+        <td>[verify repo license]; ⚠️/⛔</td>
+        <td>Rugby league GSR-style fusion; pickleball overkill</td>
+      </tr>
+      <tr>
+        <td>SigLIP → UMAP → KMeans</td>
+        <td>Team clustering prior</td>
+        <td>MIT (roboflow/sports); ✅</td>
+        <td>Rugby league distinct kits; abandoned on all-black pickleball</td>
+      </tr>
+      <tr>
+        <td>Hungarian assignment (scipy)</td>
+        <td>Roster-constrained track-to-name matching</td>
+        <td>BSD; ✅</td>
+        <td>Both — 4-name pickleball roster, 17-man rugby active set</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-heading">Category I: Declarative Reads — Where Identity Comes From (UC 01–03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Jersey Number OCR Under Broadcast Hostility</h3>
+  <p>Thirteen same-kit athletes per side make the back number the only durable name tag on a rugby league broadcast — and it is legible in perhaps 5% of frames (source-backed, the sn-jersey design assumption). The pipeline: person crop (chapter 8) → pose-guided torso RoI (E03's stack, 82 fps on M4) → legibility gate → STR read → digit-regex filter → <strong>tracklet majority vote</strong>: n* = mode({r<sub>t</sub> : legible(r<sub>t</sub>)}), abstaining to "-1" when no read clears the gate. The roster then constrains n* to the active set — a wobbly "1?" becomes "13" only if 13 is on the field. The C13-lab measured the bottleneck: 6/6 nrl-001 frames produced digit reads, but scoreboards and hoardings pollute them — localization, not recognition, is the hard module. The GSR ablation prices it: adding the jersey attribute drops identity HOTA from 37.03 to 25.65, more than calibration, role, and team combined (source-backed, arXiv:2404.11335); the sn-jersey leaderboard tops out at 92.85% tracklet accuracy against 3.93% random. <strong>Payoff: this is the only declarative identity read that survives a camera cut — every rugby stat line in chapters 21–23 types off it.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc01-jersey-ocr.png" alt="Rugby league jersey number OCR pipeline: rear view of player wearing number 9, magnified torso crop with digit boxes, legibility gate, tracklet majority vote tally." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.8</span>: UC 01 — Jersey OCR Under Hostility. Crop the torso, gate legibility, vote across the tracklet, constrain to the active roster. <strong>Rugby league</strong>: back numbers 1–17 with close-ups after every try; the ruck, mud, and folds supply the failure gallery. <strong>Pickleball</strong>: no numbered kits — this case does not transfer; UC 02 and the §13.5 serve rule carry pickleball identity.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — ReID Across a Rally</h3>
+  <p>A pickleball rally crosses the court, the net, and occasionally the camera's edge; identity must survive all of it with no numbers to re-read. The mechanism is gallery enrollment plus cosine propagation: enroll each known player once (10 seconds alone in frame) into a gallery G = {g<sub>1</sub>…g<sub>4</sub>}, then assign each crop's embedding q to the nearest enrolled identity when cos(q, g<sub>i</sub>) = q·g<sub>i</sub> / (‖q‖‖g<sub>i</sub>‖) exceeds the rejection threshold τ, and propagate that binding through the rally until the next serve re-pins it (§13.5). The measured anchor is the tracker underneath: E09's BoT-SORT at HOTA 0.814 with 2 switches on pb-003, and the EMA-gallery drift-capture failure chapter 9 documented when updates run during unresolved occlusion — the reason gallery updates freeze under ambiguity. <strong>Payoff: the amateur's entire declarative layer — four enrollment cards turn anonymous track integers into named rally reports with zero annotation.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc02-reid-rally.png" alt="Pickleball doubles rally ReID propagation: overhead court, four players with embedding glyphs, cosine arrows to four enrollment cards, dashed propagation path." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.9</span>: UC 02 — ReID Across a Rally. Enroll once, match by cosine above threshold, propagate between serve-time re-pins. <strong>Pickleball</strong>: the home case — four players, four cards, one walk-through each. <strong>Rugby league</strong>: propagation only, never declaration — 15 near-duplicate bodies per kit collapse the embedding neighborhood (chapter 9's same-kit measurement).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Face Recognition Court-Side (The Forbidden Case)</h3>
+  <p>Court-side fixed cameras — this book's home pickleball regime — are the one setup where face recognition would technically work: near-frontal, well-lit, enrollment-distance faces. The mechanism would be a face-embedding gallery matched exactly like UC 02. The math that matters is not the similarity function but the error and legal profile: NIST FRVT demographic-differentials studies document false-positive rates varying 10–100× across demographic groups (source-backed, NIST FRVT), and facial templates used for unique identification are GDPR Article 9 special-category biometrics and sensitive information under the Australian Privacy Act [verify post-2024-reform wording before print]. Consent is structurally broken in sport: a teammate cannot meaningfully refuse the club's enrollment, and a social filmer has no basis to biometrically enroll three friends. The book's verdict is UC-shaped precisely because the temptation is real: <strong>the rule stands — no face recognition in amateur footage; every identity need here has a non-biometric path (§13.3–§13.6).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc03-face-courtside.png" alt="Face recognition consent boundary at a pickleball court: sideline camera, crossed-out biometric template, consent shield, green zone of allowed signals separated from red zone." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.10</span>: UC 03 — The Face Line. Technically feasible court-side; legally and statistically prohibited for this audience. <strong>Pickleball</strong>: enrollment galleries of body appearance with informed session consent, deletable on request. <strong>Rugby league</strong>: the roster + jersey + wearable stack is more accurate anyway — faces are for broadcast graphics operators under league agreements, not coaching tools.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category II: Propagation &amp; Retention — Surviving the Match (UC 04–07)</h3>
+
+  <h3 class="sub-heading">UC 04 — Kit-Change and Substitution Handling</h3>
+  <p>Rugby league rotates its 14–17 bench through interchange churn, sin-bins, and blood bins — the active set of 13 changes minute by minute — and social footage adds half-time kit changes and tournament re-kits. Every one of these is a <strong>registry boundary</strong>: propagation stops, the interval closes, and a new unbound interval opens until the next binding event. The mechanism is a time-indexed lineup state L(t) — who is actually on the field at time t — joined against incoming tracks: a substitution detected at the sideline (or a halftime timestamp) closes the departed player's interval, and the replacement is bound by roster-constrained jersey read or position prior, never by appearance continuity across the boundary. The failure this prevents is the confident wrong name: a roster prior applied to a player who left the field two minutes ago. <strong>Payoff: interchange-accurate stat typing — running metres and tackle counts land on the player who was actually on, which is the difference between a workload report and fiction (feeds chapters 21 and 30).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc04-kit-change.png" alt="Kit change identity handling: rugby interchange board, player leaving in stained kit and fresh player entering, registry interval closing and reopening, clock icon." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.11</span>: UC 04 — Kit Change as Registry Boundary. Close the interval, open unbound, re-bind from the time-indexed roster. <strong>Rugby league</strong>: interchange, sin-bin, blood bin — L(t) or the priors lie. <strong>Pickleball</strong>: side-switches at 11 and between-game re-kits; the serve-side rule re-pins identity for free after every boundary.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — Same-Kit Disambiguation (13 vs 13)</h3>
+  <p>The hardest identity configuration in either sport: twenty-six athletes, two kits, and an appearance space that has already collapsed to two blobs — chapter 9 measured the same-kit embedding collapse, and §13.4's clustering cannot go below team level. The mechanism is the full fusion stack as an assignment problem: team clustering halves the search space, jersey reads declare where legible, position priors (1 fullback deep, 9 at the play-the-ball, 6/7 in the halves) sanity-check, and Hungarian matching over tracks × active roster resolves the rest with edge weights w = α·(jersey read) + β·(position zone) + γ·(ReID score), all soft costs with violation channels for interchanges and position swaps. The triangulation rule does the honest work: a track in the fullback zone claiming "9" is a read error or an interchange event, and the system must say which. <strong>Payoff: this is the pro-club identity core — the assignment frame is what turns six noisy signals into one defensible name per track (the GSR architecture, source-backed).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc05-same-kit.png" alt="Same-kit disambiguation in rugby league: two teams in identical dark jerseys, merged embedding cluster panel, jersey reads and position zones separating players, assignment matrix." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.12</span>: UC 05 — Same-Kit Disambiguation. Clustering halves the space; reads, zones, and the roster solve the rest. <strong>Rugby league</strong>: the 13v13 match reality — number ↔ position ↔ zone triangulation. <strong>Pickleball</strong>: the all-black social game — the same collapse at n=4, solved by the serve rule and enrollment instead of reads and zones.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — Occlusion Identity Retention (The Net, The Ruck)</h3>
+  <p>Identity evidence dies in piles: the rugby ruck buries numbers under bodies, the tackle deforms the kit, and the pickleball NVZ crossing merges tracks exactly when the rally is hottest. The retention mechanism is disciplined decay plus re-binding: when occlusion is detected, freeze gallery updates (the drift-capture guard), freeze crop contributions to the tracklet vote (ReID-gated crop hygiene — the Koshkina outlier step, source-backed), and let confidence decay as c(t) = c<sub>0</sub>·e<sup>−λΔt</sup> with λ scaled by occlusion density and kit ambiguity. When the pile separates, re-bind from the first declarative read — a jersey flash, a position prior, the serve-side rule — rather than trusting the embedding bridge across the gap. The prohibited move is updating anything during the pile: every frame inside an occlusion is contamination, not evidence. <strong>Payoff: this is where identity-mixing is born and where it is prevented — retention discipline is the difference between a 60/40 polluted track and an honest confidence dip (§13.8's identity-mixing AUC measures exactly this).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc06-occlusion.png" alt="Occlusion identity retention: rugby ruck pile with overlapping players, suspended identity tokens with decaying confidence bars, pickleball net inset, re-binding arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.13</span>: UC 06 — Retention Through the Pile. Freeze updates, decay confidence, re-bind at separation. <strong>Rugby league</strong>: the ruck and the tackle — numbers buried, votes frozen. <strong>Pickleball</strong>: the net-line is an identity barrier — no legal play crosses it, so apparent crossings are tracking errors to repair, not identity events to accept.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — Camera-View Identity (The Chapter-14 Feed)</h3>
+  <p>Broadcast coverage cuts between the wide tactical camera, the close-up, and the replay faster than any tracklet vote can accumulate — E08's 295 spawned track IDs for ~30 humans on nrl-001 are mostly the director's fault, and E14's global-motion compensation only recovered nine. Each cut is a registry boundary: the old interval closes and the re-identification problem restarts. The cross-view mechanism fuses three weak signals into one assignment: appearance embeddings (weak across viewpoint and zoom), homography-mapped position on the shared minimap (chapter 14's multi-view geometry — a track leaving the left edge of frame A must enter frame B at a consistent pitch location), and the roster constraint (the re-entering track must map to someone actually on the field). No single signal is trusted across a cut; the assignment is. <strong>Payoff: this is what makes broadcast footage analyzable at all — without cross-view identity, chapter 14's minimap is a crowd of anonymous dots and every per-player broadcast stat is unreachable.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc07-camera-view.png" alt="Multi-camera identity handoff: two camera views of a court, track leaving one frame and entering the other, embedding match bridge, overhead minimap with camera cones." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.14</span>: UC 07 — Identity Across the Cut. Embedding + minimap position + roster, assigned jointly. <strong>Rugby league</strong>: the broadcast reality — wide to close-up to replay, 295 track fragments converging to ~30 names. <strong>Pickleball</strong>: multi-camera club rigs and phone-plus-fixed-camera setups; the homography bridge is cheap on a fixed court (E05/E11-grade, 3.82–4.65 cm RMSE).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category III: The Registry &amp; Its Limits (UC 08–10)</h3>
+
+  <h3 class="sub-heading">UC 08 — The Identity Registry (The One-Spine Feed)</h3>
+  <p>Every downstream chapter consumes identity through one structure, and this use case is it: the registry mapping (track_id, t_start, t_end) → identity, confidence, provenance. The mechanism is the write discipline from §13.2b made concrete — binding events (jersey reads, serve-side deductions, enrollment matches) write declarative intervals with provenance tags; propagation extends them probabilistically; boundaries (cuts, substitutions, kit changes) close them. The deliverable property is the join: chapter 5's one-spine stores nothing but intervals, so "player 9's running metres" is computed as a join against named intervals, never against bare track integers — which is what makes identity-mixing detectable instead of silent. A registry row reads like a receipt: "track 147 → player 9, confidence 0.91, bound by jersey read at 54:12, propagated 210 frames." <strong>Payoff: the single point where tracking becomes analytics — chapters 21–23 and 28 all query this table, and its provenance column is what makes their numbers auditable.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc08-registry.png" alt="Identity registry table: track timeline with intervals mapped to names, confidence bars, provenance tags, binding discs and dashed propagation, downstream stats join." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.15</span>: UC 08 — The Registry. Intervals, confidence, provenance — the one-spine's identity table. <strong>Pickleball</strong>: serve pins as binding events, ReID propagation between them, per-player rally reports off the join. <strong>Rugby league</strong>: jersey reads and lineup state as bindings, propagation through rucks and cuts, workload stats typed by interval.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Confidence Calibration (The p-Gate)</h3>
+  <p>A registry that emits bare names is a liability; the product is calibrated confidence with an abstention channel. The mechanism: every binding score — jersey-vote share, cosine margin, assignment posterior — is temperature-scaled against held-out clips (chapter 20's clip-level resampling, since 900 consecutive frames are n = 1 rally), and every propagated claim carries c(t) from UC 06's decay. The p-gate is the operating rule: claims below threshold τ are emitted as "unknown," never rounded up to the nearest name; reliability diagrams verify that a 0.9 claim is right 90% of the time per clip. The companion metric is <strong>binding coverage</strong> — the percentage of track-frames with a declarative binding versus propagation-only — published next to every accuracy number, because a 95%-accurate system over 20% of frames types worse stats than a 90%-accurate system over 90%. <strong>Payoff: calibration is what lets a coach act on the number — the p-gate converts identity from a guess into a decision-grade input with a stated error rate.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc09-confidence-gate.png" alt="Confidence calibration gate: probability axis with abstain zone below threshold and accept zone above, reliability diagram, pickleball and rugby player score markers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.16</span>: UC 09 — The p-Gate. Temperature-scaled scores, abstain below τ, reliability checked per clip. <strong>Pickleball</strong>: stacking-window claims auto-discounted — the confidence timeline dips by design. <strong>Rugby league</strong>: post-cut and post-interchange intervals start unbound and earn confidence only from new declarative reads.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — The Transient Identity Failure (The Honest Limit)</h3>
+  <p>Sometimes identity is simply unknowable: a broadcast cut, a kit change, and two minutes off-frame stack into a gap no signal bridges — the registry's correct output is "unknown," and the honest system is the one that says so. The mechanism is the failure protocol: when confidence collapses through the floor (decayed below τ with no binding event in reach), close the interval, mark the gap, and wait — never force a read, never let a hard prior fill the silence, never let the EMA gallery drift-capture a convenient neighbor. The compound failure this use case exists to prohibit is the confident wrong name: a hard prior plus no abstention channel manufacturing certainty the evidence does not contain — the one failure class §13.8b bans by construction. The transient framing is the comfort: identity in sport is episodic by nature, and a gap is a normal state with a recovery path (the next serve, the next close-up, the next legible number), not an error to paper over. <strong>Payoff: trust — the analyst who can see the gaps believes the fills, and the system that admits "unknown" for 8% of frames keeps its other 92% actionable.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch13-uc10-transient-failure.png" alt="Transient identity failure: timeline where confidence collapses after a broadcast cut and kit change, unknown label card, abstain stamp, recovery at next binding event." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 13.17</span>: UC 10 — The Honest Limit. Close the interval, mark the gap, wait for the next binding event. <strong>Rugby league</strong>: cut + interchange + off-frame minutes = a declared unknown, recovered at the next close-up read. <strong>Pickleball</strong>: a player fetching a ball re-enters unbound and is re-pinned at the next serve — seconds of "unknown," zero wrong names.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">13.9c</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are the identity layer applied across the book's five verbs. UC 01–03 feed <em>watching</em> and <em>tagging</em>: the declarative reads that let chapter 17's event attribution and chapter 19's eventing name an actor instead of a track integer. UC 04–07 protect <em>modelling</em>: retention and cross-view identity are what make chapter 14's multi-view minimap and chapter 22's EPV surfaces player-typed rather than crowd-typed. UC 08–10 serve <em>interpreting</em> and <em>acting</em>: the registry is chapter 5's one-spine identity table, the p-gate is chapter 20's calibration discipline applied to names, and the chapter 28 cockpit displays exactly what the registry vouches for. Chapter 30's wearables enter as identity ground truth (the UC 04 lineup join), and chapter 31's rights discipline owns the UC 03 wall. The honest labels mark which numbers are measured in this book's lab (C13-lab, E08/E09/E14), which are source-backed (GSR, sn-jersey, NIST FRVT), and which remain [verify] — and UC 10 is the standing reminder that the system's most valuable output is sometimes the word "unknown."</p>
+
+  <h2 class="section-title"><span class="section-num">13.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Jersey-region OCR: person-detector → pose-guided torso crop → digits on 50 hand-labeled nrl-001 tracklets under the sn-jersey protocol ("-1" for never-visible): tracklet accuracy, legibility-gate precision, and the mud/fold/ruck failure gallery — the first public rugby jersey-OCR baseline.</li>
+    <li>Tracklet majority vote on a 10-second rugby clip: does the mode stabilize the number, and how many frames does convergence take after a broadcast cut?</li>
+    <li>Deterministic doubles identity on pb-003: serve-side pinning over E05/E11 homography feet + score state, BoT-SORT propagation, re-pin every serve — identity confidence timeline per player plus ClusteredIDF1 against hand labels; the worked proof that rules beat recognition for 4-person sport.</li>
+    <li>Per-session gallery for pickleball: enroll 4 players once, measure ReID retrieval mAP/Rank-1 and identity-mixing AUC against the rule-pinned output — the amateur fallback's accuracy floor.</li>
+    <li>Team-clustering bake-off: raw-color k-means vs SigLIP→UMAP→KMeans on nrl-001 (expect both work) and pb-003 (expect collapse) — per-frame team-label flicker and tracklet-vote stability, making §13.4's honesty paragraph empirical.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">13.11</span> Sources</h2>
+  <ul>
+    <li>SoccerNet GSR (arXiv:2404.11335) and sn-jersey (github.com/SoccerNet/sn-jersey) — the open jersey-OCR reference, GS-HOTA ablation, and the 92.85% tracklet benchmark; TrackLab framework (MIT). Dataset license: SoccerNet research terms [verify redistribution].</li>
+    <li>Koshkina &amp; Elder, "A General Framework for Jersey Number Recognition in Sports Video," CVPRW 2024 (CC BY-NC 3.0 — learn from it, don't ship it); PARSeq STR (Apache-2.0) as the clean-license recognizer; Liu et al., pose-guided R-CNN, CVPRW 2019.</li>
+    <li>EasyOCR (Apache-2.0) — the C13 lab reader; PaddleOCR / PP-OCRv5 (Apache-2.0, CPU-only on M4) as the alternative; roboflow/sports (MIT) — the SigLIP→UMAP→KMeans team-clustering pattern.</li>
+    <li>Ethics lane: ICO biometric recognition guidance (GDPR Art. 9); Australian Privacy Act sensitive-information class [verify post-2024 wording]; NIST FRVT demographic differentials (10–100×); Privacy International, "Sports and Surveillance."</li>
+    <li>Book-internal: E01, E02, E03, E05, E08, E09, E11, E14 (verified lab results); C05 (one-spine), C08 (detection), C09 (tracking/ReID depth), C20 (statistics), C30 (wearables), C31 (rights).</li>
+    <li>Lab: <code>lab/w3_lab_identity.py</code> → <code>experiments/c13-identity/outputs/metrics.json</code> (6/6 frames read digits; localization is the bottleneck — measured).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="12.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 12</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 12</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</p>
+        </div>
+      </div>
+    </a>
+    <a href="13.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 13</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 13 — Identity: Who Is Who</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 13</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 13 — Identity: Who Is Who</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 13 — Identity: Who Is Who</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Track IDs are not people: jersey OCR, ReID embeddings, team clustering, roster priors, and the consent line</p>
+        </div>
+        <a href="13.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

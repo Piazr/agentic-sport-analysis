@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 25 — Where Vision-Language Models Help, and Where They Lie - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-25" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 25</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The lie exhibit rebuilt: current models, the grounded critic, and the honesty anchors that say describe, don't decide</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">34 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-25-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Temptation and the Truth</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-25-1" data-section="s-25-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Temptation and the Truth</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-25-1" data-section="s-25-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Temptation and the Truth</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">25</span> Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h1>
+    <p class="chapter-subtitle">The lie exhibit rebuilt: current models, the grounded critic, and the honesty anchors that say describe, don't decide</p>
+  </header>
+
+<h3 id="s-25-1"><span class="section-num">25.1</span> The Temptation and the Truth</h3>
+
+<p class="section-intro">"Feed the video to the AI, it analyzes the game" is the 2026 pitch. The measured truth (this book's E07/E13, and the field's verified benchmarks) is sharper: a VLM <em>describes</em> fluently and <em>decides</em> poorly. The architecture that works is the one this chapter teaches: measured CV first, a bounded numeric evidence pack second, language third — and a critic that strips the lies. Every claim below is <strong>measured</strong> (our labs) or <strong>source-backed</strong> (the verified benchmarks).</p>
+
+  <p>It is worth being precise about what "describes fluently" actually buys you, because the capability is real and the chapter is not anti-VLM. A current vision-language model, shown a frame or a short clip, is genuinely good at three things. First, <strong>scene description</strong>: "two players at the kitchen line, one mid paddle swing, ball visible above the net" is the kind of statement a VLM produces reliably and cheaply, in pickleball and in rugby league alike. Second, <strong>answering tactical questions over supplied evidence</strong>: given a set of tracking rows and event tags, "why did this line break succeed?" is a question a VLM answers well, because the answer is a rendering of facts, not a measurement. Third, <strong>zero-shot classification into coarse buckets</strong>: "is this frame a serve, a rally, or a dead ball?" and "is this phase a set restart or an attacking kick?" work without any fine-tuning, because the categories are visually loud.</p>
+
+  <p>The failure modes are equally consistent, and they are the reason this chapter exists. VLMs fail at <strong>exact counting</strong> (how many players are in the frame? how many tackles in the set? — the E07 model could not even commit to the number of players on a two-person court), at <strong>fine-grained timing</strong> (a paddle-ball contact lasts single-digit milliseconds; a play-the-ball takes under a second; neither survives frame sampling), and at <strong>fact discipline</strong> (given a gap, the model fills it with the most plausible-sounding event — a serve, a foul, a missed tackle — regardless of whether the pixels support it). The pickleball version of the lie is "the player is preparing to serve" on a frame where the shot type is unknown. The rugby league version is "the inside defender missed the tackle" on a clip where the camera angle never shows the contact. Both are fluent. Both are falsified by the evidence pack. The job of the pipeline is to make sure neither reaches a coach.</p>
+
+  <h2 class="section-title"><span class="section-num">25.2</span> The 2026 VLM Catalog</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>License</th>
+        <th>Lane</th>
+        <th>Sport Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Qwen3-VL</strong> (4B/8B)</td>
+        <td>Apache-2.0</td>
+        <td>✅ local (mlx-vlm)</td>
+        <td>The local default: frame-pack + timestamp alignment</td>
+      </tr>
+      <tr>
+        <td><strong>Qwen3-VL-32B</strong></td>
+        <td>Apache-2.0</td>
+        <td>⚠️ 4-bit on 64-128GB</td>
+        <td>High-accuracy local when memory allows</td>
+      </tr>
+      <tr>
+        <td><strong>Gemini 3 Pro/3.1</strong></td>
+        <td>API</td>
+        <td>⛔ (only true long-video; 1M ctx, 87.6% Video-MMMU)</td>
+        <td>The long-video API lane: full-match context</td>
+      </tr>
+      <tr>
+        <td><strong>GPT-5.x / Claude</strong></td>
+        <td>API</td>
+        <td>⚠️ frame-sampling</td>
+        <td>Good text reasoning; video via sampled frames only</td>
+      </tr>
+      <tr>
+        <td><strong>Phi-4-multimodal</strong></td>
+        <td>MIT</td>
+        <td>⚠️</td>
+        <td>Audio-first — the C15 lane</td>
+      </tr>
+      <tr>
+        <td><strong>Qwen3-Omni</strong></td>
+        <td>Apache-2.0</td>
+        <td>⚠️ quantized / ⛔ 30B</td>
+        <td>Audio semantics: which call did the referee make?</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The catalog splits on one architectural fact: <strong>native video ingest versus frame-pack prompting</strong>. Gemini 3 is the only lane that ingests a video stream as video — frames, audio, and timestamps interleaved in a million-token context — which is why it owns the rugby league long-video problem (80 minutes of broadcast is 2.47M input tokens even at 2 fps, per E19). Every other model, local or API, sees video as a strip of sampled stills. That difference is not cosmetic. A frame-pack model has no temporal structure except what the prompt gives it; it can tell you what is in frame 41 and frame 42, but it cannot tell you what happened <em>between</em> them, and it will invent something plausible if you ask. The local lane (Qwen3-VL-4B/8B through mlx-vlm on the M4 Max) is the book's default for one reason beyond cost: privacy and repeatability. The frames never leave the machine, the weights are pinned, and the same prompt produces a debuggable output. The API lanes are reserved for the two jobs local models cannot do — hour-scale context (Gemini) and peak per-frame reasoning (GPT-5.x, Claude) — and section 25.7b prices exactly what that reservation costs.</p>
+
+  <h2 class="section-title"><span class="section-num">25.3</span> The Lie Exhibit, Rebuilt (W6.1 Lab, Live)</h2>
+  <p>The v1 E07 exhibit showed the pattern; this lab runs the <em>current</em> local model (Qwen2.5-VL-3B-4bit via mlx-vlm on the M4 Max, 5.5s) on the golden fixture frame with the frame-pack prompt. The live output:</p>
+
+  <pre><code>OBSERVABLE:
+- Two players are visible in the frame.
+- The player on the left is wearing a white shirt and black shorts.
+- The player on the right is wearing a red shirt and black shorts.
+- Both players hold pickleball racquets.
+- The player on the left is in a serving position.
+- The player on the right is in a receiving position.
+- The pickleball is in motion, heading towards the player on the left.
+- The player on the left is preparing to serve the pickleball.
+- The player on the right is ready to receive the serve.</code></pre>
+
+  <p><strong>The last three bullets are the exhibit.</strong> "The pickleball is in motion" — the PBN evidence row says contact_state: candidate, ball_visible: partial/unclear. "Preparing to serve" — shot_type: unknown. The model <em>claimed</em> what it could not see. The critic's verdict, executed:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Claim type</th>
+        <th>VLM claimed?</th>
+        <th>PBN evidence?</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ball_in_motion</td>
+        <td>YES</td>
+        <td>NO (candidate)</td>
+        <td><strong>FALSIFIED</strong> — the live E13 catch</td>
+      </tr>
+      <tr>
+        <td>serve_claimed</td>
+        <td>YES (this run's phrasing)</td>
+        <td>NO (unknown shot_type)</td>
+        <td>FALSIFIED on the stronger reading</td>
+      </tr>
+      <tr>
+        <td>rally_phase_claimed</td>
+        <td>NO</td>
+        <td>—</td>
+        <td>PASS</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The original E07 run (six frames, Qwen2.5-VL-3B, an explicit "observable facts only" prompt) produced two further failure modes worth naming, because they are the ones a demo video never shows. The first is <strong>tactical invention at scale</strong>: four events — a serve, an offensive dink, a lob, and a foul — claimed across the commentary with no support in any frame; the ball was not even clearly visible. The second is <strong>prompt disobedience</strong>: the model ignored the requested two-heading structure, appended the non-sequitur question "What is the most common cause of the problem?", generated a generic essay about coach-player communication, and then collapsed into a repetition loop ("The exact number of players is not indicated" emitted dozens of times). These are not quirks of a bad seed. A small VLM asked to reason about sport from frames alone will invent events <em>and</em> abandon the output contract, because nothing in its objective function ties a sentence to a pixel. The rugby league equivalent is well known to anyone who has prompted a model with broadcast footage: ask "who caused the line break?" and the model names the nearest defender to the ball carrier, because that is the statistically plausible answer, not because the footage shows the missed assignment. Scored honestly, E07 comes out at <strong>4 hallucinated events in 6 actionable claims — a 66.7% hallucination rate, UNSAFE FOR COACHING</strong>.</p>
+
+  <figure id="fig-25-01" class="full">
+    <img src="shared/images/vlm-hallucination-bars.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.1</span>: VLMs Describe; They Do Not Decide. The measured anchors: E07 66.7% hallucination, E13 0.0% after grounding; SportD VLM 31.4% vs pros 38.9%; HourVideo 37.3% vs humans 85%.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">25.4</span> The E13 Grounded Critic (The Book's Best Result)</h2>
+  <p>The fully measured result stands: the multi-agent generator-critic loop on E13 reduced hallucination from <strong>66.7% to 0.0%</strong> — because every generated verb was cross-checked against the PBN coordinate/velocity/zone tables, and the falsified claims were stripped. The mechanism is the chapter's architecture: <em>audio/vision proposes, the critic checks the evidence, the survivor is the claim.</em></p>
+
+  <p>The loop's mechanics matter more than the headline number, because the number is only trustworthy if the mechanism is repeatable. The <strong>generator</strong> receives the six frames plus a bounded PBN CSV summary — player coordinates, velocities, zone occupancy, ball speed band — and produces a claim list. The <strong>critic</strong> is a separate agent with no access to the frames at all; it receives only the claims and the perception rows, and for each claim it asks one question: <em>is there a (match_id, t_start, t_end, track_id) tuple that would falsify this sentence?</em> If yes and the row contradicts the claim, the claim is stripped and logged with a falsified counter. If no row exists either way, the claim is stripped as unverifiable. Only claims that a row actively supports survive into <code>verified_narration.txt</code>. Note what this design refuses to do: it never asks the critic to judge plausibility. "The ball is in motion" is not rejected because it sounds unlikely — it is rejected because the ball track for that window is marked candidate/partial. The critic is a database query, not a second opinion.</p>
+
+  <figure id="fig-25-03" class="full">
+    <img src="shared/images/vlm-adversarial-wrong.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.3</span>: The adversarial loop catching the live lie. The generator's "ball in motion" claim is struck through by the critic because the PBN row for that window says ball_visible: partial — the loop's output keeps only what the rows support.</figcaption>
+  </figure>
+
+  <p>The same loop ports to rugby league unchanged in structure and unchanged in lesson. The generator's evidence pack is the NRLSheet analogue of the PBN: tackle count, field position, play-the-ball speed band, ruck zone. The critic strips "the defense was compressed" when the spacing rows show a 12-metre line width, and strips "quick play-the-ball" when the PTB band is only medium. The sport changes; the falsifiability rule does not. One honest caveat, carried from the dossier: the published E13 numbers come from the measured artifact, and the live lab rerun on the current 3B model reproduced the catch on the golden frame — but the full six-frame loop on Qwen3-VL-8B is still on the measurement list (section 25.11), so treat 0.0% as the architecture's demonstrated result, not a guarantee about every model.</p>
+
+  <h2 class="section-title"><span class="section-num">25.5</span> The Grounded-Numbers-First Architecture</h2>
+  <p><strong>The grounding engine (the DART connection, chapter 8.12):</strong> the critic needs exact pixel coordinates to audit VLM claims in real time. DART's open-vocabulary, O(1)-latency detector is that engine — it supplies the bounding boxes for the claim under audit ("the ball is in motion" → the ball's box at that frame, from the promptable model, fast enough for live audit). The architecture's three steps stay; the grounding layer gets its real-time provider.</p>
+  <p>The safe pattern is a pipeline order that cannot be inverted:</p>
+  <ol>
+    <li><strong>Measured CV first</strong>: detect, track, pose, ball (chapters 6-16) — the numbers.</li>
+    <li><strong>Bounded evidence pack second</strong>: the PBN rows (chapter 17) — every number with its coordinate, timestamp, evidence_refs.</li>
+    <li><strong>Language third</strong>: the VLM renders the evidence pack into prose — never the raw frame.</li>
+  </ol>
+
+  <p>The template's anatomy: "measured CV rows" (timestamps, track_id, x, y) → "bounded numeric evidence pack" → "language instructions + JSON schema", with the grounding arrow the load-bearing element.</p>
+
+  <p>Underlying the ordering is a decision boundary that should be drawn explicitly, because it is the most common design error in applied sport AI: <strong>if the question needs a number, a count, or a time, use a dedicated detector; if the question needs a description, an explanation, or a rendering, use a VLM; if the question needs a decision, use a human</strong>. "How many dinks were hit in that rally?" is a counter's job — a trained shot classifier over tracked trajectories will beat any VLM, because the VLM never saw most of the contacts (section 25.7b). "What formation is the defensive line in?" is borderline: coarse structure a VLM reads well, but the moment you need line width in metres it is a tracking problem again. "Was that the right option on tackle four?" is a human's job, and SportD's 31.4%-versus-38.9% gap is the measured reason. The boundary is not a sliding scale of model quality — bigger models move the numbers, they do not move the categories. A VLM that is 95% accurate at counting is still the wrong tool for counting, because the 5% fails silently and the detector fails loudly.</p>
+
+  <figure id="fig-25-04" class="full">
+    <img src="shared/images/vlm-pipeline-decision-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.4</span>: The VLM-vs-pipeline decision boundary. Numbers and counts go to dedicated detectors; descriptions and explanations go to the VLM over an evidence pack; decisions stay with the human.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">25.6</span> Structured Outputs</h2>
+  <p>Prompt the VLM for <em>structure</em>, not prose: JSON schema via Pydantic/Outlines/Guardrails, function calling, and prompt anchoring on the CSV rows (the v1 E13 "prompt anchoring on CSV metrics" pattern). The output is a schema-validated claim object — which is exactly what the C19 eventing consumes and the C02 claims register audits.</p>
+
+  <p>The schema is the first line of hallucination control, because it removes the two failure modes E07 exhibited — invented events and structural disobedience — by construction. Every claim object carries <code>match_id</code>, <code>t_start</code>, <code>t_end</code>, <code>track_id</code>, an <code>evidence_type</code> from a closed enum (position, velocity, event, metric, not_grounded), and a confidence band. A claim that cannot fill those fields cannot be emitted: the model's only legal escape is <code>NOT_GROUNDED</code> with no invented detail. On the API lanes this is enforced by the provider's structured-output mode (Gemini, GPT, Claude all support schema-constrained JSON); on the local lane, Outlines-style constrained decoding masks every token that would violate the grammar, so the pickleball pipeline literally cannot produce a claim without a track_id, and the rugby pipeline cannot produce a tackle claim without a set and tackle number. One flag from the dossier, stated honestly: Outlines-on-MLX integration is [verify] — if constrained decoding is unavailable for the local Qwen3-VL stack, the fallback is post-hoc Pydantic validation with re-ask, which catches the same violations one step later.</p>
+
+  <h2 class="section-title"><span class="section-num">25.7</span> When VLMs Are Genuinely Useful</h2>
+  <ul>
+    <li><strong>Tactical summary of a tracking row</strong>: "the third-shot went to the left corner; the receiving pair shifted 0.5m right" — the numbers, rendered.</li>
+    <li><strong>Drill explanation</strong>: a coach asks "what drill fixes this?" and the VLM renders the practice-design science (chapter 29) into a session plan.</li>
+    <li><strong>Report drafting from metrics</strong>: the C26 pipeline — the VLM drafts, the numbers are the source, the human gates.</li>
+  </ul>
+
+  <p><strong>Pickleball, worked example — the paddle-swing question.</strong> A coach asks: "on the fault review, was the paddle above the wrist at contact?" This is the edge of the VLM's usefulness, and the honest answer shows why. The serve-rule question is a <em>measurement</em> — wrist and paddle-head positions at a 3-millisecond contact instant — so the VLM must not answer it from video alone. What the pipeline does instead: pose estimation (chapter 11) extracts wrist and paddle-keypoint trajectories, the ball track isolates the contact window, and the VLM receives three sampled frames around that window <em>plus</em> the pose rows. Its job is reduced to what it is good at: "frame 2 shows the paddle head below the wrist marker; the pose rows show paddle_y − wrist_y = −0.06 m at t = 4.233 s." The VLM rendered the sentence; the number came from the skeleton. The same division handles the softer version of the question — "describe this player's serve routine" — where the VLM's prose over the tracked toss height, stance width, and contact zone is genuinely useful and safe.</p>
+
+  <figure id="fig-25-05" class="full">
+    <img src="shared/images/vlm-pickleball-swing.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.5</span>: The pickleball paddle-swing question. Sampled frames plus pose rows enter the VLM; the emitted claim cites the tracking row, and the measurement itself came from the skeleton, not the pixels the VLM saw.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league, worked example — the line-break question.</strong> An analyst asks: "why did the line break on tackle three succeed?" Given the raw clip, a VLM will name the nearest defender — the plausible lie. Given the evidence pack, it answers well: the PBN-analogue rows show the attacking right edge held a 4-on-3 overlap from the play-the-ball, the inside defender's track shows a 0.4-second delay in sliding, and the ball carrier's speed band at the line was high. The VLM renders: "the break came through the delayed slide of defender 2 — the overlap existed from the PTB; the ball carrier hit the gap at speed." Every clause cites a row. What the VLM still must not do is decide what the defense <em>should</em> have done — that is the SportD boundary again, and the welfare-critical version (the Bath 2025 tackle screening of section 25.10) is where the boundary is absolute.</p>
+
+  <figure id="fig-25-06" class="full">
+    <img src="shared/images/vlm-rugby-linebreak.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.6</span>: The rugby league line-break question flow. The tactical question is answered over the evidence pack, then verified by the critic before it reaches the analyst.</figcaption>
+  </figure>
+
+  <p><strong>The boundary (verified anchors):</strong> SportD — frontier VLMs pick the optimal on-ball action <strong>31.4%</strong> vs pro players <strong>38.9%</strong> (478 World Cup 2022 decisions). HourVideo — Gemini 1.5 Pro <strong>37.3%</strong> vs human experts <strong>85%</strong>. SoccerLens — SOTA video-VLMs &lt;50% grounding even when answers are correct. <strong>The numbers say it: models describe, people decide.</strong></p>
+
+  <h2 class="section-title"><span class="section-num">25.7b</span> Token Economics and Frame Sampling</h2>
+  <p>The E19 benchmark prices the architecture's inputs honestly, and the numbers explain every design choice in this chapter. The per-frame cost of a frame-pack prompt is roughly <strong>260 tokens</strong> at the lab's resolution. A 15-second pickleball rally sampled at 4 fps is 60 frames — <strong>15,780 input tokens</strong>, about $0.001 on a flash-tier API and under six cents even on the most expensive lane. An 80-minute rugby league match sampled at 2 fps is 9,600 frames — <strong>2,478,800 input tokens plus ~25,000 output tokens per match</strong>. The cost matrix spreads an order of magnitude: $0.19 per match on Gemini Flash, $3.22 on Gemini Pro, $6.45 on GPT-4o, $7.81 on Claude Sonnet (E19 measured rates). The local lane's marginal cost is $0.00 — the M4 Max runs 68.4 fps of perception throughput at 28.5 W with 55.7 ms glass-to-glass latency — against a fixed $3,199 capex that breaks even against GPT-4o after ~496 matches and against Gemini Pro after ~992. The conclusion the book draws: <strong>perceive locally, reason via API only where context length forces it</strong>. A full season of NRL matches through the top API lane is a four-figure line item; the same season through the local perception stack plus API <em>rendering passes over evidence packs</em> is nearly free, because the evidence pack is a few thousand tokens, not 2.47 million.</p>
+
+  <figure id="fig-25-07" class="full">
+    <img src="shared/images/vlm-token-economics.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.7</span>: The E19 token economics. Input cost scales with frames, not with sport: 15.8K tokens for a 15 s pickleball rally, 2.47M for an 80-minute rugby league match at 2 fps — the reason the evidence pack, not the video, is what enters the prompt.</figcaption>
+  </figure>
+
+  <p>Frame sampling is where the economics and the failure modes meet. The naive instinct — "give the model more frames" — runs straight into the token wall: a 60 fps source sampled at full rate would cost 30× the 2 fps budget, and no VLM consumes 60 fps anyway. But sampling at 2 fps has a measured blind spot the chapter calls <strong>the 60fps-vs-2fps problem</strong>. A pickleball at 20 m/s crosses the 13.4 m court in 0.67 s: forty frames at 60 fps, barely more than one at 2 fps. A paddle-ball contact lasts single-digit milliseconds — it exists in <em>no</em> frame at 2 fps and is luck even at 60 fps. A rugby league play-the-ball, a dummy-half's first step, a ball steal — all sub-second events that a 2 fps strip will routinely miss or straddle. The resolution is the architecture's, not the sampler's: the perception stack runs at full frame rate locally (68.4 fps throughput, measured), detects the events and their exact timestamps, and the VLM receives a <em>targeted</em> strip — the frames around each event, not a uniform thinning of the match. Prompt design for sport follows from this: never ask "watch this and tell me what happened"; always ask "here are the frames around t = 4.233 s and here are the measured rows — render what the rows support." Sampling is a selection layer over detector output, and the 2.47M-token match is the cautionary number for doing it any other way.</p>
+
+  <figure id="fig-25-08" class="full">
+    <img src="shared/images/vlm-frame-sampling.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.8</span>: The 60fps-vs-2fps problem. The ball-contact instant lives between sampled frames; the detector at full frame rate finds it, and the VLM receives a targeted strip around the event instead of a uniform sample.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">25.7c</span> The VLM Use-Case Framework: Ten Jobs, Honestly Scoped</h2>
+  <p class="section-intro">The sections above establish the architecture; this section enumerates the jobs it can actually hold. Ten use cases, in three categories: <strong>Category A — Answering &amp; Reporting (UC 01-04)</strong>, where the VLM renders verified evidence into language; <strong>Category B — Perception Front-End (UC 05-06)</strong>, where the VLM front-runs or routes the dedicated pipeline; and <strong>Category C — Safety &amp; Economics (UC 07-10)</strong>, the exhibits and budgets that keep the layer honest. Each case carries its evidence label: <strong>measured</strong> (this book's E07/E13/E19 labs), <strong>source-backed</strong> (a cited benchmark), or <strong>[verify]</strong> (a practitioner pattern not yet established here).</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>Role in the framework</th>
+        <th>Pickleball use</th>
+        <th>Rugby league use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>mlx-vlm</strong> (Qwen3-VL 4B/8B)</td>
+        <td>Local generator/critic lane, $0.00 marginal</td>
+        <td>E07/E13 lab on pb-003 frames ✅</td>
+        <td>Frame-pack triage only; 80-min video needs the API lane</td>
+      </tr>
+      <tr>
+        <td><strong>Gemini 3 / 3.1 Pro</strong></td>
+        <td>True long-video ingest (1M ctx)</td>
+        <td>Overkill for 15 s rallies</td>
+        <td>The full-match lane against NRLSheet rows ⚠️</td>
+      </tr>
+      <tr>
+        <td><strong>Instructor + Pydantic</strong></td>
+        <td>Typed claim objects on API models</td>
+        <td>Rally-summary schema (the GroundedClaim contract)</td>
+        <td>Set-by-set scouting section drafts</td>
+      </tr>
+      <tr>
+        <td><strong>Outlines</strong></td>
+        <td>Constrained decoding on local weights</td>
+        <td>Schema-masked local generation [verify MLX support]</td>
+        <td>Same, where the local lane suffices</td>
+      </tr>
+      <tr>
+        <td><strong>Guardrails AI</strong></td>
+        <td>Policy validators, re-ask on violation</td>
+        <td>Blocks subjective claims ("intent", "fatigue")</td>
+        <td>Blocks welfare claims in the Bath-screening lane</td>
+      </tr>
+      <tr>
+        <td><strong>LanceDB / Qdrant / pgvector</strong></td>
+        <td>Row retrieval for the evidence pack (section 25.8)</td>
+        <td>Rally chunks by match_id + timestamp</td>
+        <td>Set/try chunks across a 27-round season</td>
+      </tr>
+      <tr>
+        <td><strong>Langfuse / Phoenix</strong></td>
+        <td>Traces that make the 0.0% claim auditable</td>
+        <td>E13 generator-critic trace</td>
+        <td>nrl-001 long-video trace (planned, section 25.11)</td>
+      </tr>
+      <tr>
+        <td><strong>RAGAS / DeepEval</strong></td>
+        <td>Faithfulness ≥ 0.90, context recall ≥ 0.85 targets</td>
+        <td>Claim-set eval over the golden fixture</td>
+        <td>Same thresholds on the NRLSheet corpus</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The runnable skeleton every case below starts from — generator, then gate, nothing published unverified:</p>
+
+  <pre><code>def render_grounded(question, db, vlm, critic):
+    rows = db.query(question.match_id, question.t_start, question.t_end)
+    pack = to_evidence_pack(rows)              # bounded CSV, hand-audited window
+    claims = vlm.generate(frames=pack.frames,  # event-targeted strip, not uniform
+                          evidence=pack.csv,   # rows the output must not contradict
+                          schema=GroundedClaim) # NOT_GROUNDED is the only escape
+    verified = critic.gate(claims, db)         # citation resolves or the claim dies
+    return verified or template_fallback(rows) # sick model degrades prose, never facts</code></pre>
+
+  <h3 class="sub-heading">Category A — Answering &amp; Reporting (UC 01-04)</h3>
+
+  <h3 class="sub-heading">UC 01 — Tactical Question Answering: "Why Did the Rally End?"</h3>
+  <p>A coach's real question is never "describe the video" — it is "why did the rally end?" or "why did that break succeed?", and the honest answer lives in the tracking rows, not in the pixels a VLM can invent from. <strong>Mechanism:</strong> the question is resolved to a (match_id, t_start, t_end) window, the evidence pack is retrieved from the perception rows (chapter 17), the VLM renders an answer over frames-plus-rows, and every clause passes the grounding gate. <strong>Math:</strong> the windowed pack costs frames × ~260 tokens (E19 measured) — a 15 s rally at 4 fps is 15,780 input tokens, about $0.001 on the flash lane — while the answer's safety is scored as a classification problem: hallucination rate = 1 − precision over the claim list, coverage = recall against the ground-truth events.</p>
+
+  <figure id="fig-25-09" class="full">
+    <img src="shared/images/vlm-uc-tactical-qa.png" alt="Tactical question answering flow: coach question, tracking rows, grounded answer with cited row." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.9</span>: UC 01 — Tactical Question Answering. The question resolves to rows; the VLM renders; the gate cites. <strong>Pickleball</strong>: "why did the rally end?" → "the third shot went wide — rows 3418-3420 show the ball leaving the sideline at t=12.4". <strong>Rugby league</strong>: "why did the tackle-three break succeed?" → the delayed-slide answer over the NRLSheet analogue rows. <strong>Payoff (coaching)</strong>: answers in seconds, each one falsifiable. <em>measured (E13 pattern); the grounded answer rate across models is open [verify].</em></figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — Scouting Report Generation From Metrics</h3>
+  <p>An 80-minute match becomes a day of analyst writing; the VLM's legitimate job is to be the <em>rewriter</em> of the structured report, never its source. <strong>Mechanism:</strong> section templates (shape, territory, ruck speed, edge defense) are filled from NRLSheet/PBN rows; the VLM drafts prose per section with citations; a human gates. <strong>Math:</strong> the economics are the argument — rendering from evidence packs costs ~25K output tokens per match, while the naive full-video path is 2.47M input tokens at $3.22 on the Pro lane (E19 measured): the rows-first report is two orders of magnitude cheaper and falsifiable by construction.</p>
+
+  <figure id="fig-25-10" class="full">
+    <img src="shared/images/vlm-uc-scouting-report.png" alt="Rugby league scouting report generated from match rows with cited numbers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.10</span>: UC 02 — Scouting Report Generation. Match rows in, cited prose out, coach gates. <strong>Rugby league</strong>: the opposition report — "their left edge conceded 4-of-6 breaks inside the 40m zone (rows cited per claim)". <strong>Pickleball</strong>: the post-match report from PBN — serve placement, third-shot outcomes, NVZ discipline. <strong>Payoff (analyst)</strong>: a day's writing compresses to a review pass. <em>measured economics (E19); the drafting pattern is proposed, not yet benchmarked on nrl-001.</em></figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Post-Match Video Summarization</h3>
+  <p>Nobody re-watches 80 minutes; the one-page summary is what the coaching group actually reads on Monday. <strong>Mechanism:</strong> event segmentation (chapters 16, 19) cuts the match into rallies/sets/tries; each segment's rows become a chunk; retrieval pulls the narrative-relevant chunks; the VLM renders the timeline summary — and never sees the raw video, which is precisely how the design sidesteps the measured long-video gap. <strong>Math:</strong> HourVideo puts Gemini 1.5 Pro at 37.3% versus human experts at 85.0% on long-form video QA (source-backed) — summarizing <em>rows</em> instead of <em>footage</em> moves the task from the failing regime to the fluent one.</p>
+
+  <figure id="fig-25-11" class="full">
+    <img src="shared/images/vlm-uc-video-summary.png" alt="Match timeline segmented into events, funneled into a one-page summary." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.11</span>: UC 03 — Post-Match Summarization. Events → rows → retrieved chunks → summary. <strong>Pickleball</strong>: a tournament day compressed to per-match rally narratives. <strong>Rugby league</strong>: the full-round summary across eight matches from NRLSheet chunks. <strong>Payoff (coaching, recruitment)</strong>: the Monday document writes itself; the numbers it cites are auditable. <em>source-backed gap (HourVideo); the summarizer itself is proposed [verify].</em></figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 04 — Grounded Live Commentary (The Adversarial Critic, On Air)</h3>
+  <p>Automated commentary is the highest-visibility VLM job and the highest-visibility place to lie in real time — a fabricated "what a shot!" on a netted ball is a broadcast error, not a demo quirk. <strong>Mechanism:</strong> frames feed the detector (DART's O(1) open-vocabulary lane, chapter 8.12); the draft commentary is generated over the live evidence pack; the adversarial critic audits every clause against the rows before the sentence reaches the ticker. <strong>Math:</strong> the E13 loop generates in ~4.5 s on the M4 Max (measured), which fits inside a broadcast delay window; any call that times out or degenerates (the E07 repetition-loop failure) falls back to template prose over the same rows — the facts are never the part that fails.</p>
+
+  <figure id="fig-25-12" class="full">
+    <img src="shared/images/vlm-uc-live-commentary.png" alt="Live commentary pipeline: frames, detector, draft, adversarial critic, on air." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.12</span>: UC 04 — Grounded Live Commentary. The critic strikes the false phrase before air. <strong>Pickleball</strong>: rally-by-rally narration over the PBN feed. <strong>Rugby league</strong>: set-level narration over NRLSheet rows — "tackle-six kick from the 40m" only when the rows say so. <strong>Payoff (broadcast integrity)</strong>: fluent commentary with a falsified-claims log. <em>measured on the golden fixture (E13); live-latency behavior at broadcast scale [verify].</em></figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category B — Perception Front-End (UC 05-06)</h3>
+
+  <h3 class="sub-heading">UC 05 — VLM as a Zero-Shot First-Pass Detector</h3>
+  <p>The labeling budget is the real bottleneck in sport CV; a VLM can coarsely tag thousands of frames — "rally", "line break", "rest", "crowd shot" — with zero training data, and those tags decide where the expensive fine pipeline runs. <strong>Mechanism:</strong> a cheap flash-tier zero-shot pass tags the strip; only tagged segments go to SAM 2 / TrackNetV4 / pose (chapters 10-12). <strong>Math:</strong> the triage pass costs ~$0.001 per rally (E19 measured) against a fine tracker over everything; the asymmetry that matters is error pricing — a false positive costs one wasted fine-pass, a false negative loses an event — so the operating point is tuned for <em>recall</em>, and the fine detector, not the VLM, remains the source of record.</p>
+
+  <figure id="fig-25-13" class="full">
+    <img src="shared/images/vlm-uc-zeroshot-detector.png" alt="Zero-shot VLM tagging frames so the fine detector only processes tagged segments." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.13</span>: UC 05 — Zero-Shot First-Pass Triage. The VLM tags; the fine detector only runs where tags point. <strong>Pickleball</strong>: separating rallies from between-point dead time on a fixed-cam recording. <strong>Rugby league</strong>: flagging candidate line breaks across a season's footage for the chapter 14 multiview pass. <strong>Payoff (pipeline economics)</strong>: the expensive pipeline runs on 10% of the footage. <em>zero-shot classification capability is source-backed (section 25.1); sport-specific tag rates [verify].</em></figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — The VLM-vs-Pipeline Decision (When to Use Which)</h3>
+  <p>The most common design error in applied sport AI is routing a measurement question to a VLM; this use case is the router itself, and its full treatment is the decision boundary of section 25.5 (Figure 25.4). <strong>Mechanism:</strong> number, count, or time → dedicated detector; description, explanation, or rendering → VLM over the evidence pack; decision → human. <strong>Math:</strong> SportD quantifies the third leg — frontier VLMs pick the optimal on-ball action 31.4% of the time versus pro players at 38.9% across 478 World Cup decisions (source-backed): the model that describes fluently still decides worse than the people it would advise. <strong>Pickleball</strong>: "how many dinks?" is a counter's job over tracked trajectories; "why did the reset fail?" is a rendering job. <strong>Rugby league</strong>: "line width in metres" is tracking; "what shape is the defense in?" is borderline-VLM; "was that the right option?" stays human. <strong>Payoff (architecture)</strong>: every question lands on the cheapest component that can answer it truthfully. <em>measured anchors (SportD, E07/E13).</em></p>
+
+  <h3 class="sub-heading">Category C — Safety &amp; Economics (UC 07-10)</h3>
+
+  <h3 class="sub-heading">UC 07 — The Hallucination Demonstration (The Exhibit)</h3>
+  <p>Every stakeholder who will ever trust the pipeline needs to watch it lie once; the E07 exhibit (section 25.3, Figure 25.1) is that inoculation, kept runnable on purpose. <strong>Mechanism:</strong> six pb-003 frames, an explicit "observable facts only" prompt, a 3B local VLM — and the output invents a serve, an offensive dink, a lob, and a foul on frames where the ball is barely visible, then disobeys the prompt structure and collapses into a repetition loop. <strong>Math, honestly scoped:</strong> the measured rate is <strong>66.7%</strong> — four hallucinated events out of six actionable claims — on one fixture with one small local model. It is not a universal rate; frontier models will hallucinate less, and the grounded-answer rate across the 2026 catalog is genuinely open [verify]. What the exhibit proves is the failure <em>shape</em>, which every model in the sweep shares: plausible invention where evidence runs out.</p>
+  <p><strong>Pickleball</strong>: run it on the golden fixture in front of the coaching staff. <strong>Rugby league</strong>: the nrl-001 counterpart is the planned Gemini long-video test (section 25.11) — until it runs, the rugby lie-exhibit claim is unmeasured. <strong>Payoff (governance)</strong>: nobody signs off on a VLM feature who hasn't seen the falsified-claims log. <em>measured (E07).</em></p>
+
+  <h3 class="sub-heading">UC 08 — Prompt Design for Sport: Frame Sampling and the 2 fps Problem</h3>
+  <p>Prompt design in sport is mostly sampling design, because the events that matter live between frames. <strong>Mechanism:</strong> replace uniform sampling with event-targeted strips — the full-rate detector finds the event, the VLM receives ±N frames around it plus the rows (section 25.7b, Figure 25.8). <strong>Math:</strong> a pickleball at 20 m/s crosses the 13.4 m court in 0.67 s — forty frames at 60 fps, barely one at 2 fps; a paddle-ball contact of single-digit milliseconds exists in <em>no</em> frame at 2 fps; a play-the-ball or a ball steal straddles the strip the same way. The token budget forces the trade regardless: 60 fps ingestion would cost 30× the 2 fps budget and no current model consumes it. <strong>Pickleball</strong>: contact-window strips around the third shot. <strong>Rugby league</strong>: PTB-window strips around the ruck. <strong>Payoff (describe quality per token)</strong>: the same budget buys the frames that carry the event. <em>measured token rates (E19); the sampling-quality ablation is on the measurement list (section 25.11).</em></p>
+
+  <h3 class="sub-heading">UC 09 — Token Economics (E19, Measured)</h3>
+  <p>Every architecture choice in this chapter is a price choice, and E19 is the price list (Figure 25.7). <strong>Mechanism and math:</strong> ~260 tokens per frame at lab resolution; a 15 s pickleball rally at 4 fps is 15,780 input tokens (≈$0.001 flash, under six cents on the dearest lane); an 80-minute rugby league match at 2 fps is 2,478,800 input tokens plus ~25K output — $0.19 per match on Gemini Flash, $3.22 on Gemini Pro, $6.45 on GPT-4o, $7.81 on Claude Sonnet (all E19 measured rates). The season math is the decision: a 27-round NRL season on the premium lane runs roughly $87-$211 per club in tokens alone, while rendering over NRLSheet evidence packs costs less than one naive-path match; the local mlx-vlm lane's marginal cost is $0.00. <strong>Pickleball</strong>: cheap enough that "send the clip" is affordable — which is exactly why the pickleball lab is where the discipline gets learned. <strong>Rugby league</strong>: expensive enough that the evidence-pack architecture pays for itself in round one. <strong>Payoff (the budget owner)</strong>: the architecture decision is an invoice, not a preference. <em>measured (E19).</em></p>
+
+  <h3 class="sub-heading">UC 10 — Multi-Agent Adversarial Grounding (The E13 / UC 17 Pattern)</h3>
+  <p>The book's best result, restated as the use case everything else depends on: the generator-critic loop of section 25.4 (Figure 25.3), which is the chapter 10 UC 17 falsification-audit pattern made load-bearing. <strong>Mechanism:</strong> generator over frames plus the bounded PBN CSV; critic with no frame access cross-references every verb and number against perception rows; one-strike falsification quarantines the whole claim; survivors carry (match_id, t_start, t_end, track_id) citations. <strong>Math, with the honest caveat:</strong> the measured drop is <strong>66.7% → 0.0%</strong> hallucinated events retained — the architecture's demonstrated best case on the six-frame pb-003 fixture, <em>not a guarantee</em>. The Qwen3-VL-8B rerun, the nrl-001 long-video test, and the Langfuse trace that would make the 0.0% figure publication-safe all remain on the measurement list (section 25.11); until they land, treat 0.0% as "measured on this fixture with this critic", never as a property of VLMs. <strong>Pickleball</strong>: the verified rally narration. <strong>Rugby league</strong>: the same loop over NRLSheet rows — "compressed defense" dies when the spacing rows show a 12 m line width. <strong>Payoff (everyone downstream)</strong>: chapters 26 and 28 can publish VLM prose because this loop already stripped the lies. <em>measured (E13 artifact); generalization [verify].</em></p>
+
+  <p><strong>What this adds to the pipeline.</strong> UC 01 and UC 03 are the language front-end of the chapter 26 reporting pipeline; UC 04 feeds the chapter 28 live cockpit; UC 05 gates the chapter 8/10/12 detectors so they only run where events are; UC 06 is the routing rule for every chapter that asks "should a model read this, or measure it?"; UC 07 is the governance exhibit chapter 2's claims register points at; UC 08 and UC 09 are the sampling and budget contracts every upstream chapter's output must fit; and UC 10 is the audit loop that makes the chapter 17 PBN/NRLSheet rows — and the chapter 19 event stream — safe to render into prose at all.</p>
+
+  <h2 class="section-title"><span class="section-num">25.8</span> RAG Over Tracks</h2>
+  <p>The retrieval pattern (chapter 16's hybrid) applies to text rendering: index the event rows and track summaries, retrieve the context for a question, and the VLM renders it without needing the video. The grounding rule is the same — every statement cites match_id, timestamp, track_id.</p>
+
+  <p>The design constraint is that the corpus is <em>rows</em>, not footage. Each rally or set becomes a text chunk — key positions, velocities, event tags, ball speed band, outcome — embedded with a local text embedder (bge-m3, jina-embeddings-v3) and stored alongside the metadata filters that make retrieval precise (match_id, date, player, zone). A coach's question — "how did we lose points after the third shot this month?" in pickleball, "where do our line breaks start?" in rugby league — becomes a hybrid query: vector similarity for the semantic shape, BM25 for the exact terms, timestamp and match filters for scope. The retrieved rows, not the video, enter the prompt. This is what makes the long-video problem disappear: the 80-minute match that costs 2.47M tokens as video is a few hundred retrieved rows as text, and the answer is auditable because every clause traces to a chunk. The evaluation targets the dossier sets are faithfulness ≥ 0.90 and context recall ≥ 0.85 (RAGAS/DeepEval on the retrieve-then-render path); below those thresholds the system is unsafe for coaching output regardless of how good the prose sounds. The rugby lane gets the larger win here: an 80-minute match compresses to set-level chunks, and the VLM's job — rendering "six of nine line breaks started from right-edge PTBs inside the opposition 40" — is pure rendering over retrieved rows.</p>
+
+  <figure id="fig-25-02" class="full">
+    <img src="shared/images/vlm-grounding-gate.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 25.2</span>: The Grounding Gate. A claim with citation passes four checks or goes to quarantine with a falsified counter — the C02 register as a runtime check.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">25.9</span> The Grounding Gate Protocol</h2>
+  <p>The gate every claim passes: <strong>citation exists → rows resolve → numeric band matches → not subjective</strong>. PASS = publish; FAIL = quarantine (falsified counter attached). This is the C02 claims register as a runtime check, and it is what Langfuse/Phoenix tracing makes auditable (the observability gap the VLM dossier flagged).</p>
+
+  <p>Three operational controls make the gate survive contact with production. The first is <strong>timeout and degeneration control</strong>: every VLM call carries a hard latency budget and a max_tokens cap, and a call that times out, truncates, or enters a repetition loop (the E07 artifact failure) is treated as a failed claim, not a partial success — the renderer falls back to template prose over the same evidence rows, so a sick model degrades the prose, never the facts. The second is <strong>one-strike falsification</strong>: a statement containing any claim that fails the gate is quarantined whole, and the generator is re-prompted with the corrected evidence pack rather than allowed to edit around the failure — partial fixes let the lie survive by rephrasing. The third is <strong>the subjective-claim exclusion</strong>: "fatigue", "intent", "unforced error", "poor discipline" are not groundable by tracking rows in either sport, and the gate strips them unless a separately labeled event row exists. The pickleball version is "he rushed the shot" (stripped: no intent row); the rugby version is "the defense had switched off" (stripped: no mental-state row). Tracing closes the loop: a Langfuse trace per generator-critic pass — model_id, load and generate times, claims_count, falsified_count, retrieved_row_ids — is what makes the 0.0% hallucination figure an auditable measurement instead of a hand-set number.</p>
+
+  <h2 class="section-title"><span class="section-num">25.10</span> Transfer Note: Rugby League VLM Lane</h2>
+  <p>The same architecture applies to rugby with one harder reality: the NRL broadcast feed's long-video context (80 minutes) exceeds what any frame-sampling model handles, so the rugby lane is either Gemini 3 (true long-video, API) or the <em>event-row-first</em> path — the PBN analogue (NRLSheet rows, chapter 17) is the evidence pack, and the VLM renders the set-level narrative ("tackle-6 kick from the 40m, field position retained"). The Bath 2025 tackle screening is the welfare-critical exception: a VLM must <em>never</em> be the one deciding a head-on-head tackle — that is the classifier + human review lane, and the VLM only explains.</p>
+
+  <p>The transfer also sharpens the economic argument of section 25.7b. Pickleball's fixed-camera rallies are short and cheap — the whole E19 pickleball scenario costs fractions of a cent on any lane — so the temptation to "just send the clip" is affordable there. Rugby league's 80 minutes at 2.47M input tokens per match is where the architecture pays for itself: at the measured rates, a 27-round season rendered match-by-match through the premium API lane costs roughly $87–$211 per club per season in tokens alone, and the same season rendered over NRLSheet evidence packs costs less than a single match of the naive path. The welfare boundary deserves the stronger statement: for head-contact screening, the VLM is downstream of everything. The classifier flags the candidate tackle, the human reviewer decides, and the VLM's only role is to render the reviewer's finding into the incident report — a language task over an adjudicated record, where a hallucinated sentence is caught by the gate before it reaches a document anyone signs.</p>
+
+  <h2 class="section-title"><span class="section-num">25.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Qwen3-VL-8B run of the E13 loop (the 3B caught the live lie; does 8B behave better?).</li>
+    <li>Gemini 3 API on a 10s rally clip vs the local 8B — the honest long-video comparison.</li>
+    <li>The nrl-001 Gemini 3.1 Pro long-video test: a full-match prompt against the NRLSheet rows, scoring auto-verified versus stripped claims — the rugby counterpart of E07/E13 that the dossier flags as missing.</li>
+    <li>A mini SportD on pb-003: decision questions over the golden fixture, VLM answers versus the coach's, to check the describe-decide gap holds on a local sport clip rather than trusting the published shape.</li>
+    <li>Outlines/MLX constrained decoding for the local stack [verify]; if unavailable, measure the post-hoc Pydantic re-ask rate as the local structured-output cost.</li>
+    <li>A Langfuse trace of the full E13 loop, so the 0.0% figure ships with its evidence.</li>
+    <li>Frame-sampling ablation on the golden fixture: 1/2/4/8 fps strips against the same questions, to measure where the describe-quality curve flattens against the token curve.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">25.12</span> Sources</h2>
+  <ul>
+    <li>Qwen3-VL (Apache-2.0, Sep 2025); mlx-vlm (MIT); Gemini 3 Pro/3.1 (API; Video-MMMU 87.6%); Phi-4-multimodal (MIT); Qwen3-Omni (Apache-2.0); InternVL3 (MIT); SmolVLM2 (Apache-2.0).</li>
+    <li>SportD (arXiv 2607.14616, Aug 2026); HourVideo (NeurIPS 2024, arXiv 2411.04998); SoccerLens — the describe-vs-decide anchors.</li>
+    <li>E07/E13 artifacts (experiments/e07-vlm-narration, e13-vlm-adversarial-loop); E19 token economics (experiments/e19-token-economics/token_economics_benchmark.json); live lab: <code>lab/w6_lab_vlm.py</code> → <code>experiments/c25-vlm/outputs/metrics.json</code>.</li>
+    <li>Structured output: Instructor (MIT), Outlines (Apache-2.0), Guardrails AI (Apache-2.0); retrieval eval: RAGAS (arXiv 2309.15217); tracing: Langfuse (MIT), Arize Phoenix (ELv2).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="24.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 24</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 24</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</p>
+        </div>
+      </div>
+    </a>
+    <a href="26.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 26</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 26</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The analyst-to-coach bridge, the SportsCode XML contract, and the honesty rules in prose</p>
+        </div>
+        <a href="26.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #8C4318;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

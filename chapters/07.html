@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-07" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 07</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Why camera-motion compensation is not enough, and what a real broadcast calibration loop looks like</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">30 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-07-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Honest GMC Result: 3.1% and Why</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-07-1" data-section="s-07-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Honest GMC Result: 3.1% and Why</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-07-1" data-section="s-07-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Honest GMC Result: 3.1% and Why</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">07</span> Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h1>
+    <p class="chapter-subtitle">Why camera-motion compensation is not enough, and what a real broadcast calibration loop looks like</p>
+  </header>
+
+<h3 id="s-07-1"><span class="section-num">7.1</span> The Honest GMC Result: 3.1% and Why</h3>
+
+<p class="section-intro">Chapter 6 solved the fixed camera. Rugby League broadcast breaks every assumption: the camera pans, zooms, whips, and cuts. A natural engineering instinct — subtract the camera motion and track as if the camera were still — turns out to be worth almost nothing measured. This chapter explains why, and what actually works.</p>
+
+  <p>Global Motion Compensation (GMC) is the standard patch. Estimate the frame-to-frame transform induced by the camera, undo it, and let the tracker work in a quasi-static image space. The estimator our lab implemented is the same one BoT-SORT ships upstream (<code>tracker/gmc.py</code>, MIT, verified at source): <code>goodFeaturesToTrack</code> finds 500 corners on the previous frame, pyramidal Lucas-Kanade (window 15, two pyramid levels) tracks them into the current frame, and <code>estimateAffinePartial2D</code> with RANSAC fits a <strong>4-DOF similarity</strong> — translation (tx, ty), rotation θ, and uniform scale s — to the flow field. RANSAC's job is to find the background consensus and reject the players as outliers. That pipeline is not a toy; it is what production trackers actually run.</p>
+
+  <figure id="fig-07-01" class="full">
+    <img src="shared/images/c07-gmc-pipeline.png" alt="Block diagram of global motion compensation: frame to corner detection to optical flow to RANSAC similarity fit to shifted player boxes, with an orange arrow showing drift error accumulating across frames." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.1</span>: The GMC pipeline. Corners, LK flow, RANSAC similarity — the same three stages BoT-SORT runs internally. The burnt-orange arrow is the structural flaw: error compounds frame to frame and nothing anchors the chain to reality.</figcaption>
+  </figure>
+
+  <p>Our E14 experiment measured what that pipeline buys on the nrl-001 clip (Storm v Panthers GF 2024 highlights, 750 frames @ 25 fps, yolo11n detections, ByteTrack):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Configuration</th>
+        <th>Unique IDs</th>
+        <th>Median track length</th>
+        <th>Throughput</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Baseline (no compensation)</td>
+        <td>295</td>
+        <td>0.96s</td>
+        <td>44.3 fps</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><strong>GMC box-shift</strong> (shift bounding boxes)</td>
+        <td>306</td>
+        <td>0.88s</td>
+        <td>38.4 fps</td>
+        <td><strong>WORSE (-3.7%)</strong></td>
+      </tr>
+      <tr>
+        <td><strong>GMC frame-warp</strong> (warp the frame)</td>
+        <td>286</td>
+        <td>1.08s</td>
+        <td>32.2 fps</td>
+        <td>+3.1% better</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-07-02" class="full">
+    <img src="shared/images/c07-e14-results.png" alt="Grouped bar chart of the E14 experiment: baseline 295 IDs, boxshift 306, framewarp 286, framewarp bar accented orange with a plus 3.1 percent annotation." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.2</span>: E14 measured. Box-shift actively hurt (306 IDs, more fragmentation); frame-warp gained 3.1%. That 3.1% is the whole prize for translation-only GMC on this footage.</figcaption>
+  </figure>
+
+  <p>The 3.1% is not a rounding error — it is the honest ceiling of the approach on this clip. Four mechanisms cap it:</p>
+  <ol>
+    <li><strong>The clip was too mild for GMC to matter.</strong> E08 measured tracker-level median drift <strong>0.0 px/frame</strong> — most of this highlights clip is a nearly static camera. ByteTrack's Kalman filter already absorbs single-digit pixel motion, so there was almost nothing for GMC to recover. GMC pays off only in violent pans and whip-zooms — exactly the moments highlights reels cut away from.</li>
+    <li><strong>Model mismatch.</strong> A camera panning or tilting about its optical centre induces an exact <em>homography</em> between frames, H = K·R_t·R_{t-1}⁻¹·K⁻¹ — eight degrees of freedom. E14's 4-DOF similarity approximates small rotations, but it cannot express perspective change, and its single scale term only crudely mimics zoom: a real zoom changes focal length f, which changes the projective mapping itself, not just the size of things.</li>
+    <li><strong>Translation-only downstream.</strong> Both arms used only the estimated (tx, ty) — rotation and scale were discarded for the boxes. E14 therefore honestly measured the cheapest common variant of GMC, and it is worth ≈ nothing on this footage.</li>
+    <li><strong>Foreground contamination.</strong> Rugby frames carry 13.2 detected persons on average, up to 24 in ruck phases (E08, measured). LK keypoints land on players; RANSAC must recover the background consensus while the "background" is sometimes the minority class. Bad fits inject <em>structured</em> error exactly where IoU association is tightest — the plausible mechanism for box-shift going backwards at -3.7% [book hypothesis; E14 did not ablate this].</li>
+  </ol>
+
+  <p>The pickleball control makes the point by contrast. On fixed-camera pickleball (E09, pb-003), swapping ByteTrack for BoT-SORT collapsed fragmentation from 26 unique IDs to 6, ID switches from 14 to 2, and lifted HOTA from 0.642 to 0.814 (measured) — with a <em>static</em> camera, where GMC has nothing to do. That gain is BoT-SORT's ReID appearance model, not motion compensation. Appearance carries the identity problem; motion compensation is a minor patch. And 3.1% is the measured size of that patch on real broadcast rugby.</p>
+
+  <h2 class="section-title"><span class="section-num">7.2</span> The Camera Motion Taxonomy</h2>
+  <p>A broadcast camera is never static. Before choosing a compensator, enumerate what the camera actually does and what each motion does to the image:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Motion</th>
+        <th>Physical change</th>
+        <th>Frame-to-frame relation</th>
+        <th>Affine Similarity?</th>
+        <th>Correct Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Pan / tilt</strong></td>
+        <td>Rotation R about optical centre</td>
+        <td>Exact homography K·R·K⁻¹</td>
+        <td>Small angles only</td>
+        <td>Refit H_t per frame</td>
+      </tr>
+      <tr>
+        <td><strong>Zoom</strong></td>
+        <td>Focal length f changes</td>
+        <td>The projective map itself changes</td>
+        <td>NO</td>
+        <td>Per-frame re-solve (focal inside H_t)</td>
+      </tr>
+      <tr>
+        <td><strong>Roll</strong></td>
+        <td>In-plane rotation</td>
+        <td>Rotation + scale</td>
+        <td>YES — the one thing similarity genuinely captures</td>
+        <td>Similarity fine; H_t also fine</td>
+      </tr>
+      <tr>
+        <td><strong>Translation + parallax</strong></td>
+        <td>Camera centre moves</td>
+        <td>Near objects move faster than far ones</td>
+        <td>NO (needs depth)</td>
+        <td>Full calibration; dominant-plane approximation</td>
+      </tr>
+      <tr>
+        <td><strong>Cut / wipe / dissolve</strong></td>
+        <td>None — new shot</td>
+        <td>None</td>
+        <td>N/A</td>
+        <td>Detect, invalidate the Kalman prior, cold-start H_t</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-07-03" class="full">
+    <img src="shared/images/c07-camera-motion-taxonomy.png" alt="Five camera motion glyphs in a row: pan, tilt, zoom, roll, and cut, each with its axis arrow over a rugby pitch view." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.3</span>: The five broadcast motions. Only roll is exactly a similarity; pan/tilt are homographies; zoom changes the projective map itself; a cut is not a motion at all — it is a state reset.</figcaption>
+  </figure>
+
+  <p>The model ladder behind the table: translation (2 DOF) → similarity (4 DOF: + roll, uniform scale) → full affine (6 DOF: + anisotropic scale, shear) → homography (8 DOF: exact for pure rotation or a planar scene) → full calibration K, R, t plus distortion coefficients k1, k2. Each rung costs more evidence per frame. The practical question is never "which model is most correct" but "which model is solvable from the markings visible in <em>this</em> frame" — a zoomed rugby tackle shot may show two lines and a post base, and no amount of wanting an 8-DOF solve changes that.</p>
+
+  <p>The two sports sit at opposite ends of the taxonomy's difficulty axis. <strong>Pickleball broadcast</strong> is the kind case: the court is a fixed planar rectangle (13.41 × 6.10 m), so pure camera rotation about the gantry makes the frame-to-frame relation an exact homography, and a zoomed frame still usually shows four or more of the seven court lines. <strong>Rugby league broadcast</strong> is the hostile case: the main gantry camera pans across a 100 m pitch, zooms from a wide defensive-line view into a tackle close-up where perhaps one transverse line survives, and the parallax term is real because the camera sits tens of metres from the near touchline and over a hundred from the far one.</p>
+
+  <figure id="fig-07-04" class="full">
+    <img src="shared/images/calibration-gmc-vs-ht.png" alt="Two-panel: GMC drift chain accumulating error frame-to-frame vs per-frame H_t anchoring directly to a 100x68m pitch template. Recreate: white background, black frames, burnt-orange arrows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.4</span>: GMC vs Per-Frame H_t. GMC chains a 4-DOF correction frame-to-frame and the error accumulates; per-frame H_t re-anchors each frame to the fixed pitch template with a checkable reprojection error.</figcaption>
+  </figure>
+
+  <p>The chapter's claim: <strong>the only compensator that anchors to reality is per-frame re-calibration</strong> — solving H_t from line/keypoint evidence each frame, checked against the pitch template with a per-frame reprojection error. GMC stabilizes image space relative to the previous frame; drift compounds and validity is unverifiable. H_t anchors every frame to a fixed physical object; there is no chain to drift, and every frame carries its own error estimate.</p>
+
+  <h2 class="section-title"><span class="section-num">7.2b</span> The Broadcast-vs-Static Tradeoff, Measured</h2>
+  <p>Chapter 6's fixed-camera result and this chapter's broadcast result are the same experiment run on two camera regimes, and the numbers are worth putting side by side:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Regime</th>
+        <th>Method</th>
+        <th>RMSE</th>
+        <th>Valid frames</th>
+        <th>Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Pickleball, fixed camera (E05)</td>
+        <td>Manual 4-corner homography</td>
+        <td><strong>3.82 cm</strong></td>
+        <td>100%</td>
+        <td>0.02 ms/frame</td>
+      </tr>
+      <tr>
+        <td>Pickleball, PTZ (E11)</td>
+        <td>Dynamic keypoint calibration (TVCalib-style)</td>
+        <td>4.65 cm</td>
+        <td><strong>98.4%</strong></td>
+        <td>11.2 ms/frame</td>
+      </tr>
+      <tr>
+        <td>Rugby, broadcast (E14)</td>
+        <td>Single H + GMC</td>
+        <td colspan="2">fails — single H invalid on ~half the frames (§7.3)</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-07-05" class="full">
+    <img src="shared/images/c07-static-vs-broadcast-error.png" alt="Bar chart comparing calibration error: pickleball static 3.82cm, pickleball dynamic 4.65cm, rugby single-homography tall hatched failure bar, rugby per-frame short orange bar." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.5</span>: The tradeoff in one chart. Static calibration is more accurate when it applies and inapplicable the moment the camera moves; dynamic calibration costs 500× the compute, loses 1.6% of frames, and survives the pan.</figcaption>
+  </figure>
+
+  <p>Read the tradeoff honestly. The manual static homography is <em>more accurate</em> (3.82 cm vs 4.65 cm, measured) and 500× cheaper — and it fails immediately on pan/tilt/zoom (E11 transcript). The dynamic solve trades 0.83 cm of accuracy and a 1.6% frame-loss rate for survival under camera motion. That is the broadcast tax, and it is not optional: 11.2 ms/frame on M4 Max-class hardware is comfortably real-time against a 40 ms broadcast frame budget, so the compute is affordable; the accuracy loss is not recoverable, because it is the price of fitting from noisier per-frame evidence instead of one carefully clicked correspondence set.</p>
+
+  <p><strong>The pickleball broadcast case</strong> shows the mildest version of the loop: the court is static, only the camera moves. Between rallies the director pans from a wide court view to a player close-up; each pan invalidates the previous homography, so the pipeline re-estimates H at every frame during the sweep — but because the court is planar and small, the re-solve is well-conditioned whenever the kitchen line, a baseline, and one sideline are visible. Per-pan re-estimation on pickleball is nearly a solved problem at E11's 98.4% valid rate.</p>
+
+  <figure id="fig-07-06" class="full">
+    <img src="shared/images/c07-pickleball-perpan.png" alt="Three camera view frustums sweeping across a pickleball court, each labelled with its own homography H_t, pinned to the same court outline with kitchen line and baselines." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.6</span>: Pickleball broadcast: static court, dynamic camera. Each pan position gets its own H_t, all anchored to the same 13.41 × 6.10 m court template — no drift chain, per-frame error check.</figcaption>
+  </figure>
+
+  <p><strong>The rugby broadcast case</strong> is the same loop under hostile conditions: the pan is 100 m long instead of 13.41 m wide, the zoom range is wider, and the line evidence per frame is sparser and more occluded. Nothing about the architecture changes; everything about the valid-frame rate and the RMSE does. That is why the honest unit of comparison is not RMSE alone but valid_frames% at a stated RMSE (§7.8).</p>
+
+  <h2 class="section-title"><span class="section-num">7.3</span> Measured Camera Regime (W2.2 Lab)</h2>
+  <p>How much motion does a real broadcast clip actually contain? Our lab sampled dense optical flow over 701 frames of the nrl-001 clip and measured corner-level drift per frame:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Drift Statistic</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mean drift</td>
+        <td><strong>7.97 px/frame</strong></td>
+      </tr>
+      <tr>
+        <td>Median drift</td>
+        <td>4.86 px/frame</td>
+      </tr>
+      <tr>
+        <td>p90 drift</td>
+        <td>21.24 px/frame</td>
+      </tr>
+      <tr>
+        <td>Max drift</td>
+        <td><strong>29.9 px/frame</strong></td>
+      </tr>
+      <tr>
+        <td>Frames >1px</td>
+        <td>73.0%</td>
+      </tr>
+      <tr>
+        <td>Frames >5px</td>
+        <td><strong>49.1%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Two drift numbers coexist in this book and they measure different things — keep them straight. E08's tracker-level drift (median 0.0, p90 1.98, max 9.76 px/frame) is how fast <em>player boxes</em> move because of the camera, which is what the Kalman filter feels. The C07 lab numbers above are corner-level optical flow, which is what a homography feels. A homography is exquisitely sensitive to the tail: a 21 px/frame pan moves a pitch-line intersection by tens of pixels between frames, and the single-H reprojection error scales with it directly.</p>
+
+  <p><strong>Nearly half the clip exceeds 5 px/frame of flow-level drift</strong> — yet the tracker-level median was 0.0. The tail is where panning and zooming live, and the single-H assumption fails there. The honest conclusion: a fixed homography is valid for maybe half of a rugby broadcast; the rest needs per-frame work.</p>
+
+  <figure id="fig-07-07" class="full">
+    <img src="shared/images/c07-rugby-pan-drift.png" alt="Rugby league pitch with 10-metre transverse lines, sideline camera sweeping a long pan, drift arrows growing along the pan, an orange error curve rising with pan distance." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.7</span>: The 100 m pan. As the gantry camera sweeps goal-line to goal-line, per-frame drift compounds; a homography solved at the first frame is worthless by the last. GMC patches translation per frame but accumulates its own error curve.</figcaption>
+  </figure>
+
+  <p>The pickleball broadcast regime is gentler in distance but identical in structure. A full-court pan covers 13.41 m instead of 100 m, so absolute drift per frame is smaller at the same angular speed — but the broadcast habit of <em>zooming on the serve</em> hits the weakness similarity models cannot reach: changing focal length. A 2× serve zoom on a pickleball broadcast changes the projective map as surely as a rugby zoom into a ruck, and no (tx, ty, θ, s) fit will express it. Distance is the rugby problem; focal change is everyone's problem.</p>
+
+  <h2 class="section-title"><span class="section-num">7.4</span> Line Evidence: The Calibration Anchor</h2>
+  <p>Per-frame calibration needs per-frame lines. Our lab ran classical Canny+Hough detection on 6 extracted frames of the nrl-001 clip as a cheap prior:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Frame</th>
+        <th>Hough lines</th>
+        <th>Near-horizontal</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>nrl-001-frame-01</td>
+        <td>8</td>
+        <td>7</td>
+        <td>calibratable</td>
+      </tr>
+      <tr>
+        <td>nrl-001-frame-02</td>
+        <td>17</td>
+        <td>2</td>
+        <td>calibratable (marginal)</td>
+      </tr>
+      <tr>
+        <td>nrl-001-frame-03</td>
+        <td>13</td>
+        <td>12</td>
+        <td>calibratable</td>
+      </tr>
+      <tr>
+        <td>nrl-001-frame-04</td>
+        <td>10</td>
+        <td>10</td>
+        <td>calibratable</td>
+      </tr>
+      <tr>
+        <td>nrl-001-frame-05</td>
+        <td>20</td>
+        <td>20</td>
+        <td>calibratable</td>
+      </tr>
+      <tr>
+        <td>nrl-001-frame-06</td>
+        <td>4</td>
+        <td>4</td>
+        <td>calibratable (minimum)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The lesson: pitch-space calibration needs stable line correspondences; fewer than 2 near-horizontal lines = an ill-conditioned homography, and the pipeline must carry the previous H_t forward and flag the frame rather than fit garbage. Six of six frames were calibratable here, but frame-02's 2 usable lines are one occlusion away from failure, and these frames were <em>selected</em> to be open-play views — the tackle close-ups that dominate a broadcast's back half were not in the sample. Treat this table as an upper bound on classical line evidence, not a guarantee.</p>
+
+  <p>The sport contrast matters for method choice. <strong>Pickleball</strong> courts are line-rich and high-contrast: white paint on blue or green acrylic, seven lines in a 13.41 × 6.10 m rectangle, rarely more than four players to occlude them. Canny+Hough genuinely works there — that is C06's fixed-court recipe. <strong>Rugby league</strong> breaks every one of those assumptions: 24 bodies in a ruck hide the transverse lines, LED ad boards inject high-contrast moving edges that read as lines, shadow bands cross the pitch in afternoon games, and rain repaints the grass a colour the white-line mask was never trained on. Production rugby calibration needs the deep segment/keypoint detectors (TVCalib, roboflow/sports-style YOLO keypoint heads), with Hough retained as a sanity-check prior, not the solver.</p>
+
+  <p>The 2026 frontier (Theiner et al., CVSports best paper) handles the residual cases with joint registration + lens distortion modeling and a minimal point-on-segment annotation protocol — the successor to the TVCalib line, and the method to watch if your footage comes from action cameras rather than broadcast gantries.</p>
+
+  <h2 class="section-title"><span class="section-num">7.5</span> The Rugby Template: Anchoring to Reality</h2>
+  <p>Per-frame H_t is only as good as the thing it anchors to. The rugby league template is the 100 × 68 m field of play plus in-goals (6–11 m deep; a 116 × 68 m design plane covers the nominal case), and its markings are the calibration inventory:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Element</th>
+        <th>Spec</th>
+        <th>Calibration value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Transverse lines</td>
+        <td>Every 10 m: 10/20/30/40 m + halfway</td>
+        <td><strong>The ruler</strong> — any two visible lines + known spacing disambiguate zoom</td>
+      </tr>
+      <tr>
+        <td>40 m lines</td>
+        <td>Often painted red (40/20 rule)</td>
+        <td>Colour cue for line-ID matching</td>
+      </tr>
+      <tr>
+        <td>Line width</td>
+        <td>15 cm</td>
+        <td>The tolerance floor — sub-15 cm RMSE claims are inside the paint</td>
+      </tr>
+      <tr>
+        <td>Scrum markers</td>
+        <td>10 m and 20 m in from each touchline</td>
+        <td>Extra keypoints on the near side</td>
+      </tr>
+      <tr>
+        <td>Goal posts</td>
+        <td>5.5 m apart, crossbar 3 m</td>
+        <td>Post bases are high-value vertical keypoints</td>
+      </tr>
+      <tr>
+        <td>Touchline media line</td>
+        <td>1.5 m outside touch</td>
+        <td><strong>Trap</strong> — looks like a marking, must be excluded from the template</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-07-08" class="full">
+    <img src="shared/images/c07-rugby-pitch-template.png" alt="Top-down dimensioned plan of a rugby league pitch, transverse markings every 10 metres, orange dots at calibration anchors, callout for the 10 metre retreat." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.8</span>: The 116 × 68 m rugby template. Thirteen transverse lines, scrum markers, and post bases are the anchors; the 15 cm paint width is the tolerance floor; the 10 m retreat is the pitch-space measurement broadcast analytics actually wants.</figcaption>
+  </figure>
+
+  <p>Zoom disambiguation deserves emphasis because it is the failure similarity models cannot fix. When focal length changes, everything scales — but the 10 m spacing between transverse lines is a known physical distance, so two visible lines plus their spacing pin the scale absolutely. This is why the line inventory, not corner keypoints alone, is the rugby calibration asset. The pickleball template plays the same role at smaller scale: the kitchen line sits exactly 2.13 m from the net and the baselines 6.71 m apart, so a serve-zoom frame that shows only the kitchen line and one baseline is still fully solvable. Four corners suffice for the fixed court (C06); broadcast needs the full line inventory because any given zoomed frame sees only a subset of it.</p>
+
+  <p>The two pitch-space payoffs for rugby analytics are the <strong>10 m retreat</strong> check — the distance from the play-the-ball point to the defensive line, measurable only in pitch space — and the <strong>40/20</strong> line call. The pickleball equivalent is kitchen-fault adjudication: a foot on the kitchen line during a volley is a court-space measurement no image-space method can produce from a panning camera. Both sports monetize the same capability: metres, not pixels.</p>
+
+  <h2 class="section-title"><span class="section-num">7.6</span> Cut Detection: The Missing Gate</h2>
+  <p>A broadcast cut is not a calibration problem — it is a state reset. No frame-to-frame relation exists across a cut, so the LK flow prior, the GMC estimate, and the Kalman motion prior all become garbage simultaneously, and <code>estimateAffinePartial2D</code> will still happily return a RANSAC "fit" across the boundary if you let it. The pipeline contract:</p>
+
+  <ol>
+    <li>Cut gate runs BEFORE calibration (PySceneDetect BSD-3 CPU, or TransNetV2 via the MIT PyTorch port).</li>
+    <li>On cut: invalidate the LK flow prior and the Kalman motion prior.</li>
+    <li>Cold-start H_t from the first stable lines of the new shot.</li>
+    <li>On gradual transitions (dissolves, wipes): mark frames low-confidence and let the §7.8 validator demote them rather than fit through them.</li>
+  </ol>
+
+  <p>The sport-specific texture is <strong>fast cuts vs slow pans</strong>, and the two sports load different hazards. Rugby league highlights — the E14 footage — are cut-dense: a stinger wipe into an instant replay, a cut to the crowd, a cut back to a different gantry angle, several per minute. The dominant failure is the ungated cut: cold-start frequency is high, and false positives come from replay wipes and animated scorebugs, so the detector threshold stays conservative and the calibration validator is the second line of defence. Pickleball coverage is the opposite texture: rallies run long and uncut, the camera slow-pans and serve-zooms within a single shot, and cuts cluster between rallies. There the dominant hazard is not the cut but the <em>slow pan</em> — motion gentle enough that GMC and the H_t temporal prior keep producing plausible-looking answers while quietly drifting off the court. Slow pans fail softly; cuts fail loudly. A pipeline tuned for one hazard will miss the other.</p>
+
+  <p>Detection itself is solved and cheap — PySceneDetect's content detector is pure CPU and fast; TransNetV2's 3D-CNN handles the dissolves and wipes that heuristics miss. The engineering is the integration contract above, not the detector choice.</p>
+
+  <h2 class="section-title"><span class="section-num">7.7</span> Repo Landscape and the GPL Trap</h2>
+  <p>Every serious open calibration method in 2026 is soccer-first; both of this book's sports inherit from that lineage. The landscape, with the license column first because it decides what you may ship:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>License</th>
+        <th>Status</th>
+        <th>Use for this book</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>sn-calibration (SoccerNet)</td>
+        <td><strong>NO LICENSE</strong></td>
+        <td>Reference dataset + Acc@5×completeness protocol</td>
+        <td>Cite, don't vendor</td>
+      </tr>
+      <tr>
+        <td>TVCalib (WACV 2023)</td>
+        <td>MIT</td>
+        <td>Dormant since 2024-04, but usable</td>
+        <td>Conceptual template for the E11-style loop (pickleball-measured)</td>
+      </tr>
+      <tr>
+        <td>PnLCalib (CVIU 2026)</td>
+        <td>GPL-2.0</td>
+        <td>Strongest open solver (points + lines)</td>
+        <td>Evaluation-only for a commercial repo — copyleft contamination is a legal failure mode, not a technical one</td>
+      </tr>
+      <tr>
+        <td>roboflow/sports</td>
+        <td>MIT</td>
+        <td>Very active (2026-08)</td>
+        <td>The book's shipped recipe — swap the soccer template for §7.5's rugby template or the pickleball court</td>
+      </tr>
+      <tr>
+        <td>Theiner 2026</td>
+        <td>code [verify]</td>
+        <td>The frontier; joint registration + lens distortion</td>
+        <td>Watch for consumer/action-cam footage (pickleball rec play)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The GPL trap is worth naming plainly: PnLCalib is the strongest open solver and GPL-2.0, so vendoring it makes your whole pipeline a derivative work. The MIT path — the roboflow/sports keypoint-head recipe with a sport-appropriate template — is measurably good enough (E11: 98.4% valid at 4.65 cm on pickleball PTZ) and legally clean. Evaluate the GPL methods to know what the ceiling looks like; ship the MIT ones.</p>
+
+  <h2 class="section-title"><span class="section-num">7.8</span> Confidence Metrics: valid_frames% Is the SLA</h2>
+  <p>Report per-frame calibration as <strong>valid_frames% alongside RMSE</strong>, never alone. 100% valid at 40 cm RMSE is worse than 98.4% at 4.65 cm; the first number without the second is marketing. The measured anchors: E11's 98.4% valid at 4.65 cm was TVCalib-style calibration on pickleball PTZ; rugby broadcast will be lower — sparser lines, heavier occlusion — and must be measured, not assumed.</p>
+
+  <p>The supporting metrics, in order of operational value:</p>
+  <ul>
+    <li><strong>Markings per frame</strong> — the leading indicator. E11 averaged 12.4 keypoints/frame on pickleball; fewer than 4 visible markings ≈ an unsolvable frame, and the honest move is to skip it, not fit it.</li>
+    <li><strong>Reprojection RMSE in cm</strong> — template markings reprojected into the frame. Accuracy when valid. Remember the 15 cm paint floor: sub-paint precision claims are noise on rugby.</li>
+    <li><strong>Acc@5 × completeness</strong> (SoccerNet protocol) and <strong>Jaccard over segments</strong> (Theiner protocol) — the benchmark metrics when you have labels, and the only way to compare against published soccer numbers.</li>
+    <li><strong>Parameter plausibility</strong> — recovered focal, tilt, and pan must sit inside physical broadcast ranges; a RANSAC fit to the wrong lines often fails this check even when reprojection looks fine.</li>
+    <li><strong>Downstream fragmentation</strong> — unique IDs and median track length after register-then-track. E14's 295 / 0.96 s baseline is the number a coach actually feels; everything above is instrumentation for improving it.</li>
+  </ul>
+
+  <p>Report the failure histogram too — occlusion vs zoom vs cut — because the mitigations differ (§7.9), and a single valid% hides which lever to pull. For pickleball the dominant failure will be serve-zoom frames; for rugby, occluded rucks and heavy zoom. Different histograms, different fixes.</p>
+
+  <h2 class="section-title"><span class="section-num">7.9</span> The Limits Table</h2>
+  <p>GMC is an estimate, per-frame H_t is an estimate of a better kind, and both fail in enumerable ways. The honest table, with the sport that feels each failure most:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Failure mode</th>
+        <th>Mechanism</th>
+        <th>Felt most in</th>
+        <th>Mitigation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Player occlusion of lines</td>
+        <td>Up to 24 persons/frame in rucks (E08, measured)</td>
+        <td>Rugby</td>
+        <td>Param-Kalman carry-forward ≤ N frames; valid% absorbs the drop</td>
+      </tr>
+      <tr>
+        <td>Heavy zoom / central views</td>
+        <td>Few or zero line intersections visible</td>
+        <td>Both (rugby tackle shots; pickleball serve zoom)</td>
+        <td>Circle/arc features (Magera 2025); parameter prior; skip frame</td>
+      </tr>
+      <tr>
+        <td>LED ad boards</td>
+        <td>High-contrast moving edges read as lines</td>
+        <td>Rugby</td>
+        <td>Mask board regions; colour-gated line detection (paint ≠ pixels)</td>
+      </tr>
+      <tr>
+        <td>Scorebugs / watermarks</td>
+        <td>Opaque overlays occlude anchor regions</td>
+        <td>Both</td>
+        <td>Static overlay masks per broadcaster; exclude from validation</td>
+      </tr>
+      <tr>
+        <td>Lens distortion</td>
+        <td>Consumer/action cams bend straight lines</td>
+        <td>Pickleball (rec-play footage)</td>
+        <td>Joint distortion solve (Theiner 2026) or undistort first from rig metadata</td>
+      </tr>
+      <tr>
+        <td>Whip-pan motion blur</td>
+        <td>29.9 px/frame max drift smears markings</td>
+        <td>Rugby</td>
+        <td>Drop the frame; rely on smoothing; never force a solve</td>
+      </tr>
+      <tr>
+        <td>Cuts / wipes / replays</td>
+        <td>No frame-to-frame relation</td>
+        <td>Rugby highlights</td>
+        <td>§7.6 cut gate before anything else</td>
+      </tr>
+      <tr>
+        <td>Wet weather / repainted lines</td>
+        <td>Contrast loss, non-standard paint</td>
+        <td>Rugby (outdoor); rare for indoor pickleball</td>
+        <td>Training augmentation; classical fallback degrades first</td>
+      </tr>
+      <tr>
+        <td>GPL-2.0 solvers</td>
+        <td>Copyleft contamination</td>
+        <td>Both</td>
+        <td>Evaluate/cite PnLCalib; ship the MIT path</td>
+      </tr>
+      <tr>
+        <td>No rugby training data</td>
+        <td>All pretrained models are soccer-first</td>
+        <td>Rugby</td>
+        <td>§7.10 fine-tune on ~100 annotated nrl-001 frames</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The pattern across all ten: the calibrated <em>frame count</em> — not the model — is the production bottleneck. Every mitigation above is a way to spend the valid-frame budget honestly rather than a way to make the problem disappear.</p>
+
+  <h2 class="section-title"><span class="section-num">7.9b</span> The 10 Use Cases: Broadcast Calibration Applied</h2>
+  <p>The use cases below are the applied bridge from the calibration machinery above to the two sports. They follow three tracks: <strong>Track A — Modelling the Camera (UC 01–03)</strong>, <strong>Track B — GMC in Practice (UC 04–07)</strong>, and <strong>Track C — Operations &amp; Honest Measurement (UC 08–10)</strong>. Each case states the practical problem, the mechanism with its math, and carries its evidence label — measured (E-number), source-backed (paper or verified repo), or [verify] where the lab has not run it.</p>
+
+  <h3 class="sub-heading">Track A: Modelling the Camera (UC 01–03)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Pan-Tilt-Zoom Camera Model</h3>
+  <p>A broadcast director's camera never holds still, and the first question a calibration pipeline must answer on every frame is "what did the camera just do?" The mechanism: a gantry camera rotating about its optical centre induces an exact <em>homography</em> between frames, H = K·R_t·R_{t−1}⁻¹·K⁻¹; a zoom changes the focal length f inside K, which rewrites the projective map itself rather than rescaling it; roll is an in-plane rotation. The 4-DOF similarity that BoT-SORT's GMC fits (source-backed: <code>tracker/gmc.py</code>, verified at source) is the small-angle approximation of the rotation case and a crude stand-in for zoom. <strong>Payoff: choosing the right model per motion is the difference between a solvable frame and a silently wrong one.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc01-pzt-model.png" alt="Broadcast gantry camera with pan, tilt and zoom arrows and the homography equation H equals K R K-inverse above a rugby pitch outline." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.9</span>: UC 01 — The PTZ Model. Pan and tilt are exact homographies about the optical centre; zoom rewrites the projective map; roll is the one motion a similarity captures exactly. <strong>Pickleball</strong>: high-mast pan between rallies over a planar court — rotation-only, exact. <strong>Rugby league</strong>: gantry pan across 100 m, with real parallax from the far touchline.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — Zoom Tracking via Known Line Spacing</h3>
+  <p>A zoomed frame shows fewer markings, and a similarity's scale term cannot distinguish zoom from translation toward the plane — this is the failure mode no (tx, ty, θ, s) fit escapes. The mechanism: the template supplies absolute scale. Any two visible transverse lines plus their known physical spacing — 10 m apart on a rugby league field; baseline-to-kitchen 4.57 m on a pickleball court — pin the scale absolutely, so f is recovered inside the H_t solve rather than guessed (source-backed: §7.5 template; TVCalib solves pan/tilt/roll/focal jointly). <strong>Payoff: serve-zooms and tackle close-ups become calibratable frames instead of skipped ones.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc02-zoom-tracking.png" alt="Wide rugby pitch frame versus zoomed frame showing two transverse lines with a 10 metre spacing arrow pinning the zoom scale." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.10</span>: UC 02 — Zoom Tracking. Known line spacing disambiguates zoom: two visible lines at a known physical distance pin scale absolutely. <strong>Rugby league</strong>: the 10 m transverse ruler. <strong>Pickleball</strong>: baseline-to-kitchen 4.57 m.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Per-Pan Homography Re-estimation</h3>
+  <p>Any H solved at the start of a pan is stale by mid-sweep: measured flow-level drift on nrl-001 reached 29.9 px/frame, so a pitch-line intersection moves tens of pixels within a second of panning. The mechanism is the per-frame loop — detect markings, match to the template, DLT + RANSAC solve, validate by reprojection RMSE — then Kalman-smooth the camera <em>parameters</em> (pan, tilt, roll, f), never the raw H entries, because element-wise filtering mixes projective terms and produces matrices that are not homographies of any real camera. Measured (E11): 98.4% valid frames at 4.65 cm RMSE, 11.2 ms/frame against a 40 ms broadcast budget. <strong>Payoff: no drift chain, and every frame carries its own checkable error — the SLA downstream analytics can trust.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc03-homography-reest.png" alt="Four frames along a panning sweep, each with its own H_t arrow to the same pitch template, per-frame error bars, one stale-H arrow crossed out." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.11</span>: UC 03 — Per-Pan Re-estimation. Each pan position gets its own H_t anchored to the same template; a stale H is discarded, not propagated. <strong>Pickleball</strong>: the re-solve is well-conditioned whenever the kitchen line, a baseline and a sideline are visible. <strong>Rugby league</strong>: sparser evidence; the parameter-Kalman carries the gap.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Track B: GMC in Practice (UC 04–07)</h3>
+
+  <h3 class="sub-heading">UC 04 — GMC for Pickleball Broadcast</h3>
+  <p>Rec-play and high-mast pickleball footage pans between rallies and zooms on the serve, breaking chapter 6's fixed-camera assumption. The mechanism is the same <code>goodFeaturesToTrack</code> → LK flow → <code>estimateAffinePartial2D</code> similarity pipeline; on a small, line-rich court with at most four players, the background consensus is strong and foreground contamination is low — the friendly case for GMC. Honest label [verify]: E14's GMC numbers are measured on rugby broadcast; pickleball broadcast GMC is not yet measured in the lab, and the fixed-camera E09 bake-off (ByteTrack 26 IDs → BoT-SORT 6, HOTA 0.642 → 0.814, measured) shows appearance ReID is the bigger lever while the camera holds still. <strong>Payoff: a cheap stabilization layer that ships free inside BoT-SORT (MIT) — as long as nobody mistakes its output for a calibrated view.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc04-pb-gmc.png" alt="Elevated pickleball court view with corner keypoints, optical flow arrows on court lines, and player boxes shifted by an inverse translation arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.12</span>: UC 04 — GMC on Pickleball. A line-rich, four-player court gives RANSAC a strong background consensus — the friendly case. <strong>Pickleball</strong>: serve-zoom and between-rally pan stabilization for high-mast rigs. <strong>Rugby league</strong>: the same mechanism fails harder — see UC 05.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — GMC for Rugby Broadcast: The 50 m Pan</h3>
+  <p>The main gantry sweeps with every line break — 50 m pans are routine, and the E14 clip is exactly this regime. The mechanism, measured: GMC-framewarp bought <strong>+3.1%</strong> fewer unique IDs (295→286) with median track length 0.96→1.08 s; GMC-boxshift went backwards at <strong>−3.7%</strong> (306 IDs). The four caps from §7.1 bind here: mild median motion (tracker-level median drift 0.0 px/frame, E08 measured), the homography-vs-similarity model mismatch, translation-only downstream use, and foreground contamination from 13.2 detected persons per frame. <strong>Payoff: keep GMC inside the tracker when it is free; never present it as calibration — the metres come from H_t.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc05-rl-gmc-pan.png" alt="Rugby pitch from the main gantry with a long 50 metre pan arrow, three frame windows along the sweep, and a rising orange drift curve." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.13</span>: UC 05 — The 50 m Pan. The gantry sweeps goal-line to goal-line; GMC patches each hop and accumulates its own error curve. <strong>Rugby league</strong>: line-break chase pans are the dominant camera regime. <strong>Pickleball</strong>: the same sweep is 13.41 m — smaller drift, identical structure.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — Athlete Masking for GMC (feeds from Chapter 10, UC 20)</h3>
+  <p>LK corners land on moving players; in ruck phases up to 24 bodies per frame (E08, measured) make the "background" the minority class, and RANSAC's consensus fit degrades exactly where IoU association is tightest — the book's working hypothesis for boxshift's −3.7% [book hypothesis; E14 did not ablate this]. The mechanism arrives from chapter 10's UC 20: SAM 2 binary athlete masks zero out the movers, the flow field is computed on static turf and line features only, and the similarity fit sees pure camera motion. <strong>Payoff: a structured error source removed at the tracker's most sensitive point, for the cost of masks the pipeline already computes.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc06-athlete-masking.png" alt="Two panels of a rugby broadcast frame: players masked in orange, then players cut out with flow keypoints only on turf and pitch lines." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.14</span>: UC 06 — Athlete Masking. SAM 2 masks (chapter 10) remove movers so LK flow sees only static turf and paint. <strong>Rugby league</strong>: ruck-phase frames with 24 bodies are the case this rescues. <strong>Pickleball</strong>: kitchen-line firefights put both players' legs across the best court-line corners.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — The Drift Problem (The Honest Failure)</h3>
+  <p>GMC anchors each frame to the previous frame, and nothing in the chain anchors to reality: the chained estimate H_chain = ∏ H_{t,t−1} accumulates every hop's RANSAC residual, the chain cannot detect its own accumulated error, and validity is unverifiable frame by frame. This is the structural failure per-frame H_t eliminates — independent solves against a fixed template, each carrying its own reprojection error. The measured contrast: GMC's best arm gained 3.1% on nrl-001 while E11's per-frame registration held 98.4% of frames at 4.65 cm under PTZ. <strong>Payoff: the honest SLA is valid_frames% at a stated RMSE — never stabilization smoothness.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc07-drift-problem.png" alt="Chain of five frames linked by warp arrows bending away from a pitch template, with a growing orange drift curve and one direct H_t arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.15</span>: UC 07 — Drift. Chained frame-to-frame warps bend away from the template; a direct per-frame H_t cannot drift. <strong>Rugby league</strong>: long pans turn small per-hop residuals into metres of pitch-space error. <strong>Pickleball</strong>: slow between-rally pans drift silently because nothing ever checks the chain.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Track C: Operations &amp; Honest Measurement (UC 08–10)</h3>
+
+  <h3 class="sub-heading">UC 08 — Camera Cut Handling</h3>
+  <p>A cut is not a motion — no frame-to-frame relation exists across one, and <code>estimateAffinePartial2D</code> will still return a RANSAC "fit" across the boundary if ungated. The mechanism: a shot-boundary gate runs <em>before</em> calibration (PySceneDetect, BSD-3, pure CPU; or TransNetV2 via the MIT PyTorch port for the dissolves and wipes heuristics miss — both source-backed). On a cut, the pipeline invalidates the LK prior and the Kalman camera prior and cold-starts H_t from the new shot's first stable lines; gradual transitions are marked low-confidence and demoted by the §7.8 validator. [verify]: TransNetV2's published F1 is measured on general broadcast; the rugby-highlights false-positive rate on replay wipes and animated scorebugs is unmeasured — that is the E15 cut-gate audit. <strong>Payoff: the gate is cheap, and the ungated cut silently poisons every downstream number.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc08-cut-handling.png" alt="Timeline of frames with a scissors cut, the flow prior across the cut crossed out, a cut-gate box, and a cold-start arrow to the pitch template." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.16</span>: UC 08 — The Cut Gate. Invalidate both priors at the boundary; cold-start H_t on the new shot. <strong>Rugby league</strong>: cut-dense highlights with replay wipes — cold-start frequency is high. <strong>Pickleball</strong>: cuts cluster between rallies; the real hazard is the slow pan inside one shot.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Static vs Broadcast: The Measured Tradeoff</h3>
+  <p>When is the dynamic loop worth its cost? The mechanism is the side-by-side measurement: manual static homography at 3.82 cm, 100% valid, 0.02 ms/frame (E05) versus dynamic keypoint calibration at 4.65 cm, 98.4% valid, 11.2 ms/frame (E11) — 0.83 cm of accuracy and 1.6% of frames buy survival under PTZ. And the broadcast tax is mandatory once the camera moves: 49.1% of the nrl-001 sample exceeded 5 px/frame of flow-level drift (measured, C07 lab), so a single H is invalid on roughly half the frames of a real rugby broadcast. <strong>Payoff: spend the tax only where the camera actually moves — fixed rigs keep the cheaper, more accurate win.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc09-static-vs-broadcast.png" alt="Two panels: fixed tripod over pickleball court with one homography arrow at 3.82 cm, versus panning gantry over rugby pitch with per-frame arrows at 4.65 cm and 98.4 percent valid." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.17</span>: UC 09 — Static vs Broadcast, Measured. One H for the fixed court; per-frame H_t for the moving gantry. <strong>Pickleball</strong>: the fixed-camera win (3.82 cm, 0.02 ms) is real — keep it where it applies. <strong>Rugby league</strong>: the single-H arm fails on ~half the frames; per-frame is the only honest regime.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — The Broadcast-Quality Estimate: Is This Feed Calibratable?</h3>
+  <p>Before a club invests in broadcast analytics, the practical question is whether its feed can yield calibration-grade output at all — a high fixed gantry (the grandstand-level / high-tower positions, GL3/HT in broadcast camera plans) versus a low sideline handheld. The mechanism is a one-afternoon audit: sample dense optical flow for the drift profile (measured on nrl-001, 701 frames: mean 7.97, p90 21.24, max 29.9 px/frame) and run a line-evidence census (measured: 6/6 open-play frames calibratable by classical Hough, the marginal frame at 2 usable lines). High fixed gantries with the pitch in view pass; low moving handhelds fail the markings-per-frame floor of §7.8. [verify]: the camera-position → valid% mapping is a practitioner model; the audit instruments themselves are measured. <strong>Payoff: a cheap audit replaces a season-long failed deployment — and tells the coach which numbers to trust before a single model is trained.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c07-uc10-broadcast-quality.png" alt="Stadium cross-section with a high gantry camera ticked calibratable and a low sideline handheld crossed skip, with valid-percent and RMSE readout boxes." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 7.18</span>: UC 10 — The Feed Audit. Two instruments — drift sampling and a line census — decide whether a camera position is calibratable. <strong>Rugby league</strong>: the main gantry passes; sideline handhelds do not. <strong>Pickleball</strong>: a fixed high-mast rig passes; a phone at the fence fails the markings floor.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">7.9c</span> What This Adds to the Pipeline</h2>
+  <p>These ten use cases are not separate projects; they are one loop — gate, detect, solve, validate, smooth — applied to the two sports' camera regimes. They inherit chapter 6's fixed-camera calibration as the static arm (UC 09) and feed everything downstream that needs metres instead of pixels: chapter 9's tracking (UC 05's fragmentation numbers are the E14 baseline register-then-track must beat, per the FieldMOT architecture), chapter 10's UC 20 athlete masks (the input to UC 06), chapter 11's pose foot-points reprojected through H_t, chapter 12's ball trajectory in pitch space, and chapter 14's multiview fusion, which treats each broadcast frame as a moving camera with a per-frame pose. The pitch-space payoffs — the 10 m retreat, 40/20 adjudication zones, kitchen-fault measurement — are the features chapter 22's EPV and chapter 23's tactical models consume, and the live minimap chapter 28's cockpit renders. UC 10's audit is the gatekeeper for all of it: it decides, from a single afternoon of footage, whether a feed can support any of the chapters that follow.</p>
+
+  <h2 class="section-title"><span class="section-num">7.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li>E15: annotate ~60–100 nrl-001 frames spanning zoom levels (transverse-line intersections, post bases, scrum markers against the §7.5 template) → Colab keypoint fine-tune on the rugby template via the MIT roboflow/sports recipe → per-frame H_t + parameter-Kalman smoothing (smooth pan/tilt/roll/focal, never raw H entries — element-wise filtering of H mixes projective terms and produces matrices that are not homographies of any real camera) → register-then-track vs E14 baseline. Targets: valid% ≥ 95, RMSE ≤ 10 cm (rugby tolerance is coarser than pickleball's 4.65 cm; the paint itself is 15 cm wide).</li>
+    <li>Cut-gate audit: TransNetV2-PyTorch over the full nrl-001 GF broadcast, not the 30 s sample; measure reset behaviour and the rugby-specific false-positive rate on replay wipes and scorebugs.</li>
+    <li>Pickleball side: per-pan re-solve evaluation on broadcast-style pb footage — pan the camera deliberately, measure how fast valid% recovers after each sweep and whether the serve-zoom frames are the dominant failure as predicted.</li>
+    <li>Hypothesis to register: H_t beats GMC's +3.1% by a wide margin [verify by experiment — report whatever number actually lands], with the no-HOTA-without-labels gate carried forward from E14.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">7.11</span> Sources</h2>
+  <ul>
+    <li>E14 experiment: <code>experiments/e14-gmc/</code> (baseline 295, boxshift -3.7%, framewarp +3.1%); E08 drift stats from its metrics.json; E09 tracker bake-off (HOTA 0.642→0.814) from <code>experiments/e09-tracker-bakeoff/outputs/metrics.json</code>; E05/E11 calibration numbers from their transcripts.</li>
+    <li>BoT-SORT GMC verified at source (MIT): <a href="https://github.com/NirAharon/BoT-SORT">github.com/NirAharon/BoT-SORT</a> (<code>tracker/gmc.py</code>, sparseOptFlow path); paper: <a href="https://arxiv.org/abs/2206.14651">arXiv 2206.14651</a>.</li>
+    <li>Theiner, Müller-Budack, Ewerth — "Unified Sports Field Registration with Lens Distortion Modeling", CVPRW 2026, pp.10067-10076 (CVSports Best Paper): <a href="https://openaccess.thecvf.com/content/CVPR2026W/CVsports/html/Theiner_Unified_Sports_Field_Registration_with_Lens_Distortion_Modeling_CVPRW_2026_paper.html">openaccess.thecvf.com</a>.</li>
+    <li>TVCalib (MIT, WACV 2023): <a href="https://arxiv.org/abs/2207.11709">arXiv 2207.11709</a>; PnLCalib (GPL-2.0): <a href="https://arxiv.org/abs/2404.08401">arXiv 2404.08401</a>; roboflow/sports (MIT): <a href="https://github.com/roboflow/sports">github.com/roboflow/sports</a>; FieldMOT register-then-track (CVPRW 2025); Magera et al. central views: <a href="https://arxiv.org/abs/2504.20052">arXiv 2504.20052</a>.</li>
+    <li>Cut detection: PySceneDetect (BSD-3): <a href="https://github.com/Breakthrough/PySceneDetect">github.com/Breakthrough/PySceneDetect</a>; TransNetV2 (MIT): <a href="https://arxiv.org/abs/2008.04838">arXiv 2008.04838</a>, PyTorch port <a href="https://github.com/allenday/transnetv2_pytorch">github.com/allenday/transnetv2_pytorch</a>.</li>
+    <li>Rugby league geometry: NRL Laws of the Game (100 × 68 m field, in-goal 6–11 m, 10 m retreat, 40/20): <a href="https://www.nrl.com/operations/policy-documents/">nrl.com/operations/policy-documents</a>.</li>
+    <li>Lab: <code>lab/w2_lab_calibration_ii.py</code> → <code>experiments/c07-calib-ii/outputs/metrics.json</code> (701-frame drift sampling, 6-frame Hough line audit).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="06.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 06</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 06</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</p>
+        </div>
+      </div>
+    </a>
+    <a href="07.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 07</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 07</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Why camera-motion compensation is not enough, and what a real broadcast calibration loop looks like</p>
+        </div>
+        <a href="07.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

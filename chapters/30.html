@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #A2542A;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-30" style="background-color: #A2542A; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 30</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The verified inventory, the dead-sensor market reality, and the ~$1,500 M4-native rig</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">34 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-30-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">What Hardware Actually Buys You</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-30-1" data-section="s-30-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>What Hardware Actually Buys You</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-30-1" data-section="s-30-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>What Hardware Actually Buys You</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">30</span> Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h1>
+    <p class="chapter-subtitle">The verified inventory, the dead-sensor market reality, and the ~$1,500 M4-native rig</p>
+  </header>
+
+<h3 id="s-30-1"><span class="section-num">30.1</span> What Hardware Actually Buys You</h3>
+
+<p class="section-intro">Video is one sensor. The pro stack is a fusion: optical (where), wearable (how hard), event (what happened). This chapter is the verified inventory — what exists, what is dead, what it costs, and how the pieces join into the book's one-spine. The honest framing throughout: <strong>hardware earns its price only if its data lands in a queryable spine</strong> (chapter 5), and every price here is verified against a primary listing or marked [verify] (2026-08-30).</p>
+
+  <p>Pure computer vision has three structural blind spots, and they are the reason the sensor market exists at all. First, <strong>occlusion</strong>: a camera cannot see through bodies — in a rugby league ruck, the ball and half the players vanish for frames at a time; in pickleball doubles, the far-side player's paddle disappears behind the net post and their partner. Second, <strong>motion blur</strong>: at 60 fps a 110 km/h pickleball drive crosses 50 cm between frames, and a rugby league winger's plant-and-go exceeds what any rolling shutter resolves cleanly. Third — the deepest one — <strong>video cannot see force or physiology</strong>: no frame of footage measures heart rate, ground-reaction force, or the acceleration of a tackle. Chapter 11's pose pipeline estimates kinematics; it cannot estimate load. Every non-optical sensor in this chapter exists to close one of those three gaps.</p>
+
+  <p>The engineering answer is a <strong>four-tier sensor hierarchy</strong>, and it is the organizing frame for the whole chapter:</p>
+
+  <ul>
+    <li><strong>Tier 1 — Optical vision.</strong> 60–240 fps cameras producing player bounding boxes, ball trajectories, and (at league grade) 29-point skeletons per athlete. Accuracy tolerance is roughly ±2.2 mm court-side for a calibrated Hawk-Eye-class install and ±8 cm pitch-side over a 100 × 68 m rugby league field [verify]. Optical answers <em>where</em>.</li>
+    <li><strong>Tier 2 — Wearable telemetry (IMU/GNSS).</strong> A pod between the shoulder blades — Catapult Vector class — sampling tri-axial accelerometer and gyroscope at 100 Hz (1,000 Hz raw) with 10–18 Hz GNSS position. Rated ±16 g on the primary axis and ±100 g shock, because a rugby league tackle is a car-crash transient, not a jogging signal. Wearables answer <em>how hard</em>.</li>
+    <li><strong>Tier 3 — Smart implements.</strong> Sensors in the equipment itself: the 500 Hz IMU inside the Kinexon/Sportable-class smart ball (contact instant, spin up to 600 rpm, sub-millisecond impact timestamps) and, on the racquet-sport side, piezoresistive strain gauges sampled near 2 kHz to resolve a 4–6 ms paddle-ball contact dwell and a face angle good to a few degrees. Implements answer <em>what the ball felt</em>.</li>
+    <li><strong>Tier 4 — Environmental micro-climate.</strong> The layer everyone forgets: 3D ultrasonic anemometers (~32 Hz) for wind vector and air density, and Clegg impact testers for surface hardness (a rugby league pitch plays in the 70–90 CIV band [verify]). A lob that dies in a headwind and a knee that goes on a hard pitch are both data — environmental sensors answer <em>what the venue did</em>.</li>
+  </ul>
+
+  <p>The four tiers converge on one mathematical object — a continuous-discrete extended Kalman filter, clocked by IEEE 1588 Precision Time Protocol — and one storage object: the columnar match spine of chapter 5. Everything else in this chapter is market reality wrapped around that engineering core: what each tier costs, which products are alive, which are bricked, and what a single practitioner on an Apple M4 Max can honestly replicate.</p>
+
+  <figure id="fig-30-01" class="full">
+    <img src="shared/images/2026-09-04-c30-hardware-tier-matrix.svg" alt="Hardware tier matrix: each sensor class, its price band, and whether it earns it." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.1</span>: The Hardware Tier Matrix. What each class measures, its price band, and whether it earns it.</figcaption>
+  </figure>
+
+  <figure id="fig-30-02" class="full">
+    <img src="shared/images/ch30-sensor-hierarchy.png" alt="Four-tier sensor hierarchy: optical, wearable IMU, smart implement, and environmental layers feeding an EKF fusion base." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.2</span>: The Four-Tier Sensor Hierarchy. Optical (where), wearable (how hard), smart implement (what the ball felt), environment (what the venue did) — four asynchronous streams converging on one fusion filter.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.2</span> The Verified Inventory (25 Products)</h2>
+  <p>The table below is the checked market, not the marketed market. Every row was verified against the vendor's own page or a primary report on 2026-08-30; anything that could not be confirmed carries [verify]. The cost tiers used throughout: <strong>T0</strong> consumer (under $500), <strong>T1</strong> prosumer ($500–2,500), <strong>T2</strong> club/academy ($2,500–25,000), <strong>T3</strong> pro/institutional ($25,000+, quote-only).</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Class</th>
+        <th>Example</th>
+        <th>Price / Availability</th>
+        <th>Measures</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Smart court</strong></td>
+        <td>PlaySight Pro/GO; SwingVision (iOS)</td>
+        <td>~$10-15k/court; SwingVision $179.99/yr</td>
+        <td>Multi-angle video, line calls, highlights</td>
+      </tr>
+      <tr>
+        <td><strong>Ball+player 3D</strong></td>
+        <td>PlayReplay (4-cam net-post); Hawk-Eye SkeleTRACK + Kinexon Trionda 500Hz</td>
+        <td>~$3-4k/court/yr [verify]; pro</td>
+        <td>Triangulated 3D tracking; 29-point skeletons; 500Hz ball IMU</td>
+      </tr>
+      <tr>
+        <td><strong>AI camera</strong></td>
+        <td>Wingfield Cam+; Veo Cam 3; Insta360 X5</td>
+        <td>quoted; $1,299 + sub; ~$550</td>
+        <td>1080p60 auto-follow; venue streaming; 360 capture → Apple Vision Pro</td>
+      </tr>
+      <tr>
+        <td><strong>Wearables</strong></td>
+        <td>Catapult/STATSports; Apple Watch; Polar H10</td>
+        <td>pro/consumer</td>
+        <td>GPS+IMU load; HR valid, calories NOT (Navalta 2024)</td>
+      </tr>
+      <tr>
+        <td><strong>Force plates</strong></td>
+        <td>VALD ForceDecks (3-yr lock); Hawkin (ownership)</td>
+        <td>subscription vs ownership</td>
+        <td>Ground-reaction force — the C11 "forces not from video" ground truth</td>
+      </tr>
+      <tr>
+        <td><strong>Time gates</strong></td>
+        <td>Dashr</td>
+        <td>$690-1,600</td>
+        <td>Split times for the C29 reaction drills</td>
+      </tr>
+      <tr>
+        <td><strong>Event cameras</strong></td>
+        <td>Prophesee</td>
+        <td>dev-kit only (x86/Linux)</td>
+        <td>The pickleball ball-blur frontier — the C12 wall's hardware answer</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Read the table as two markets, not one. The <strong>pickleball market is vision-first</strong>: the winning products are phone apps (SwingVision at $179.99/yr, PB Vision at $99.99–396/yr with JSON export on Premium, Dinkwize, Coach Pickle, DinkAI) and fixed-court installs (PlaySight, PlayReplay at $3,995/court/yr, Zenniz at ~$13,500 + $70/mo). Nothing in the pickleball lane straps to the athlete. The <strong>rugby league market is wearable-first</strong>: Catapult Vector and STATSports Apex pods are squad-standard, the NRL's own Telstra Tracker program put receiver units in jerseys for broadcast telemetry, and video (Hudl, Stats Perform) is the context layer, not the load layer. Same fusion architecture underneath — section 30.4 — opposite primary sensor on top. The practical consequence: a pickleball analyst's first dollar goes to a camera and a phone; a rugby league analyst's first dollar goes to a vest.</p>
+
+  <p>Two rows deserve explicit caution flags. <strong>Force plates</strong> (VALD ForceDecks, Hawkin Dynamics) are the only way to measure ground-reaction force — the asymmetry and return-to-play numbers chapter 11 admits video cannot produce — but VALD's 3-year subscription lock versus Hawkin's ownership model is a data-exit decision as much as a price decision. And the <strong>Prophesee event camera</strong> (320×320, &gt;10k fps-equivalent, &lt;150 µs latency, &gt;140 dB HDR) is the genuine hardware answer to chapter 12's ball-blur wall — but its Metavision SDK is x86/Linux-first, so on the M4 lab it is a Colab-and-Linux research lane, not a product [verify arm64 support].</p>
+
+  <h2 class="section-title"><span class="section-num">30.3</span> The Market Reality: The Sensor Graveyard</h2>
+  <p><strong>Verified: the consumer racquet-sensor market is dead, and it died of server shutdowns.</strong> Between roughly 2015 and 2021 every major racquet-sport brand shipped an embedded sensor; by the end of 2021 every one of them was a paperweight:</p>
+
+  <ul>
+    <li><strong>Zepp Tennis</strong> — the category pioneer, a handle-mounted IMU with swing metrics; servers off ~2020, app bricked.</li>
+    <li><strong>Babolat Play</strong> — sensors built into the racquet itself; end-of-life 2021-12-31, after which the connected features stopped.</li>
+    <li><strong>Sony Smart Tennis Sensor</strong> — EOL 2021-09-30; the sensor still measures, but there is no server to talk to.</li>
+    <li><strong>HEAD smart racquets</strong> — Zepp-based under the hood; died with Zepp.</li>
+  </ul>
+
+  <p>Two failure modes compounded. The first was <strong>architectural</strong>: each product routed its data through a proprietary cloud, so when the vendor's unit economics failed, the hardware in every customer's bag became e-waste on the same day. The second was <strong>competitive</strong>: phone-based computer vision (SwingVision, then PB Vision and the smart-court installs) delivered the same insights — shot speed, spin proxies, placement maps — with no per-racquet hardware tax, no charging ritual, and no kill switch. Vision did not out-sensor the sensors; it out-<em>distributed</em> them. The camera the player already owned beat the sensor they had to buy.</p>
+
+  <p>The lesson generalizes beyond racquets, and it is one of the load-bearing claims of this book: <strong>a sensor that needs a proprietary server dies with the server; a sensor whose data lands in an open, queryable spine outlives its vendor.</strong> It is why chapter 5 insists on DuckDB and open formats, why the inventory table above privileges CSV/API export (Catapult, STATSports, Polar, VALD, Hawkin, PB Vision Premium), and why the rugby league equivalent — the smart ball — only survives because leagues, not consumers, hold the license. When a competition signs the data contract (Adidas Trionda's Kinexon 500 Hz IMU at the FIFA World Cup; the Sportable Gilbert ball in rugby), the telemetry is infrastructure. When a consumer buys it, the telemetry is a subscription hostage.</p>
+
+  <figure id="fig-30-03" class="full">
+    <img src="shared/images/ch30-graveyard.png" alt="Timeline 2015-2026 of dead racquet sensors: Zepp 2020, Babolat 2021, Sony 2021, HEAD 2021, with vision AI rising." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.3</span>: The Sensor Graveyard. Four server-dependent racquet sensors bricked in 2020-21 while phone vision AI took the market — the kill-switch timeline.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.3b</span> The Smart Paddle That Isn't</h2>
+  <p>For pickleball specifically, the implement tier is a gap, not a product. <strong>There is no credible smart pickleball paddle on sale today.</strong> The only verifiable attempt is the Potenza SMARTx — an embedded-sensor paddle promising power, speed, and spin over Bluetooth — listed at $595.95 on pre-order, reported elsewhere at $495.99 [verify], and currently sold out with no independent validation and no proven app ecosystem. Treat it as a watch-this-space item; do not build a workflow around hardware you cannot buy twice.</p>
+
+  <p>The physics is not the obstacle — the engineering case for an instrumented paddle is real. A paddle-ball contact lasts roughly 4–6 ms; to resolve face angle and sweet-spot offset inside that window you need piezoresistive strain gauges sampled near 2 kHz plus an IMU for swing path, and the payoff would be metrics video struggles with: true impact location, face angle at contact (a few degrees' resolution), and dwell-time spin proxies. The obstacle is the business model. A paddle sensor carries the exact architecture that just killed Zepp, Babolat, Sony, and HEAD — small market, proprietary app, cloud dependency — into a sport whose players already get shot speed and placement from the phone in their pocket. The rugby league contrast is instructive: the smart ball shipped because a league's broadcast and officiating budget underwrites it, not because consumers did. Until a pickleball league or manufacturer makes paddle telemetry infrastructure, the honest implement tier for this sport is chapter 12's ball-tracking camera plus chapter 15's impact audio — sensors you already own.</p>
+
+  <figure id="fig-30-04" class="full">
+    <img src="shared/images/ch30-smart-paddle.png" alt="Exploded cross-section of a smart pickleball paddle: IMU chip, strain gauges, honeycomb core, Bluetooth link, crossed-out cloud server." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.4</span>: Anatomy of the Missing Smart Paddle. The engineering is straightforward (2 kHz strain gauges, handle IMU, BLE link); the business model is what keeps dying — the crossed-out server is the load-bearing component.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.3c</span> The Rugby League Wearable: The Opposite Market</h2>
+  <p>Rugby league shows what the wearable tier looks like when it works. The squad-standard unit is the <strong>Catapult Vector</strong> class pod (S7/S8), seated in a vest between the shoulder blades: GNSS position at 10–18 Hz fused with tri-axial IMU at 100 Hz, producing distance, speed zones, acceleration/deceleration counts, and the proprietary <strong>PlayerLoad</strong> accumulation — a jerk-based kinetic integral that S&amp;C staff use as the external-load currency of the week. The ±16 g primary / ±100 g shock rating is not spec-sheet decoration: a tackle collision is precisely the transient that saturates a consumer sensor, and it is the signal a head-impact welfare protocol most needs. STATSports Apex is the academy-tier alternative; Catapult One (~T1) is the individual entry point. The NRL's own Telstra Tracker deployment verified the pattern at broadcast scale: wearable telemetry as a first-class match artifact, not an experiment.</p>
+
+  <p>Why did wearables win here while racquet sensors died? Three structural reasons. <strong>(1) No vision substitute:</strong> a camera cannot measure how hard a 105 kg prop accelerated into contact — the physiological question has no optical answer, whereas shot speed did. <strong>(2) Institutional buyer:</strong> clubs and leagues, not consumers, hold the contract, so the data pipeline is maintained as infrastructure with CSV/API export into the athlete-management system. <strong>(3) Mandate, not novelty:</strong> load monitoring is embedded in periodization and, increasingly, in collectively bargained welfare frameworks — the sensor is part of the employment relationship. The pickleball player's watch is optional; the rugby league forward's vest is not. That difference in buyer and mandate, not sensor quality, is what separates a living market from a graveyard.</p>
+
+  <figure id="fig-30-05" class="full">
+    <img src="shared/images/ch30-rl-wearable.png" alt="Rugby league player wearing a GPS vest: pod between shoulder blades, GNSS satellite links, IMU 100Hz and PlayerLoad callouts." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.5</span>: The Rugby League Wearable. Vest-mounted GNSS/IMU pod (Catapult Vector class): 10-18 Hz position, 100 Hz accelerometry, PlayerLoad — the primary sensor of the rugby stack.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.4</span> The Pro Fusion Architecture</h2>
+  <p>The verified pattern across pro teams in 2024-2026 is a <strong>three-stream join with a shared clock and a shared coordinate frame</strong>: wearable GNSS/IMU (how hard), optical tracking (where and why), and event metadata (what happened — officials, ball chip, scoreboard, tags). The streams are time-aligned (PTP/genlock for video; impact-audio or NTP discipline for wearables), coordinate-registered (homography to the court/pitch frame, GPS projected to a local frame), identity-joined (roster/vest assignment on the wearable side; jersey detection on the video side), and only then landed in an athlete-management system — Kitman Labs, Smartabase/Fusion Sport, Zone7 — where load models, dashboards, and medical alerts live.</p>
+
+  <p>The book's lab demos the join on one key: <code>(athlete_id, timestamp_s)</code>. A video track row, a wearable HR row, and an event row become one spine row — measured in the C30 lab artifact (<code>experiments/c30-sensors/outputs/metrics.json</code>): athlete A1 at t=4.2s, court position (1.82, 3.42) m, speed 1.8 m/s, HR 143 bpm from the Polar H10, event <em>dink</em>. The join is trivially easy to write and brutally hard to make true, because <strong>sync is the product</strong>. Consumer clocks drift at ~15 ppm: over a 30-minute session that is ~450 ms — a whole rally of misalignment between the video frame and the heart-rate sample you just joined to it. Pro installs solve this with IEEE 1588 PTP (SMPTE ST 2059-2 for broadcast); the amateur answer is a physical sync anchor both sensors can see — a clap at both ends, or better, the paddle-impact audio transient of chapter 15, which is a ~2 kHz timestamp generator already present in every rally.</p>
+
+  <p>Three practitioner rules survive contact with reality. <strong>Identity is the hard join</strong> — mapping tracklet #7 to jersey #7 to vest #7 is where amateur stacks break, and pros solve it with roster management and manual QA, not magic. <strong>Resample the fast stream to the slow one, never upward</strong> — derive events from 100 Hz IMU and aggregate to the 25-60 Hz video cadence; interpolating HR upward fabricates precision you did not measure. And <strong>fusion error exceeds the effect if the clock slips</strong> — a 450 ms offset swamps the 23% EKF improvement in section 30.4b. Get the clock right first.</p>
+
+  <figure id="fig-30-06" class="full">
+    <img src="shared/images/c30-fusion-architecture.png" alt="Fusion architecture: wearable GNSS/IMU plus optical tracking plus event metadata joined by clock sync, registration, and identity into the athlete-management system." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.6</span>: The Fusion Architecture. Optical + wearable + event joined by clock sync, court registration, and identity into the AMS — the same schema as the book's chapter-5 spine.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.4b</span> The Fusion Engine: Continuous-Discrete EKF (E20)</h2>
+  <p>The pro fusion is not merely a database join — at the tracking layer it is a <strong>filter</strong>. The continuous-discrete extended Kalman filter (EKF) carries a state vector of 3D position, 3D velocity, and accelerometer biases: x = [p<sub>x</sub>, p<sub>y</sub>, p<sub>z</sub>, v<sub>x</sub>, v<sub>y</sub>, v<sub>z</sub>, b<sub>ax</sub>, b<sub>ay</sub>, b<sub>az</sub>]<sup>T</sup>. The <strong>prediction step</strong> runs at the IMU's 100 Hz, integrating the kinematics forward (x̂ = Fx + Bu, with covariance P propagated through F and process noise Q). The <strong>update step</strong> fires asynchronously whenever the 60 Hz optical measurement arrives: compute the innovation y = z − Hx̂, the Kalman gain K = PH<sup>T</sup>(HPH<sup>T</sup> + R)<sup>−1</sup>, and correct the state. The IMU bridges the gaps where the camera is occluded or blurred; the camera anchors the IMU's integration drift. Each sensor covers the other's failure mode — that is the entire argument for fusion in one sentence.</p>
+
+  <p>The measured result (E20, <code>experiments/e20-telemetry-fusion/telemetry_fusion_results.json</code>): over a 5.0 s window (500 processed frames, 60 Hz camera + 100 Hz IMU), raw optical-only tracking RMSE of <strong>0.1898 m</strong> drops to <strong>0.1451 m</strong> fused — a <strong>23.5% error reduction</strong>. (An earlier stored run of the same benchmark reported 23.2% on 17.9 → 13.8 cm; the artifact on disk is the number cited here — exactly the version-drift discipline the claims register exists to catch.) On a pickleball court, 4.7 cm of RMSE is the difference between "at the kitchen line" and "in the kitchen" — a fault call. On a rugby league pitch, the same filter keeps a winger's track alive through the ruck occlusion that loses the optical-only track entirely.</p>
+
+  <p><strong>Honest label: the E20 demo is synthetic</strong> — a simulated player trajectory with simulated camera noise, not real match video. It proves the filter mechanics and quantifies the ceiling, not the field number. A real-video fusion run against the chapter-9 tracked pickleball footage and a logged wearable session is the open next experiment, and section 30.10 puts it on the list. Until that run exists, treat 23.5% as the mechanism's promise, not its production SLA.</p>
+
+  <figure id="fig-30-07" class="full">
+    <img src="shared/images/ch30-ekf-pipeline.png" alt="EKF fusion pipeline: optical 60Hz and IMU 100Hz rails feeding a predict-update loop, fused track output, RMSE 19.0 to 14.5 cm gauge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.7</span>: The Continuous-Discrete EKF. Predict at 100 Hz from the IMU, correct at 60 Hz from the camera — measured 19.0 → 14.5 cm RMSE on the E20 synthetic benchmark (23.5%).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.5</span> The ~$1,500 M4-Native Rig</h2>
+  <p>The book's practical lab is a rig you can buy this week: <strong>iPhone 4K120</strong> (primary court video, slow-mo contact, LiDAR court scan for the chapter-6 homography) + <strong>Apple Watch</strong> (HR, workout typing, HealthKit export — pickleball is a native workout type) + <strong>Polar H10</strong> (ECG-grade chest HR, ~$90, open BLE) + <strong>impact mic</strong> ($20-50, the sync anchor) + <strong>fence mount</strong>. If you already own the phone and watch, the build path costs about $110; buying everything lands at $1,500-2,300. The buy-vs-build ladder above it: PlayReplay-class 4-cam 3D (~$3,995/court/yr) is the next rung; PlaySight/Zenniz ($10-15k/court) is facility infrastructure; Hawk-Eye is the league ceiling. <strong>The honest rule: buy the sensor only when its data lands in the spine</strong> — a wearable whose export never joins the tracks is a toy.</p>
+
+  <p>What makes the rig viable in 2026 is that the <strong>compute moved to the edge</strong>. The measured edge profile (E19 token-economics benchmark, <code>experiments/e19-token-economics/token_economics_benchmark.json</code>): on an Apple M4 Max the full perception pipeline — ingest, YOLO-class detection and ball tracking on the Neural Engine, association and homography on CPU/Accelerate, 3D kinematics and the tactical model on the Metal GPU — runs at <strong>55.7 ms glass-to-glass</strong>, 68.4 fps throughput, 28.5 W draw, with an incremental cost of <strong>$0.00 per match</strong>. The cloud comparison is brutal: the same 80-minute rugby league match sampled at 2 fps is ~2.48 million input tokens — <strong>$6.447 per match on GPT-4o</strong> (measured), $3.22 on Gemini Pro, $7.81 on Claude Sonnet — with 1.2-4.5 s network round-trips that make live feedback impossible. Against GPT-4o billing, the $3,199 machine breaks even after <strong>496.2 matches</strong> [verify at print: API prices move]; an academy processing 50 hours of court footage a week pays it back in under six weeks. And the edge path is 100% offline — for athlete biometric data, privacy is not a feature, it is the architecture.</p>
+
+  <p>The same math flips by sport scale. For pickleball — one court, one phone, 90-minute sessions — the edge rig is the whole stack. For a rugby league club analyzing every match and three training sessions a week across grades, the edge machine handles the real-time lane while batch video understanding still goes to the cloud; the break-even calculation is what decides which lane each workload lives in. Measure your own volume against $6.45 a match before choosing.</p>
+
+  <figure id="fig-30-08" class="full">
+    <img src="shared/images/ch30-edge-m4.png" alt="M4 Max edge pipeline: camera frame through Neural Engine, GPU and CPU lanes to a courtside tablet, with a latency bar chart of edge 55.7ms versus cloud APIs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.8</span>: Edge vs Cloud. The M4 Max pipeline at 55.7 ms glass-to-glass and $0.00/match marginal cost; cloud frontier VLMs at seconds of latency and $3.22-7.81 per 80-minute match (E19, measured).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.6</span> Wearable Validity Anchors</h2>
+  <p>The validation literature is the gate between a measurement and a mood ring. <strong>Navalta et al. 2024</strong> (Sports, DOI 10.3390/sports12090234) tested consumer wearables against criterion measures and found <strong>heart rate valid and reliable</strong> (MAPE &lt;10%, often 3-7%) across Garmin Instinct, Polar Vantage M2, Polar OH1 and Polar Verity Sense (CCC &gt;0.85 for Instinct/Verity/OH1) — but <strong>energy expenditure poor</strong>: Garmin MAPE 27.7-28.1%, Vantage 18.9-23.4%, not valid at any intensity. The protocol insight matters for racquet sports specifically: put optical sensors on the <strong>bicep</strong> (OH1/Verity), not the wrist — the wrist-swing artifact is real when the sensor's limb is the one holding the paddle. A rugby league forward's wrist-mounted sensor has the same problem in contact; the vest pod between the shoulder blades sits on the trunk precisely because the trunk moves like the athlete's center of mass, not like an arm.</p>
+
+  <p>The population anchor is the Apple Heart and Movement Study: across 250,000+ logged pickleball and tennis workouts, pickleball sessions averaged <strong>90 minutes</strong> (tennis 81) with average peak HR of <strong>143 bpm</strong> (tennis 152) — the participation-scale baseline for the masters-age pickleball audience, and the sanity check for any intensity claim a consumer device makes about the sport. The practitioner rule, stated once and applied everywhere in this book: <strong>a wearable's HR is a credible intensity signal; its calorie estimate is marketing; its "readiness score" carries the same caveat box as ACWR — contextual, not predictive.</strong> Any athlete-facing metric shipped without its validation study attached is an opinion dressed as a measurement.</p>
+
+  <figure id="fig-30-09" class="full">
+    <img src="shared/images/apple-study-chart.png" alt="Apple Heart and Movement Study chart: pickleball versus tennis workout duration and peak heart rate across 250,000+ workouts." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.9</span>: The Pickleball Health Signal. 250k+ workouts, 90-minute average duration, peak HR 143 — the participation-scale anchor for consumer wearable claims.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">30.7</span> The Cost/Benefit Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Purchase</th>
+        <th>Cost</th>
+        <th>Earns It?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Smart court (PlaySight)</td>
+        <td>~$10-15k + fees</td>
+        <td>Facility only — the revenue is court booking, not analytics</td>
+      </tr>
+      <tr>
+        <td>iPhone + Watch + Polar</td>
+        <td>~$1,500 (owned)</td>
+        <td><strong>YES</strong> — the M4 rig replicates the spine</td>
+      </tr>
+      <tr>
+        <td>Time gates</td>
+        <td>$690-1,600</td>
+        <td>YES for the C29 drills (split-time objectivity)</td>
+      </tr>
+      <tr>
+        <td>Force plates</td>
+        <td>VALD lock vs Hawkin</td>
+        <td>Only if the C11 force question is in scope (the ground truth video lacks)</td>
+      </tr>
+      <tr>
+        <td>Event camera (Prophesee)</td>
+        <td>dev-kit</td>
+        <td>Frontier — the ball-blur research lane, not a product yet</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Every verdict in the table is the same test applied to different hardware: <strong>does the output land in the spine as queryable rows?</strong> The time gates earn it because a ±0.01 s split time is an objective column the chapter-29 reaction drills can sort by. The force plates earn it only when the program actually acts on asymmetry numbers — otherwise they are expensive bathroom scales. The smart court earns it only when the facility monetizes the court itself; the analytics are a booking funnel, not a coaching product. And the dead racquet sensors of section 30.3 failed this test from the grave: their data never left the proprietary app, so when the app died, every session they ever recorded died with it. For the rugby league reader, the same test just starts from the other end: the Catapult pod earns its money the day its CSV lands next to the Hudl video rows; before that day it is a very expensive vest.</p>
+
+  <h2 class="section-title"><span class="section-num">30.8</span> Transfer Note: Rugby Federation Stack</h2>
+  <p>The rugby league reality is the mirror image of pickleball's: the pro stack is <strong>wearable-first</strong> (Catapult Vector + the NRL's Telstra Tracker, verified: the league's own load monitoring) with the optical lane as context (Hudl video, Stats Perform data), while pickleball is <strong>optical-first</strong> with no wearable mandate at all. The fusion architecture is identical — the join key, the AMS, the sync discipline, the EKF — but the primary sensor, the buyer, and the governance differ. The rugby-specific additions are real: biometric data ownership and athlete consent are active, often CBA-bargained, constraints (chapter 31 owns the rights lane; this chapter owns the sensor consequence — design the export path before the purchase); and the player-load risk register is the welfare lane the wearable feeds, including head-impact monitoring protocols where the ±100 g shock rating stops being a spec and starts being a duty of care. A pickleball facility buying cameras is making a procurement decision; a rugby league club instrumenting athletes is making a governance decision that happens to involve hardware.</p>
+
+  <h2 class="section-title"><span class="section-num">30.9</span> The Sensor-Fusion Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Pick the join key</strong>: (athlete_id, timestamp_s) — the one-spine, never a fuzzy time match. In pickleball the roster is four players and the identity join is a color check; in rugby league it is 26 vest assignments against a team sheet — same key, more QA.</li>
+    <li><strong>Sync the clocks</strong>: that is the hard part, not the data. 15 ppm ≈ 450 ms drift over 30 minutes — a whole rally. Use PTP/genlock if you have it; otherwise record a physical anchor both sensors can see (clap at both ends, or the paddle-impact transient the chapter-15 audio pipeline already detects).</li>
+    <li><strong>Register the frame</strong>: the C06 homography puts video into court coordinates; project GNSS into the same local frame. One coordinate system per sport, shared by every stream.</li>
+    <li><strong>Fuse before you join</strong>: where a wearable and a camera measure the same athlete, run the EKF (30.4b) so the spine row carries the fused track, not two disagreeing ones.</li>
+    <li><strong>Join in DuckDB</strong>: the C05 pattern — video + HR + events = one row, the measured C30-lab artifact is the template.</li>
+    <li><strong>The AMS join</strong> is the pro step; the book's spine is the same schema, so the migration is an export, not a rebuild.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">30.9b</span> The 10 Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the verified inventory above to the two sports. They follow two categories: <strong>Category A — Athlete &amp; Implement Sensing (UC 01-05)</strong> covers the sensors that touch the player, the equipment, and the venue; <strong>Category B — Fusion, Timing &amp; Edge (UC 06-10)</strong> covers the engineering that turns asynchronous hardware into one trustworthy spine. Each case carries its evidence label — measured (book experiment), source-backed (paper/vendor listing), or [verify] (practitioner model, not yet established) — and several extend sections already in this chapter rather than duplicate them.</p>
+
+  <h3 class="sub-heading">Category A: Athlete &amp; Implement Sensing (UC 01-05)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Smart Paddle: Instrumented Contact, Dead Market</h3>
+  <p>The practical problem: pickleball's decisive skill is contact quality — where on the face, at what face angle, with how much dwell — and 60 fps video structurally cannot see inside a 4-6 ms paddle-ball contact. The mechanism is well understood: piezoresistive strain gauges sampled near 2 kHz resolve face angle to a few degrees and sweet-spot offset to millimeters inside the dwell window (sampling at 2 kHz against a 4-6 ms event gives 8-12 samples per contact — the minimum for a transient peak fit), plus a handle IMU for swing path. The market verdict is the point of section 30.3b: the only verifiable product, the Potenza SMARTx, is pre-order at $595.95, sold out, and unvalidated [verify] — and every predecessor (Zepp, Babolat, Sony, HEAD) was bricked by its own cloud. The honest case: the physics is easy, the business model is what keeps dying.</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc01-smart-paddle.png" alt="Smart pickleball paddle with handle IMU and face strain gauges, Bluetooth link, and crossed-out cloud server." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.10</span>: UC 01 — Instrumented Contact. 2 kHz strain gauges plus handle IMU resolve the 4-6 ms dwell window; the crossed-out cloud is the component that killed every predecessor. <strong>Pickleball</strong>: impact location and face angle per shot — the metrics video misses. <strong>Rugby league</strong>: the same architecture lives on in the instrumented kicking tee and ball, because leagues hold the license.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> none you can buy today — the use case is the procurement lesson. Build vision-first (chapter 12), and if instrumented paddles ever ship, buy only one whose data lands in an open spine (chapter 5).</p>
+
+  <h3 class="sub-heading">UC 02 — The GPS Vest: External Load You Cannot Film</h3>
+  <p>The practical problem: no camera measures how hard a 105 kg prop accelerated into contact, and welfare protocols need that number. The mechanism (section 30.3c): a vest pod with 10-18 Hz GNSS fused with 100 Hz tri-axial IMU (±16 g primary, ±100 g shock — the tackle transient is the design constraint), accumulating <strong>PlayerLoad</strong>, the jerk-based kinetic integral PL = Σ √((Δa<sub>x</sub>)² + (Δa<sub>y</sub>)² + (Δa<sub>z</sub>)²) / 100, as the week's external-load currency. Source-backed: Catapult Vector S7/S8 and STATSports Apex are squad-standard; the NRL's Telstra Tracker put receivers in jerseys for broadcast telemetry.</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc02-gps-vest.png" alt="Rugby league player in GPS vest with pod between shoulder blades, GNSS satellite links, IMU and PlayerLoad callouts." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.11</span>: UC 02 — The Load Vest. GNSS 10-18 Hz plus IMU 100 Hz between the shoulder blades, rated for tackle transients. <strong>Rugby league</strong>: distance, speed zones, accel/decel counts, PlayerLoad — mandated, CBA-governed. <strong>Pickleball</strong>: no vest market; the masters-age equivalent is the Apple Watch HR stream (section 30.6), valid for intensity, not for calories.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> objective weekly load and return-to-play evidence for S&amp;C staff — the sensor wins precisely because the physiological question has no optical answer.</p>
+
+  <h3 class="sub-heading">UC 03 — The 500 Hz Smart Ball: The Ball Testifies</h3>
+  <p>The practical problem: the most contested officiating moments are contact instants — was the ball touched, when did the foot meet it, did it go forward — and 50-60 fps broadcast video aliases all of them. The mechanism: an IMU suspended in the ball's center sampling 500-1,000 Hz, producing sub-millisecond impact timestamps, 3D acceleration, and spin up to 600 rpm; a simple accelerometer transient threshold detects each contact, and the timestamp join (section 30.4) pins it to video. Source-backed: the Adidas Trionda carries a Kinexon 500 Hz chip at the FIFA World Cup 26; the Sportable Gilbert ball brings the same architecture to rugby — league-licensed data, which is exactly why this sensor survives while UC 01's paddle died.</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc06-smart-ball.png" alt="Smart rugby ball cross-section with suspended IMU chip, spin arrows, kicking tee and goal posts." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.12</span>: UC 03 — The 500 Hz Ball. Center-suspended IMU: sub-millisecond impact timestamps, 600 rpm spin, contact detection by transient threshold. <strong>Rugby league</strong>: kick timing, forward-pass acceleration signature, knock-on contact evidence. <strong>Pickleball</strong>: no smart pickleball exists [verify] — the nearest truth is PlayReplay-class camera triangulation; the 500 Hz pattern is the reference, not the product.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> officiating-grade contact evidence — and the business-model contrast that proves the chapter's thesis: telemetry survives when a competition, not a consumer, holds the data contract.</p>
+
+  <h3 class="sub-heading">UC 04 — Whistle &amp; Impact Audio: The Cheapest Sensor You Own</h3>
+  <p>The practical problem: event boundaries (stoppages, contacts) are the sparse labels every downstream model needs, and hiring taggers is the expensive way to get them. The mechanism: spectral-flux onset detection on a courtside microphone — the paddle-ball impact is a broadband transient peaking near 2 kHz, the referee whistle a narrowband 2-4 kHz tone — detected by librosa-class onset pickers at 48 kHz. The audio stream does double duty: it is an event feed for chapter 15's audio pipeline <em>and</em> the physical sync anchor that disciplines every other clock in the $1,500 rig (section 30.9, step 2; UC 07 is the pro version of the same problem).</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc05-audio.png" alt="Microphone at net post capturing a 2 kHz paddle impact waveform and a narrowband whistle spectrogram feeding an event detector." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.13</span>: UC 04 — Audio as Sensor. Impact transient (~2 kHz) and whistle (narrowband 2-4 kHz) detected by onset picking; each spike is both an event and a sync anchor. <strong>Pickleball</strong>: shot clock and impact timestamps for the M4 rig. <strong>Rugby league</strong>: whistle-detected stoppages and crowd-roar segments in broadcast footage, automatic event boundaries for chapter 19.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> near-free event detection plus the universal timestamp that makes the amateur fusion join true — a $20 microphone substitutes for infrastructure pros pay five figures for.</p>
+
+  <h3 class="sub-heading">UC 05 — Wind &amp; Surface: The Venue Is a Sensor Input</h3>
+  <p>The practical problem: a lob that dies in a headwind and a knee that goes on a rock-hard pitch are both data, and neither appears in any tracking stream — so analysts misattribute venue effects to technique. The mechanism: a 3D ultrasonic anemometer (~32 Hz, 0.01 m/s resolution) gives the wind vector that enters the quadratic drag term of chapter 12's ballistics — Δv ≈ (ρ C<sub>d</sub> A / 2m) · v<sub>rel</sub>² · Δt, where a headwind raises v<sub>rel</sub> and drag quadratically; a Clegg impact tester gives surface hardness in CIV, with rugby league pitches playing in the 70-90 CIV band [verify].</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc07-wind-env.png" alt="Ultrasonic anemometer measuring wind over a pickleball court with a deflected lob, and a Clegg impact tester on a rugby pitch." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.14</span>: UC 05 — Environmental Micro-Climate. 32 Hz wind vector as a drag covariate; CIV 70-90 pitch hardness band. <strong>Pickleball</strong>: wind explains drive/dink drift — log it before blaming mechanics. <strong>Rugby league</strong>: goal-kick wind compensation and surface hardness as an injury-risk covariate feeding chapter 31's welfare lane.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> context columns that stop false conclusions — the cheapest corrective to overconfident video-only analysis.</p>
+
+  <h3 class="sub-heading">Category B: Fusion, Timing &amp; Edge (UC 06-10)</h3>
+
+  <h3 class="sub-heading">UC 06 — EKF Fusion: Optical + IMU Through Occlusion (E20, Measured)</h3>
+  <p>The practical problem: occlusion is vision's structural wall — in a rugby league ruck the ball carrier vanishes for frames; in pickleball doubles the far-side player's paddle disappears behind bodies and the net post. The mechanism is section 30.4b's continuous-discrete EKF: state x = [p, v, b<sub>a</sub>]<sup>T</sup>, prediction at the IMU's 100 Hz (x̂ = Fx + Bu; P propagated through F and Q), asynchronous correction whenever the 60 Hz optical measurement lands (K = PH<sup>T</sup>(HPH<sup>T</sup> + R)<sup>−1</sup>). Measured (E20, synthetic benchmark, <code>experiments/e20-telemetry-fusion/telemetry_fusion_results.json</code>): optical-only RMSE 0.1898 m drops to 0.1451 m fused — <strong>23.5%</strong>, with the honest caveat that the field run against real chapter-9 footage is still open (section 30.10).</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc03-ekf-fusion.png" alt="EKF fusion: camera 60Hz and IMU 100Hz rails feeding a predict-update loop, fused track surviving a ruck occlusion gap, RMSE 19.0 to 14.5 cm gauge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.15</span>: UC 06 — Fusion Through Occlusion. Predict at 100 Hz, correct at 60 Hz; the fused track survives the gap that kills the optical-only one. <strong>Rugby league</strong>: a winger's track stays alive through the ruck. <strong>Pickleball</strong>: 4.7 cm of RMSE is the difference between "at the kitchen line" and "in the kitchen" — a fault call.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> tracking continuity where it matters most — the filter converts a dead reckoning gap from an identity break into a bounded-error interval.</p>
+
+  <h3 class="sub-heading">UC 07 — PTP Clock Sync: Sync Is the Product</h3>
+  <p>The practical problem: consumer clocks drift ~15 ppm — about 450 ms over a 30-minute session — so the heart-rate row you joined to a video frame belongs to a different rally. Fusion error silently exceeds the effect you are measuring; UC 06's 23.5% is fiction if the clock slips. The mechanism: IEEE 1588 PTP (SMPTE ST 2059-2 in broadcast) exchanges t<sub>1</sub>-t<sub>4</sub> timestamps between master and slave to estimate offset = ((t<sub>2</sub>−t<sub>1</sub>) − (t<sub>4</sub>−t<sub>3</sub>))/2 and delay = ((t<sub>2</sub>−t<sub>1</sub>) + (t<sub>4</sub>−t<sub>3</sub>))/2, disciplining every device to sub-millisecond agreement. The amateur fallback is UC 04's impact-audio anchor — a physical event every sensor can hear.</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc04-ptp-sync.png" alt="PTP grandmaster clock synchronizing a camera, GPS vest and microphone, with a drift-corrected timeline." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.16</span>: UC 07 — One Clock. PTP grandmaster disciplining camera, vest, and microphone; 450 ms consumer drift corrected to sub-millisecond. <strong>Rugby league</strong>: broadcast genlock plus vest NTP discipline across 26 pods. <strong>Pickleball</strong>: phone, watch, and impact mic aligned by the paddle transient.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> the difference between data and fiction — get the clock right before any other fusion work, and measure your own devices' drift rather than trusting the 15 ppm estimate.</p>
+
+  <h3 class="sub-heading">UC 08 — The Fusion Join: Three Streams, One Row (C30-lab, Measured)</h3>
+  <p>The practical problem: wearable, optical, and event streams each answer a different question (how hard / where / what happened), and coaching value exists only in the joined row. The mechanism: join key (athlete_id, timestamp_s) into the chapter-5 columnar spine — video registered to court coordinates by the chapter-6 homography, GNSS projected to the same local frame, identity resolved by roster/vest assignment on the wearable side and jersey detection on the video side. Measured in the C30 lab artifact (<code>experiments/c30-sensors/outputs/metrics.json</code>): athlete A1 at t=4.2 s, court position (1.82, 3.42) m, speed 1.8 m/s, HR 143 bpm (Polar H10), event <em>dink</em> — one row, three sensors.</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc08-fusion-join.png" alt="Three streams — video frame, wearable heart-rate line, event tag — joining on athlete plus timestamp into one spine table row." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.17</span>: UC 08 — The Join. Video + wearable + event on key (athlete_id, timestamp_s) — one spine row, the schema the chapter-28 cockpit consumes. <strong>Pickleball</strong>: four-player roster, identity join is a color check. <strong>Rugby league</strong>: 26 vest assignments against a team sheet — same key, more QA; identity is the hard join (section 30.4).</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> the fused row is the atomic unit every downstream chapter reads — resample fast streams down to the slow cadence, never interpolate upward into fabricated precision.</p>
+
+  <h3 class="sub-heading">UC 09 — Edge Compute: The M4 Pipeline at $0.00 a Match (E19, Measured)</h3>
+  <p>The practical problem: a sensor stack that costs dollars per match to analyze will not survive a season; the compute location is an economic decision as much as an engineering one. The mechanism is section 30.5's edge profile (E19, <code>experiments/e19-token-economics/token_economics_benchmark.json</code>): on an Apple M4 Max the full pipeline — Neural Engine detection, CPU association and homography, Metal GPU kinematics — runs at <strong>55.7 ms glass-to-glass</strong>, 68.4 fps, 28.5 W, $0.00 marginal per match; the cloud comparison is $6.447 per 80-minute match on GPT-4o-class VLMs, a 496.2-match break-even [verify at print].</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc09-edge-m4.png" alt="M4 Max edge pipeline with Neural Engine, GPU and CPU lanes feeding a courtside tablet, latency bar versus cloud cost bar." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.18</span>: UC 09 — Edge vs Cloud. 55.7 ms and $0.00 marginal on the M4 Max; seconds of latency and per-match dollars in the cloud (E19, measured). <strong>Pickleball</strong>: one court, one machine — the edge rig is the whole stack. <strong>Rugby league</strong>: edge handles the real-time lane; batch video understanding still goes to the cloud on volume.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> sub-60 ms live coaching becomes affordable at amateur scale — and the break-even audit (section 30.10) decides per club which workloads live on the edge versus the cloud.</p>
+
+  <h3 class="sub-heading">UC 10 — The Graveyard: Sensor Failure as Design Input</h3>
+  <p>The practical problem is procurement, not engineering: how do you avoid buying hardware that bricks? The mechanism of death is architectural — data routed through a proprietary cloud dies with the vendor's auth server. Section 30.3's verified timeline: Zepp (servers off ~2020), Babolat Play (EOL 2021-12-31), Sony Smart Tennis Sensor (EOL 2021-09-30), HEAD (died with Zepp). The survival pattern is the inverse: open CSV/API export (Catapult, STATSports, Polar, VALD, Hawkin, PB Vision Premium) or an institutional license holder (the league-licensed ball chip of UC 03). Phone vision did not out-sensor the sensors; it out-distributed them — the camera players already owned beat the sensor they had to buy.</p>
+  <figure class="full">
+    <img src="shared/images/ch30-uc10-graveyard.png" alt="Timeline of dead racquet sensors as gravestones 2015-2021 with phone vision AI rising above them." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 30.19</span>: UC 10 — The Kill-Switch Timeline. Four server-dependent racquet sensors bricked 2020-21 while vision AI took the market. <strong>Pickleball</strong>: the Potenza SMARTx inherits this exact architecture — await, don't build. <strong>Rugby league</strong>: institutional buyers keep the stack alive, but the export clause is still the contract term that matters.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> one procurement rule that outlives every product cycle — data exit before data entry; a sensor whose rows land in your own spine outlives its vendor.</p>
+
+  <h2 class="section-title"><span class="section-num">30.9c</span> What This Adds to the Pipeline</h2>
+  <p>These 10 use cases are the hardware layer applied across the book's five verbs. UC 01-05 feed <em>watching</em> with streams video cannot produce — contact physics (chapter 12's ballistics gain a drag covariate from UC 05 and a contact timestamp from UC 03), physiology (chapter 11's force-blind spot answered by UC 02's load currency), and event boundaries (UC 04's audio feeds chapter 15 and chapter 19's eventing). UC 06-08 are the <em>fusion machinery</em>: the EKF extends chapter 9's tracking through occlusion, PTP disciplines every clock the book touches, and the join writes the chapter-5 spine rows that the chapter-28 cockpit renders and chapter-29 practice design consumes. UC 09 is the <em>acting</em> economics — edge compute is what makes the sub-60 ms live lane affordable — and UC 10 is the procurement guardrail that keeps every other use case from dying with a vendor. The honest labels hold throughout: E19 and E20 and the C30-lab join are measured artifacts; the CIV band, the Potenza price, and the break-even number carry [verify]; and the smart-paddle case is deliberately a lesson, not a product recommendation.</p>
+
+  <h2 class="section-title"><span class="section-num">30.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li><strong>Build the $1,500 rig and measure a session</strong>: iPhone 4K120 + Apple Watch + Polar H10 + impact mic, joined in the C05 spine. Deliverable: one fused match row set for a pickleball doubles game, pickleball-side proof of the whole chapter.</li>
+    <li><strong>The sync drill</strong>: two recording devices, 30 minutes, measure the actual clock drift. The 450 ms figure is theoretical at 15 ppm; your devices are specific. This number decides whether your joins are data or fiction.</li>
+    <li><strong>The real-video EKF run</strong>: E20's 23.5% is synthetic. Fuse a chapter-9 pickleball track with a logged wearable session and publish the honest field number — and run the same filter on a rugby league GPS trace against broadcast tracking.</li>
+    <li><strong>The event-camera trial</strong>: a Prophesee dev kit against the chapter-12 ball-blur wall, on Linux, with the latency and detection numbers measured rather than presumed [verify arm64 path].</li>
+    <li><strong>The break-even audit</strong>: recompute the 496.2-match edge/cloud crossover [verify at print] against current API prices and your own match volume; the conclusion is robust, the number is not static.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">30.11</span> Sources</h2>
+  <ul>
+    <li>Hardware dossier (2026-08-30, verified): the 25-product inventory — Wingfield (https://www.wingfield.io/en/products/cam-plus), PlaySight (https://playsight.com/), SwingVision App Store listing, PB Vision (https://pb.vision/), PlayReplay (https://playreplay.io/), Potenza SMARTx (https://potenzapickleball.com/products/smartpaddle-by-potenza), Zenniz (https://zenniz.com/), Dashr (https://www.dashrsystems.com/), Prophesee GenX320 (https://www.prophesee.ai/event-based-starter-kit-genx320-raspberry-pi-5/).</li>
+    <li>Validity literature: Navalta et al. 2024, Sports, DOI 10.3390/sports12090234 (HR valid MAPE &lt;10%; calorie estimates poor); Polar Verity/OH1 validity (https://digitalcommons.wku.edu/ijesab/vol14/iss4/179); Apple Heart and Movement Study pickleball findings (https://www.apple.com/newsroom/2023/10/new-apple-research-highlights-the-health-benefits-of-pickleball/); Hawk-Eye SkeleTRACK (https://www.sony.com/en/SonyInfo/technology/stories/entries/20240411/hawkeye/); Adidas Trionda + Kinexon 500 Hz ball IMU (https://news.adidas.com/football/adidas-unveils--trionda----the-official-match-ball-of-the-fifa-world-cup26-/).</li>
+    <li>Lab artifacts (measured): <code>lab/w7_lab_sensors.py</code> → <code>experiments/c30-sensors/outputs/metrics.json</code> (the fusion join row); E20 → <code>experiments/e20-telemetry-fusion/telemetry_fusion_results.json</code> (EKF: 0.1898 m → 0.1451 m RMSE, 23.5%, synthetic); E19 → <code>experiments/e19-token-economics/token_economics_benchmark.json</code> (edge profile: 55.7 ms, 68.4 fps, $6.447/match GPT-4o, 496.2-match break-even [verify at print]).</li>
+    <li>Figures: hardware-tier matrix and fusion architecture (dossier-derived); sensor hierarchy, graveyard timeline, smart-paddle anatomy, rugby wearable, EKF pipeline, and edge-vs-cloud figures generated in the book's burnt-orange engineering style (2026-08-30).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="29.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 29</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 29 — Practice Design & Interventions: The Acting Loop</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 29</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 29 — Practice Design & Interventions: The Acting Loop</p>
+        </div>
+      </div>
+    </a>
+    <a href="31.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 31</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 31 — Deployment, Licensing, Rights & Ethics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 31</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 31 — Deployment, Licensing, Rights & Ethics</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 31 — Deployment, Licensing, Rights & Ethics</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The AGPL trap, media rights, athlete data, and the no-medical-advice boundary</p>
+        </div>
+        <a href="31.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

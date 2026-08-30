@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 18 — Annotation: The Ground-Truth Workflow - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #A2542A;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-18" style="background-color: #A2542A; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 18</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 18 — Annotation: The Ground-Truth Workflow</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Tooling, label budgets, inter-annotator agreement, and the discipline that makes labels trustworthy</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">34 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-18-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Labels Are the Only Truth You Own</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-18-1" data-section="s-18-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Labels Are the Only Truth You Own</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-18-1" data-section="s-18-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Labels Are the Only Truth You Own</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">18</span> Chapter 18 — Annotation: The Ground-Truth Workflow</h1>
+    <p class="chapter-subtitle">Tooling, label budgets, inter-annotator agreement, and the discipline that makes labels trustworthy</p>
+  </header>
+
+<h3 id="s-18-1"><span class="section-num">18.1</span> Labels Are the Only Truth You Own</h3>
+
+<p class="section-intro">Every model in this book consumes labels, and every claim ultimately rests on them. Chapter 8's detection AP numbers, chapter 9's HOTA scores, chapter 12's ball-tracking precision, chapter 16's event taxonomy — all of them are claims <em>relative to labels</em>. The uncomfortable fact: labels are made by humans (or agents) and humans disagree. The professional discipline is not "labels are ground truth" — it is <strong>measuring whether your labels agree, and publishing the number</strong>. This chapter is the workflow that produces defensible labels: what to label, how many, with what tool, and with what agreement standard. The kappa protocol is <strong>source-backed</strong> (Cohen 1960, Landis and Koch 1977); the agreement numbers are <strong>measured</strong> (our lab's dual-annotation run, experiments/c18-annotation).</p>
+
+  <p>The workflow has four stages, and the order is load-bearing. <strong>Stage one, raw footage:</strong> the clip enters with provenance — pb-003 arrives as 900 frames at 25 fps from a fixed elevated camera with a SHA-256 hash; nrl-001 arrives as broadcast PTZ footage with pan drift measured at 9.76 px/frame (E08). <strong>Stage two, frame-level labels:</strong> geometry first (court or field keypoints — cheap, and for a fixed camera it amortizes to a one-time cost), then player boxes and identities, then the expensive small target (the ball). <strong>Stage three, event labels:</strong> contact-anchored events that inherit everything below them — an event label that cannot name the ball position and actor it rests on is an opinion, not a label. <strong>Stage four, quality review:</strong> a dual-annotated panel, an agreement metric per label family, adjudication of disagreements, and publication of the number. Skipping stage four is how datasets become folklore.</p>
+
+  <p>The two sports stress the workflow differently. Pickleball's fixed camera makes geometry nearly free and concentrates cost in the 8–14 px motion-blurred ball. Rugby league's broadcast camera makes geometry a per-frame cost (keypoints cannot be labeled once — the camera moves) and concentrates cost in player identity: 13.2 persons per frame on average, 24 at peak, and E08 measured 295 spawned track IDs where the true number of players is 26. Same workflow, different expensive stage.</p>
+
+  <figure id="fig-18-01" class="full">
+    <img src="shared/images/ch18-annotation-workflow.png" alt="Four-stage annotation workflow: raw footage filmstrip feeding frame-level labels (player boxes, ball dot), then event labels on a timeline, then a quality-review stage with checkmark. Burnt-orange arrows connect the stages." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.1</span>: The four-stage ground-truth workflow. Geometry before players, players before ball, everything before events — and the review stage gates them all.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">18.2</span> The Tool Landscape (2026)</h2>
+  <p>The tool decision is a scale-and-sovereignty decision, not a feature checklist. Six options cover the realistic space:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>License</th>
+        <th>M4 Max</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>CVAT</strong></td>
+        <td>MIT</td>
+        <td>⚠️ (Docker, Rosetta)</td>
+        <td>The open standard: boxes, keypoints, polygons; Track Mode with keyframe interpolation for MOT work</td>
+      </tr>
+      <tr>
+        <td><strong>Label Studio</strong></td>
+        <td>Apache-2.0</td>
+        <td>✅ (pip-native arm64)</td>
+        <td>Custom schemas + review flows; ML-backend pre-labeling is a first-class API — the agent hook</td>
+      </tr>
+      <tr>
+        <td><strong>Roboflow</strong></td>
+        <td>SaaS (free tier)</td>
+        <td>cloud</td>
+        <td>Fastest to a dataset; the pickleball bootstrap sets live here — but data leaves your machine</td>
+      </tr>
+      <tr>
+        <td><strong>FiftyOne</strong></td>
+        <td>Apache-2.0</td>
+        <td>✅</td>
+        <td>Dataset inspection + model-error surfacing (the active-learning companion, not an editor)</td>
+      </tr>
+      <tr>
+        <td><strong>V7 / Encord</strong></td>
+        <td>commercial</td>
+        <td>cloud</td>
+        <td>Team-scale QA workflows and audit trails; the pro-team choice when budget allows</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Three details matter more than the table. <strong>First, CVAT's Track Mode is the single biggest labor saver in the open lane:</strong> you label keyframes and the tool linearly interpolates boxes between them (<code>K</code> toggles a keyframe, <code>O</code> marks an object outside or occluded, merge reconnects fragmented identities), which vendor and community guides credit with 5–10× less manual work than frame-by-frame boxing [verify in lab]. The catch on Apple Silicon: CVAT is a multi-service Docker stack (server, UI, Postgres, Redis, OPA, ClickHouse) and not all images are native arm64 — components run under Rosetta x86 emulation [verify current image matrix]. <strong>Second, Label Studio's ML backend is the agentic hook:</strong> any local model can pre-fill tasks over a plain HTTP API, which is exactly the agent-drafts-human-disposes workflow of section 18.8, and the whole thing is <code>pip install label-studio</code> — pure Python, native arm64, no Docker. <strong>Third, Roboflow's free tier makes public-tier datasets public</strong> and grants content rights — read those terms before uploading unblurred club footage; for the book's amateur-sport regime that is disqualifying (section 18.9).</p>
+
+  <p>The license story is clean in 2026: CVAT is MIT and Label Studio is Apache-2.0, so the open lane has no AGPL-shaped trap — contrast chapter 8's Ultralytics licensing problem. Annotation <em>tools</em> are a solved purchasing decision; annotation <em>labor</em> is not. Choose by task: boxes/keypoints with heavy interpolation → CVAT; schema-heavy + review flows + agent pre-fill → Label Studio; error-driven iteration → FiftyOne alongside either. For the pb-003/nrl-001 regime — one practitioner, two sports, a few thousand frames, data that must stay local — the book's default is Label Studio with a local ML backend, CVAT when track interpolation dominates.</p>
+
+  <figure id="fig-18-02" class="full">
+    <img src="shared/images/ch18-cvat-labelstudio-ui.png" alt="Side-by-side diagram of CVAT track mode with keyframe interpolation on a pickleball court, and Label Studio with ML-backend pre-labels and accept/correct review buttons on a rugby pitch frame." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.2</span>: The two open lanes. CVAT interpolates tracks between keyframes; Label Studio lets the pipeline pre-fill the schema and turns annotation into review.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">18.3</span> What to Label: The Five Label Families</h2>
+  <p>Before budgets and tools, the taxonomy. Every label in this book is one of five families, and each family has its own cost profile and (section 18.5) its own agreement metric:</p>
+  <ul>
+    <li><strong>Boxes</strong> — axis-aligned rectangles around players, referees, paddles. The cheapest spatial label (two corners), the native input of every detector in chapter 8, and agreed by IoU. Weakness: a box does not localize a player on the court plane — the feet do that, which is why the pb003 schema adds a foot point to every box.</li>
+    <li><strong>Masks</strong> — per-pixel silhouettes. Ten to thirty times the labor of a box and unnecessary for anything in the pb-003/nrl-001 pipeline; they earn their cost only when occlusion boundaries matter (chapter 10's segmentation lane) or when training a SAM-class model. Skip until a downstream model consumes them.</li>
+    <li><strong>Keypoints</strong> — named points: 12 court corners/line-ends in pickleball, 10 m-line intersections in rugby, ball centers, foot points. Agreed by distance in pixels. The fixed-camera gift: pickleball court keypoints are labeled once and propagated; rugby field keypoints must be re-labeled per sampled frame because the broadcast camera pans.</li>
+    <li><strong>Tracks</strong> — boxes plus identity over time. This is the expensive family: identity is a judgment call under occlusion, and every identity error compounds downstream (chapter 9's HOTA counts them). The rugby MOT ground truth is the heaviest labeling task in the book.</li>
+    <li><strong>Events</strong> — time-anchored classifications (serve, dink, contact; tackle, play-the-ball, kick). Agreed by Cohen's kappa. Events inherit every label below them and add two failure modes of their own: boundary placement (which frame is the contact?) and class ambiguity (dink or drop?), which is why the codebook — not the annotator — is usually what needs fixing.</li>
+  </ul>
+
+  <figure id="fig-18-03" class="full">
+    <img src="shared/images/ch18-label-taxonomy.png" alt="Five-column label taxonomy: bounding box around a pickleball player, mask silhouette of a rugby tackler, keypoint skeleton on a server, track trajectory of a ball with ID tag, event timeline pill." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.3</span>: The five label families across both sports. Each family has its own cost and its own agreement metric — there is no single "label quality" number.</figcaption>
+  </figure>
+
+  <p>Label exactly what downstream models train on and metrics consume — nothing more. The per-sport targets:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Pickleball (pb-003)</th>
+        <th>Rugby (nrl-001)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Ball center</strong></td>
+        <td>500 frames (the E04 next-step budget) — plus a visibility enum, because E04 teaches the ball is <em>invisible</em> in a large share of frames and a forced coordinate manufactures false ground truth</td>
+        <td>Skip initially — the ball is a handful of pixels in a 100 m broadcast frame; revisit with a zoomed feed</td>
+      </tr>
+      <tr>
+        <td><strong>Court / field keypoints</strong></td>
+        <td>12 keypoints, once per camera setup — fixed camera amortizes this to ~zero per-frame cost</td>
+        <td>Visible line intersections per sampled frame — the camera moves, so this cost never amortizes</td>
+      </tr>
+      <tr>
+        <td><strong>Player boxes + tracks</strong></td>
+        <td>4 slots (A1/A2/B1/B2) with foot points, 300 frames + active-learning spread</td>
+        <td>25 identity slots, MOTChallenge format, 300 frames (SAHI-tiled for far-end players)</td>
+      </tr>
+      <tr>
+        <td><strong>Events</strong></td>
+        <td>6 golden frames first (the PBN taxonomy), then every review-flagged frame, contact-anchored</td>
+        <td>The Bath-2025 tackle clip set, timeline segmentation rather than frame-by-frame</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">18.3b</span> Two Worked Annotation Tasks</h2>
+  <p><strong>Pickleball, pb-003: the three-class task.</strong> The clip is 900 frames at 25 fps from a fixed elevated camera over a 13.41 × 6.10 m doubles court. The labeling task is deliberately small: <strong>player</strong> (four boxes, identity slots A1/A2/B1/B2 — a slot, never a name — plus the foot point the homography consumes), <strong>ball</strong> (a center coordinate plus a five-state visibility enum: <code>visible / partial / blurred / occluded / not_visible</code>), and <strong>paddle</strong> (an optional pilot tier, the RacketVision six-point paddle pose, ~100 frames to size the real cost of equipment-level annotation before committing, arXiv:2511.17045 [verify]). Three classes, but the schema carries more than three fields: the visibility enum, the actor and confidence on every event, and the <code>annotators[]</code> agreement block. The smallness is the lesson — a well-scoped three-class task with a measured agreement number beats a twenty-class task with none.</p>
+
+  <figure id="fig-18-04" class="full">
+    <img src="shared/images/ch18-pb003-annotation.png" alt="Annotation interface view of a pickleball doubles court from an elevated fixed camera: four player boxes tagged A1 A2 B1 B2, a magnified ball dot in a zoom inset, a paddle outline near the net, 12 court keypoint crosses, and a three-class legend: player, ball, paddle." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.4</span>: The pb-003 annotation surface. Four player slots, one magnified ball, one paddle — a three-class task where the zoom inset does the heavy lifting on the 8–14 px ball.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league, nrl-001: the 28-class task.</strong> The broadcast clip covers a 100 × 68 m field from a panning PTZ camera. The schema needs 25 player identity slots (thirteen-a-side minus the never-full overlap the clip actually shows; E08 measured 13.2 persons per frame on average, 24 at peak), plus <strong>ball</strong>, <strong>referee</strong>, and <strong>goalposts</strong> — 28 classes in total. Every design parameter is harsher than pickleball: far-end players are tens of pixels tall (the SAHI tiling of chapter 8 applies at label time too, because you cannot label what you cannot see); field keypoints must be re-labeled per sampled frame against a measured 9.76 px/frame pan drift; and track identity is the dominant cost — E08's detector spawned 295 IDs over the clip where 26 humans exist, which is precisely the disease the labeled set exists to measure. The deliverable format is MOTChallenge CSV (<code>frame, id, bb_left, bb_top, bb_w, bb_h, conf</code>, 1-based frames), feeding HOTA evaluation directly. E14's own next step is on record: <em>if HOTA is claimed, label 300 frames first</em>.</p>
+
+  <figure id="fig-18-05" class="full">
+    <img src="shared/images/ch18-rl-28class.png" alt="Annotation interface view of a rugby league broadcast pitch: many small player boxes with track ID numbers in two team outline colors, a striped referee box, a ball ellipse, goalpost markers at the try line, and a 28-entry class list panel." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.5</span>: The nrl-001 annotation surface. Twenty-five player slots plus ball, referee, and goalposts — 28 classes, and identity, not geometry, is where the hours go.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">18.4</span> The 500-Frame Math</h2>
+  <p>500 frames is the recurring budget because it is the smallest sample where a pickleball ball detector goes from noise to useful: the E04 log says "label 500 frames, fine-tune TrackNetV4". The number rests on a throughput model, and the model's dominant variable is whether a model pre-fills the annotation:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Fully manual</th>
+        <th>With model pre-fill</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ball center + visibility</td>
+        <td>20–40 s/frame (zoom, blur judgment, back-scrub)</td>
+        <td>5–15 s/frame (accept ≈ 2 s; correct ≈ 10 s) [verify in lab]</td>
+      </tr>
+      <tr>
+        <td>Player box + foot ×4</td>
+        <td>15–30 s/frame</td>
+        <td>3–8 s/frame (track pre-fill + interpolation)</td>
+      </tr>
+      <tr>
+        <td>Event (contact-anchored)</td>
+        <td>30–90 s/event</td>
+        <td>10–30 s/event (audio onset + temporal-diff proposals)</td>
+      </tr>
+      <tr>
+        <td>Court keypoints ×12</td>
+        <td>3–5 min, once</td>
+        <td>n/a (fixed camera, no model needed)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The pb-003 ball budget, single annotator: 500 frames × 10 s in the verify lane ≈ <strong>83 minutes</strong>; fully manual at 30 s/frame ≈ <strong>4.2 hours</strong>. Add the 10% dual-annotated gold panel (+25 min), player boxes pre-filled by E09 tracks (500 × 6 s ≈ 50 min), and events across the clip's contacts (15–30 min), and the full pb003-v1 label set lands at <strong>roughly 3–5 person-hours with agent pre-fill, 8–12 without</strong>. A weekend, not a grant. The pre-fill multiplier (~3×) is itself a measurable result the lab publishes.</p>
+
+  <p>Precision is a separate question from count. Human placement jitter on an 8–14 px blurred ball is the floor — a trained annotator with a zoom UI places the center with σ ≈ 1.5–2.5 px [verify in lab — measure it in the dual panel, don't assume]. Consensus of k independent annotators shrinks the error by √k, so ±1 px effective ground truth needs k ≈ 4, or k = 2 plus a sub-pixel intensity-centroid snap. But the model rarely needs ±1 px: TrackNet-family training consumes Gaussian heatmaps several pixels wide, and E10 evaluates at a 50 px tolerance while measuring 1.42 px RMSE against human labels. Set the precision budget from the metric the label feeds — and buy precision with consensus depth on a small panel, not with more frames. k = 4 on 50 frames calibrates your ground truth's noise floor better than k = 1 on 500.</p>
+
+  <p><strong>The limit nobody escapes:</strong> annotation is the real cost of this entire discipline, and full-density labeling does not scale. A 30-minute match at 25 fps is 45,000 frames; the event layer alone — tagged at 3–4× real time, dual-annotated, adjudicated — costs 8+ hours before a single box is drawn, and frame-level labeling of the same match is hundreds of hours. Nobody labels a season. The only honest paths are the ones this chapter prices: a golden fixture that anchors everything, a 500-frame proof-of-value budget, a 10% dual panel for the agreement number, and active learning to spend the rest where the model is worst.</p>
+
+  <figure id="fig-18-06" class="full">
+    <img src="shared/images/label-budget-curve.png" alt="Label budget curve: AP vs labels, steep to 500 then flattening, proof of value marker. Recreate: white background, burnt-orange curve." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.6</span>: The Proof-of-Value Threshold. 500 labels buys most of the gain; the curve flattens because the remaining error is the label quality, not label count.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">18.5</span> Inter-Annotator Agreement: Kappa, IoU, Distance</h2>
+  <p>A label set without a measured agreement number is an opinion. Three label families, three agreement metrics:</p>
+  <ul>
+    <li><strong>Categorical labels</strong> (events, shot types, visibility states): <strong>Cohen's kappa</strong> for two raters — observed agreement corrected for chance, κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>). Three or more raters: Fleiss' κ; ordinal labels or missing data: Krippendorff's α. Raw percent agreement lies — with binary visibility calls, a 90% raw agreement can hide κ ≈ 0.4.</li>
+    <li><strong>Boxes</strong>: mean pairwise IoU plus match-rate at IoU ≥ 0.5 (PASCAL convention) — target ≥ 0.5 per box, ≥ 0.75 typical. Caveat: IoU measures task easiness as much as annotator skill — big centered players agree by default, so report per-class and per-size, never one headline number.</li>
+    <li><strong>Keypoints</strong>: distance in pixels (mean / median / p95) — target ≤ 3 px for ball centers. Pixels are the unit the downstream metric consumes; keep the agreement statement in the unit of consequence.</li>
+    <li><strong>Tracks</strong>: fragmentation count and ID switches between annotators; HOTA only once both annotators produce full tracks — chapter 9's machinery defines the vocabulary.</li>
+  </ul>
+
+  <p>Landis &amp; Koch (1977, <em>Biometrics</em> 33(1):159–174) band the scale: &lt;0 poor, 0–0.2 slight, 0.2–0.4 fair, 0.4–0.6 moderate, 0.6–0.8 substantial, 0.8–1.0 almost perfect. Teach the caveat in the same breath: those bands are the authors' stated opinion, not an empirical law, and they are routinely over-read. For this book: κ ≥ 0.61 ("substantial") is the gate for an event class entering the training taxonomy; κ &lt; 0.41 means the <em>class definition</em> is ambiguous and goes back to the codebook — low kappa is a specification bug before it is an annotator bug.</p>
+
+  <p>Our lab ran the protocol for real (experiments/c18-annotation/outputs/metrics.json): annotator A was the manual contact review of the six pb-003 golden frames; annotator B was a second rater with 2 of 6 deliberate disagreements. The measured result:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Observed agreement</td>
+        <td>0.667 (measured, C18-lab)</td>
+      </tr>
+      <tr>
+        <td>Expected agreement (chance)</td>
+        <td>0.444</td>
+      </tr>
+      <tr>
+        <td><strong>Cohen's kappa</strong></td>
+        <td><strong>0.400 — Landis-Koch "fair"</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The fragility lesson: at n=6, two disagreements move kappa a full band.</strong> This is why the honest protocol is dual-annotation on 10%+ of frames — 90 of 900 for pb-003 — blind, codebook in hand, with rally-clustered bootstrap confidence intervals (chapter 20), aimed at kappa ≥ 0.61 per label family. Disagreements resolve by adjudication, never averaging: averaging two ball positions manufactures a point often <em>more wrong than either</em> when the ball is blurred, while an adjudicated decision grows the codebook's borderline examples. And "the label is the ground truth" is never true before the agreement number is published — the pb003 schema enforces this by refusing validation for a release whose <code>annotators[].agreement</code> block is empty.</p>
+
+  <figure id="fig-18-07" class="full">
+    <img src="shared/images/ch18-kappa-ladder.png" alt="Landis-Koch kappa ladder: six bands from poor to almost perfect on a 0-to-1 scale, a burnt-orange ship gate flag at 0.61, and a gauge showing the measured kappa 0.40 in the fair band annotated n=6 fragile." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.7</span>: The Landis-Koch ladder with the book's gate at κ ≥ 0.61. The measured C18-lab value (0.400, n=6) sits in "fair" — a demonstration of how fragile small-panel kappa is, not a dataset verdict.</figcaption>
+  </figure>
+
+  <figure id="fig-18-08" class="full">
+    <img src="shared/images/kappa-workflow.png" alt="Kappa workflow: annotators A and B labeling frames, computing kappa 0.400 fair, decision diamond ship or adjudicate loop. Recreate: white background, burnt-orange decision path." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.8</span>: The Agreement Gate. Below 0.61 (substantial), labels go back to adjudication — the number is the gate, not the intent.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">18.6</span> Active Learning: Make Every Label Count</h2>
+  <p>Random frame sampling wastes the budget on frames the model already handles. Active learning (Settles, <em>Active Learning Literature Survey</em>, 2009) spends it where the model fails. The loop: label a small random seed (~100 frames) → train the current model → infer over the unlabeled pool and score each frame by uncertainty (least-confidence, margin, or entropy; for detection, low max-score or disagreement across augmentations) → label the top-k worst frames → retrain. The honest stopping rule is the plateau on the gold panel, not a round number.</p>
+
+  <p>Two book-specific samplers sharpen the loop. <strong>Model disagreement:</strong> frames where the per-frame detector (E04 lineage) and the temporal model (E10) disagree about ball presence are maximally informative — each model's floor is the other's ceiling. <strong>The mid-confidence band:</strong> pre-fill confidence near 1.0 goes to the cheap auto-verify lane; near 0 is usually an invisible ball (cheap enum set); the middle band is where human time goes. And because events are class-imbalanced by nature — dinks dominate kitchen rallies, lets are rare — the labeling queue oversamples rare classes or the fine-tune inherits the imbalance (chapter 8's class-balance discipline, applied at label time). The budget allocation the book names: <strong>~80% of frame throughput goes through the verify lane, ~20% through the full label lane</strong> (the 10% dual panel plus active-learning hard cases). The gold panel is not overhead — it calibrates the verify lane by measuring how often the pre-fill is right. At 500 frames the uncertainty spread concentrates labels where the model struggles; the effective sample is 3–4× larger than random sampling. FiftyOne is the tool for the inspection half.</p>
+
+  <h2 class="section-title"><span class="section-num">18.6b</span> Ten Use Cases: The Annotation Playbook</h2>
+  <p class="section-intro">Sections 18.1–18.6 teach the workflow concept by concept. This section applies it: ten concrete annotation use cases in three named categories — frame-level labeling, time and event labeling, and quality/economics — each with the practical problem, the mechanism and its math, a figure, the pickleball and rugby league application, and the payoff. Every number carries its evidence label: measured (E-series or C18-lab), source-backed (paper), or [verify].</p>
+
+  <h3 class="sub-heading">Category A: Frame-Level Labeling (UC 01–03)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Three-Class Bootstrap: Player, Ball, Paddle (pb-003)</h3>
+  <p>A club coach wants serve-quality analytics from one fixed camera and one 900-frame clip. The entire model stack of chapters 8–12 is blocked on one artifact: a labeled training set. The mechanism is the smallest schema that feeds the pipeline — four player identity slots (A1/A2/B1/B2) with foot points, one ball center with a five-state visibility enum (<code>visible / partial / blurred / occluded / not_visible</code>), one optional paddle tier. The math is the throughput model of 18.4: 500 frames × 10 s in the verify lane ≈ 83 minutes against 4.2 hours fully manual, and placement precision on the 8–14 px blurred ball is bounded by human jitter σ ≈ 1.5–2.5 px [verify in lab]. The visibility enum is the load-bearing detail: E04 teaches the ball is invisible in a large share of frames, and a forced coordinate on an invisible ball manufactures false ground truth that the fine-tune then learns.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-pb003-3class.png" alt="Pickleball three-class annotation surface: four player boxes tagged A1 A2 B1 B2, magnified ball dot in zoom inset, paddle outline, three-class legend." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.10</span>: UC 01 — Three-Class Bootstrap. The pb-003 schema is deliberately small: player slots, ball + visibility, optional paddle. <strong>Pickleball</strong>: the E04 exit ticket — 500 labeled ball frames unlock the TrackNetV4 fine-tune of chapter 12. <strong>Rugby league</strong>: the same three-class skeleton becomes box + ball + posts before any identity work. <strong>Payoff</strong>: a weekend of labeling, not a grant — the coach gets a working ball detector from one clip.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — The 28-Class MOT Set: Identity Is the Expensive Class (nrl-001)</h3>
+  <p>A pathway analyst wants tackle-count and ruck-speed metrics from broadcast rugby league footage. Chapter 9's tracker fragments — E08 measured 295 spawned track IDs where the true player count is 26 — and the fix on record is E14's own next step: label 300 frames of MOT ground truth first. The mechanism is a 28-class schema: 25 player identity slots plus ball, referee, and goalposts, exported in MOTChallenge CSV (1-based frames) so HOTA consumes it directly. The math is brutal arithmetic: 300 frames × 13.2 persons per frame (E08 mean, 24 at peak) ≈ 3,960 box-plus-identity decisions, and every identity judgment under occlusion is a judgment call, not a measurement. Field keypoints must be re-labeled per sampled frame against the measured 9.76 px/frame pan drift (E08) — geometry never amortizes on a moving camera.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-rl-28class.png" alt="Rugby league 28-class annotation: small player boxes with track IDs in two team colors, striped referee box, ball ellipse, goalpost markers, 28-entry class panel." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.11</span>: UC 02 — The 28-Class MOT Set. Twenty-five identity slots plus ball, referee, goalposts. <strong>Rugby league</strong>: the ground truth that turns "fragmentation looks bad" into a HOTA number (chapter 9). <strong>Pickleball</strong>: the four-slot equivalent is 30× cheaper — same format, tiny census. <strong>Payoff</strong>: officiating and pathway recruitment get defensible involvement counts instead of tracker folklore.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Mask Annotation for a SAM Fine-Tune</h3>
+  <p>Chapter 10's segmentation lane needs masks only when occlusion boundaries matter — a tackle pile, a paddle edge against the net cord. Masks cost 10–30× the labor of a box, so the mechanism is a pilot, not a campaign: label 50–200 polygon masks [verify — practitioner pilot scale, no published benchmark], fine-tune a SAM-class model (chapter 10), then let the model propose masks and the human corrects boundaries. The math is the fine-tune cost curve: annotation minutes = N × (30–90 s per polygon) against the box rate of 3–8 s — the 100-mask pilot is 1–2.5 hours, and it answers one question: does the mask lane improve the downstream metric enough to justify 10–30× per frame?</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-mask-sam.png" alt="Mask annotation for SAM fine-tune: rugby tackler polygon mask with control points, arrow labeled fine-tune, automatic mask proposals over pickleball player and paddle." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.12</span>: UC 03 — Mask Pilot for SAM. Human polygons seed the fine-tune; the model then pre-fills masks and the human corrects. <strong>Rugby league</strong>: tackle-pile player separation for ruck-speed timing (chapter 28). <strong>Pickleball</strong>: paddle-blade silhouette for face-angle measurement (chapter 10, UC 01). <strong>Payoff</strong>: a priced go/no-go on the mask lane before committing a budget to it.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category B: Time &amp; Event Labeling (UC 04–05)</h3>
+
+  <h3 class="sub-heading">UC 04 — Event-Level Annotation: Contact → Rally → Set</h3>
+  <p>Frame labels answer "where is the ball"; coaches ask "who won the rally and why". Event labels are a hierarchy, and the mechanism is contact-anchoring: every event row names the contact instant, the actor slot, and the ball evidence it rests on — an event that cannot name its anchoring labels is an opinion. The math is inheritance plus two failure modes: events inherit every label below them, and add boundary error (which frame is the contact — ±1 frame at 25 fps is ±40 ms) and class ambiguity (dink or drop?). The taxonomy is the pb003 12-event enum (serve / return / third_shot_drop / third_shot_drive / dink / speedup / lob / volley / fault / let / kitchen_foot_fault / contact), and the conservative-closure rule applies: <code>unknown</code> unless contact and ball evidence support the call.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-event-hierarchy.png" alt="Three-tier event hierarchy: contact instants as dots, rally spans as brackets, set as one long bar, rugby tackle event icons." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.13</span>: UC 04 — The Event Hierarchy. Contacts anchor rallies; rallies anchor sets. <strong>Pickleball</strong>: the 12-event PBN taxonomy over rally spans (E06 windows 8.33 s / 12.83 s). <strong>Rugby league</strong>: tackle → play-the-ball → set-of-six, the NRLSheet event layer of chapter 17. <strong>Payoff</strong>: tactical analytics (chapter 23) get labels that inherit verified geometry instead of free-floating opinions.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — Video Timeline Annotation: Label the Span, Not the Frame</h3>
+  <p>Tagging a 30-minute match frame-by-frame is hundreds of hours; tagging it on a timeline is the difference between possible and abandoned. The mechanism is video timeline segmentation (Label Studio's template is the open-lane default): the annotator marks spans — rally, tackle, play-the-ball — against a filmstrip and audio waveform, and the audio onset detector (chapter 15) drafts contact candidates with a ±frame window. The math is the real-time multiplier: span tagging runs at 3–4× real time dual-annotated and adjudicated, so the event layer of a 30-minute match costs 8+ hours before a single box is drawn — the number that kills "label the whole season" plans in 18.4. E06 measured the reviewable spans at 8.33 s and 12.83 s on pb-003, which sizes the timeline granularity.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-timeline.png" alt="Video timeline annotation interface: filmstrip, segmented event track with labeled pills, playhead cursor, audio waveform strip." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.14</span>: UC 05 — Timeline Segmentation. Events are spans on a track, not points on frames. <strong>Pickleball</strong>: rally spans and the 12-event enum tagged against the audio waveform. <strong>Rugby league</strong>: the Bath-2025 tackle clip set — timeline suits broadcast windows better than frame-by-frame. <strong>Payoff</strong>: the event layer of a whole match becomes a day's work instead of a month's.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category C: Quality, Agents &amp; Economics (UC 06–10)</h3>
+
+  <h3 class="sub-heading">UC 06 — Quality Review: The Kappa Panel</h3>
+  <p>A label set without a measured agreement number is an opinion, and the practical problem is that nobody wants to pay for the second annotator. The mechanism is the 10% dual panel: two annotators independently label the same random 90 of 900 pb-003 frames, blind, codebook in hand, and the trio is computed per label family — Cohen's κ = (p<sub>o</sub> − p<sub>e</sub>) / (1 − p<sub>e</sub>) on categorical fields, mean IoU + match-rate at ≥ 0.5 on boxes, distance-px on points. The C18-lab ran the protocol for real on the six golden frames: observed 0.667, expected 0.444, <strong>κ = 0.400 — Landis-Koch "fair"</strong> (measured, experiments/c18-annotation/outputs/metrics.json). The fragility math: at n=6, two disagreements move kappa a full band, which is why the gate is κ ≥ 0.61 on a 90-frame panel with rally-clustered bootstrap CIs (chapter 20), never a headline number on six frames.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-kappa-agreement.png" alt="Two annotators labeling the same pickleball frame, kappa formula chip, six-step ladder with gate flag at 0.61." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.15</span>: UC 06 — The Kappa Panel. Blind dual annotation, adjudicate don't average. <strong>Pickleball</strong>: κ on event class and visibility, distance-px on the ball center. <strong>Rugby league</strong>: fragmentation and ID switches between annotators on the MOT panel. <strong>Payoff</strong>: the dataset ships with an agreement block — reviewers can trust or discount every downstream number (chapters 8–12) accordingly.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — Semi-Supervised Annotation: Model-Assisted Prefill</h3>
+  <p>The single largest speedup available to a solo practitioner is not a better tool — it is never creating a label from scratch. The mechanism is schema-constrained prefill: every pipeline stage this book has built drafts its own fields (E10 temporal-diff drafts ball centers and pre-sets low-confidence frames to <code>blurred</code>/<code>not_visible</code> — measured 0.814 precision @50 px, 87.2% recall; E11 calibration drafts the 12 court keypoints at 3.82–4.65 cm RMSE; E09 BoT-SORT drafts player boxes and slots at HOTA 0.814), and the human disposes each field with exactly three actions: accept, correct, unknown. The math is the disposition distribution itself: accept-rate × 2 s + correct-rate × 10 s prices the verify lane, and the C18 throughput model puts the speedup at ~3× [verify in lab — the measured distribution is lab 1's deliverable]. E07 is the hard boundary: generative models draft prose, never labels.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-prefill-loop.png" alt="Model drafts label cards of a rugby frame, human with accept, correct, unknown buttons, correction-rate feedback arrow to the model." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.16</span>: UC 07 — Agent Drafts, Human Disposes. The accept/correct/unknown distribution is the prefill quality metric. <strong>Pickleball</strong>: E10 ball proposals + E09 tracks prefill pb-003; verify ≈ 3× faster than manual. <strong>Rugby league</strong>: the same drafts degrade with E08's 295-ID fragmentation — the correction load is the measured difference between the sports. <strong>Payoff</strong>: annotation shrinks from creation to review, and 500 frames becomes one sitting.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 08 — The Active Learning Loop</h3>
+  <p>Random frame sampling wastes the budget labeling frames the model already handles. The mechanism is the Settles (2009) loop: label a ~100-frame random seed, train, infer over the unlabeled pool, score each frame by uncertainty (least-confidence, margin, or entropy; for detection, low max-score or cross-augmentation disagreement), label the top-k worst, retrain — and stop at the plateau on the gold panel, not at a round number. The math is information per annotator-second: at 500 frames the uncertainty spread concentrates labels where the model struggles, making the effective sample 3–4× larger than random sampling [verify — lab 4 measures the AP gain against the gold panel]. Two book-specific samplers sharpen the queue: frames where the per-frame detector (E04) and the temporal model (E10) disagree about ball presence, and rarity weighting so rare classes (lets, kitchen foot faults) are not drowned by dinks.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-active-learning.png" alt="Active learning cycle: seed labels, train model, score pool by uncertainty, label worst frames, circular arrows, uncertainty histogram." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.17</span>: UC 08 — Label the Worst First. Uncertainty and disagreement rank the queue; the gold-panel plateau ends the loop. <strong>Pickleball</strong>: E04-vs-E10 disagreement frames are the ball queue. <strong>Rugby league</strong>: occlusion-dense tackle frames rank first for the MOT set. <strong>Payoff</strong>: the same 500-label budget buys the metric gain of 1,500–2,000 random labels.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Annotation Budget Planning: Cost per Frame</h3>
+  <p>Every annotation plan dies in a spreadsheet before it dies in a tool, so the use case is the budget model itself. The mechanism: cost = N × t per lane, with t set by whether a model prefills — ball center + visibility is 20–40 s/frame manual against 5–15 s/frame verified, player box + foot is 15–30 s against 3–8 s, events are 30–90 s against 10–30 s [verify in lab — lab 3 replaces these practitioner norms with measured min/frame]. The math for pb003-v1: 500 × 10 s ≈ 83 min ball verify + 50 min pre-filled player boxes + 15–30 min events + 25 min dual panel ≈ <strong>3–5 person-hours with agent prefill, 8–12 without</strong>. The limit nobody escapes: a 30-minute match is 45,000 frames at 25 fps, and full-density labeling does not scale — the honest budget is golden fixture + 500-frame proof-of-value + 10% dual panel + active learning on the rest.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-budget-curve.png" alt="Budget curve: accuracy rising steeply to a knee at 500 frames then flattening, straight cost line rising, shaded savings gap." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.18</span>: UC 09 — The Knee and the Cost Line. The metric knee sits near 500 frames; prefill flattens the cost line ~3×. <strong>Pickleball</strong>: the E04 log's 500-frame number is the knee. <strong>Rugby league</strong>: 300 MOT frames × 13.2 persons prices the identity budget before work starts. <strong>Payoff</strong>: the practitioner can promise a date and a dollar figure — a weekend, not a grant.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — The Review Gate: How Many Samples to Trust</h3>
+  <p>The last use case is the one that decides whether the other nine shipped anything trustworthy: how large must the review sample be before the label set can be believed? The mechanism is the review gate — a random 10% panel, dual-annotated, with every field's agreement computed and the release refused when the schema's <code>annotators[].agreement</code> block is missing. The math is sampling error, not vibes. Consensus of k independent annotators shrinks placement error by √k (σ ≈ 1.5–2.5 px [verify], so ±1 px ground truth needs k ≈ 4, or k = 2 plus sub-pixel centroid snap), and the prefill acceptance rate is a binomial proportion: 90 panel frames give a Wilson 95% interval of roughly ±10 points around the observed accept rate — tight enough to gate the verify lane, too tight to skip. The rule the book names: precision is bought with consensus depth on a small panel (k = 4 on 50 frames calibrates the noise floor), and coverage is bought with the active-learning queue — never the reverse.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch18-uc-review-gate.png" alt="Review gate: labeled frames streaming through a checkpoint labeled 10 percent dual panel, accepted frames with checkmarks, rejected frames looping to adjudication." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.19</span>: UC 10 — The Review Gate. Ten percent dual-annotated, adjudicated, published — or the release fails schema validation. <strong>Pickleball</strong>: 90 of 900 pb-003 frames, κ ≥ 0.61 per family before any class enters the taxonomy. <strong>Rugby league</strong>: the MOT panel gates whether HOTA claims are even quotable (chapter 9). <strong>Payoff</strong>: every dataset release carries a trust number — the difference between a dataset and a pile of opinions.</figcaption>
+  </figure>
+
+  <p><strong>Runnable skeleton.</strong> The gate arithmetic is thirty lines of Python — compute κ, price the budget, size the panel:</p>
+  <pre><code>def cohen_kappa(a, b):
+    """a, b: parallel lists of categorical labels from two raters."""
+    labels = sorted(set(a) | set(b))
+    n = len(a)
+    p_o = sum(x == y for x, y in zip(a, b)) / n
+    p_e = sum((a.count(l) / n) * (b.count(l) / n) for l in labels)
+    return (p_o - p_e) / (1 - p_e)
+
+def budget_hours(n_frames, sec_verify=10, sec_manual=30):
+    """The 18.4 throughput model: verify lane vs manual lane."""
+    return n_frames * sec_verify / 3600, n_frames * sec_manual / 3600
+
+# pb-003: 500 ball frames -> (1.4h verify, 4.2h manual); gate at kappa >= 0.61
+# panel size: 10% of 900 = 90 frames; k=4 annotators shrinks jitter by sqrt(4)=2x</code></pre>
+
+  <p><strong>What this adds to the pipeline.</strong> UC 01 produces the ball training set chapter 12's fine-tune consumes; UC 02 produces the MOT ground truth chapter 9's HOTA claims stand on; UC 03 seeds chapter 10's mask lane; UC 04–05 produce the event layer that chapters 16, 17, and 23 classify and tactically mine; UC 06 and UC 10 publish the agreement numbers that bound what every AP, HOTA, and RMSE figure in chapters 8–12 can mean; UC 07–09 are the economics that make any of it affordable. The use cases are the chapter's argument made executable: ground truth is a workflow, and the workflow has a price list.</p>
+
+  <h2 class="section-title"><span class="section-num">18.7</span> Formats &amp; Versioning</h2>
+  <p>Formats are interchange; the schema is the contract; hashes are the provenance. COCO JSON (flexible; pycocotools is the eval standard from chapter 8), YOLO txt (fast, lossy — no per-instance attributes), CVAT XML (tool-native; preserves track identity across keyframes), MOTChallenge CSV (the rugby MOT ground-truth format, 1-based frames, feeding HOTA directly) — plus the book's dataset/pb003 JSON schema (v1: 12 keypoints, 4 player slots, ball with visibility enum, 12 events, the <code>annotators[]</code> agreement block). The pb003 JSON is the only store humans or agents write to; every other format is a generated, one-way derived view. Never hand-edit a derived export.</p>
+
+  <p>The versioning discipline has four rules. Every labeled frame carries its source clip's SHA-256 and its own frame hash — a label without a hash of the bytes it describes cannot be audited. The dataset carries a version field (pb003-v1, -v2, …) schema-validated on every commit. Labels live in git (the whole 900-frame set is megabytes of JSON); media stays out (the pb-003 frames are not redistributable at all — section 18.9). And every label change triggers the golden-fixture regeneration of section 18.10, so a label commit and a metric move are always traceable to each other.</p>
+
+  <h2 class="section-title"><span class="section-num">18.8</span> Annotation for Agents</h2>
+  <p>Agents change annotation in one direction: <strong>auto-label + human verify</strong>. The agent's job is to pre-fill the schema so the human's job shrinks from <em>create</em> to <em>dispose</em>. Each pipeline stage this book has already built drafts its own fields: E10's temporal-diff energy filter drafts ball centers and pre-sets low-confidence frames to <code>blurred</code>/<code>not_visible</code> (measured: 0.814 precision @50 px, 87.2% recall — right often enough to make verify ~3× faster than manual); E11's calibration drafts the 12 court keypoints once per camera setup (3.82–4.65 cm RMSE); E09's BoT-SORT tracks draft player boxes, foot points, and slot proposals (HOTA 0.814, 2 switches on pb-003 — on nrl-001 the drafts degrade with the 295-ID fragmentation, and the human's correction load is the <em>measured</em> difference between the two sports); chapter 15's audio onset detector drafts contact candidates inside E06's review windows (8.33 s / 12.83 s per span).</p>
+
+  <p>The disposition protocol is deliberately tiny. Every pre-filled field arrives with <code>confidence</code> and <code>review_required: yes</code>, and the human has exactly three actions per field: <strong>accept</strong> (draft stands), <strong>correct</strong> (new value, flagged <code>human_correction</code>), <strong>unknown</strong> (the conservative-closure escape hatch). The harness records which happened per field, per frame — that distribution <em>is</em> the pre-fill quality metric, and it feeds the next active-learning round. One hard boundary from E07: generative models draft prose, never labels. The local VLM hallucinated serves and lobs and ignored the requested structure, so identity names, coaching notes, and anything E07-shaped stay human-only. For an agent to draft into the label store it needs four things the pb003 schema already carries: JSON Schema validation on write, enum tables (no free text), evidence-refs citing the run that produced each draft, and the review state machine. That is the minimum contract any agent-facing label store must expose.</p>
+
+  <figure id="fig-18-09" class="full">
+    <img src="shared/images/ch18-agent-prefill.png" alt="Agent-assisted annotation loop: pipeline stage icons draft pre-filled label cards of a pickleball frame; a human figure with three disposition buttons — accept, correct, unknown; a correction-rate feedback arrow returns to the sampling queue." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 18.9</span>: Agent drafts, human disposes. The accept/correct/unknown distribution is both the speedup receipt and the next round's sampling signal.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">18.9</span> Ethics</h2>
+  <p>Labels of people are personal data. Faces in amateur footage: blur or skip — never label a face without consent, and a bounding box around an unconsenting bystander is still processing their image, so the label store records the skip, not the person. Athlete consent is purpose-bound: footage captured for coaching review does not automatically license a published dataset or model training — consent language must name the label set and the model, not just the camera. The label dataset itself may be personal data even when pixels never leave the lab: identity-stable tracks and event histories linked to an identifiable athlete qualify under GDPR/APP-style regimes. Hence the schema-level discipline — slots, not names (A1/A2/B1/B2), and any slot-to-name mapping table stored separately with its own access controls. The dataset/pb003 decision — labels CC-BY-4.0, frames not redistributable (PPA broadcast rights) — is the model: publish metadata and frame hashes so others can verify, not identity-bearing media. Rugby pathway footage raises the bar further: minors require guardian-level consent (machinery in chapter 31).</p>
+
+  <h2 class="section-title"><span class="section-num">18.10</span> The Label-Verify Pipeline</h2>
+  <p>The discipline that keeps labels honest over time: labels are inputs, fixtures are outputs. The golden fixture is <em>regenerated</em> from the label store on every accepted label change — never hand-patched — and the regression harness then re-runs the pipeline stages against it: detector outputs vs labeled boxes (IoU gate), temporal-diff ball centers vs labeled centers (distance gate; E10's 1.42 px RMSE is the baseline to hold), event proposals vs labeled events (precision gate; E10's 0.814). A label change that moves a metric is a deliberate, recorded event; a code change that moves a metric without a label change is a regression. This prevents the silent failure: an annotator fixes 20 mislabeled ball centers, the fine-tune "improves" by 4 AP, and the prose cites a model improvement that is actually a ground-truth correction. With fixture regeneration, the improvement is attributed to the label commit, where it belongs. The claims register consumes the result: a metric row that cannot name dataset version + fixture hash is unpublished.</p>
+  <ol>
+    <li>Label → validate (schema) → assign the golden fixture.</li>
+    <li>Dual-annotate 10% → compute kappa/IoU/distance → publish.</li>
+    <li>Below substantial: adjudicate disagreements, re-label, re-measure.</li>
+    <li>Ship the dataset with the agreement number in the README.</li>
+    <li>The fixture regression harness asserts detector outputs after EVERY label change.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">18.11</span> The Labeling Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Pick the tool by task</strong>: boxes/keypoints with interpolation = CVAT; schema-heavy + agent pre-fill = Label Studio; error-driven curation = FiftyOne alongside.</li>
+    <li><strong>Label the golden fixture first</strong>: the 6 frames cover serve-to-termination; they anchor everything else.</li>
+    <li><strong>Geometry before players, players before ball, everything before events</strong>: the court keypoints amortize; the events inherit.</li>
+    <li><strong>Budget by proof-of-value</strong>: 500 frames for the ball (the E04 log), one-time for court keypoints, 300 for players; scale only where value is confirmed.</li>
+    <li><strong>Never label a coordinate you cannot also label a visibility state for</strong>: the invisible ball is data, not a labeling failure.</li>
+    <li><strong>Dual-annotate 10%</strong>: kappa at least 0.61 (substantial) per label family; IoU at least 0.75 for boxes; at most 3px for keypoints.</li>
+    <li><strong>Below threshold, adjudicate</strong>: re-label, re-measure. The number is the gate: <code>κ≥0.61</code> admits a label to the taxonomy; <code>κ&lt;0.41</code> is a codebook bug, not a rater problem — fix the definitions first.</li>
+    <li><strong>Active learning on the rest</strong>: label the model's worst quartile; the effective sample triples. Stop at the gold-panel plateau, not at a round number.</li>
+    <li><strong>Publish the agreement number</strong> with every dataset release (the pb003 README rule).</li>
+    <li><strong>Agent-annotated labels</strong>: auto-label, human-verify 10%, report the agent-as-rater kappa. Generative models draft prose, never labels.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">18.12</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Run Label Studio with a local ML backend (E10 ball proposals + E09 tracks) on pb-003 — replace the pre-fill speedup estimates with a measured accept/correct/unknown distribution.</li>
+    <li>Two annotators on the 90-frame gold panel (10% of 900) — get a real kappa with bootstrap CIs, not the n=6 demonstration.</li>
+    <li>Timestamped annotation sessions — replace every [verify] in the 18.4 throughput table with measured min/frame per lane, and price the 500-frame set honestly.</li>
+    <li>Active learning loop: 100 labels via uncertainty vs random — measure the AP gain against the gold panel.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">18.13</span> Sources</h2>
+  <ul>
+    <li>CVAT (MIT) — <a href="https://github.com/cvat-ai/cvat">github.com/cvat-ai/cvat</a>; Track Mode docs — <a href="https://docs.cvat.ai/docs/annotation/manual-annotation/modes/track-mode-basics/">docs.cvat.ai</a>. arm64 Docker status [verify current image matrix].</li>
+    <li>Label Studio (Apache-2.0) — <a href="https://github.com/HumanSignal/label-studio">github.com/HumanSignal/label-studio</a>; video timeline + ML-backend pre-labeling templates — <a href="https://labelstud.io/templates/video_timeline_segmentation">labelstud.io</a>.</li>
+    <li>FiftyOne (Apache-2.0) — <a href="https://github.com/voxel51/fiftyone">github.com/voxel51/fiftyone</a>; Roboflow Annotate (SaaS, public-tier content terms) — <a href="https://roboflow.com/annotate">roboflow.com/annotate</a>.</li>
+    <li>Cohen (1960), kappa [verify primary citation]; Landis &amp; Koch (1977), <em>Biometrics</em> 33(1):159–174 — <a href="https://pubmed.ncbi.nlm.nih.gov/843571/">pubmed.ncbi.nlm.nih.gov/843571</a>; Fleiss (1971) multi-rater; Krippendorff's α.</li>
+    <li>Settles (2009), <em>Active Learning Literature Survey</em> — <a href="https://minds.wisconsin.edu/handle/1793/60660">minds.wisconsin.edu/handle/1793/60660</a>; uncertainty sampling lineage: Lewis &amp; Gale (1994).</li>
+    <li>RacketVision paddle-pose grammar — arXiv:2511.17045 [verify license].</li>
+    <li>Lab: <code>lab/w4_lab_annotation.py</code> → <code>experiments/c18-annotation/outputs/metrics.json</code> (measured: kappa 0.400, observed 0.667, expected 0.444, n=6, Landis-Koch "fair"). Anchors: E04 (ball wall, 1,082 detections / 900 frames), E06 (review windows 8.33 s / 12.83 s), E08 (rugby 13.2 persons/frame, 24 max, 295 spawned IDs, 9.76 px/frame drift), E09 (BoT-SORT HOTA 0.814, 2 switches), E10 (temporal-diff 0.814 precision @50 px, 87.2% recall, 1.42 px RMSE), E11 (calibration 3.82–4.65 cm RMSE).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="17.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 17</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 17 — Event Data &amp; the Common Representation</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 17</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 17 — Event Data &amp; the Common Representation</p>
+        </div>
+      </div>
+    </a>
+    <a href="19.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 19</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 19</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">From coordinate streams to coach-ready events without hallucinating a single one</p>
+        </div>
+        <a href="19.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

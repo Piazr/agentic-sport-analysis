@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #8C4318;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-08" style="background-color: #8C4318; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 08</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The 2026 detector landscape, the license that shapes your architecture, and the noise floor</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">34 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-08-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Detection Is Solved for People — and Not for Balls</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-08-1" data-section="s-08-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Detection Is Solved for People — and Not for Balls</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-08-1" data-section="s-08-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Detection Is Solved for People — and Not for Balls</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">08</span> Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h1>
+    <p class="chapter-subtitle">The 2026 detector landscape, the license that shapes your architecture, and the noise floor</p>
+  </header>
+
+<h3 id="s-08-1"><span class="section-num">8.1</span> Detection Is Solved for People — and Not for Balls</h3>
+
+<p class="section-intro">The honest starting point: in 2026, finding people in sports video is a solved engineering problem. The book's own E01/E08 evidence proves it (COCO person detection finds 13.2 persons/frame in a rugby broadcast). The unsolved part is everything else: the ball, the paddle, the court lines, and — after detection — the identity. This chapter covers the detector choice, the license decision that shapes what you can ship, and the noise floor.</p>
+
+  <p>Every number below is <strong>measured</strong> on our fixture or <strong>source-backed</strong> from the detector vendors' own benchmark protocol; license facts are verified against the licenses.</p>
+  <p>The asymmetry matters for how you budget. In our pickleball fixture (pb-003), COCO-pretrained weights find the four on-court players at 3.8 detections/frame against a ground truth of 4 (E02, measured). In the rugby league grand-final clip (nrl-001), the same off-the-shelf weights find 13.2 persons/frame in a 13-a-side broadcast (E08, measured). In both sports the expensive problems begin <em>after</em> the person boxes: the ball that the COCO <code>sports ball</code> head cannot see, the paddle that is not a COCO class at all, and the identity association that chapter 9 owns. Detection is the cheapest layer of the perception stack to get right and the easiest to get legally wrong.</p>
+
+  <h2 class="section-title"><span class="section-num">8.2</span> The 2026 Detector Landscape</h2>
+  <p>The benchmark to read is Roboflow's in-house single-protocol comparison (COCO val2017, T4 TensorRT FP16):</p>
+  <p>Three families define the 2026 landscape, and they differ less in accuracy than in <em>governance</em>. The <strong>YOLO line</strong> (YOLO11 through YOLO26, plus YOLOE-26) is the best-teaching family: the smoothest MPS training and CoreML export story on Apple Silicon, NMS-free from YOLO26 onward, with small-target-aware label assignment aimed at the ball problem. The <strong>RF-DETR line</strong> (Roboflow, ICLR 2026) is a DINOv2-backbone transformer detector, NMS-free by design, NAS-tuned for small custom datasets — the sport fine-tuning case. The <strong>D-FINE/DEIM line</strong> (ICLR/CVPR 2025) is the fully-open accuracy ceiling at 640px; DEIMv2 rides the DINOv3 backbone to 57.8 AP but carries a <strong>non-commercial license</strong> — a paper reference, never a shipped dependency. Also mentioned: RT-DETR (Apache, but Paddle-first tooling is dead weight on a Mac) and LW-DETR (Apache, CUDA-flavored training).</p>
+
+  <figure id="fig-08-06" class="full">
+    <img src="shared/images/c08-detector-landscape-map.png" alt="Landscape map of the 2026 detector families: YOLO lane tagged AGPL, RF-DETR lane with XL/2XL hatched under the PML gate, DINOv3 lane with DEIMv2 tagged non-commercial." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.6</span>: The 2026 Detector Landscape. Three families, three governance regimes. The license tag under each lane — AGPL, Apache with a PML-gated top end, Apache with a non-commercial frontier — matters more to a shipping practitioner than the AP spread between them.</figcaption>
+  </figure>
+
+  <p>One column of the table deserves emphasis: <strong>RF100-VL transfer</strong> (100 real-world datasets) is a better predictor of "fine-tune on your weird sport class" than COCO rank. RF-DETR-L beats YOLO26-X there (88.2 vs 85.6 AP50) at a third of the parameters. COCO rank predicts demo quality; transfer rank predicts your second month.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>AP (COCO)</th>
+        <th>Latency</th>
+        <th>License</th>
+        <th>Book Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>RF-DETR-M</strong></td>
+        <td>54.7</td>
+        <td>4.4ms</td>
+        <td>Apache-2.0</td>
+        <td><strong>Model of record</strong> — accuracy and license in one</td>
+      </tr>
+      <tr>
+        <td><strong>D-FINE-M</strong></td>
+        <td>55.0</td>
+        <td>5.4ms</td>
+        <td>Apache-2.0</td>
+        <td>Strong permissive alternative (as DEIM's partner)</td>
+      </tr>
+      <tr>
+        <td><strong>YOLO26-M</strong></td>
+        <td>52.5</td>
+        <td>4.4ms</td>
+        <td><strong>AGPL-3.0</strong></td>
+        <td>Great model; the license shapes what you can ship</td>
+      </tr>
+      <tr>
+        <td><strong>RF-DETR-L / YOLO26-X</strong></td>
+        <td>88.2 AP50 / 85.6</td>
+        <td>—</td>
+        <td>Apache / AGPL</td>
+        <td>RF-DETR-L beats YOLO26-X at 1/3 the parameters on RF100-VL transfer</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The pattern: accuracy ceilings are comparable; the <em>license</em> is the differentiator. For a book about practitioners shipping systems, the detector decision is 80% a legal decision.</p>
+
+  <h2 class="section-title"><span class="section-num">8.3</span> The AGPL Decision: What It Actually Means</h2>
+  <p>YOLO (all variants through YOLO26) is AGPL-3.0. The two clauses that matter:</p>
+
+  <ol>
+    <li><strong>The §13 network clause</strong>: if you serve the model over a network, you must release your own source under AGPL — even if your product is a black-box API.</li>
+    <li><strong>Ultralytics FAQ position</strong> (verbatim on their site): fine-tuned weights inherit AGPL; even internal, from-scratch training needs the Enterprise license. The Pro plan ($29/seat/mo) is <strong>not</strong> a commercial exemption.</li>
+  </ol>
+
+  <p>Enterprise = annual fee, quote-only, no public price (community-reported quotes $5k–20k+/yr are anecdotal — treat as [anecdotal]). One Enterprise license covers the whole YOLO portfolio. A trained YOLO model is therefore: fine for research, a legal liability for a closed product.</p>
+  <p>Read the licensor's FAQ as the operative risk envelope: Ultralytics' published position is stricter than many practitioners assume. Fine-tuned weights inherit AGPL; training from scratch on your own data still needs the Enterprise license; internal-only R&D is not exempt; and the $29/seat/month Pro plan is <strong>not</strong> a commercial exemption — it remains AGPL. Whether model weights are legally "covered works" is debated in open-source law, but the book's discipline is conservative: treat the licensor's published interpretation as the risk you carry until counsel says otherwise.</p>
+
+  <p>Two traps catch sport builders. First, the <strong>SaaS trap</strong>: a coaching API that never ships a binary still triggers §13 — wrapping YOLO in a microservice does not launder the license. Second, the <strong>contagion trap</strong>: the tracker layer is not exempt. The E09 winner, BoT-SORT, is AGPL upstream (as is BoxMOT), so a commercial ship needs the tracker decision too (chapter 9). The safe glues are <code>supervision</code> (MIT), ByteTrack upstream (MIT), and SAHI (MIT).</p>
+
+  <figure id="fig-08-07" class="full">
+    <img src="shared/images/c08-agpl-license-risk.png" alt="AGPL license risk decision diagram: shipping a product leads to open-source, pay enterprise, or swap to the Apache lane; SaaS triggers the network clause." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.7</span>: The AGPL Decision Tree. Three exits from the YOLO lane — open-source your entire application, pay the annual Enterprise fee, or swap to an Apache detector. "We only serve it as an API" is not a fourth exit; §13 was written to close it.</figcaption>
+  </figure>
+
+  <p>A fixed-camera pickleball coaching product built on YOLO26 must open-source its entire app, pay the annual fee, or swap detectors. A rugby league broadcast-analytics SaaS faces the same choice at ten times the revenue exposure. This is why the book's model of record is RF-DETR-M (Apache-2.0): the detector decision is made at selection time, in the license matrix (C31), not discovered at launch.</p>
+
+  <h2 class="section-title"><span class="section-num">8.4</span> The PML-1.0 Gate: RF-DETR+ XL/2XL</h2>
+  <p>RF-DETR's small/medium/large are Apache-2.0 — the permissive path. But the RF-DETR+ line (XL/2XL) is under <strong>PML-1.0</strong>, a platform license whose operative clauses (read from roboflow.com 2026-08-30): active platform plan required; auto-revocation on bad standing (including exceeding usage limits); no circumventing embedded metering; self-reporting duty where tracking is absent; no base-weight extraction. Segmentation variants of XL/2XL are Apache — the variant reference reads differently from detection. Read the license of the <em>variant</em>, not the family.</p>
+  <p>The practitioner consequence: XL/2XL are fine for the lab (a free plan counts as a platform plan), but a shipped product on those weights carries a perpetual Roboflow dependency with a kill-switch clause and metering obligations. The book's rule: teach on RF-DETR-M/L (Apache), show the XL/2XL numbers in the landscape table, name the gate, and never let a code example silently <code>pip install rfdetr[plus]</code>. The pickleball coaching product and the rugby analytics SaaS both pass comfortably under RF-DETR-M's 54.7 AP; neither needs the PML-gated top end.</p>
+
+  <h2 class="section-title"><span class="section-num">8.5</span> The Noise Floor: Why the Ball Is Different</h2>
+  <p>Detection metrics are not the problem — <em>class coverage</em> is. The class distribution explains it: COCO has ~262k person instances (~30.5% of the dataset) vs ~6.3k sports-ball instances (~0.7%) — a ~40:1 imbalance, compounded by polysemy (the COCO "sports ball" is a soccer ball, not a 74mm perforated pickleball). The book's E04 measured the consequence: 1,082 ball "detections" over 900 frames at median confidence 0.11; a 2× crop made it worse, not better (0.145).</p>
+
+  <p><strong>The rule: for people, COCO weights are a floor; for the ball, they are noise.</strong> The ball is a temporal-model problem (TrackNet family, chapter 12).</p>
+  <p>COCO's AP<sub>S</sub> bucket (objects under 32×32 px) is the closest published proxy for ball difficulty, and every family in the §8.2 table drops 20–30 points from headline AP to AP<sub>S</sub> [verify per-model AP<sub>S</sub> from the RF-DETR paper supplementary]. A pickleball at 40px wide in a 4K fixed-camera frame is technically COCO-"medium" by area, but its discriminative texture — the holes in 74mm perforated plastic — lives below 10px, under Nyquist. Motion blur at serve speed smears what remains. The rugby ball fails differently: at broadcast zoom it is medium-sized and <em>occluded</em>, not tiny — which is why §8.6c reaches the opposite fine-tuning conclusion for it.</p>
+
+  <h2 class="section-title"><span class="section-num">8.5b</span> The Honest Bake-Off: Speed vs Accuracy on Real Footage</h2>
+  <p>Vendor latency tables are T4+TensorRT FP16 numbers; your product runs on a Mac, an edge box, or a cloud GPU — three different truths. The book's bake-off discipline is an A/B protocol: same golden frames, same confidence threshold, same harness, one variable changed at a time. The c08 lab ran the fixture half: E01's pickleball pipeline re-measured under ultralytics 8.4.117 (conf 0.2, imgsz 960, MPS) produced 80 raw → 23 court-filtered boxes across the 6 golden frames (measured, <code>experiments/c08-detection/outputs/metrics.json</code>). The M4 Max inference anchor is E02's yolo11n at 74.9 fps at imgsz 960 (~13ms/frame), comfortably inside a 30fps live-cockpit budget with headroom for tracking.</p>
+
+  <p>The latency tradeoff spans an order of magnitude across lanes. On the vendor T4 protocol, YOLO26 runs 1.7–11.8ms and RF-DETR 2.3–6.8ms — near-parity. On the M4 Max MPS lane, RF-DETR's transformer stack is inference-fine but slower on MPS — in the ~140ms-class at default settings [verify]. The accuracy difference (54.7 vs 52.5 AP at M-size) buys little on players; the license difference buys everything at shipping time.</p>
+
+  <figure id="fig-08-08" class="full">
+    <img src="shared/images/c08-speed-accuracy-benchmark.png" alt="Speed versus accuracy benchmark chart: RF-DETR, YOLO26 and D-FINE family curves of COCO AP against latency in ms, with the MPS lane point flagged far to the right." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.8</span>: Speed vs Accuracy Is a Lane Statement. Family curves on the T4 TensorRT protocol cluster within a few AP and a few ms; the M4 Max MPS lane (flagged, [verify]) sits an order of magnitude right. Publish (hardware, precision, harness) with every number.</figcaption>
+  </figure>
+
+  <p>The rugby arm of the same bake-off adds the broadcast variable: run the grid on 100 nrl-001 frames with SAHI 2×2 tiling on/off to price the far-end-player fix. Tiling quadruples inference calls per frame, so the "fastest" detector on paper can lose the wall-clock race once the rugby scene's small-object density forces slicing. Measure it.</p>
+
+  <h2 class="section-title"><span class="section-num">8.6</span> The Test-Conditions Lesson: E01 vs the Current Version</h2>
+  <p>E01 measured 69 raw → 11 court-filtered boxes (84.06% rejection) on the golden fixtures. Our chapter-8 lab re-ran it under the current ultralytics (8.4.117, conf 0.2, imgsz 960): <strong>80 raw → 23 court-filtered (71.2% rejection)</strong>. Same fixture, same idea, different numbers — because conf and imgsz differ (E01 used conf 0.2 in its config; the drift is in the version and conditions, not the method).</p>
+
+  <p>This is the chapter's metrics-discipline story: <strong>detection results are test-condition statements.</strong> Always publish: model version, conf threshold, imgsz, device, and the exact frame set.</p>
+
+  <figure id="fig-08-01" class="full">
+    <img src="shared/images/spine-one-data-model.png" alt="Detection feeds the one-spine: detector outputs become track rows. Recreate in book style: white background, black outlines, burnt-orange flows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.1</span>: Detection → Track Rows. The detector's output is worthless until it is a row with a coordinate space and a provenance hash (Chapter 5).</figcaption>
+  </figure>
+  <h2 class="section-title"><span class="section-num">8.6b</span> The Pickleball Object Set: A 3-Class Problem</h2>
+  <p>Define the object set before you touch a model, because it decides where your annotation budget goes. Fixed-camera pickleball needs exactly three classes: <strong>player</strong>, <strong>paddle</strong>, <strong>ball</strong>. Their difficulty is wildly asymmetric:</p>
+  <ul>
+    <li><strong>Player</strong> — solved by COCO weights out of the box (E02: 3.8 on-court persons/frame vs 4 ground truth, measured). Spend nothing here beyond the court-polygon scene filter.</li>
+    <li><strong>Paddle</strong> — not a COCO class at all, but visually distinctive, large (150–300px), and slow-moving. This is the ideal fine-tune class: bootstrap labels with a visual prompt (click one paddle in T-Rex2 or SAM 3 exemplar mode), human-verify, fine-tune into the Apache model. Expect this to work; budget a weekend.</li>
+    <li><strong>Ball</strong> — the E04 noise floor (1,082 candidates at median confidence 0.11, measured). Do not fine-tune a single-frame detector against this wall; the production answer is temporal (chapter 12's TrackNet family, which broke the wall at 87.2% recall with a 3-frame energy filter in E10).</li>
+  </ul>
+
+  <figure id="fig-08-09" class="full">
+    <img src="shared/images/c08-pickleball-3class.png" alt="Pickleball court with three detection classes: player boxes, a paddle box, and the ball marked with a dashed uncertain box; spectator boxes crossed out by the court filter." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.9</span>: The Pickleball 3-Class Problem. Players come free from COCO weights; the paddle is one fine-tune away; the ball (dashed) is a temporal-model handoff, not a detector class. The court polygon (E01/E05) strikes the spectator boxes before they become track noise.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">8.6c</span> The Rugby League Object Set: 28 Classes or 3?</h2>
+  <p>Broadcast rugby league presents the opposite temptation: enumerate everything. A full inventory is 13+13 players (split by team), the ball, the referee(s), and the goalposts — a 28-class detector if you encode team identity as class, more if you add markers, the dummy half, and touch judges. The book's advice is to resist it. Class is a poor identity mechanism: chapter 9's tracking and chapter 13's ReID assign identity far better than a detector head ever will, and every added class multiplies your annotation and class-balance burden.</p>
+  <p>The pragmatic rugby set is <strong>3–4 classes</strong>: <code>person</code> (COCO-sufficient at 13.2 persons/frame, E08 measured), <code>ball</code> (a genuine fine-tune candidate here — at broadcast zoom the rugby ball is medium-sized and occluded rather than tiny, the opposite regime from pickleball), <code>referee</code> only if the downstream logic needs to exclude the referee from formation analysis, and <code>goalpost</code> only as a calibration landmark (chapter 7's TVCalib lane uses field lines, not posts). Team split comes from jersey color histograms or ReID embeddings downstream, not from a <code>team_a</code>/<code>team_b</code> class that collapses under alternate strips and wet weather.</p>
+
+  <figure id="fig-08-10" class="full">
+    <img src="shared/images/c08-rugby-28class.png" alt="Rugby league pitch with many player bounding boxes in two team clusters, a referee box, a ball box and goalposts; a ruck cluster shows merged overlapping boxes." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.10</span>: The Rugby Object Set. Twenty-six-plus boxes per frame, but the honest class list is short: person, ball, and calibration landmarks. The ruck's merged boxes are the detector's crowd ceiling — association, not detection, absorbs it (chapter 9).</figcaption>
+  </figure>
+
+  <p>Document the ceiling explicitly: in a ruck, N players merge into M&lt;N boxes and no detector resolves the burst. That is a known failure mode to hand to the tracker, not a class problem to annotate your way out of. The E14 negative result belongs here as the caution: adding detector-side motion compensation (boxshift GMC) made identity <em>worse</em> — more detection machinery is not more signal.</p>
+
+  <h2 class="section-title"><span class="section-num">8.7</span> Fine-Tune vs Prompt: The Decision Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Route</th>
+        <th>Use When</th>
+        <th>Lane</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Open-vocab prompt</strong></td>
+        <td>Bootstrap a new class (paddle, line, ball) with zero labels</td>
+        <td>YOLOE-26 (AGPL, real-time), Grounding DINO 1.6 Pro (API-only), T-Rex2 (visual prompts), SAM 3 PCS (~850M params, SAM License, CUDA-official)</td>
+      </tr>
+      <tr>
+        <td><strong>Fine-tune on 500 frames</strong></td>
+        <td>The ship lane once a class is confirmed valuable</td>
+        <td>RF-DETR / D-FINE — Apache, Colab training (MPS training broken per verified finding)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The 500-frame unit traces to E04's own next-step log: label ball positions on 500 frames, fine-tune TrackNetV4. It is the book's recurring cheap-first discipline: 500 frames of labels is a weekend; 5,000 is a season.</p>
+  <p>The honest framing is <strong>zero-shot for discovery, fine-tune for shipping</strong>. Open-vocabulary prompting (YOLOE-26 text classes, T-Rex2 visual prompts, Grounding DINO 1.6 Pro's 55.4 zero-shot COCO AP via API, SAM 3's promptable concept segmentation) answers "is this class detectable at all?" in an afternoon, with zero annotation spend. Its blind spots are real: "pickleball" as a <em>word</em> resolves poorly because the concept barely exists in image-text pretraining, so visual prompts beat text for sport hardware; and the open-vocab lanes carry their own licenses (YOLOE-26 is AGPL, YOLO-World is GPL-3.0, the Grounding DINO Pro weights are API-only) — fine for internal labeling, wrong for a shipped artifact.</p>
+
+  <p>Fine-tuning answers a different question: "this class is confirmed valuable and must run at production latency, forever." The 2026 economics favor it — RF-DETR was NAS-designed for small custom datasets (its RF100-VL column is 100-shot-scale transfer), and the DEIM matching recipe halves convergence time, so 300–1,000 annotated frames is the practical range for one new sport class. The bootstrap loop closes the circuit: prompt to draft labels, human-verify into a frozen 500-frame golden set, fine-tune the Apache model, and keep the prompt lane as the discovery sensor. One legal subtlety: whether AGPL reaches auto-labeler outputs (annotate with YOLOE-26, train an Apache model on the labels) is untested — the conservative rule is to bootstrap commercial projects with the API/open lanes (T-Rex2, OWLv2, SAM 3) [verify with counsel].</p>
+
+  <figure id="fig-08-11" class="full">
+    <img src="shared/images/c08-finetune-vs-zeroshot.png" alt="Decision tree: no labels leads to zero-shot prompting and auto-labeling; 500 labeled frames lead to fine-tuning and shipping an Apache checkpoint; a bootstrap loop arrow connects them." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.11</span>: Fine-Tune vs Zero-Shot. Prompting is the discovery sensor; fine-tuning is the ship lane; the bootstrap loop turns one into the other. Both the pickleball paddle class and the rugby ball class enter through the same loop — only the fine-tune verdict differs.</figcaption>
+  </figure>
+
+  <p>Dual-sport application: the pickleball <strong>paddle</strong> goes prompt → verify → fine-tune; the pickleball <strong>ball</strong> exits the loop early into the temporal model. The rugby <strong>ball</strong> stays in the loop to a fine-tuned RF-DETR class, while rugby <strong>players</strong> never enter it — COCO <code>person</code> plus SAHI tiling is the recipe until a measurement says otherwise.</p>
+
+  <h2 class="section-title"><span class="section-num">8.8</span> Augmentation for Sport</h2>
+  <p>Mosaic (multiclass context), copy-paste small-object oversampling (the Kisantal 2019 technique — paste ball crops), CutMix, motion-blur matched to measured px/frame (our lab: 5px at 1/1000, 83px at 1/60 — augment with the real blur, not random), SAHI sliced fine-tuning (train and test on the same slice scale), and broadcast-realism for rugby (scorebugs, watermark, LED ads).</p>
+  <p>Two sport-specific disciplines deserve emphasis. First, <strong>copy-paste small-object oversampling</strong> (Kisantal et al. 2019, arXiv:1902.07296) is the single highest-leverage augmentation for the ball classes: paste additional ball instances, with motion-blurred variants, onto plausible court or pitch positions, and keep person:paddle:ball instance ratios within ~10× so the 40:1 COCO curse does not reappear in your own dataset. Second, <strong>domain realism differs by sport</strong>: pickleball's fixed camera means a narrow augmentation distribution (one venue, one angle, varying light), while rugby's broadcast domain needs HEVC compression artifacts, letterboxed scorebugs, LED perimeter ads, and floodlight color temperature sampled from nrl-001, not from COCO statistics. Match your inference geometry: a full-frame-trained model evaluated under SAHI tiling underperforms — train with slices if you infer with slices.</p>
+
+  <h2 class="section-title"><span class="section-num">8.9</span> Deployment: PyTorch → CoreML on the M4 Max</h2>
+  <p>The practical matrix: develop in PyTorch on MPS, ship CoreML on the M4 Max (RF-DETR's native export covers onnx/tflite/tensorrt/executorch/coreml — note coreml needs fixed shapes for the ANE). The 2026 NMS-free families (RF-DETR, DEIM, D-FINE) remove the classic export-bug class entirely.</p>
+  <p>The training/inference split is the operational fact of 2026: <strong>train on cloud, infer on Mac</strong>. YOLO26 trains on MPS, but RF-DETR and D-FINE training is CUDA-first (MPS hits missing-op errors; workarounds are <code>PYTORCH_ENABLE_MPS_FALLBACK=1</code> or CPU, both slow) — the Colab T4 free tier trains the N/S/M sizes overnight. Inference is the reverse: everything in §8.2's Apache lane runs fine on MPS/CPU, and CoreML is the production path for the pickleball sideline device and the rugby analyst's laptop alike. Export-integrity rule: validate every export against the golden fixture (box-level IoU ≥ 0.95 vs PyTorch reference on the same 6 pb-003 frames) <em>before</em> benchmarking fps — an export bug that shifts boxes silently invalidates downstream metrics.</p>
+
+  <h2 class="section-title"><span class="section-num">8.10</span> Working Recipes</h2>
+  <ul>
+    <li><strong>Pickleball</strong>: COCO person is fine; paddle via visual-prompt bootstrap then fine-tune; ball is temporal-model territory (handoff to chapter 12). <strong>Model of record: RF-DETR-M.</strong></li>
+    <li><strong>Rugby</strong>: COCO person + SAHI tiling for far-end players; polygon filtering needs per-frame registration (handoff to chapter 7); the rugby ball IS a fine-tune candidate — the opposite of pickleball (its scale/blur regime differs).</li>
+  </ul>
+  <p>Both recipes start from the same ordering: license first (Apache lane for anything shipped), then measure raw vs ROI-filtered on your fixture, then check class coverage, and fine-tune only after the noise floor justifies it. The pickleball recipe spends its budget on the paddle and the temporal ball handoff; the rugby recipe spends its budget on tiling, per-frame registration (E08 measured 9.76px/frame broadcast camera drift — a fixed polygon is invalid when |pan| &gt;&gt; 0), and the tracker where the actual losses live (E09: 0.642 → 0.814 HOTA, switches 14→2).</p>
+
+  <h2 class="section-title"><span class="section-num">8.11</span> The Shipping Audit Checklist</h2>
+  <ol>
+    <li>Dependency scan: ultralytics/boxmot/BoT-SORT (AGPL), YOLO-World (GPL) — know each dependency's license at the distribution chain.</li>
+    <li>Weights provenance ledger: where did each .pt/.pth come from? (license attaches at the weights too)</li>
+    <li>PML grep gate: no RF-DETR+ XL/2XL without an active platform plan.</li>
+    <li>Gated-license inventory in the repo (the C31 license matrix, applied at selection time).</li>
+    <li>Re-audit on every version bump: licenses change (RF-DETR+ is a separate package from RF-DETR).</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">8.12</span> Real-Time Open-Vocabulary Detection: DART + SAM 3</h2>
+  <p>The closed-set detector needs labels and training. The frontier question: can the open-vocabulary foundation models (SAM 3-class, Grounding DINO-class) run in real time? The 2026 answer is <strong>yes — with one architectural trick</strong>: DART (Detect Anything in Real Time, arXiv 2603.11441, March 2026) exploits the fact that the visual backbone is <em>class-agnostic</em> and computes it once, batching the prompt decoder across all classes.</p>
+
+  <figure id="fig-08-02" class="full">
+    <img src="shared/images/c08-dart-latency.png" alt="DART latency comparison: conventional O(N) scaling rises steeply with class count, while DART keeps a flat O(1) profile." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.2</span>: The O(N) Bottleneck, Quantified. Conventional open-vocabulary detectors scale latency linearly with class count; DART holds a flat profile by sharing one backbone pass across all prompts. The 25× and 15.8 FPS claims are source-backed from the DART paper and not yet re-run by the book.</figcaption>
+  </figure>
+
+  <p>The [verify] gate is real: the book has not re-run the GPU lane, so DART's 55.8 AP, 25x, and 38.7 AP distilled claims stand as source-backed until the Colab run. Conventional open-vocabulary detection runs the full pipeline per class, so latency scales O(N); DART observes the backbone is class-agnostic, computes it once, and batches the prompt decoder across classes, adding ~0.15ms per class. For sport that is the difference between "detect the ball" and "detect the ball, paddle, NVZ line, ruck point, defensive line, and referee" in one pass. Classes too rare to justify 500 labels can now be detected with a prompt.</p>
+
+  <h2 class="section-title"><span class="section-num">8.13</span> Pickleball: The Open-Vocabulary Use Cases</h2>
+  <p><strong>Sub-pixel paddle face telemetry:</strong> prompting "pickleball paddle blade" yields the contour; the orientation vector computes the face angle (the report: 48.3° at 0.4ms) — the C10 mask-to-contour recipe now per-frame.</p>
+  <p><strong>Zero-shot NVZ foot-fault auditing:</strong> prompting "player shoe" and "kitchen non-volley zone line" gives the polygon intersection test without manual court calibration. <strong>The honest caveat belongs to C06's Z-limit:</strong> the intersection is in image space; the metric foot-fault verdict still needs the plane geometry (C14). Image-space intersection is a <em>screen</em> check; the metric check is multi-view.</p>
+
+  <h2 class="section-title"><span class="section-num">8.14</span> Rugby League: The Collision-Context Use Cases</h2>
+  <p><strong>10m offside line compliance:</strong> prompting "ruck breakdown point" and "advancing defensive line" computes the retreat distance in metric pitch coordinates (with C07's per-frame calibration for the meters). The C28 HUD alert becomes promptable, not trained.</p>
+  <p><strong>Bunker high-tackle grounding:</strong> prompting "tackler shoulder contact point" and "ball carrier sternum" extracts contact heights for foul review — the welfare lane (C16's Bath 2025 framing). The honest gate: the operating point is policy (68% sensitivity / 84% specificity — never an automated call), and DART's grounding is the <em>evidence provider</em>, not the verdict.</p>
+
+  <h2 class="section-title"><span class="section-num">8.14b</span> The 10 Detection Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the detector landscape above to the two sports. They follow three categories: <strong>A. The Core Object Contract (01-03)</strong> — the classes every pipeline must get right; <strong>B. Hard Scenes &amp; Open Vocabulary (04-07)</strong> — where detection meets the moments that matter; and <strong>C. The Shipping Decisions (08-10)</strong> — where the detector choice becomes a product decision. Each case pairs a pickleball and a rugby league application, and each carries its evidence label: measured (book experiment), source-backed (paper or vendor protocol), or [verify] (practitioner model, not yet established).</p>
+
+  <p>The use cases draw on the satellite tooling around the detectors — the ecosystem table maps each tool to its sport use:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>License</th>
+        <th>Role</th>
+        <th>Pickleball Use</th>
+        <th>Rugby League Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>supervision</strong></td>
+        <td>MIT</td>
+        <td>Box filtering / annotation glue</td>
+        <td>Court-polygon gate (E01: 69→11)</td>
+        <td>ROI filters after per-frame registration</td>
+      </tr>
+      <tr>
+        <td><strong>SAHI</strong></td>
+        <td>MIT</td>
+        <td>Sliced inference + sliced fine-tuning</td>
+        <td>Optional ball-hunt slices at 4K</td>
+        <td>2×2 tiling for far-end small players</td>
+      </tr>
+      <tr>
+        <td><strong>ByteTrack (upstream)</strong></td>
+        <td>MIT</td>
+        <td>Tracker glue</td>
+        <td>Safe commercial tracker base</td>
+        <td>E09 baseline (0.642 HOTA)</td>
+      </tr>
+      <tr>
+        <td><strong>BoT-SORT / BoxMOT</strong></td>
+        <td><strong>AGPL</strong></td>
+        <td>E09 tracker winner</td>
+        <td>Lab only for a commercial ship</td>
+        <td>0.814 HOTA — but the license follows it (C09)</td>
+      </tr>
+      <tr>
+        <td><strong>T-Rex2</strong></td>
+        <td>Code Apache / API</td>
+        <td>Visual-prompt bootstrap</td>
+        <td>Click one paddle → paddle labeler</td>
+        <td>Click the ruck point → draft labels</td>
+      </tr>
+      <tr>
+        <td><strong>Grounding DINO 1.6 Pro</strong></td>
+        <td>API-only</td>
+        <td>Text-prompt bootstrap (55.4 zero-shot AP)</td>
+        <td>"kitchen line" drafts</td>
+        <td>"advancing defensive line" drafts</td>
+      </tr>
+      <tr>
+        <td><strong>SAM 3</strong></td>
+        <td>SAM License (gated)</td>
+        <td>Concept segmentation + IDs</td>
+        <td>Paddle exemplar → all instances</td>
+        <td>"players in white" team split</td>
+      </tr>
+      <tr>
+        <td><strong>YOLOE-26</strong></td>
+        <td><strong>AGPL</strong></td>
+        <td>Real-time open vocabulary</td>
+        <td>Internal labeling sensor</td>
+        <td>Internal labeling sensor</td>
+      </tr>
+      <tr>
+        <td><strong>DART</strong></td>
+        <td>Repo: mkturkcan/DART</td>
+        <td>Shared-backbone real-time open vocab</td>
+        <td>Role prompts at frame rate (UC 05)</td>
+        <td>Role prompts at frame rate (UC 05)</td>
+      </tr>
+      <tr>
+        <td><strong>Roboflow Inference</strong></td>
+        <td>Docker / platform</td>
+        <td>Hosted RF-DETR serving</td>
+        <td>Dev serving lane</td>
+        <td>Dev serving lane; PML metering on XL/2XL</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-heading">Category A: The Core Object Contract (UC 01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Player Detection at 60 fps</h3>
+  <p>The live cockpit (C28) needs on-court person boxes inside a 16.6 ms frame budget; anything slower drops the overlay behind the rally. The mechanism is a budget equation, not a model name: t<sub>detect</sub> + t<sub>track</sub> + t<sub>render</sub> ≤ 1000/60 ms. The measured anchor is E02's yolo11n at 74.9 fps (~13.3 ms) at imgsz 960 on the M4 Max [measured] — inside budget with headroom for the tracker; RF-DETR-M posts 4.4 ms on the T4 TensorRT protocol [source-backed]. Scene filtering is part of detection quality, not post-processing: the court-polygon gate took 69→11 raw boxes (E01) and 80→23 in the c08 re-run [measured] — the "errors" were spectators, and they were free to remove.</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc01-player-60fps.png" alt="Pickleball doubles court from a fixed elevated camera with four player bounding boxes, one paddle box, and a dashed uncertain ball circle, tagged 60 fps." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.12</span>: UC 01 — Player Detection at 60 fps. Four player boxes, one paddle box, one honestly-uncertain ball circle, all inside the 16.6 ms budget. <strong>Pickleball</strong>: fixed 4K camera, 3.8 on-court persons/frame vs 4 ground truth (E02, measured). <strong>Rugby league</strong>: 13.2 persons/frame in broadcast (E08, measured) — far-end players are a SAHI tiling problem, not a model problem.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> a coaching overlay that never lags the rally — the difference between a live tool and a replay tool.</p>
+
+  <h3 class="sub-heading">UC 02 — Ball Detection in Two Regimes</h3>
+  <p>The ball is the highest-value object in both sports and the worst-detected in both — but for opposite reasons. The 74 mm perforated pickleball is ~40×25 px in a 4K fixed frame; its discriminative texture (the holes) has a spatial period below 2 px, under the Nyquist limit (f<sub>texture</sub> &gt; 1/(2Δ)), and serve-speed motion blur smears what remains. E04 measured the consequence: 1,082 candidate "ball" boxes over 900 frames at median confidence 0.11 [measured] — a noise floor, not a track. The 280 mm oval rugby ball is medium-sized at broadcast zoom and <em>occluded</em>, not tiny — a fine-tunable regime. COCO's AP<sub>S</sub> bucket is the closest published proxy for the pickleball regime, and every family drops 20-30 points from headline AP to AP<sub>S</sub> [verify per-model AP<sub>S</sub> in the RF-DETR supplementary].</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc02-ball-two-regimes.png" alt="Two panels: a tiny motion-blurred pickleball in a dashed box labeled noise, and an oval rugby ball half-occluded by hands in a solid box labeled occluded." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.13</span>: UC 02 — Ball Detection in Two Regimes. <strong>Pickleball</strong>: sub-Nyquist texture plus motion blur — exit the detector lane into the temporal model (C12's TrackNet family broke the wall at 87.2% recall, E10). <strong>Rugby league</strong>: medium-sized and occluded — a genuine fine-tune class on the 500-frame unit (§8.7).</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the right instrument per regime — one sport's annotation season saved, the other's spent where it works.</p>
+
+  <h3 class="sub-heading">UC 03 — Paddle &amp; Equipment Detection: The NMS/IoU Discipline</h3>
+  <p>Equipment classes are absent from COCO, and loose or duplicated boxes corrupt everything downstream that takes geometry from them. The math that governs "loose" and "duplicate": intersection-over-union, IoU = |A∩B| / |A∪B|, and classic NMS — keep the argmax-score box, suppress any box with IoU &gt; θ (θ ≈ 0.45-0.7). AP averages precision over IoU thresholds 0.50:0.05:0.95; for line-call and face-angle geometry, AP75 is the first threshold that punishes the boxes you actually care about. The 2026 NMS-free families (RF-DETR, D-FINE, YOLO26) replace suppression with one-to-one Hungarian-style assignment — one stage fewer, and the classic CoreML/ONNX NMS-op export-bug class gone with it. The paddle itself follows the §8.7 loop: visual-prompt bootstrap, human verify, fine-tune into the Apache checkpoint on 500 frames [source-backed recipe].</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc03-paddle-nms-iou.png" alt="A pickleball paddle with two overlapping candidate boxes, an IoU equation inset, and an NMS funnel keeping one box and dropping the duplicate." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.14</span>: UC 03 — Paddle Detection and the NMS Discipline. Two candidate boxes, IoU = 0.83, one survives. <strong>Pickleball</strong>: the paddle box is the precursor to C10's face-angle pipeline — a box twice the blade's size passes AP50 and fails the angle. <strong>Rugby league</strong>: goalposts and the kicking tee as calibration landmarks (C07), not tactical classes.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> equipment boxes precise enough to take angles and calibrations from — AP75 discipline where AP50 would do for a demo.</p>
+
+  <h3 class="sub-heading">Category B: Hard Scenes &amp; Open Vocabulary (UC 04-07)</h3>
+
+  <h3 class="sub-heading">UC 04 — Referee Detection for Exclusion</h3>
+  <p>The referee is a person-shaped pollutant: formation metrics, defensive-line distances, and tracker ID budgets all degrade when officials count as players. The mechanism is a set difference, D<sub>players</sub> = D<sub>persons</sub> \ D<sub>officials</sub>, where the official class comes from a one-class fine-tune (the kit is visually distinct) or a zero-shot "referee" prompt for discovery. The contamination cost compounds: each false person per frame adds an expected extra track and corrupts the downstream Voronoi and offside computations (C23) that assume the person set is the player set. Pickleball's version is the E01 lesson — most of the 84% polygon rejection was exactly this class of error: spectators, benches, the referee stand.</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc04-referee-exclusion.png" alt="Rugby league broadcast view with player boxes in two team clusters, one referee box crossed out and labeled exclude, and a ball box." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.15</span>: UC 04 — Referee Detection for Exclusion. The official is found precisely so it can be subtracted. <strong>Rugby league</strong>: referee plus two touch judges excluded before the 10 m offside computation — the distinct kit makes this a tractable one-class fine-tune [verify — practitioner recipe]. <strong>Pickleball</strong>: line judges and the referee stand leave via the court polygon; no referee class needed at all.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> every downstream metric measures players, not officials — one excluded box is worth more than one detected one.</p>
+
+  <h3 class="sub-heading">UC 05 — Role Detection via DART-Style Open Vocabulary</h3>
+  <p>Tactical models need roles — server, returner, ruck, dummy half — but roles are too rare and too shifting to justify per-role annotation and training runs. Conventional open-vocabulary detectors run the full pipeline per class, so latency scales O(N<sub>classes</sub>). DART (arXiv 2603.11441) exploits the class-agnostic backbone: compute it once, batch the prompt decoder across all prompts — t ≈ t<sub>backbone</sub> + 0.15 ms × N [source-backed; the 25× speedup claim stands un-re-run by the book, on the §8.15 measure list]. The practical consequence: "detect the ball" and "detect the ball, paddle, NVZ line, ruck point, defensive line, and referee" cost nearly the same per frame.</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc05-dart-roles.png" alt="One shared backbone block fanning out to prompt chips labeled server, returner, ruck, and referee, each pointing to a role-tagged box on a split pickleball and rugby scene." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.16</span>: UC 05 — Role Detection in One Pass. The backbone is paid once; roles cost ~0.15 ms each. <strong>Pickleball</strong>: server, returner, kitchen resetter, poaching attacker. <strong>Rugby league</strong>: ruck point, dummy half, marker defenders, advancing line — the promptable input layer for C23's tactical ML.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> a role layer that ships as prompts, not as training runs — tactical classes appear the day someone writes the prompt.</p>
+
+  <h3 class="sub-heading">UC 06 — Occlusion-Aware Detection: Kitchen Firefights and Rucks</h3>
+  <p>The highest-leverage moments are the most occluded: two bodies converging at the NVZ line in a dink firefight; five bodies bound in a ruck. The detector's crowd ceiling is structural — when the true boxes' pairwise overlap exceeds the suppression or assignment threshold, N players merge into M &lt; N boxes, and lowering the NMS θ trades duplicates for merges without escaping the tension; the NMS-free one-to-one matching hits the same ceiling inside the assignment solver. The discipline is to document the ceiling and hand the burst to the layers built for it: tracking (C09) and ReID (C13). E14's negative result is the caution [measured]: detector-side motion compensation made identity <em>worse</em> — more machinery at this layer is not more signal.</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc06-occlusion.png" alt="Two panels: two pickleball players overlapping at the kitchen line with a merged box splitting into two, and a five-player rugby ruck collapsing to three boxes." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.17</span>: UC 06 — The Occlusion Ceiling. <strong>Pickleball</strong>: the kitchen firefight merges two players at the exact frame the foot-fault check wants them separate — flag low-confidence frames for the multi-view lane (C14). <strong>Rugby league</strong>: the ruck merges five into three; the merged-box event itself is the ruck detector's most reliable signal.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> honesty about the ceiling — budget flows to association and multi-view, not to a bigger detector that still merges the ruck.</p>
+
+  <h3 class="sub-heading">UC 07 — Domain Shift: Indoor Court Lighting vs Outdoor Stadium</h3>
+  <p>A detector tuned at one venue silently degrades at the next; the failure arrives as confidence drift, not an error message. The mechanism is the train/test distribution gap: AP<sub>ood</sub> &lt; AP<sub>id</sub> whenever lighting temperature, background clutter, compression, or graphics overlays move between domains. The book's proxy discipline: hold out one venue or one day as a never-trained test set and report ΔAP alongside AP [verify — the book has not yet run a venue holdout; it is the first item this use case adds to the measure list]. The fixes are domain-matched: §8.8's augmentation sampled from the real domain (LED flat-light and wall clutter for indoor pickleball; floodlight color temperature, HEVC artifacts, letterboxed scorebugs for broadcast rugby), and per-frame registration before any polygon filter — E08 measured 9.76 px/frame broadcast drift [measured], which invalidates a fixed polygon outright.</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc07-domain-shift.png" alt="Two panels: an indoor pickleball court under flat ceiling lights and an outdoor rugby stadium under floodlights with long shadows, joined by a shift arrow with an AP drop inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.18</span>: UC 07 — Domain Shift. <strong>Pickleball</strong>: a new venue's wall color and lighting move the confidence distribution; one held-out venue day is the regression test. <strong>Rugby league</strong>: the broadcast domain adds compression, scorebugs, and LED ads — augment from nrl-001's statistics, not COCO's.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the venue-change regression test catches the drift in the lab, before the client's first away game does.</p>
+
+  <h3 class="sub-heading">Category C: The Shipping Decisions (UC 08-10)</h3>
+
+  <h3 class="sub-heading">UC 08 — The Speed–Accuracy Tradeoff in Production</h3>
+  <p>The benchmark table is not the product; the product is one operating point chosen under a wall-clock budget. The mechanism: effective throughput = 1000 / (t<sub>det</sub> × n<sub>tiles</sub>) fps — SAHI 2×2 tiling quadruples inference calls per frame, so the paper-fastest detector can lose the wall-clock race once rugby's small-object density forces slicing. The Pareto rule: pick the highest-AP model still inside the frame budget at <em>your tile count on your hardware lane</em> — the T4 TensorRT protocol and the M4 Max MPS lane differ by an order of magnitude (§8.5b), so every operating point must be re-measured, not read from the vendor table [source-backed protocol; own tiling run on the measure list].</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc08-speed-accuracy-pareto.png" alt="Pareto chart of AP against latency with three family curves, 60fps and 30fps budget lines, and a circled ship operating point." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.19</span>: UC 08 — Choosing the Operating Point. <strong>Pickleball</strong>: the live lane picks the fastest model inside 16.6 ms with no tiling — E02's 74.9 fps anchor says even the small sizes qualify [measured]. <strong>Rugby league</strong>: post-match batch analysis buys the L-size accuracy; the live HUD lane must price tiling before committing.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the operating point becomes a measurement with a budget line, not a benchmark rank with a hope.</p>
+
+  <h3 class="sub-heading">UC 09 — AGPL-Safe Deployment, Decided Per Use Case</h3>
+  <p>The same detector is free in one product and a liability in another; the decision belongs at selection time, per use case, in the C31 license matrix. The mechanism is §13: the network clause makes "we only serve it as an API" a non-exit, and Ultralytics' FAQ closes the "we trained our own weights" exit too. The economics: the Enterprise fee is quote-only (community-reported $5k-20k+/yr, [anecdotal]) against a weekend re-fine-tuning an Apache checkpoint on the frozen 500-frame set — for most sport products the swap costs less than the first invoice. The per-use-case verdicts: internal lab → any detector, AGPL fine; paid coaching app → Apache lane or Enterprise; SaaS → Apache lane (§13 forecloses the rest); broadcast analytics → Apache lane <em>plus the tracker audit</em> — BoT-SORT is AGPL upstream, so the C09 decision is part of this one.</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc09-agpl-decision.png" alt="License decision grid with rows lab, app, SaaS, broadcast and exits open-source, pay fee, Apache lane, with check marks in the Apache column." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.20</span>: UC 09 — The AGPL Decision, Per Use Case. <strong>Pickleball</strong>: the fixed-camera coaching product ships RF-DETR-M (Apache) and keeps the YOLO lane for open coursework. <strong>Rugby league</strong>: the broadcast-analytics SaaS makes the same call at ten times the revenue exposure — and audits the tracker layer too.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the license decision is a selection-time line item in C31, never a launch-week surprise from counsel.</p>
+
+  <h3 class="sub-heading">UC 10 — Fine-Tuned vs Zero-Shot, Per Sport</h3>
+  <p>"Should we train a model?" has a different answer for every (sport, class) pair, and the wrong default burns a season of annotation. The mechanism is the bootstrap loop's economics: zero-shot discovery costs an afternoon and zero labels; fine-tuning costs 300-1,000 verified frames and a Colab night; the loop turns one into the other only after a class proves valuable. The verdict matrix, applied: pickleball <em>player</em> → COCO zero-shot, solved (E02); pickleball <em>paddle</em> → prompt-bootstrap → fine-tune; pickleball <em>ball</em> → exit early to the temporal lane (UC 02); rugby <em>player</em> → COCO + SAHI, never enter the loop; rugby <em>ball</em> → fine-tune, the opposite regime; rugby <em>referee</em> → prompt for discovery, one-class fine-tune if the exclusion metric justifies it (UC 04).</p>
+
+  <figure class="full">
+    <img src="shared/images/c08-uc10-finetune-zeroshot-sport.png" alt="Two-by-two matrix of pickleball and rugby rows against zero-shot and fine-tune columns, with check and cross marks and a bootstrap loop arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 8.21</span>: UC 10 — The Per-Sport Verdict Matrix. <strong>Pickleball</strong>: two of three classes never train a detector at all. <strong>Rugby league</strong>: the ball enters the loop the pickleball ball exits — scale and blur regime, not sport loyalty, decides.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> annotation budget lands only where the noise floor justifies it — the 500-frame unit spent twice, not ten times.</p>
+
+  <h2 class="section-title"><span class="section-num">8.14c</span> Runnable Implementation</h2>
+  <p>The minimal detection layer — Apache-lane detector, scene filter, official exclusion, optional slicing — is the starting skeleton; the full lab version lives in <code>experiments/c08-detection</code>:</p>
+  <pre><code>from rfdetr import RFDETRMedium          # Apache-2.0 lane (model of record)
+import supervision as sv                  # MIT glue: polygons, NMS, annotators
+
+class SportDetectionLayer:
+    def __init__(self, sport, court_poly=None, exclude_classes=("referee",)):
+        self.model = RFDETRMedium()       # fine-tuned checkpoint for sport classes
+        self.court_poly = court_poly      # pickleball: E05 homography polygon
+        self.exclude = exclude_classes    # UC 04: subtract officials, not detect them
+        self.sport = sport
+
+    def detect_frame(self, frame, registered_poly=None):
+        # Rugby: per-frame registration (C07) before any polygon filter
+        poly = registered_poly if self.sport == "rugby_league" else self.court_poly
+        dets = self.model.predict(frame, confidence=0.25)
+        dets = dets[dets.class_names != list(self.exclude)]      # set difference
+        if poly is not None:
+            dets = sv.filter_polygon(dets, poly)                 # E01: 69 -&gt; 11
+        return dets  # handoff: C09 tracking, C12 temporal ball, C28 cockpit
+
+    def detect_rugby_wide(self, frame):
+        from sahi import get_sliced_prediction  # MIT; UC 08 tiling, priced not assumed
+        return get_sliced_prediction(frame, self.model, slice_height=540,
+                                     slice_width=960, overlap_height_ratio=0.2)</code></pre>
+  <p>The skeleton encodes the chapter's orderings: license first (the import is the Apache lane), scene filter before tracking, exclusion as subtraction, tiling as a priced option with its own measurement — and the ball deliberately absent, handed to C12's temporal model rather than detected here.</p>
+
+  <h2 class="section-title"><span class="section-num">8.14d</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are not separate projects; they are the detection layer applied across the book's five verbs. UC 01 and UC 04 produce the clean player set that C09's tracking and C13's ReID consume; UC 02 hands the ball to C12's temporal family with the regime diagnosis that decides <em>whether</em> the handoff happens; UC 03 feeds C10's paddle face angle and C07's calibration landmarks; UC 05's role prompts are the input layer C23's tactical ML assumes; UC 06 documents the crowd ceiling C09 must absorb; UC 07 extends C05's run-manifest discipline with a venue-holdout regression test; UC 08 sets the operating point the C28 cockpit budget enforces; UC 09 is the detector row of C31's license matrix, applied; UC 10 is §8.7's decision table resolved per (sport, class). Every number above carries its label: measured in the book's lab (E01/E02/E04/E08/E10/E14), source-backed from a named paper or vendor protocol, or [verify] where a practitioner model still needs its afternoon of lab time.</p>
+
+  <h2 class="section-title"><span class="section-num">8.15</span> What I Would Measure Next</h2>
+  <ul>
+    <li>RF-DETR vs D-FINE vs YOLO26 bake-off grid on the golden fixtures (MPS, ONNX, CoreML) with a 30fps live-cockpit pass gate.</li>
+    <li>Data-scaling curve: 100/300/500/1000 labeled frames → AP50, to answer "is 500 enough?".</li>
+  </ul>
+  <p>Three more, in priority order. <strong>The MPS-lane RF-DETR number</strong>: the ~140ms-class figure in §8.5b is a lane estimate [verify] — the bake-off grid must produce the measured M4 Max latency for RF-DETR-N/S/M under PyTorch-MPS, ONNX, and CoreML before the deployment claims harden. <strong>The COCO sports-ball instance count</strong>: the ~6.3k figure behind the 40:1 imbalance is cited, not computed — one pycocotools pass over <code>instances_train2017.json</code> makes it measured [verify]. <strong>The DART GPU lane</strong>: re-run the paper's configuration on Colab against a pb-003 segment and an nrl-001 ruck sequence, so the §8.13–8.14 class claims carry book-measured numbers. Each item is one afternoon of lab time; together they convert every remaining [verify] into an E-ID.</p>
+
+  <h2 class="section-title"><span class="section-num">8.16</span> Sources</h2>
+  <ul>
+    <li>RF-DETR repo + single-protocol benchmark (pycocotools, COCO val2017, T4 TensorRT FP16): github.com/roboflow/rf-detr; paper arXiv:2511.09554 (ICLR 2026); variant/license split: roboflow-rf-detr.mintlify.app/reference/model-variants.</li>
+    <li>PML-1.0 full text: roboflow.com/platform-model-license-1-0 (read verbatim 2026-08-30); RF-DETR+ package: github.com/roboflow/rf-detr_plus.</li>
+    <li>Ultralytics: ultralytics.com/license (FAQ read 2026-08-31); AGPL-3.0 text: gnu.org/licenses/agpl-3.0.html; YOLO26 docs: docs.ultralytics.com/models/yolo26; YOLOE: docs.ultralytics.com/models/yoloe.</li>
+    <li>D-FINE: github.com/Peterande/D-FINE (ICLR 2025); DEIM: arXiv:2412.04234 (CVPR 2025); DEIMv2 (non-commercial): arXiv:2509.20787; DINOv3: arXiv:2508.10104.</li>
+    <li>DART: Turkcan, arXiv 2603.11441 (March 2026); repo mkturkcan/DART.</li>
+    <li>Open-vocabulary lanes: YOLO-World v2 (GPL-3.0) github.com/AILab-CVC/YOLO-World; Grounding DINO 1.6 Pro / DINO-X (API) github.com/IDEA-Research/grounding-dino-1.5-api; T-Rex2 github.com/IDEA-Research/T-Rex; SAM 3 (SAM License): arXiv:2511.16719.</li>
+    <li>Sport-specific tooling: SAHI (MIT) github.com/obss/sahi; copy-paste small-object augmentation: Kisantal et al. 2019, arXiv:1902.07296; RF100-VL transfer benchmark: github.com/roboflow/rf100-vl; COCO eval definitions: cocodataset.org.</li>
+    <li>Book lab evidence: E01 (69→11 court-filtered), E02 (74.9fps, 3.8 on-court persons/frame), E04 (ball noise floor), E08 (13.2 persons/frame, 9.76px/frame drift), E09 (tracker bake-off), E10 (temporal ball, 87.2% recall), E14 (GMC negative result); c08 reproduction: <code>experiments/c08-detection/outputs/metrics.json</code>.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="07.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 07</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 07</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</p>
+        </div>
+      </div>
+    </a>
+    <a href="08.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 08</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 08</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The 2026 detector landscape, the license that shapes your architecture, and the noise floor</p>
+        </div>
+        <a href="08.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #8C4318;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

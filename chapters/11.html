@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #9A5A2E;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-11" style="background-color: #9A5A2E; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 11</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">What stance tells you, what 2D cannot prove, and the escalation ladder to 3D</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">36 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-11-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Pose Is Not the Pipeline Bottleneck</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-11-1" data-section="s-11-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Pose Is Not the Pipeline Bottleneck</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-11-1" data-section="s-11-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Pose Is Not the Pipeline Bottleneck</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">11</span> Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h1>
+    <p class="chapter-subtitle">What stance tells you, what 2D cannot prove, and the escalation ladder to 3D</p>
+  </header>
+
+<h3 id="s-11-1"><span class="section-num">11.1</span> Pose Is Not the Pipeline Bottleneck</h3>
+
+<p class="section-intro">Chapter 5's E03 measured YOLO11-pose at 82 fps with a 16.46-keypoint mean on the pb-003 fixture — pose is not what slows a sports CV pipeline down. At 82 fps the pose stage costs roughly 12&nbsp;ms per frame on an M4 Max, a fraction of the frame budget; the chapters that hurt are tracking (E02/E09) and the ball (E04, where the median detection confidence was 0.1125). What is genuinely hard about pose is knowing what the numbers <em>mean</em>. A knee angle is a number; whether it tells you anything about the player is a different question, and the answer has a sharp boundary that differs by sport, by camera, and by plane of motion.</p>
+
+  <p>The two worked sports sit at opposite ends of the pose-estimation difficulty curve. Pickleball's pb-003 fixture is a fixed elevated camera over a 13.41&times;6.10&nbsp;m doubles court: players are large in frame, the camera never moves, and the action plane at the kitchen line is comfortably sagittal from a side-on view. Rugby league's nrl-001 grand-final clip is a broadcast PTZ feed over a 100&times;68&nbsp;m field: players are small, the camera pans and zooms mid-play, and the moment that matters most — the tackle — is a two-body occlusion event viewed from whatever angle the broadcast director happened to choose. The same model family serves both, but the defensibility of every downstream number is different, and this chapter keeps that difference visible on purpose.</p>
+
+  <p>This chapter is the boundary map: what 2D pose can honestly support, when to escalate to 3D, and — most importantly — what you must never claim from a monocular camera. The discipline is simple to state and hard to keep: <strong>every biomechanical number you print carries an evidence tier</strong>, and the tier is set by the geometry and the validation literature, not by how clean the skeleton overlay looks.</p>
+
+  <h2 class="section-title"><span class="section-num">11.2</span> The 2D Pose Catalog</h2>
+  <p>2D pose estimation maps a person crop (or a full frame) to a set of anatomical keypoints. The architecture differences matter less than two purchasing decisions: <strong>the keypoint schema</strong> (what anatomical landmarks exist at all) and <strong>the runtime path</strong> (does it install and run on your machine without a build-chain fight). The catalog:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Keypoints</th>
+        <th>License</th>
+        <th>M4 Max</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>YOLO11-pose</strong> (YOLOv8-pose lineage)</td>
+        <td>17</td>
+        <td>AGPL-3.0</td>
+        <td>✅ 82 fps (E03)</td>
+        <td>The book's measured baseline; stance + shape; one fused detection+pose call</td>
+      </tr>
+      <tr>
+        <td><strong>RTMPose/RTMW (rtmlib)</strong></td>
+        <td>133 whole-body</td>
+        <td>Apache-2.0</td>
+        <td>✅ (ONNX→CoreML)</td>
+        <td>Whole-body incl. hands — paddle grip detection</td>
+      </tr>
+      <tr>
+        <td><strong>MediaPipe Pose Landmarker</strong></td>
+        <td>33 + world landmarks</td>
+        <td>Apache-2.0</td>
+        <td>✅ GPU delegate</td>
+        <td>World landmarks = metric-ish 3D (real-world scale from the model); the published pickleball pilot's model</td>
+      </tr>
+      <tr>
+        <td><strong>ViTPose/MMPose</strong></td>
+        <td>17-133</td>
+        <td>Apache-2.0</td>
+        <td>⚠️ (mmcv friction)</td>
+        <td>Accuracy ceiling; ONNX export for production; use to <em>score</em> faster models, not as the default</td>
+      </tr>
+      <tr>
+        <td><strong>RF-DETR Keypoints (Roboflow)</strong></td>
+        <td>custom (trainable)</td>
+        <td>Apache-2.0</td>
+        <td>⚠️ [verify fine-tune path on MPS]</td>
+        <td>Sport-specific skeletons (paddle tip, tackle contact points) with per-keypoint uncertainty</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Three architecture notes worth carrying into production. First, <strong>RTMPose's SimCC head</strong> treats keypoint localisation as two 1D classification problems (one over x-buckets, one over y-buckets) rather than heatmap regression — that is why it exports cleanly to ONNX/CoreML and holds sub-pixel accuracy without a heatmap decode step, and why rtmlib (pip-installable, no mmcv) is the M4-native recommendation. Second, <strong>MediaPipe's differentiator is not the keypoint count but the world-landmarks channel</strong>: a second 33-point output in a metric, pelvis-centred coordinate frame. It is not true 3D, but it is a depth-normalised skeleton that makes angle computations far less camera-dependent than raw pixels — and it is the model used by the only published pickleball pose study (§11.5), which makes it the citation-backed baseline. Third, <strong>RF-DETR Keypoints is the schema escape hatch</strong>: a transformer detector with native keypoint heads that you fine-tune to a skeleton you define — paddle handle and paddle tip for pickleball, shoulder-contact and head-position landmarks for rugby league — with an uncertainty score per keypoint that lets the system <em>admit</em> when it does not know where the paddle tip is. That admission channel is the difference between a coaching tool and an overclaim generator.</p>
+
+  <p>Licenses are part of the catalog, not a footnote: YOLO11-pose's AGPL-3.0 wrapper flags any commercial reuse; RTMPose/rtmlib, MediaPipe, and RF-DETR are Apache-2.0; SMPL-family mesh models downstream of all of this are registration-gated (§11.6). Choose the schema and the license together, before the accuracy numbers seduce you.</p>
+
+  <h2 class="section-title"><span class="section-num">11.2b</span> The Skeleton Schema: 17 Points Buys Posture, 133 Buys Technique</h2>
+  <p>The schema decision is where most sport pose projects quietly fail. <strong>COCO-17</strong> gives you shoulders, hips, knees, ankles, wrists, elbows, and a sparse head — enough for gross posture, stance width, and sagittal knee angles, and blind to everything that distinguishes a good dink from a bad one. <strong>MediaPipe-33</strong> adds foot direction, hand landmarks, and denser head points — enough for a body. <strong>RTMW-133</strong> adds 21 keypoints per hand and per-foot detail — enough for grip state, wrist articulation through contact, and the toe-drag patterns of a split-step. The rule of thumb: <em>racket-sport technique lives in the hands and feet; a 17-point skeleton cannot see it.</em></p>
+
+  <figure id="fig-11-02" class="full">
+    <img src="shared/images/ch11-skeleton-pickleball.png" alt="Pickleball player in dink-ready stance with 17-point COCO skeleton overlaid: burnt-orange joint dots at hip, knee, ankle, wrist connected by black stick lines." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.2</span>: The COCO-17 skeleton on a pickleball player at the kitchen line. Adequate for stance and knee-flexion traces; blind to grip, paddle face, and wrist pattern — the features the published dink study (PMID 40563204) found discriminating.</figcaption>
+  </figure>
+
+  <p>Rugby league stresses a different part of the schema. The tackle is a two-person occlusion event: the ball carrier's trunk hides the defender's arms, the ruck hides everything below the shoulders, and the keypoints that matter for tackle-height judgment — head position relative to the ball carrier's shoulder line — are exactly the ones most often occluded. A COCO-17 skeleton survives here if the task is coarse (body height at contact, hip-drop detection); anything finer wants either a whole-body schema or a custom RF-DETR skeleton trained on labelled tackle frames, with per-keypoint uncertainty gating what the coach is shown. The useful output is not a prettier skeleton overlay — it is a confidence-aware artifact: <em>this tackle looks high, this frame is ambiguous, this shoulder angle needs human review.</em></p>
+
+  <figure id="fig-11-03" class="full">
+    <img src="shared/images/ch11-skeleton-rugby.png" alt="Rugby league defender in low tackle-entry posture with 17-point skeleton overlaid: burnt-orange dots at head, shoulder, hip, knee; ball carrier silhouette facing the tackler." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.3</span>: Tackle-entry posture in rugby league. Head, shoulder, and hip keypoints carry the tackle-height question; in a ruck, half of them are occluded and the model hallucinates them anyway (§11.3, failure mode 4).</figcaption>
+  </figure>
+
+  <p>The forward path is equipment-as-keypoint. RacketVision (Nov 2025, on record) publishes a ball+racket pose schema — the racket as a pose target alongside the body. Fine-tune RF-DETR Keypoints on a labelled pickleball set with <em>paddle handle</em> and <em>paddle tip</em> landmarks and the paddle face angle becomes a measurable quantity instead of a coaching guess. Expect the paddle tip to be the hardest keypoint you ever label: small, fast, motion-blurred, and frequently occluded by the hand — which is precisely why the uncertainty channel matters more than the point estimate.</p>
+
+  <h2 class="section-title"><span class="section-num">11.3</span> The Five Failure Modes of 2D</h2>
+  <ol>
+    <li><strong>Scale ambiguity</strong>: a 150-pixel person at 2m and at 10m are different physical sizes — pixel angles are not joint angles without camera geometry. Angles survive scale (they are ratios); absolute velocities do not. The book already owns the fix for feet: the homography chain (C06/E11, 3.82–4.65&nbsp;cm RMSE) maps foot keypoints into court metres, and a measured player height pins segment lengths. In rugby's broadcast feed, where the zoom changes mid-play, even that chain needs per-frame recalibration — the chapter-6 Z-limit applies to bodies exactly as it applies to balls.</li>
+    <li><strong>No Z</strong>: depth is unobserved. A dink played toward the camera and a tackle driven along the camera axis both collapse into nearly static 2D skeletons while the real 3D motion is violent. Any depth claim from one camera is inferred from apparent-size change, which a loose jersey or a lunge corrupts.</li>
+    <li><strong>Foreshortening</strong>: projected limb length scales with the sine of the out-of-plane angle — a 40&nbsp;cm shank rotated 30&deg; toward the camera projects as 20&nbsp;cm, and its image-space "angle" is meaningless. A player facing the camera has their knee angle compressed — the 155.6&deg; mean in our lab measurement (§11.4) is partly this artifact, not the real stance. <strong>Sagittal-plane kinematics from a side-on camera are trustworthy; frontal/transverse-plane angles from the same camera are not.</strong> That one sentence kills more bad biomechanics claims than any model upgrade.</li>
+    <li><strong>Hallucinated occluded joints</strong>: a held ball hides a wrist; the paddle arm hides the trunk in a dink; a rugby ruck hides everything below the shoulders. Keypoint detectors do not omit occluded joints — they regress them from context and return plausible-looking confidence scores. Confidence is not correctness. Occlusion handling must be explicit: per-keypoint confidence thresholds plus an <em>occluded</em> state in the data model, never silent interpolation through a ruck.</li>
+    <li><strong>Out-of-plane rotation</strong>: the killer. Shoulder–hip separation — the serve's power metric in pickleball and the fend's power metric in rugby league — is a transverse-plane rotation. From a fixed side camera it is barely visible; from a panning broadcast camera it changes sign with camera angle. A player turning 90&deg; to the camera makes nearly every angle unreadable. This is precisely when 3D escalation is justified, and it is the honest reason §11.3b exists.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">11.3b</span> The 2D→3D Lifting Problem: Monocular Depth Ambiguity</h2>
+  <p>"Lifting" converts per-frame 2D keypoints into 3D joint positions. To see why it is hard, write the camera down. A pinhole projection maps a 3D joint <em>X</em> to image point <em>p</em> via &lambda;<em>p&#771;</em> = <em>K</em>[<em>R</em>&nbsp;|&nbsp;<em>t</em>]<em>X&#771;</em>, where <em>K</em> is the intrinsics matrix, [<em>R</em>&nbsp;|&nbsp;<em>t</em>] the camera pose, and &lambda; the unknown depth. Every point along the ray {<em>C</em> + &lambda;<em>d</em>} — the camera centre plus any positive multiple of the ray direction — projects to the <em>same pixel</em>. The 2D observation constrains the joint to a line, not a point. One frame, one camera: infinitely many 3D skeletons, all consistent with the evidence.</p>
+
+  <figure id="fig-11-04" class="full">
+    <img src="shared/images/ch11-lift-geometry.png" alt="Pinhole camera geometry: optical centre C, ray through image point to 3D joint X, ghost joints X1 and X2 on the same ray showing depth ambiguity." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.4</span>: The lifting problem in one diagram. X, X1, and X2 project to the same pixel. Monocular lifting resolves the ambiguity with learned motion priors — plausible, not measured.</figcaption>
+  </figure>
+
+  <p>Three escalation tiers attack the ambiguity differently. <strong>MotionBERT</strong> (ACM MM 2022, MIT license) is the teaching tool: a temporal transformer over ~243-frame 2D keypoint windows that lifts <em>your</em> tracks to 3D joints. It runs on MPS on an M4 Max for clip-scale sequences, and its output must carry the honest label: lifting <em>inherits every 2D error</em> (§11.3's hallucinated joints become 3D hallucinations), and the depth axis it recovers is a learned prior over human motion, not a measurement — the skeleton will look plausible even when it is wrong. <strong>GVHMR</strong> (SIGGRAPH Asia 2024) is the escalation for real claims: world-grounded 3D — gravity-aligned global trajectory, explicit foot contacts, no root drift across the clip — by fusing the body with visual odometry (DPVO, CUDA-only upstream; an MPS fork <code>ryanrudes/gvhmr</code> exists [verify]). Its output is a SMPL-family mesh, which is the on-ramp to §11.6b's metrics. <strong>VGGT</strong> (CVPR 2025 Best Paper) is not a pose model at all — it is the <em>scene</em> side of the equation, recovering camera motion and scene geometry feed-forward, which is exactly what a panning nrl-001 broadcast feed destroys and what GVHMR's gravity-view frame needs. The 2026 pairing for single-video 3D is VGGT for the cameras and scene, GVHMR for the bodies. Each rung costs compute and inherits the errors of the rung below; the ladder diagram (Figure 11.1) keeps that inheritance visible.</p>
+
+  <h2 class="section-title"><span class="section-num">11.4</span> What Our Lab Actually Measured (W3.2)</h2>
+  <p>On 402 frames of the pb-003 rally with YOLO11-pose (<code>lab/w3_lab_pose.py</code> → <code>experiments/c11-pose/outputs/metrics.json</code>, E-ID: C11-lab):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Pipeline speed</td>
+        <td>72.1 fps</td>
+      </tr>
+      <tr>
+        <td>Frames with a visible leg</td>
+        <td>382 / 402 (95%)</td>
+      </tr>
+      <tr>
+        <td>Visible keypoints mean</td>
+        <td>16.86 / 17</td>
+      </tr>
+      <tr>
+        <td>Knee flexion (left leg, first person)</td>
+        <td>mean 155.6°, min 27.7° (dink impact), p10 107.7°, p90 178.0°</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The 27.7&deg; minimum is the interesting number</strong> — a deep crouch at the dink contact. The 155.6&deg; mean and 180&deg; max are mostly <em>standing players</em>, which is exactly why raw angle plots are meaningless without identity (chapter 9) and camera foreshortening correction. Read the distribution, never the average: the p10 (107.7&deg;) marks the working range of rally movement, the p90 (178.0&deg;) is near-full extension between points, and the minimum is the event. A single mean flattens all three into a number no coach can act on.</p>
+
+  <p>Two honesty notes on the measurement itself. The 72.1&nbsp;fps here versus E03's 82&nbsp;fps is a configuration difference, not a contradiction — different lab harness, same conclusion that pose is cheap. And 16.86 of 17 keypoints visible on average means the pipeline <em>rarely</em> loses a joint entirely on this fixture; the failures that matter are not missing points but confidently wrong ones (§11.3, mode 4). The rugby-league equivalent of this run does not exist yet on nrl-001, and the dossier flags why: the broadcast framing is often near-frontal, which may push even knee flexion out of the defensible column for rugby clips. That is a designed-not-run experiment (§11.10), and the chapter refuses to pretend the pickleball result transfers for free.</p>
+
+  <h2 class="section-title"><span class="section-num">11.5</span> The Skill-Discovery Correction: Knee Angle vs Femur Flexion</h2>
+  <p>The v1 book claimed a 124&deg; knee flexion as a "ready stance" discriminator. The verified research says the opposite: <strong>a 2025 pickleball dink study (Edriss, Romagnoli et al., J Sports Sci 2025;43(17):1860–1870, PMID 40563204) found femur flexion significantly discriminates skill (p&lt;0.001) but knee angle does NOT</strong>. The pilot ran 14 male players (mean age 46.5&plusmn;10.5) through GoPro-captured dinks with a MediaPipe-based pipeline, and it produced a second positive result: high-level players show a distinct continuous wrist-motion pattern after ball contact (p&lt;0.001) — a finding a COCO-17 skeleton cannot even see, and a direct argument for §11.2b's whole-body schemas.</p>
+
+  <p>The lesson is not "the book was wrong" — it is the publish-both discipline: report the metric you measured <em>and</em> the one the literature validated, and never assume a mechanical intuition is a skill signal without the study. The same discipline applies to the dink's equipment side. Coaching literature describes the dink arc as a soft, low-to-high lift over the net into the kitchen, produced by a nearly flat, marginally open paddle face — practitioner sources quote roughly <strong>6.5&deg; of paddle-face openness at contact</strong> [verify — coaching-convention figure, no instrumented study on record]. That number, if it holds, is the target a RacketVision-style paddle-keypoint pipeline (§11.2b) could actually measure. Until then it prints as [verify], not as fact.</p>
+
+  <figure id="fig-11-01" class="full">
+    <img src="shared/images/pose-escalation-ladder.png" alt="Pose escalation ladder: 2D keypoints 82fps, 3D lift MotionBERT, SMPL-X mesh, forces/torque do not claim. Recreate: white background, black skeletons, burnt-orange top rung." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.1</span>: The Escalation Ladder. Pick the rung for the question: stance (2D), mechanics (3D-mesh), risk (stop — that needs mocap + review, not monocular video).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">11.5b</span> Markerless Mocap: MAMMA and the 4D Human</h2>
+  <p>When the question genuinely needs 3D — multi-person interaction, out-of-plane rotation, a claim you intend to defend — the honest instrument is a <em>capture environment</em>, not a better monocular model. <strong>MAMMA</strong> (arXiv 2506.13040) is the open reference system: multi-view markerless motion capture that reconstructs 4D human motion — a 3D SMPL-X-class body tracked coherently through time — from ordinary cameras, no suits, no markers.</p>
+
+  <figure id="fig-11-05" class="full">
+    <img src="shared/images/ch11-mamma-pipeline.png" alt="MAMMA pipeline: multi-view cameras around a court, per-view 2D pose, triangulation across view cones, SMPL-X mesh with centre-of-mass marker, 4D track timeline." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.5</span>: The MAMMA stack. Multi-view footage → per-view 2D pose → triangulation → SMPL-X mesh fitting → a temporally coherent 4D track. Each stage's error feeds the next; calibration quality sets the ceiling.</figcaption>
+  </figure>
+
+  <p>The pipeline stages each carry their own failure budget: camera synchronisation and extrinsic calibration set the ceiling (a few centimetres of calibration error become joint-position error at triangulation); per-view 2D pose contributes §11.3's hallucinations, now from several angles at once; triangulation resolves §11.3b's ray ambiguity by intersecting rays from two or more views — which is why it needs the cameras; mesh fitting then constrains the result to a body with fixed segment lengths and a surface. The rugby-league transfer is a controlled tackle drill: four or more cameras around a calibrated contact area, capturing tackle entry, contact, leg drive, and recovery, reconstructing both bodies to inspect body height, shoulder contact, hip angle, and head position with geometry that a broadcast feed will never provide. The pickleball transfer is a serve or third-shot drill: cameras around the court, shoulder–elbow–wrist–hip–knee reconstructed across repetitions to see whether a player is late, off balance, or collapsing through contact. The shared limitation: <strong>a paddle is not part of a human body model</strong> — MAMMA may recover the player beautifully while the implement still needs a separate object-tracking layer (§11.2b's paddle keypoints). The book value of MAMMA is not "use it for every match"; it is the calibration point that shows what a real capture environment buys and when setup friction is the price of a defensible 3D claim.</p>
+
+  <h2 class="section-title"><span class="section-num">11.6</span> The Escalation Ladder to 3D</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rung</th>
+        <th>Tool</th>
+        <th>Cost</th>
+        <th>What It Buys</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>2D keypoints</strong></td>
+        <td>YOLO11-pose / RTMW</td>
+        <td>~70 fps</td>
+        <td>Stance, shape, coarse angles (C11 measured)</td>
+      </tr>
+      <tr>
+        <td><strong>2D→3D lift</strong></td>
+        <td>MotionBERT (MIT, small)</td>
+        <td>✅ M4</td>
+        <td>3D joints from 2D input; inherits 2D error (teaching tool)</td>
+      </tr>
+      <tr>
+        <td><strong>World-grounded 3D</strong></td>
+        <td>GVHMR (SIGGRAPH Asia 2024)</td>
+        <td>⛔ upstream (DPVO CUDA); MPS fork [verify]</td>
+        <td>Gravity-anchored SMPL recovery; camera pose jointly estimated</td>
+      </tr>
+      <tr>
+        <td><strong>Scene 3D</strong></td>
+        <td>VGGT (CVPR 2025 Best Paper)</td>
+        <td>⚠️ MPS port [verify]; CC-BY-NC weights [verify]</td>
+        <td>Feed-forward scene + camera reconstruction — moving cameras</td>
+      </tr>
+      <tr>
+        <td><strong>Parametric mesh</strong></td>
+        <td>SMPL-X</td>
+        <td>registration-gated license</td>
+        <td>Segment-length-stable meshes, CoM, surface contact; license blocks redistribution</td>
+      </tr>
+      <tr>
+        <td><strong>Multi-view mocap</strong></td>
+        <td>MAMMA (arXiv 2506.13040)</td>
+        <td>⛔ capture environment, not a download</td>
+        <td>4D reconstruction of multiple bodies; drill setups, not broadcast</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Read the ladder as an error-inheritance chain, not a feature list: every rung consumes the output of the rung below, so 2D hallucinations become 3D hallucinations become mesh hallucinations with higher production values. The commercial contrast keeps the ladder honest: Hawk-Eye's SkeleTRACK (29 skeletal points, on record) and PlayReplay's four-camera 3D system solve the same problems with <em>multi-view rigs</em> — the top floor is a purchasing decision the single-camera reader does not have, which is exactly why this chapter teaches what one camera can defend. And a license warning that bites in practice: SMPL-X model files are registration-gated and non-redistributable — readers register and download personally, the book's repo ships nothing, and commercial coaching products need a separate commercial license. The labs degrade gracefully by design: everything in §11.6b that needs only joints works without the mesh.</p>
+
+  <h2 class="section-title"><span class="section-num">11.6b</span> Biomechanical Metrics That Survive: Angles, Angular Velocity, Centre of Mass</h2>
+  <p>Three metric families are computable from joints alone, and each has a known noise behaviour the chapter states rather than hides.</p>
+
+  <figure id="fig-11-06" class="full">
+    <img src="shared/images/ch11-joint-angle-calc.png" alt="Joint angle calculation: leg stick figure with hip, knee, ankle dots and theta arc at the knee; adjacent chart of angle over time with d-theta/dt slope annotation and noisy raw trace behind smoothed curve." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.6</span>: Angle first, derivative second, filter before both. &theta; at the knee from the thigh and shank vectors; d&theta;/dt from the smoothed trace — differentiation amplifies keypoint noise, so the raw curve is never the published one.</figcaption>
+  </figure>
+
+  <p><strong>Joint angles</strong> are vector arithmetic: with hip <em>H</em>, knee <em>K</em>, ankle <em>A</em>, the knee flexion angle is the arccosine of the normalised dot product of the thigh vector (<em>H</em>&minus;<em>K</em>) and shank vector (<em>A</em>&minus;<em>K</em>). Ratios cancel scale, which is why angles are the one number that survives §11.3's scale ambiguity — in the plane of the camera. <strong>Angular velocity</strong> is d&theta;/dt, and the catch is differentiation: at 82 fps, &Delta;t = 12.2&nbsp;ms, so a keypoint jitter of &sigma; pixels becomes angle noise, and finite differencing multiplies that noise by roughly 1/&Delta;t — differentiate an unsmoothed trace and you publish jitter, not biomechanics. The rule: smooth first (a Savitzky–Golay window, and <em>state the filter in the caption</em>), then differentiate, then clip the residual spikes. A pickleball serve's shoulder angular velocity and a rugby fend's arm-sweep rate are both meaningful this way; the same numbers without the filter are artifacts. <strong>Centre of mass</strong> is a weighted sum: CoM = &Sigma;&nbsp;m<sub>i</sub>r<sub>i</sub> / &Sigma;&nbsp;m<sub>i</sub> over body segments, with segment masses from standard anthropometric tables. From keypoints alone it is a guess near the hips; from a SMPL-family mesh with fixed segment lengths it becomes an <em>estimate with a statable error budget</em> (anthropometric table variance times pose noise — quantifying it is a designed-not-run lab, §11.10). CoM height through a tackle — the ball carrier's drop versus the defender's hip hinge — is the rugby-league metric with the clearest coaching story, and it is also the one most sensitive to getting the mesh step right.</p>
+
+  <h2 class="section-title"><span class="section-num">11.7</span> Defensible vs Not-Defensible Biomechanics</h2>
+  <p><strong>Defensible from monocular video:</strong> knee flexion (as a <em>trace</em>, not a skill score — §11.5), spine angle, centre-of-mass height (with a calibrated model and a stated error budget), angular velocity (smoothed, filter stated), shoulder–hip separation (3D only, and only if the lift is validated). <strong>NOT defensible:</strong> joint forces, joint torque, composite injury-risk indices. Ground-reaction forces need force plates or a validated full-body dynamics model with a contact model; monocular video has neither. Torque is inverse dynamics — force estimates times segment inertias — so it inherits the force problem and adds mass-distribution error on top. Papers exist for both; none are validation-grade for individual athletes. Print them as open problems, not features.</p>
+
+  <figure id="fig-11-07" class="full">
+    <img src="shared/images/ch11-biomech-dashboard.png" alt="Dual-sport biomechanics dashboard: pickleball column with knee-angle waveform dipping at dink contact, CoM height gauge, paddle-face arc; rugby column with spine-angle deceleration notch at contact, tackle-height gauge, sensitivity 68 percent and specificity 84 percent ticks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.7</span>: The dual-sport dashboard a coach actually sees. Left: pickleball — knee-flexion trace with the dink-contact dip, CoM height, paddle-face target [verify]. Right: rugby league — spine deceleration at contact [verify], tackle height, and the Bath-2025 screening numbers (68%/84%) that cap how much the dashboard may claim.</figcaption>
+  </figure>
+
+  <p>The rugby-league case study is the sobering anchor. Bath et al. 2025's video-based tackle classifier — the head-on-head tackle-outcome screen on record — runs at <strong>~68% sensitivity and 84% specificity</strong>. Translate that to a season: one genuinely dangerous tackle in three passes the screen undetected, while one clean tackle in six gets flagged. At 68% sensitivity you <em>never gate an athlete</em>; the screen informs a qualified human review and nothing more. Practitioner tackle-kinematics reports quote peak trunk/spine decelerations at contact on the order of <strong>11.8&nbsp;m/s²</strong> [verify — unit, sensor protocol, and cohort all unconfirmed] as the risk-relevant spike; even taken at face value, that number comes from instrumented or mocap-grade capture, not from broadcast video, and no monocular pipeline may print its own version of it. The pickleball mirror is gentler but structurally identical: paddle-swing <em>kinetics</em> — the forces and torques behind the drive — are unobservable from video, while swing <em>kinematics</em> (shoulder and wrist angular velocity, §11.6b) are measurable. Kinematics describe; kinetics explain; video sees the first and must not narrate the second.</p>
+
+  <p>The DorsaVa AMI evidence-tier warning completes the pattern: sensor-based (IMU) systems carry published concurrent validity against Vicon for <em>specific measured angles</em>, but markerless-video and composite risk-index claims are markedly weaker — systematic reviews find markerless validity moderate-to-high in the sagittal plane and poor-to-variable in frontal and transverse planes. Computable is not the same as permissible, and a composite score that averages a good plane with two bad ones is a liability wearing a dashboard.</p>
+
+  <h2 class="section-title"><span class="section-num">11.7b</span> The Use-Case Catalog: Ten Pose and Biomechanics Applications</h2>
+  <p>The ten use cases below are the applied bridge from the defensibility framework above to the two sports. They follow four categories: <strong>A. Stance &amp; Readiness Auditing (01-03)</strong>, <strong>B. Swing &amp; Strike Mechanics (04-06)</strong>, <strong>C. Balance, Contact &amp; Injury Risk (07-08)</strong>, and <strong>D. 3D Reconstruction Escalation (09-10)</strong>. Each case pairs a pickleball and a rugby league application, states its mechanism and math, and carries its evidence label: measured (book experiment, E-ID), source-backed (paper), or [verify] (practitioner model, not yet established). Every claim is bounded by §11.7's defensible/not-defensible line and §11.8's consent rule — a use case that crosses either is flagged in place, not quietly dropped.</p>
+
+  <h3 class="sub-heading">Category A: Stance &amp; Readiness Auditing (UC 01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Ready-Stance Knee and Femur Angle Audit (Kitchen Line)</h3>
+  <p>Kitchen-line firefights are decided in under 250&nbsp;ms, and an upright stance costs the reaction time those milliseconds represent; the coach's need is an objective, session-level audit of ready position rather than a hunch from the sideline. The mechanism is the cheapest one in the chapter: run YOLO11-pose (82&nbsp;fps measured, E03) or RTMW over the rally, track one identity first (chapter 9), then compute knee flexion &theta;<sub>k</sub> = arccos(((<em>H</em>&minus;<em>K</em>)&middot;(<em>A</em>&minus;<em>K</em>))/(|<em>H</em>&minus;<em>K</em>||<em>A</em>&minus;<em>K</em>|)) and femur flexion versus vertical per frame. The audit metric is the <em>fraction of pre-contact frames inside the coach's target band</em> — a distribution read (p10/median/min), never a mean: §11.4's 155.6&deg; mean conceals the 27.7&deg; dink-contact crouch. Evidence label: the pipeline is measured (C11-lab, 72.1&nbsp;fps, 16.86/17 keypoints); the ~124&deg; ready-stance target is a coaching convention [verify], and the published dink study found <em>femur</em> flexion — not knee angle — discriminates skill (PMID 40563204), so the audit reports both angles side by side.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-stance-audit.png" alt="Pickleball player skeleton in ready stance at the kitchen line beside a knee-flexion waveform with a shaded ready band and a dip at dink contact." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.8</span>: UC 01 — Ready-Stance Audit. 17-point skeleton at the kitchen line with the knee-flexion waveform; the shaded band is the coach's target, the dip is dink contact. <strong>Pickleball</strong>: kitchen-line ready audit across a drilling session. <strong>Rugby league</strong>: marker and A-defender crouch height at the play-the-ball — the same trace, a different band.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> coaching — a stance-discipline number per session that survives §11.5's skill-metric correction, because it audits <em>consistency against the athlete's own band</em>, not a population claim.</p>
+
+  <h3 class="sub-heading">UC 02 — Tackle Stance Height Audit</h3>
+  <p>Rugby league's high-tackle crackdown makes body height at contact the welfare and officiating metric of the era; the coach and the reviewer both want an objective record of where the defender entered. The mechanism: head, shoulder, hip, and ankle keypoints give a body-height proxy (head height above the ankle line, normalised by the player's standing height), and a hip-velocity sign change flags the hip-drop entry; tackle-height classification then compares the tackler's shoulder keypoint against the ball carrier's sternum line. The evidence cap is on record: Bath 2025's video classifier runs at 68% sensitivity / 84% specificity, so the output is a <em>review prompt</em> — one genuinely high tackle in three passes the screen. A second honesty note: nrl-001's near-frontal broadcast framing may push even this sagittal-flavoured metric out of the defensible column for rugby clips (§11.3, foreshortening; §11.10 lists the designed-not-run measurement).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-tackle-height.png" alt="Rugby league tackle with skeleton overlays, sternum reference line on the ball carrier, and the tackler shoulder keypoint below the line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.9</span>: UC 02 — Tackle Height Audit. Tackler shoulder keypoint versus the ball carrier's sternum line; the ghost outline marks the high-entry case. <strong>Rugby league</strong>: objective tackle-entry height for review. <strong>Pickleball</strong>: doubles poach timing — the CoM drop before the lateral burst is the same body-height trace (extends UC 07).</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> officiating and welfare — informs a qualified human review at Bath-2025 performance, never gates an athlete (§11.7, §11.8).</p>
+
+  <h3 class="sub-heading">UC 03 — Fatigue Detection via Joint-Velocity Degradation</h3>
+  <p>Fatigue degrades mechanics before the athlete reports it, and a repeat drill gives the pipeline a controlled signal to watch. The mechanism: for a fixed drill (a dink ladder, a tackle-tech set), compute peak angular velocity &omega;<sub>peak</sub> = max(d&theta;/dt) of the working joint per set — elbow for the dink arm, hip extension for the tackle drive — after smoothing (§11.6b's rule: differentiate an unsmoothed trace and you publish jitter). The fatigue flag trips when &omega;<sub>peak</sub> falls below a fixed fraction of the athlete's own set-1 baseline for two consecutive sets; the 15%-drop threshold is a practitioner convention [verify — no published monocular-video fatigue threshold], which is why the flag is a stop-the-drill prompt for the coach, not a diagnosis.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-fatigue-velocity.png" alt="Two-panel bar chart of peak joint angular velocity declining across drill sets for a pickleball dink drill and a rugby league tackle drill, with the fatigued final sets highlighted." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.10</span>: UC 03 — Fatigue Degradation. Peak angular velocity per set against the athlete's own set-1 baseline; the burnt-orange bars are the flagged drop. <strong>Pickleball</strong>: elbow/wrist velocity across a dink ladder. <strong>Rugby league</strong>: hip-extension velocity across a tackle-tech set, late-session wrestle included.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> load management — stop the drill when mechanics break, not when the set count says so.</p>
+
+  <h3 class="sub-heading">Category B: Swing &amp; Strike Mechanics (UC 04-06)</h3>
+
+  <h3 class="sub-heading">UC 04 — Paddle Swing Arm Path</h3>
+  <p>The coaching cue "soft, low-to-high lift" for the dink and "long accelerating arc" for the drive are trajectory claims, and the wrist keypoint is where they become measurable. The mechanism: track the wrist through the swing, map it to court metres with the homography chain (E11, 4.65&nbsp;cm RMSE on feet — the same chain applied to the wrist plane), and report path length, low-to-high slope at contact, and the elbow-extension trace &theta;<sub>e</sub>(t). The schema caveat is the published one: COCO-17 has a wrist dot but cannot see the continuous post-contact wrist-motion pattern that discriminated skill in the dink study (PMID 40563204) — that wants RTMW-133's hand keypoints or an RF-DETR paddle-landmark skeleton (§11.2b), with the uncertainty channel gating what the coach is shown.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-arm-path.png" alt="Two pickleball wrist trajectory arcs on a court diagram, a low-to-high dink path and a long drive path, with elbow angle annotation and contact point dots." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.11</span>: UC 04 — Swing Arm Path. Dink versus drive wrist trajectories with the elbow-angle trace; contact points dotted. <strong>Pickleball</strong>: dink lift slope versus drive arc length per shot class. <strong>Rugby league</strong>: spiral-pass arm path — wrist trajectory across the body for the cut-out pass.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> technique coaching — shot-class mechanics the athlete can compare against their own baseline, session over session.</p>
+
+  <h3 class="sub-heading">UC 05 — Kick Mechanics: the Conversion Kinematic Sequence</h3>
+  <p>The conversion is rugby league's most reproducible closed skill — same ball placement choice, same approach ritual, no defender — which makes it the cleanest kinematic-sequencing target in either sport. The mechanism: extract hip, knee, and ankle angular velocities from the kicking-leg trace and check proximal-to-distal ordering, t(hip) &lt; t(knee) &lt; t(ankle) at peak &omega;; the approach angle comes from foot keypoints mapped through the homography, and plant-foot placement is measured relative to the ball. Kinetic-chain sequencing is established biomechanics; the per-frame peaks require the §11.6b smoothing discipline, and no published monocular-video conversion kinematics exist for rugby league [verify] — the use case is the measurement protocol, defensible because the skill is closed and the camera can be fixed side-on.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-kick-mechanics.png" alt="Rugby league conversion kick in four skeleton phases from approach to follow-through, with a hip-knee-ankle angular velocity sequence curve below." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.12</span>: UC 05 — Conversion Sequence. Four kick phases with the hip&rarr;knee&rarr;ankle peak ordering underneath. <strong>Rugby league</strong>: conversion and touch-finder mechanics from a fixed side camera. <strong>Pickleball</strong>: the drive serve's hip&rarr;shoulder&rarr;elbow ordering — the same sequencing test on the other sport's closed skill.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> technique coaching and talent identification — sequencing breaks are visible before distance or accuracy drops.</p>
+
+
+  <h3 class="sub-heading">UC 06 — Shoulder External Rotation on the Overhead Smash</h3>
+  <p>The overhead smash loads the shoulder near maximal external rotation — the apprehension position — and pickleball's demographic (the dink pilot's mean age 46.5&plusmn;10.5) makes overuse tracking genuinely relevant. The honest mechanism is a two-tier one: shoulder ER is an out-of-plane rotation, so §11.3's failure mode 5 makes it unmeasurable from monocular 2D; what 2D <em>can</em> do is flag the trophy pose (elbow above shoulder line, arm cocked behind the head plane) and count smash volume, routing flagged clips to a 3D lift (UC 09) for the rotation itself. Evidence label: [verify — practitioner model]; defensible as a counting and routing tool, not as an ER-degree claim, and any risk interpretation goes through §11.8's consent gate.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-shoulder-er.png" alt="Pickleball overhead smash at trophy pose with shoulder external rotation arc and a small safe-range versus risk-zone gauge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.13</span>: UC 06 — Shoulder ER Flag. Trophy-pose detection with the ER arc marked; 2D flags the event, 3D measures the angle. <strong>Pickleball</strong>: smash volume and trophy-pose audit for the older athlete. <strong>Rugby league</strong>: offload arm under contact — the same out-of-plane shoulder load in collision.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> injury-risk flag for qualified human review — volume and posture, never an automated clearance (§11.7).</p>
+
+  <h3 class="sub-heading">Category C: Balance, Contact &amp; Injury Risk (UC 07-08)</h3>
+
+  <h3 class="sub-heading">UC 07 — Centre-of-Mass Tracking for Balance</h3>
+  <p>Balance is centre of mass over base of support, and both sports monetise it: the split-step's CoM drop times the pickleball player's first step, and the ball carrier's CoM leaving the base marks the fend that beats the tackle. The mechanism: a CoM proxy from segment-weighted keypoints (anthropometric tables) or — cheaply and honestly — the mid-hip keypoint with a stated error budget; the feet, mapped to court metres by the homography (E11), define the base polygon; the balance margin is the horizontal distance from the CoM's ground projection to the base edge. The mesh refinement (SMPL-X CoM, §11.6 rung 5) tightens the estimate; the full anthropometric-variance &times; pose-noise error budget is a designed-not-run lab item (§11.10).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-com-tracking.png" alt="Two panels: pickleball split-step with centre-of-mass dot and height trace dropping, and rugby league ball carrier with centre of mass outside the base of support during a fend." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.14</span>: UC 07 — CoM Balance. CoM projection versus the base of support: dropping for the split-step, escaping the base in the fend. <strong>Pickleball</strong>: split-step drop timing against opponent contact. <strong>Rugby league</strong>: off-balance detection on the ball carrier — the tackle-opportunity signal.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> tactical and coaching — a timing metric (PB) and an opportunity signal (RL) from one shared computation.</p>
+
+  <h3 class="sub-heading">UC 08 — Spine Alignment in the Tackle</h3>
+  <p>Spine position at contact is the tackle's welfare variable: head-down entries and bolt-upright postures are the two failure shapes coaching is trying to remove. The mechanism: the pelvis-to-neck vector gives a spine segment; its angle against vertical (sagittal plane, side-on camera) is a defensible trace, and head-position-relative-to-ball-carrier-hip marks the head-side choice. The number practitioners quote — peak trunk deceleration on the order of 11.8&nbsp;m/s² at contact [verify — unit, sensor protocol, and cohort unconfirmed] — comes from instrumented cohorts and is <em>not</em> computable from broadcast video; the video-defensible claim is the angle trace plus the Bath-2025 classification cap (68%/84%), and the §11.7 line holds: forces and risk indices stay off the dashboard.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-spine-tackle.png" alt="Side view of a rugby league tackle with the tackler spine segment line, angle arc against vertical, and head position relative to the ball carrier hip." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.15</span>: UC 08 — Spine Alignment. Spine segment versus vertical at contact; the ghost outline is the upright-risk posture. <strong>Rugby league</strong>: tackle-tech audit on head position and spine angle. <strong>Pickleball</strong>: dink-posture spine angle — the crouch behind the femur-flexion finding (PMID 40563204).</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> welfare screening input for qualified review — never an automated sanction, per the Bath-2025 cap and §11.8's consent rule.</p>
+
+  <h3 class="sub-heading">Category D: 3D Reconstruction Escalation (UC 09-10)</h3>
+
+  <h3 class="sub-heading">UC 09 — 2D-to-3D Lifting Under Depth Ambiguity</h3>
+  <p>The metrics Categories A-C cannot reach — shoulder–hip separation on the serve, fend rotation, true shoulder ER (UC 06) — are out-of-plane, and the cheap escalation is lifting. The mechanism: MotionBERT (ACM MM 2022, MIT) runs a temporal transformer over ~243-frame windows of <em>your</em> 2D tracks and emits 3D joints; the pinhole ambiguity of §11.3b (&lambda;<em>p&#771;</em> = <em>K</em>[<em>R</em>&nbsp;|&nbsp;<em>t</em>]<em>X&#771;</em>, one pixel = one ray) is resolved by a learned motion prior — plausible, not measured. Two honesty labels travel with every output: lifting inherits every 2D error (§11.3's hallucinated joints become 3D hallucinations), and the depth axis is a prior over human motion, so the skeleton looks right even when it is wrong. It runs on MPS on an M4 Max for clip-scale sequences — the reader's first 3D result in an evening.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-lift-pipeline.png" alt="Lifting pipeline: a 2D skeleton sequence window feeding a transformer block, producing a 3D perspective skeleton with a depth axis arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.16</span>: UC 09 — The Lift. 2D track window &rarr; MotionBERT &rarr; 3D joints; the depth axis is a learned prior (geometry in Figure 11.4). <strong>Pickleball</strong>: serve shoulder–hip separation, lifted and compared against its own 2D projection. <strong>Rugby league</strong>: fend rotation on a fixed-camera training clip — not the broadcast pan.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> the teaching tool — out-of-plane angles for the first time, with the inherited-error label attached, before any GVHMR or MAMMA escalation.</p>
+
+  <h3 class="sub-heading">UC 10 — MAMMA-Style 4D Reconstruction of the Tackle Drill</h3>
+  <p>Broadcast will never yield defensible 3D of a tackle; a controlled drill with four or more calibrated cameras will, and that is a purchasing decision, not a model upgrade. The mechanism is the MAMMA stack (arXiv 2506.13040): per-view 2D pose, then triangulation that resolves §11.3b's ray ambiguity by intersecting rays from two or more views, then SMPL-X mesh fitting, yielding a temporally coherent 4D track of both bodies through entry, contact, leg drive, and recovery. Each stage's error feeds the next — calibration error becomes joint-position error at triangulation — so the calibration grid sets the ceiling, and the SMPL-X license (registration-gated, §11.6) means the reader registers personally; the repo ships nothing.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch11-uc-mamma-4d.png" alt="Four cameras on tripods around a calibrated grid capturing a rugby league tackle drill, with a 4D track timeline of mesh thumbnails below." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 11.17</span>: UC 10 — The 4D Drill. Camera rig &rarr; triangulation &rarr; mesh &rarr; 4D track (stack detail in Figure 11.5). <strong>Rugby league</strong>: tackle drill — body height, shoulder contact, hip angle through contact, both bodies reconstructed. <strong>Pickleball</strong>: kitchen-line doubles drill — two players' 3D through a firefight.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> research-grade claims — the only honest route to contact mechanics, and even here §11.7 holds: forces stay inverse dynamics, not video output.</p>
+
+  <h2 class="section-title"><span class="section-num">11.7c</span> Runnable Implementation: the Angle-and-Velocity Core</h2>
+  <p>Every use case in §11.7b reduces to four functions over a tracked single-identity keypoint sequence (chapter 9 first, always). This is the starting skeleton; the full harness lives in the book's lab (<code>lab/w3_lab_pose.py</code> → <code>experiments/c11-pose/</code>):</p>
+  <pre>import numpy as np
+from scipy.signal import savgol_filter
+
+def joint_angle(a, b, c):
+    # Angle at b between segments b-&gt;a and b-&gt;c. Ratios cancel scale (§11.3),
+    # which is why angles are the one number that survives a single camera.
+    v1, v2 = np.asarray(a) - b, np.asarray(c) - b
+    cos = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    return np.degrees(np.arccos(np.clip(cos, -1.0, 1.0)))
+
+def angle_trace(kpts_seq, i, j, k):
+    # kpts_seq: (T, 17, 2) COCO keypoints, ONE tracked identity.
+    # Knee flexion: hip=11/12, knee=13/14, ankle=15/16 (L/R).
+    return np.array([joint_angle(f[i], f[j], f[k]) for f in kpts_seq])
+
+def angular_velocity(theta, fps, window=11, poly=3):
+    # Filter BEFORE the derivative (§11.6b): raw finite differences publish jitter.
+    smooth = savgol_filter(theta, window, poly)
+    return np.gradient(smooth, 1.0 / fps)
+
+def stance_audit(theta, band=(110.0, 140.0)):
+    # UC 01: fraction of frames in the coach's band + the distribution read.
+    # Never report the mean alone — the 155.6° mean hid the 27.7° crouch (§11.4).
+    return {"in_band": float(np.mean((theta >= band[0]) &amp; (theta &lt;= band[1]))),
+            "p10": float(np.percentile(theta, 10)),
+            "min": float(theta.min())}
+
+def fatigue_flag(peak_omega_per_set, drop=0.15, consecutive=2):
+    # UC 03: flag when peak dθ/dt stays below (1-drop) × set-1 baseline.
+    # Threshold is practitioner convention [verify] — a stop-the-drill prompt.
+    base = peak_omega_per_set[0]
+    low = [p &lt; (1.0 - drop) * base for p in peak_omega_per_set]
+    run = 0
+    for s, is_low in enumerate(low):
+        run = run + 1 if is_low else 0
+        if run &gt;= consecutive:
+            return {"fatigue_flag": True, "at_set": s}
+    return {"fatigue_flag": False}</pre>
+
+  <h2 class="section-title"><span class="section-num">11.7d</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are not ten projects; they are the pose layer applied across the book's verbs, each extending an existing chapter rather than duplicating it. Identity comes first — every trace assumes chapter 9's tracking (E09, BoT-SORT HOTA 0.814) has already pinned one skeleton to one athlete. The homography chain (chapter 6, E11: 3.82-4.65&nbsp;cm RMSE) is what turns pixel traces into court metres for UC 04's wrist path and UC 07's base of support. Contact events from the ball layer (chapter 12) anchor the waveforms — UC 01's dink dip and UC 03's per-set peaks mean nothing without the shot axis. UC 01 and UC 04 feed chapter 22's stroke-quality ΔEPV features; UC 02, UC 06, and UC 08 feed the chapter-28 cockpit as review prompts with their Bath-2025 caps attached; UC 09 and UC 10 are the escalation path chapter 10's SAM-3D-Body use cases (UC 07/08 there) gesture at from the segmentation side. And every use case inherits §11.8's consent gate and chapter 31's governance: pose is biometric, screening runs only on consented footage, and no composite score gates an athlete.</p>
+
+  <h2 class="section-title"><span class="section-num">11.8</span> Ethics: Pose Is Biometric</h2>
+  <p>Joint angles and meshes are biometric data (Australian Privacy Act / GDPR sensitive-category data). A 33-keypoint skeleton sequence is person-identifying — gait is a biometric — and health-revealing: asymmetries imply injury history. The inference asymmetry is the sharp edge: the pipeline can <em>compute</em> a knee-valgus proxy from broadcast footage without the athlete ever opting in, so the book's rule is that biomechanical screening runs only on footage the subject consented to for that purpose; broadcast-derived pose is for tactical and technical analysis, not health inference. Never publish per-athlete biomechanics without consent; never screen or gate athletes on markerless composite scores; the chapter-31 rights discipline applies at the measurement stage, not just publication. Both worked sports raise the bar in their own way: pickleball's demographic skews older (the pilot's mean age was 46.5), and rugby league pathways include minors — consent and duty of care scale accordingly.</p>
+
+  <h2 class="section-title"><span class="section-num">11.9</span> The Pose-to-Biomechanics Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Question first</strong>: stance (2D), serve mechanics (3D-mesh), or injury risk (STOP — you need markerless mocap + medical review, not monocular video).</li>
+    <li><strong>Identity first</strong>: track the same player across the rally (chapter 9) before computing angles — mixing skeletons corrupts the time series.</li>
+    <li><strong>2D extraction</strong>: YOLO11-pose (82fps measured) for the one-model pipeline, or RTMW for whole-body incl. the paddle hand; consider RF-DETR Keypoints when you need paddle-tip or contact-point landmarks with uncertainty.</li>
+    <li><strong>Occlusion state</strong>: per-keypoint confidence thresholds plus an explicit <em>occluded</em> state; never interpolate silently through a ruck or a ball-hiding-wrist frame.</li>
+    <li><strong>Angle computation</strong>: knee, hip, spine — report <em>deflections</em> (min/max/p10/p90), never a single average (the 155.6° mean hides the 27.7° crouch).</li>
+    <li><strong>Filter before derivatives</strong>: smooth the trace (state the filter), then compute d&theta;/dt; never differentiate raw keypoints.</li>
+    <li><strong>Foreshortening check</strong>: is the player facing the camera? If yes, the angle is compressed — label it or escalate.</li>
+    <li><strong>Escalate only for the question 2D cannot answer</strong>: 3D lift (MotionBERT, inherit 2D error), world-grounded 3D (GVHMR, Colab), mesh (SMPL-X if licensed), multi-view mocap (MAMMA, if the claim justifies a capture rig).</li>
+    <li><strong>Ethics gate</strong>: angle traces are biometric — no per-athlete publication without consent; never a screening/gate.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">11.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li>RTMW on the pb-003 rally: whole-body 133kp (paddle grip state) at M4 speed — does it resolve the PMID 40563204 wrist pattern?</li>
+    <li>MotionBERT 3D lift on a serve clip: does lifted 3D fix the foreshortening of the knee trace? (it inherits 2D error, so compare)</li>
+    <li>GVHMR 3D mesh on a serve via Colab — the publishable 3D biomechanics figure; then the same on an nrl-001 tackle, where the PTZ pan is the stress test and the failure gallery is itself a result.</li>
+    <li>Knee-angle defensibility on broadcast rugby: one measured statement per sport, not a shared claim — nrl-001's near-frontal framing may push even sagittal metrics out of the defensible column.</li>
+    <li>CoM error budget: one quantification pass over anthropometric-table variance &times; pose noise, so §11.6b's "statable error budget" ships with numbers.</li>
+    <li>RF-DETR paddle-keypoint fine-tune: handle + tip landmarks, so the 6.5&deg; paddle-face claim [verify] becomes a measurement instead of a coaching convention.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">11.11</span> Sources</h2>
+  <ul>
+    <li>RTMPose/RTMW — rtmlib (Apache-2.0, <a href="https://github.com/Tau-J/rtmlib">github.com/Tau-J/rtmlib</a>); RTMPose paper (<a href="https://arxiv.org/abs/2303.07399">arXiv 2303.07399</a>, CVPR 2023). MediaPipe Pose Landmarker (Apache-2.0, <a href="https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker">ai.google.dev</a>). MMPose/ViTPose (Apache-2.0, mmcv friction; <a href="https://arxiv.org/abs/2204.12484">arXiv 2204.12484</a>).</li>
+    <li>RF-DETR Keypoints (Apache-2.0, <a href="https://github.com/roboflow/rf-detr">github.com/roboflow/rf-detr</a>; <a href="https://blog.roboflow.com/real-time-keypoint-detection-with-rf-detr/">Roboflow keypoints blog</a>).</li>
+    <li>MotionBERT (MIT, <a href="https://arxiv.org/abs/2210.06551">arXiv 2210.06551</a>); GVHMR (SIGGRAPH Asia 2024, <a href="https://arxiv.org/abs/2409.06662">arXiv 2409.06662</a>; MPS fork ryanrudes/gvhmr [verify]); VGGT (CVPR 2025 Best Paper, <a href="https://arxiv.org/abs/2503.11651">arXiv 2503.11651</a>; weights CC-BY-NC [verify]).</li>
+    <li>SMPL-X — registration-gated, non-redistributable (<a href="https://smpl-x.is.tue.mpg.de/">smpl-x.is.tue.mpg.de</a>; <a href="https://arxiv.org/abs/1904.05866">arXiv 1904.05866</a>) — cite, don't ship. MAMMA markerless mocap (<a href="https://arxiv.org/abs/2506.13040">arXiv 2506.13040</a>; <a href="https://github.com/cuevhv/mamma">github.com/cuevhv/mamma</a>).</li>
+    <li>Pickleball dink kinematics pilot: Edriss, Romagnoli et al., J Sports Sci 2025;43(17):1860–1870 (<a href="https://pubmed.ncbi.nlm.nih.gov/40563204/">PMID 40563204</a>) — femur flexion discriminates skill (p&lt;0.001); knee angle does NOT.</li>
+    <li>Markerless validity review (Sensors 2026, <a href="https://www.mdpi.com/1424-8220/26/12/3956">mdpi.com/1424-8220/26/12/3956</a>); DorsaVi concurrent validity (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9559006/">PMC9559006</a>).</li>
+    <li>Lab: <code>lab/w3_lab_pose.py</code> → <code>experiments/c11-pose/outputs/metrics.json</code> (72.1 fps, 155.6° mean, 27.7° min, C11-lab). Bath 2025 tackle classification (68% sens / 84% spec, on record; primary citation [verify]). Paddle-face 6.5° and spine deceleration 11.8 m/s² are practitioner-convention figures [verify].</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="10.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 10</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 10</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</p>
+        </div>
+      </div>
+    </a>
+    <a href="11.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 11</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 11</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">What stance tells you, what 2D cannot prove, and the escalation ladder to 3D</p>
+        </div>
+        <a href="11.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #9A5A2E;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

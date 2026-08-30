@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 03 — Sport Rules as Formal Systems - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #C2410C;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-03" style="background-color: #C2410C; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 03</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 03 — Sport Rules as Formal Systems</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Pickleball and Rugby League grammar: state machines, event semantics, and what vision can never infer</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">29 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-03-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Rules Are the Grammar of the Sport</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-03-1" data-section="s-03-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Rules Are the Grammar of the Sport</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-03-1" data-section="s-03-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Rules Are the Grammar of the Sport</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">03</span> Chapter 03 — Sport Rules as Formal Systems</h1>
+    <p class="chapter-subtitle">Pickleball and Rugby League grammar: state machines, event semantics, and what vision can never infer</p>
+  </header>
+
+<h3 id="s-03-1"><span class="section-num">3.1</span> Rules Are the Grammar of the Sport</h3>
+
+<p>Every rule citation below is <strong>source-backed</strong> (rule numbers read from the primary rulebooks in the Sources section), and every machine behavior is <strong>measured</strong> (lab output in <code>experiments/c03-rules/outputs/state-machines.json</code>). Where a rule cannot be verified from vision, the table in section 3.6 labels it explicitly.</p>
+
+  <p class="section-intro">Before any model, a practitioner must write down the rules formally. If you cannot express "the double-bounce rule" as a state transition, you cannot verify it. Later chapters — event classification, expected points, counterfactual simulation — consume this grammar.</p>
+
+  <p>The common failure is treating match events as independent observations. They are not. A pickleball third-shot drop is meaningful only relative to the two shots before it; a rugby league 5th-tackle kick is meaningless without the tackle count. Both sports are <strong>state machines</strong>; the state is the load-bearing variable.</p>
+  <p>Both governing bodies have, in effect, written executable specifications. The 2026 USAP rulebook's Appendix B requires rules to be "written with a deterministic focus, i.e., from the standpoint of 'if this occurs, this is what happens'" and to "avoid ambiguity, player discretion, or referee judgment-related rules." That is an <strong>event–condition–action (ECA)</strong> specification: every fault rule is named <code>Fault – &lt;trigger&gt;</code>, every replay <code>Replay – &lt;trigger&gt;</code>. The IRL laws read the same way: Section 11's play-the-ball protocol is an enumerated list of conditions (a)–(h) each with a prescribed consequence. Formally, both sports are <code>(state, event) → (state', consequence)</code> machines. The differences are state size, event triggers, and hidden state. Get the grammar right and everything downstream is a client of it. Get it wrong and every downstream number models a sport that does not exist.</p>
+
+  <h2 class="section-title"><span class="section-num">3.2</span> Pickleball: The Complete Grammar</h2>
+  <p>Pickleball is a <strong>point-terminating Markov chain</strong>: each rally begins with a serve and ends in a fault or a winner, and the score only moves through that termination. The grammar has five rule groups that any analysis system must encode:</p>
+
+  <ol>
+    <li><strong>Serving</strong> (USAP 7.A–7.E): underhand, contact below the waist (7.C), behind the baseline; serve lands diagonally in the proper service court. Since 2026, a serve touching the net and clearing the NVZ is <strong>live</strong> (7.E); net-support contact is still a fault (13.B.1).</li>
+    <li><strong>Double-bounce</strong>: the serve must bounce on the receiving side, and the return on the serving side, before either team can volley. The rally becomes open only after both bounces.</li>
+    <li><strong>Non-Volley Zone (NVZ / kitchen)</strong> (USAP 3.A, 11.A): a 2.13m strip on each side of the net. Players cannot volley while standing in it or stepping into it, and cannot carry momentum into it after a volley. Foot placement on the 2-inch line during a volley is a fault. Full geometry in section 3.2b.</li>
+    <li><strong>Scoring</strong> (USAP 4.A, 4.B, 5.B, 6.B.2): games to 11, win by 2; only the serving side scores; doubles begins "0-0-2" and rotates both servers within a side-out.</li>
+    <li><strong>Termination</strong>: faults (net, out, NVZ, double-bounce, carry/double-hit), winners, replays, equipment interference.</li>
+  </ol>
+  <p>The <strong>state tuple</strong> for doubles is <code>(serving_score, receiving_score, server_number, serving_team)</code>, with court side derived from score parity (5.B.3). The score call is a state broadcast: three numbers — serving score, receiving score, server number (6.B.2). Serving before the call completes (6.C.1) or after ten seconds (6.D.1) is a fault.</p>
+
+  <p>The serve contract decomposes a physical act into checkable predicates. A volley serve is legal iff: at least one foot contacts the serving area and neither foot touches the court — <strong>the baseline is court, so a toe on the line is a foot fault</strong> (7.A.2); paddle moving in a clear upward arc (7.C.1); paddle head not above the wrist (7.C.2); contact not above the waist (7.C.3). The drop serve (7.D) is simpler: drop from natural height, no propulsion, unlimited bounces. Since 2026, a net-cord serve that lands clear is <strong>live</strong> (7.E); a pre-2026 grammar would replay it.</p>
+
+  <figure id="fig-03-01" class="full">
+    <img src="shared/images/pb-rules-court-crosssection.png" alt="Pickleball court cross-section showing NVZ kitchen 2.13m, net 0.86m, and the double-bounce rule: serve bounce on return side, return bounce on serve side." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.1</span>: The Double-Bounce Rule as Geometry. A serve must bounce on the receiving side, and the return on the serving side, before volleys are legal. The NVZ (2.13m each side) is where rallies are decided.</figcaption>
+  </figure>
+  <figure id="fig-03-04" class="full">
+    <img src="shared/images/c03-double-bounce.png" alt="Side-view diagram of the pickleball double-bounce rule: serve arc bouncing once in the receiver box (marker 1), return arc bouncing once on the server side (marker 2), then a flat arrow labelled volley legal, with hatched NVZ bands beside the net." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.4</span>: The Double-Bounce Rule as a Two-Event Gate (USAP 10.A). Volleys become legal only after bounce 1 (serve, receiving side, 10.A.1) and bounce 2 (return, serving side, 10.A.2). A vision pipeline that detects bounce events and hit events can enforce this with two counters; nothing else in the rule requires pose at all.</figcaption>
+  </figure>
+
+  <p>Most of these rules are not directly observable: a line call needs ball-ground contact; a kitchen fault needs foot position and momentum; a double-bounce violation needs bounce counting. Section 3.6 labels which predicates vision can ground and which it cannot.</p>
+  <h2 class="section-title"><span class="section-num">3.2b</span> The NVZ as Formal Geometry: The Fault_NVZ Predicate</h2>
+
+  <p>The non-volley zone is a <em>spatial predicate over a temporal window</em>. It is a 7 ft × 20 ft (2.13 m × 6.08 m) strip on each side of the net, and — the clause that decides real matches — <strong>all bounding lines are part of the zone</strong> (3.A.4.c). Lines are 2 inches wide; measurements run to the outside edge (3.A.2, 3.A.4.e), so the NVZ boundary sits 7 ft from the net plane: 4.88 m and 8.53 m from each baseline on a 13.41 m court. The zone is explicitly two-dimensional: it "does not extend above the playing surface" (3.A.4.c), which is why reaching <em>over</em> the kitchen to volley is legal while standing on its 2-inch line is not. The rule is a ground-contact predicate, not a volume predicate.</p>
+
+  <figure id="fig-03-05" class="full">
+    <img src="shared/images/c03-nvz-geometry.png" alt="Top-down diagram of a pickleball court half: the NVZ as a burnt-orange hatched 7 ft band, the 2-inch NVZ line drawn in orange with the callout line is in, dimension arrows 7 ft and 2.13 m, net as a black bar, centreline dividing two service boxes." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.5</span>: The Kitchen as Geometry (USAP 3.A). The NVZ is a 7 ft × 20 ft strip whose bounding lines are <em>part of the zone</em> (3.A.4.c) — the 2-inch painted line is inside the forbidden region, not its border. The zone is 2D: it does not extend above the surface, so airspace over the kitchen is legal.</figcaption>
+  </figure>
+
+  <p>Written as a predicate over a rally, the kitchen fault is:</p>
+
+<pre><code class="language-text">Fault_NVZ(rally) ⇔ ∃ player p, volley event v:
+    ( NOT InitiatedOutsideNVZ(p, v) )                              (11.A)
+ OR ( Contact(Feet(p) ∪ AnythingTouching(p), NVZ ∪ ∂NVZ)
+      during ActOfVolleying(p, v) )                                (11.A.1)
+ OR ( MomentumFrom(p, v) carries p into NVZ ∪ ∂NVZ,
+      even after the ball is dead )                                (11.A.2)
+ OR ( TouchedNVZ(p) AND VolleysAgain(p)
+      before both feet re-establish outside )                      (11.A.3)</code></pre>
+
+  <p>Two clauses break naive implementations. First, 11.A.1 counts anything touching the player — including a partner — so a doubles player holding their partner at the kitchen line can fault for them. Second, 11.A.2 is, per 9.B.1, the <strong>only fault that can occur while the ball is not live</strong>: momentum from a volley carries the striker into the zone after the ball is dead. Any pipeline that stops tracking at rally end will miss it; the window must extend past the terminal ball event. Players may call NVZ and service foot faults only on opponents (9.B.3); disagreement produces a replay (9.B.3.b). The line is geometric, but the call is adversarial.</p>
+
+  <figure id="fig-03-06" class="full">
+    <img src="shared/images/c03-fault-nvz-predicate.png" alt="Side-view diagram of the NVZ foot-fault rule: a player silhouette mid-volley with the front toe touching the NVZ line marked with a burnt-orange X, a logic box reading volley plus foot on line equals fault, and a faded silhouette falling forward after contact labelled momentum fault." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.6</span>: Fault_NVZ as a Diagram. A toe on the 2-inch line during the act of volleying is a fault (11.A.1); momentum carrying the striker into the zone is a fault even after the ball is dead (11.A.2) — the one clause that outlives the rally.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">3.2c</span> When Is a Volley a Volley: Stance + Timing</h2>
+
+  <p>Every NVZ clause hangs on the phrase "the act of volleying," and the rulebook gives it temporal extent: the act begins with the swing, includes ball contact and the follow-through, and — via the momentum rule — persists until the striker's motion from that swing has dissipated. A volley is therefore not a frame; it is a <strong>window</strong>. For a vision system the predicate decomposes into a stance term and a timing term: foot-zone state sampled across the window (stance), and window bounds anchored to the contact event and the subsequent decay of forward motion (timing). Sampling foot position only at the contact frame is the classic bug — it misses both the follow-through step onto the line and the momentum carry.</p>
+
+  <figure id="fig-03-07" class="full">
+    <img src="shared/images/c03-volley-window.png" alt="Timing diagram of the act of volleying: a horizontal timeline with ticks labelled contact, follow-through, ball dead, a burnt-orange window bracket spanning contact through follow-through labelled act of volleying, and a dashed orange extension after ball dead labelled momentum live." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.7</span>: The Act of Volleying as a Window. The legal window opens at swing initiation and closes only when follow-through momentum dissipates; the dashed tail after ball dead is where 11.A.2 still applies.</figcaption>
+  </figure>
+
+  <p>The window's start is easy (swing initiation is visible); its end is judgement. A machine needs an operational surrogate — e.g., closing when the striker's centre-of-mass velocity drops below walking pace, or a fixed time after contact [verify]. Log the surrogate as part of the claim: it is a modelling decision, not a rule. The same stance-plus-timing shape appears in rugby league: a tackle is held-plus-grounded over the referee's "held" call (S11.2), and the PTB is legal only if the foot genuinely plays the ball backwards during the PTB window (S11.10.e). Two sports, one predicate shape: <em>contact event × posture state over a window</em>.</p>
+
+  <h2 class="section-title"><span class="section-num">3.3</span> Rugby League: The Set Grammar</h2>
+  <p>Rugby League is a <strong>possession Markov chain</strong>: the game is a sequence of sets of six tackles, and the scoring question is what the team does on tackle 5 or 6. The grammar has four rule groups:</p>
+
+  <ol>
+    <li><strong>The set</strong>: 6 tackles per set. A tackle is complete when the ball carrier is held on the ground (or the referee calls "held"), and the game restarts with a <em>play-the-ball</em> (PTB). After the 6th tackle, possession changes unless the team kicks or scores.</li>
+    <li><strong>Field position rules</strong> (IRL S11.10, S9.6): the defending team must retreat 10m from the PTB until the ball is played (S11.10.g); a <em>six-again</em> restart resets the tackle count on PTB interference/delay (S11.10–11.11); a 40/20 restarts with a <strong>tap</strong> (S9.6), not a scrum.</li>
+    <li><strong>Scoring</strong> (IRL S6.1): try 4, conversion 2, penalty goal 2, field goal 1; match is 80 minutes (S7.1). A team can score from any tackle number; the set grammar controls field position, not scoring opportunities alone.</li>
+    <li><strong>Welfare rules</strong> (IRL S16.6, S4.2): sin bin = 10-minute temporary suspension; interchange = max 8 from the 17 named, with an 18th man triggered only by HIA/foul-play. These are <em>process rules</em> — they change who is on the field, which changes the visual scene.</li>
+  </ol>
+  <p>The tackle definition is five disjuncts (S11.2): carrier grounded while held, held upright with no progress, carrier succumbs, hand on an already-grounded carrier, or leg lifted. The play-the-ball protocol (S11.10) requires: immediate release, regain feet at the mark, ball lifted clear and placed in front of the foremost foot, one marker opposite, tacklers clear the ruck, a <strong>genuine attempt to play the ball backwards with the foot</strong>, acting halfback behind, all other defenders retired 10 m or to goal line, and no advance until the ball clears the ruck.</p>
+
+  <p>Restart grammar is where the modern game lives. Interference with the PTB or intentional delay resets the count — the "six again" — <em>except</em> ruck interference inside the attacking team's own 40 m zone, which draws a penalty (S11.10 notes, S11.11); the NRL's per-season interpretation memo pins exactly which infringements are set-restart versus penalty [verify current-season NRL]. An accidental breach gives the new team a <em>zero tackle</em> (S11.7.b). An opponent intentionally playing at the ball — including a charge-down — resets the count to one. A 40/20 restarts with a tap (S9.6). Every trajectory model must respect: <strong>forward-pass direction is judged relative to the thrower, not the ground</strong> (S10 notes). A ball that floats backwards over the ground can still be a forward pass if it leaves the hands forwards relative to a decelerating thrower.</p>
+
+  <figure id="fig-03-02" class="full">
+    <img src="shared/images/pb-rules-state-machine.png" alt="Pickleball rally state machine flowchart from PRE_SERVE through SERVE_IN_FLIGHT, RECEIVE_IN_FLIGHT, THIRD_SHOT, KITCHEN_DINK_BATTLE to FAULT/POINT/SIDE_OUT terminals with rule callouts 7.C, 10.A, 11.A." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.2</span>: The Pickleball Rally State Machine. Phases are rule-ordered; a third-shot drop is meaningful only relative to the serve and return before it.</figcaption>
+  </figure>
+
+  <p>For analytics, the load-bearing structure is the <strong>tackle number</strong>: it conditions everything. A run on tackle 1 is a field-position play; a run on tackle 6 that fails to kick is a turnover. Modelling expected value without the tackle number is modelling noise. The verified literature agrees: the canonical NRL possession-value model (Kempton et al., 2016) and the Bayesian smooth-surface EPV update (Sawczuk et al., 2024) both condition on tackle state.</p>
+  <figure id="fig-03-03" class="full">
+    <img src="shared/images/rl-set-structure.png" alt="Rugby League six-tackle set structure: T1 to T6 ladder with PTB icons, 10m retreat line, kick at T5/T6 branching to handover." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.3</span>: The Rugby League Set Grammar. Six tackles with a play-the-ball after each; the kick option on tackle 5-6 and the 10m retreat define field-position value.</figcaption>
+  </figure>
+
+  <figure id="fig-03-08" class="full">
+    <img src="shared/images/c03-rl-set-grammar.png" alt="Six-tackle set grammar diagram: tackle nodes T0 to T5 joined by arrows, play-the-ball icon under each node, a burnt-orange six-again loop back to T0, branches from T4 and T5 to kick, try, and handover terminals, and a dashed 10 m retreat line with defender dots." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.8</span>: The Set as a Grammar (IRL S11). Five play-the-balls, then handover on the sixth tackle (S11.7.a); the six-again loop resets the count without a stoppage (S11.11); kick and try are the productive exits from T4/T5. The zero tackle (S11.7.b) means a turnover set still has six to come.</figcaption>
+  </figure>
+  <h2 class="section-title"><span class="section-num">3.3b</span> The Ruck Law and Retreat Compliance (RCM)</h2>
+
+  <p>The 10 m retreat (S11.10.g) is the spatial predicate that gives the attacking side room to play, and its compliance is measurable from tracking data alone. A useful practitioner metric — our formulation, so treat specific values as [verify] until validated against league tracking data — is <strong>retreat compliance</strong>:</p>
+
+<pre><code class="language-text">RCM(set) = |{ d ∈ defenders : dist(d, ptb_mark) ≥ 10 m
+               at the frame the ball clears the ruck }| / |defenders|</code></pre>
+
+  <p>The reference point is the play-the-ball mark, not the tackle location; the sampling instant is the ball-clears-ruck event; defenders on their own goal line satisfy the rule without the full 10 m (S11.10.g). Broadcast parallax makes per-camera field calibration (chapters 6–7) a prerequisite — an uncalibrated RCM measures lens geometry, not discipline. The companion metric is <strong>ruck speed</strong> (tackle-effected to ball-clear). It is the single most valuable CV-only number in the sport [concept-transfer], conditioning line speed and the value of the following tackle in Kempton et al. (2016) and Sawczuk et al. (2024).</p>
+
+  <figure id="fig-03-09" class="full">
+    <img src="shared/images/c03-rcm-retreat.png" alt="Top-down rugby pitch strip: the play-the-ball point as a burnt-orange dot, a dashed 10 m retreat arc, three defender dots inside the arc crossed out and labelled offside, four beyond the arc ticked and labelled onside, a formula box RCM equals onside over total, and a ball-clears arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.9</span>: Retreat Compliance at the Ruck (S11.10.g). RCM is the fraction of defenders at or beyond the 10 m line (or on their goal line) at the instant the ball clears the ruck — a predicate over tracked positions at a rule-defined instant.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">3.4</span> The Grammar in Code: Executable State Machines (W1.1 Lab)</h2>
+  <p>Our lab encodes both grammars as Python state machines. The pickleball machine tracks the serve/receive/third-shot phases, bounce count (double-bounce rule), server number (doubles side-out), and NVZ enforcement:</p>
+  <figure id="fig-03-10" class="full">
+    <img src="shared/images/c03-one-formal-system.png" alt="Split-panel concept diagram: left panel a pickleball rally loop with states serve, return, rally, fault, point connected by burnt-orange arrows; right panel a rugby league set loop with states tackle, PTB, kick, try, handover connected by burnt-orange arrows; a shared centre box labelled (s, a) to (s prime, r)." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.10</span>: One Formal System, Two Sports. Both are <code>(state, event) → (state', reward)</code> machines. Pickleball's events are mostly ball/pose contacts; rugby league's events include referee-gated transitions such as the held call and the six-again signal.</figcaption>
+  </figure>
+
+<pre><code class="language-python">from enum import Enum
+
+class PB_Phase(str, Enum):
+    PRE_SERVE = "PRE_SERVE"
+    SERVE_IN_FLIGHT = "SERVE_IN_FLIGHT"
+    RECEIVE_IN_FLIGHT = "RECEIVE_IN_FLIGHT"
+    RALLY = "RALLY"                    # double-bounce satisfied
+    SIDE_OUT = "SIDE_OUT"
+    POINT = "POINT"
+    FAULT = "FAULT"
+
+class PickleballMachine:
+    def __init__(self):
+        self.phase = PB_Phase.PRE_SERVE
+        self.bounce_count = 0
+        self.server = 1
+        self.serve_score = 0
+        self.recv_score = 0
+
+    def step(self, event: str, **kw):
+        if event == "bounce":
+            self.bounce_count += 1
+        elif event == "volley":
+            if self.phase != PB_Phase.RALLY:
+                return self._terminal(PB_Phase.FAULT,
+                                      "volley before double-bounce")
+            if kw.get("foot_in_nvz") or kw.get("momentum_into_nvz"):
+                return self._terminal(PB_Phase.FAULT, "NVZ violation")
+        elif event == "serve":
+            self.phase, self.bounce_count = PB_Phase.SERVE_IN_FLIGHT, 0
+        elif event == "return":
+            self.phase = PB_Phase.RECEIVE_IN_FLIGHT
+        elif event == "third_shot":
+            self.phase = PB_Phase.RALLY
+        elif event == "win":
+            return self._terminal(PB_Phase.POINT, "server wins")
+        return {"event": event, "phase": self.phase,
+                "bounces": self.bounce_count}
+
+    def _terminal(self, phase: PB_Phase, reason: str):
+        if phase == PB_Phase.POINT:
+            self.serve_score += 1
+        else:
+            if self.server == 1:
+                self.server = 2
+            else:
+                self.server = 1
+                self.serve_score, self.recv_score = \
+                    self.recv_score, self.serve_score
+        self.phase = PB_Phase.PRE_SERVE
+        return {"to": phase, "reason": reason,
+                "score": [self.serve_score, self.recv_score]}
+</code></pre>
+
+  <p>Two things separate this from a toy tracker. First, the event layer is <strong>agnostic</strong>: the machine queries predicates supplied by the vision layer (<code>foot_in_nvz</code>, <code>momentum_into_nvz</code>). The detector emits raw state; the engine decides. Second, the scoring side-out logic is <strong>rule-intrinsic</strong>: only the serving side scores (4.A), and a second-server loss produces a side-out. A detector that calls "winner" without the server number will corrupt the scoreboard. The grammar enforces the scoreboard.</p>
+
+  <p>The rugby league machine encodes the six-tackle grammar, six-again restart, kick-on-6 handover, and welfare events:</p>
+
+<pre><code class="language-python">class RugbyLeagueMachine:
+    def __init__(self):
+        self.tackle_number = 0
+        self.possession = "A"
+        self.score = {"A": 0, "B": 0}
+
+    def step(self, event: str, **kw):
+        if event == "tackle":
+            self.tackle_number += 1
+            if self.tackle_number >= 6:
+                return self._handover("sixth tackle - no kick")
+        elif event in ("six_again", "zero_tackle"):
+            # six_again: S11.11; zero_tackle: S11.7.b
+            self.tackle_number = 0
+        elif event == "kick" and self.tackle_number >= 5:
+            self._swap(); self.tackle_number = 0
+            return {"event": "possession_change", "tackle": 0}
+        elif event == "try":
+            self.score[self.possession] += 4
+        elif event in ("conversion", "penalty_goal"):
+            self.score[self.possession] += 2
+        elif event == "field_goal":
+            self.score[self.possession] += 1
+        elif event == "sin_bin":
+            return {"event": "sin_bin", "note": "10 min"}
+        return {"event": event, "tackle": self.tackle_number,
+                "score": self.score}
+
+    def _handover(self, reason: str):
+        self._swap(); self.tackle_number = 0
+        return {"to": "HANDOVER", "reason": reason,
+                "possession": self.possession}
+
+    def _swap(self):
+        self.possession = "B" if self.possession == "A" else "A"
+</code></pre>
+
+  <p>The same separation appears in rugby league: the machine accepts the held event and advances the count; it does not detect "held" from pixels. The set restart, zero tackle, and sin bin come from the referee signal or official feed. The machine's value is <strong>state integrity</strong>: a scorer who forgets to reset the count after "six again" corrupts every subsequent tackle; a state machine enforces the reset and records the discrepancy. Detector and rule layers have different failure modes and verification requirements.</p>
+
+  <h2 class="section-title"><span class="section-num">3.4b</span> A Common Vocabulary: The Grammar Comparison Table</h2>
+
+  <p>The two grammars are the same formal object. The table maps one sport's construct to the other's — a <strong>concept-transfer</strong> tool.</p>
+
+  <figure id="fig-03-11" class="full">
+  <table>
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Pickleball (USAP 2026)</th>
+        <th>Rugby League (IRL 2026)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Terminal unit</td>
+        <td>Point — every rally ends in fault, point, or replay</td>
+        <td>Set — six tackles ending in try, kick, handover, or error</td>
+      </tr>
+      <tr>
+        <td>Chain type</td>
+        <td>Point-terminating Markov chain; absorbing states are <code>POINT_A</code>, <code>POINT_B</code>, <code>REPLAY</code></td>
+        <td>Possession Markov chain; absorbing states are <code>TRY</code>, <code>GOAL_KICK</code>, <code>HANDOVER</code>, <code>PENALTY</code></td>
+      </tr>
+      <tr>
+        <td>State space</td>
+        <td>Small: scores, server #1/#2, side, phase ∈ {serve, return, third-shot, rally}</td>
+        <td>Large: tackle #0–5, field position (x,y), ruck speed, marker/10 m compliance, possession</td>
+      </tr>
+      <tr>
+        <td>Transition trigger</td>
+        <td>Ball contacts and spatial predicates (NVZ, line landing)</td>
+        <td>Referee-gated events (held, six-again) and spatial predicates (touch, 10 m)</td>
+      </tr>
+      <tr>
+        <td>Reset transitions</td>
+        <td>Replay — rally voided, state unchanged (9.C.2, 13.A.1)</td>
+        <td>Set restart / zero tackle — count reset, position retained (S11.11, S11.7.b)</td>
+      </tr>
+      <tr>
+        <td>Hidden state</td>
+        <td>Almost none; self-officiated calls are observable</td>
+        <td>Significant: advantage, held judgement, HIA status</td>
+      </tr>
+      <tr>
+        <td>Spatial predicate example</td>
+        <td>Fault_NVZ(p, v) — foot or momentum in zone during volley</td>
+        <td>RCM(set) — defenders ≥ 10 m at ball-clears-ruck instant</td>
+      </tr>
+    </tbody>
+  </table>
+  <figcaption><span class="fig-num">Figure 3.11</span>: One Formal System, Two Sports. Both reduce to <code>(state, event) → (state', reward)</code> machines; the differences are state size, event triggers, and hidden state.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">3.4c</span> Rules as Code: Eight Executable Predicates</h2>
+
+  <p>The grammar pays off only when individual rules become <strong>executable predicates</strong> — functions over observed events that return fault, replay, or nothing. The eight use cases below are the officiating core of both rulebooks, written as case studies: the formal rule as the governing body states it, the predicate a machine can evaluate, the figure, the dual-sport application, and the officiating payoff. Each predicate tags its inputs <em>vision-gated</em> (a detector can supply them) or <em>referee-gated</em> (they must come from the official feed — section 3.6's boundary applies). Rules cited are <strong>source-backed</strong> from the USAP 2026 rulebook and the IRL 2026 laws; thresholds marked [verify] are practitioner operationalisations, not rulebook text.</p>
+
+  <h3 class="sub-heading">UC 01 — The NVZ Foot-Fault Predicate (USAP 11.A, 9.B)</h3>
+  <p><strong>The formal rule.</strong> All volleys must be initiated outside the non-volley zone, and any contact by the striker — or anything touching the striker — with the zone or its lines during the act of volleying is a fault (11.A.1); momentum carrying the striker in is a fault even after the ball is dead (11.A.2, per 9.B.1 the only fault that can occur while the ball is not live); re-volleying before both feet re-establish outside is a fault (11.A.3). The full four-disjunct formula is section 3.2b; the officiating core is the first disjunct:</p>
+
+<pre><code class="language-text">FootFault_NVZ(p, v) ⇔ ActOfVolleying(p, v)
+  ∧ Contact( Feet(p) ∪ AnythingTouching(p), NVZ ∪ ∂NVZ )   (11.A.1)</code></pre>
+
+  <p>Two properties make this the hardest officiating predicate in the sport: the line itself is inside the zone (3.A.4.c), so the test is a 2-inch pixel-precision contact at the volley window, not a zone-membership test; and players may call it only on opponents (9.B.3), with disagreement producing a replay (9.B.3.b) — the machine's output is evidence in an adversarial call, not the call itself.</p>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-nvz-fault-expanded.png" alt="Expanded NVZ foot-fault predicate diagram: volley plus contact with zone or line equals fault, with the momentum silhouette falling in after the ball is dead." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.12</span>: UC 01 — FootFault_NVZ Expanded. The predicate fires when the volley window and the contact set intersect the zone or its boundary lines. <strong>Pickleball</strong>: toe-on-line detection at contact plus the post-dead momentum tail (11.A.2). <strong>Rugby league</strong>: the same shape appears as goal-line grounding — contact of ball to line over a referee-defined window.</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> an automated foot-fault flag converts the most-disputed self-call in pickleball into a reviewable clip with the contact frame marked — and the same contact-over-window machinery is what the rugby league video referee needs for grounding decisions.</p>
+
+  <h3 class="sub-heading">UC 02 — The Double-Bounce Predicate (USAP 10.A, 10.B)</h3>
+  <p><strong>The formal rule.</strong> The serve must bounce before the receiver strikes it (10.A.1) and the return of serve must bounce before the serving side strikes it (10.A.2); after those two events the rally is open. Separately, a ball not returned before its second bounce is a fault on the side that let it die (10.B.1). This is the cleanest vision-verifiable rule in either sport: two bounce counters and a hit-order check, no pose required.</p>
+
+<pre><code class="language-text">Fault_DoubleBounce(rally) ⇔
+    HitBy(receiver, serve)  BEFORE Bounce(serve)          (10.A.1)
+ OR HitBy(serving, return)  BEFORE Bounce(return)         (10.A.2)
+ OR SecondBounce(ball) with no intervening hit            (10.B.1)</code></pre>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-double-bounce-predicate.png" alt="Double-bounce predicate as a two-event gate: bounce one on the serve, bounce two on the return, then the volley gate opens; counter box bounces greater-or-equal two." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.13</span>: UC 02 — The Two-Event Gate. Volleys are legal iff the bounce counter reaches two before the hit. <strong>Pickleball</strong>: the gate defines the third-shot drop's existence. <strong>Rugby league</strong>: the same event-ordering check is the PTB sequence — tackle effected must precede play-the-ball, or the ruck is illegal (S11.10).</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> bounce-event detection (chapter 12) feeding this predicate automates the most common beginner fault and — via 10.B.1 — awards points on unreturned balls without a human watching bounce counts; the identical event-ordering template verifies ruck sequence integrity in rugby league.</p>
+
+  <h3 class="sub-heading">UC 03 — The 10 m Retreat Predicate (IRL S11.10.g)</h3>
+  <p><strong>The formal rule.</strong> At the play-the-ball, every defender who is not the marker must retire 10 m from the mark or to their own goal line, and may not advance until the ball clears the ruck (S11.10.g–h). Section 3.3b defines the RCM compliance metric; the officiating predicate is its per-defender core, sampled at the ball-clears-ruck instant:</p>
+
+<pre><code class="language-text">RetreatFault(d, ptb) ⇔ Defender(d) ∧ ¬Marker(d)
+  ∧ dist( pos(d, t_clear), mark(ptb) ) &lt; 10 m
+  ∧ pos(d, t_clear) ∉ GoalLine(defending team)              (S11.10.g)</code></pre>
+
+  <p>The reference is the mark, not the tackle location; the sampling instant is the ruck-clear event, not a frame clock. Broadcast parallax makes per-camera calibration (chapters 6–7) a hard prerequisite — an uncalibrated distance is lens geometry, not discipline [verify against calibrated tracking].</p>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-ten-metre-retreat-expanded.png" alt="Expanded 10 metre retreat predicate: dashed arc around the play-the-ball mark, offside defenders crossed inside, onside defenders ticked beyond, sampled at ball-clears-ruck." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.14</span>: UC 03 — RetreatFault at the Ruck. A spatial predicate over tracked positions at one rule-defined instant. <strong>Rugby league</strong>: offside pressure quantified per set. <strong>Pickleball</strong>: the same distance-at-instant shape is the NVZ-line foot test — a boundary distance sampled at the contact instant (11.A.1).</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> referees watch the ruck, not the line; a per-set offside map gives the bunker and coaches an objective retreat record — and it is the same boundary-distance-at-instant template that drives the pickleball kitchen call.</p>
+
+  <h3 class="sub-heading">UC 04 — The Six-Tackle Set Grammar Predicate (IRL S11.7)</h3>
+  <p><strong>The formal rule.</strong> A team is allowed five successive play-the-balls; the handover occurs on the sixth tackle (S11.7.a). Possession changes from an accidental breach restart at tackle zero (S11.7.b); an opponent intentionally playing at the ball — including a charge-down — resets the count to one (S11.7 notes); ruck interference or delay resets the count entirely, the six-again (S11.10 notes, S11.11), except inside the attacking team's own 40 m zone, which draws a penalty. The set is a counter with three reset transitions:</p>
+
+<pre><code class="language-text">Handover(set)   ⇔ TackleEffected ∧ count = 6 ∧ ¬KickInFlight   (S11.7.a)
+ZeroTackle(set) ⇔ PossessionChange(accidental breach)           (S11.7.b)
+CountReset(set) ⇔ SixAgainSignal ∨ OpponentPlaysAtBall          (S11.11, S11.7 notes)</code></pre>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-six-tackle-grammar-expanded.png" alt="Expanded six-tackle set grammar state machine: nodes T0 to T5, six-again loop, zero-tackle entry, kick try and handover terminals with guard conditions." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.15</span>: UC 04 — The Set as a Guarded Counter. Three resets keep the count honest. <strong>Rugby league</strong>: tackle-effected detection plus the referee's six-again signal drive the count (chapter 19). <strong>Pickleball</strong>: the analogous guarded counter is the server number — two servers, then side out, with the game start fixed at 0-0-2 (5.B).</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> the count is the scoreboard's hidden state — a missed six-again reset corrupts every downstream stat and the fifth-tackle decision; an explicit counter machine makes the reset auditable, and the pickleball server-number counter is the same pattern with two states instead of six.</p>
+
+  <h3 class="sub-heading">UC 05 — The Volley-Window Predicate (USAP 9.B, 11.A)</h3>
+  <p><strong>The formal rule.</strong> Every NVZ clause hangs on "the act of volleying," which the rulebook gives temporal extent: it begins with the swing, includes contact and follow-through, and — via momentum — persists until the motion from the swing dissipates. Section 3.2c gives the stance-plus-timing decomposition; the predicate itself is a window constructor:</p>
+
+<pre><code class="language-text">VolleyWindow(p)      = [ t_swing(p),  t_momentum_dissipated(p) ]
+ActOfVolleying(p, t) ⇔ t ∈ VolleyWindow(p)                       (9.B / 11.A)</code></pre>
+
+  <p>The window's start is observable (swing initiation); its end is judgement, so the machine uses an operational surrogate — centre-of-mass velocity below walking pace, or a fixed post-contact horizon [verify]. The surrogate is a modelling decision and must be logged with the claim; it is not rule text.</p>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-volley-window-predicate.png" alt="Volley-window predicate timing diagram: swing, contact, follow-through, ball dead ticks; orange window bracket; dashed momentum-live tail after ball dead." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.16</span>: UC 05 — The Window Constructor. Every stance predicate (foot, contact) is evaluated inside this window. <strong>Pickleball</strong>: volley faults and the momentum tail. <strong>Rugby league</strong>: the tackle window — held-plus-grounded until the referee's call (S11.2) — is the same constructor with a referee-gated close.</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> fixing the window definition removes the "when did the volley end" dispute from every kitchen review, and the same window-constructor pattern is what makes a rugby league tackle reviewable: held-plus-grounded over the referee's call window.</p>
+
+  <h3 class="sub-heading">UC 06 — The High-Tackle Predicate (IRL S15.b) — feeds C10 UC08</h3>
+  <p><strong>The formal rule.</strong> Contact with the head or neck — intentional, reckless, or careless — is misconduct (S15.b), sanctionable by penalty, sin bin, or dismissal (S16.6). The predicate splits into a geometric term that vision can ground and an intent-grading term that stays with the officials:</p>
+
+<pre><code class="language-text">HighTackle(tackler, carrier) ⇔
+    ContactPoint(tackler → carrier) ∈ HeadNeckRegion(carrier)     [vision]
+  ∧ Grading ∈ { intentional, reckless, careless }                 (S15.b) [referee]</code></pre>
+
+  <p>Chapter 10's UC 08 supplies the measurement layer — 3D contact height from pose reconstruction — while this chapter supplies the rule shape: the vision term is a region-membership test on the carrier's skeleton, and the grading term is referee-gated and enters from the official feed. The honest architecture never infers the second disjunct from pixels.</p>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-high-tackle-predicate.png" alt="High-tackle predicate: tackler contact point at the neck flagged against a shoulder-height threshold line; legal contact below the line ticked." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.17</span>: UC 06 — HighTackle as Region Membership. Contact above the neck line fires the predicate; grading stays with the referee. <strong>Rugby league</strong>: objective contact height for bunker review (S15.b). <strong>Pickleball</strong>: no contact sport equivalent, but the same region-membership test is the paddle-below-wrist serve constraint (7.C.2).</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> head-contact flags with measured contact height give the bunker an objective first screen on the sport's most consequential welfare rule — and the region-membership template doubles as the pickleball serve-motion check (wrist and waist regions, 7.C.2–3).</p>
+
+  <h3 class="sub-heading">UC 07 — The Out-of-Bounds Predicate (USAP 8.B–8.E, IRL S9)</h3>
+  <p><strong>The formal rule, both sports.</strong> In pickleball a ball is in if it contacts any part of the court or lines, out otherwise — except that the NVZ and its line are out <em>on the serve only</em> (8.B, 8.C), and a player may call out only when they "can clearly see a space between the line and the ball" (8.E — a perceptual sufficiency threshold on the observer). In rugby league the ball or ball-carrier touching ground beyond the touchline puts the ball in touch (S9), with special zones for the 40/20: kicked from inside the own 40 m line, bouncing into touch between the opponent's 20 m line and goal line earns the kicking team a tap restart (S9.6).</p>
+
+<pre><code class="language-text">PB:  Out(ball)   ⇔ LandingPoint(ball) ∩ (Court ∪ ∂Court) = ∅     (8.B/8.C)
+                   ∧ ( serve ⇒ NVZ ∪ ∂NVZ treated as out )       (8.C)
+RL:  InTouch     ⇔ Contact(ball ∨ carrier, ground beyond touchline) (S9)
+RL:  FortyTwenty ⇔ KickOrigin ∈ Own40 ∧ Bounce
+                   ∧ TouchEntry ∈ (Opp20, GoalLine)               (S9.6)</code></pre>
+
+  <p>The 8.E "see a space" clause is the remarkable one: it defines the line call as a <em>pixel-gap test</em> — exactly what a calibrated camera computes, and exactly where single-camera systems fail on motion blur at the bounce.</p>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-out-of-bounds-predicate.png" alt="Out-of-bounds predicate in both sports: pickleball line-gap test in versus out; rugby league touchline with ball in versus in touch." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.18</span>: UC 07 — Boundary Predicates, Two Sports. <strong>Pickleball</strong>: the visible-gap rule (8.E) is a pixel threshold; the NVZ line is out on the serve only. <strong>Rugby league</strong>: touch and the 40/20 zone composition (S9.6) are pure geometry once the ball is tracked (chapter 12) and the field calibrated (chapters 6–7).</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> the gap test automates cleanly at Hawk-Eye grade and honestly degrades on consumer video — the system should report the measured gap with uncertainty rather than a binary call, and the 40/20 composition is fully automatic from tracking data alone.</p>
+
+  <h3 class="sub-heading">UC 08 — Rules Conflict Resolution: Variant as Configuration</h3>
+  <p><strong>The formal problem.</strong> There is no single rulebook per sport. Pickleball runs the 2026 USA Pickleball rulebook alongside the UPA-A tour's own ruleset (drop-serve and paddle-testing differences [source-backed; verify current UPA-A text]); rugby league runs the IRL 2026 International Laws with the NRL's season-by-season ARLC interpretations layered on top — the exact set-restart-versus-penalty list, HIA handling, and bunker eligibility shift between seasons [verify current-season NRL memo]. A hardcoded engine is wrong somewhere by construction. The resolution is architectural, from section 3.6b: the engine is invariant; the transition table is configuration.</p>
+
+<pre><code class="language-text">RulesEngine(variant) = Engine ∘ TransitionTable(variant)
+  variant_pb ∈ { USAP_2026, UPA_A }        -- let serve, drop serve, paddle tests
+  variant_rl ∈ { IRL_2026, NRL_season }    -- six-again list, HIA, bunker scope</code></pre>
+
+  <figure class="full">
+    <img src="shared/images/c03-uc-rules-conflict-matrix.png" alt="Rules conflict resolution: USAP versus UPA-A and IRL versus NRL variant table feeding a rules-variant config box into the state machine." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 3.19</span>: UC 08 — Variant as Configuration. The selector swaps the event alphabet and transition table; the engine, detector interface, and tests stay fixed. <strong>Pickleball</strong>: USAP versus UPA-A serve and equipment deltas. <strong>Rugby league</strong>: IRL base laws versus NRL seasonal interpretations.</figcaption>
+  </figure>
+
+  <p><strong>Officiating payoff:</strong> one team owns vision, another owns the rulebook, and they agree only on the event schema — a league switch is a config diff reviewed against quoted rule text, never a code change shipped mid-season.</p>
+
+  <p><strong>What this adds to the pipeline.</strong> These eight predicates are the rule layer that later chapters feed: calibration (chapters 6–7) supplies the coordinates, pose (chapter 11) supplies feet and contact regions, ball tracking (chapter 12) supplies bounces and landing points, eventing (chapter 19) supplies the detected-event stream, and the cockpit (chapter 28) renders the flags. UC 06's contact-height term is measured by chapter 10's UC 08; UC 04's count drives the expected-value models of chapter 22. The detector–engine split (section 3.4) is what lets every one of them stay unit-testable against the rulebook text quoted here.</p>
+
+  <h2 class="section-title"><span class="section-num">3.5</span> Lab Output (W1.1)</h2>
+  <p>Canonical scenarios from <code>experiments/c03-rules/outputs/state-machines.json</code>:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Expected</th>
+        <th>Machine Output</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Legal rally</strong>: serve → bounce → return → bounce → third shot → volley → win</td>
+        <td>Point to serving side</td>
+        <td>PASS — volley only after double-bounce (RALLY phase)</td>
+      </tr>
+      <tr>
+        <td><strong>Kitchen fault</strong>: volley with foot in NVZ</td>
+        <td>Fault, side-out, server swap</td>
+        <td>PASS — <code>FAULT: NVZ violation</code>, server 1 → 2</td>
+      </tr>
+      <tr>
+        <td><strong>Momentum kitchen fault</strong>: legal volley, then striker steps into kitchen after ball dead</td>
+        <td>Fault, side-out, server swap</td>
+        <td>PASS — <code>momentum_into_nvz=True</code> post-dead fault (11.A.2)</td>
+      </tr>
+      <tr>
+        <td><strong>Six-again</strong>: 3 tackles + six_again + 3 tackles</td>
+        <td>Count resets to 0, possession unchanged</td>
+        <td>PASS — <code>six_again</code> resets tackle count without swapping possession</td>
+      </tr>
+      <tr>
+        <td><strong>Zero tackle</strong>: turnover from accidental breach, then 6 tackles</td>
+        <td>New possession starts at tackle 0</td>
+        <td>PASS — <code>zero_tackle</code> sets count to 0</td>
+      </tr>
+      <tr>
+        <td><strong>Sixth-tackle error</strong>: 6 tackles, no kick</td>
+        <td>Handover</td>
+        <td>PASS — <code>handover on sixth tackle - no kick</code>, possession swaps</td>
+      </tr>
+      <tr>
+        <td><strong>RCM predicate</strong>: 4 of 7 defenders behind 10 m arc at ball-clear</td>
+        <td>RCM = 0.57</td>
+        <td>source-backed — formula definition; needs league tracking to validate the 10 m operationalisation</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">3.6</span> The Vision Boundary: What Rules You Cannot Verify</h2>
+  <p>The executable grammar also makes the limits explicit. A table that every practitioner should keep on their wall:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rule</th>
+        <th>Observable?</th>
+        <th>What Is Needed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Serve legality (underhand, waist, behind baseline)</td>
+        <td>Partially</td>
+        <td>Pose + paddle position at contact frame (chapters 11–12); waist height is 3D</td>
+      </tr>
+      <tr>
+        <td>Ball in/out (line call)</td>
+        <td>No — 2D only</td>
+        <td>Ball-ground contact and plane intersection (multi-view, chapter 14)</td>
+      </tr>
+      <tr>
+        <td>Kitchen foot fault</td>
+        <td>Partially</td>
+        <td>Foot position vs NVZ line + momentum during volley; foot-ground plane</td>
+      </tr>
+      <tr>
+        <td>Let (net contact)</td>
+        <td>Yes (visual)</td>
+        <td>Ball trajectory crossing net plane (chapter 12)</td>
+      </tr>
+      <tr>
+        <td>Double-bounce carried</td>
+        <td>Yes (visual)</td>
+        <td>Bounce events from ball trajectory (chapter 12)</td>
+      </tr>
+      <tr>
+        <td>Rugby held tackle / PTB</td>
+        <td>Partially</td>
+        <td>Ball-carrier-ground contact + referee call (audio chapter 15)</td>
+      </tr>
+      <tr>
+        <td>Rugby 10m retreat</td>
+        <td>Yes (visual)</td>
+        <td>Field calibration + foot position (chapters 6–7)</td>
+      </tr>
+      <tr>
+        <td>Rugby HIA / sin bin</td>
+        <td>No</td>
+        <td>Process rules; only the outcome (player off) is visible</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">3.6b</span> Honest Caveats: Rules Differ by Organisation</h2>
+
+  <p>The rulebook is not a universal constant. In pickleball, the 2026 USA Pickleball rulebook is the source cited here, but the UPA-A tour runs its own ruleset with differences in drop-serve and paddle testing [source-backed]. In rugby league, the IRL 2026 laws are the base text, and the NRL Telstra Premiership adopts them with ARLC-approved interpretations that shift season to season — the exact set-restart versus penalty list, HIA and bunker protocols are not pinned here and are flagged <code>[verify]</code>. The code runs the IRL grammar; a league-specific build swaps the transition table, not the engine.</p>
+
+  <p>Ship the rule variant as configuration. The USAP/UPA-A selector and the IRL/NRL selector change the event alphabet (let serves live, six-again list, bunker-review eligibility). The separation of rule engine from detector makes this manageable: one team owns vision, another owns the rulebook, and they agree on the event schema.</p>
+
+  <h2 class="section-title"><span class="section-num">3.7</span> What I Would Measure Next</h2>
+
+  <p><strong>Recipe:</strong> compile any rulebook chapter into an executable grammar:</p>
+
+  <ol>
+    <li><strong>State tuple.</strong> Only variables the rulebook uses: pickleball <code>(scores, server_number, serving_team, phase)</code>; rugby league <code>(tackle_number, possession, position, clock, ruck_speed)</code>.</li>
+    <li><strong>Event alphabet.</strong> Serve, bounce, volley, six_again, tackle, kick, try, sin_bin, etc. Tag each <em>vision-gated</em>, <em>referee-gated</em>, or <em>unknown</em>.</li>
+    <li><strong>ECA transitions.</strong> For every rule, <code>on(event) where (predicate) do (transition | fault | replay)</code>, with rule numbers as comments.</li>
+    <li><strong>Separate detector from engine.</strong> The detector emits raw predicates; the engine decides. The detector says <code>foot_in_nvz=True</code>; the engine evaluates Fault_NVZ.</li>
+    <li><strong>Rule variant as configuration.</strong> USAP vs UPA-A, IRL vs NRL season. Do not hardcode interpretation memos.</li>
+    <li><strong>Unit-test against canonical scenarios.</strong> Legal rally, kitchen fault, double-bounce violation, six-again, zero tackle, handover on six.</li>
+  </ol>
+
+  <ul>
+    <li>Bounce detector on pb-003 (chapter 12 lab) to feed the double-bounce check — <em>measured</em> on lab ball-trajectory output.</li>
+    <li>Foot-position samples against kitchen line on 100 frames for the foot-fault gate.</li>
+    <li>Tackle-event classification on rugby clips to drive the set counter.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">3.8</span> Sources</h2>
+  <ul>
+    <li>USA Pickleball Official Rulebook (2026) — <code>usapickleball.org/rules/</code>; Equipment Standards Manual Rev 3 (Jan 2025): ball 2.87–2.97in, 22.1–26.5g, 26–40 holes; paddle combined L+W ≤ 24in.</li>
+    <li>NRL Laws of the Game — NRL.com official match rules.</li>
+    <li>Kempton et al. 2016, <em>J Sports Sci</em> (768 NRL matches, expected possession value).</li>
+    <li>Sawczuk et al. 2024, <em>PLOS ONE</em> — Bayesian-mixture EPV for rugby league (arXiv 2212.10904).</li>
+    <li>Lab: <code>lab/w1_lab_rules.py</code> → <code>experiments/c03-rules/outputs/state-machines.json</code>.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="02.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 02</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 02 — The Evidence Contract & Data Provenance</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 02</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 02 — The Evidence Contract & Data Provenance</p>
+        </div>
+      </div>
+    </a>
+    <a href="03.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 03</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 03 — Sport Rules as Formal Systems</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 03</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 03 — Sport Rules as Formal Systems</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 03 — Sport Rules as Formal Systems</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Pickleball and Rugby League grammar: state machines, event semantics, and what vision can never infer</p>
+        </div>
+        <a href="03.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #C2410C;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

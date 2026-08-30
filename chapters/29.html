@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 29 — Practice Design & Interventions: The Acting Loop - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #9A5A2E;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-29" style="background-color: #9A5A2E; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 29</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 29 — Practice Design & Interventions: The Acting Loop</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">From match faults to constrained practice, grounded in the coaching science that actually has evidence</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">42 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-29-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Acting Verb, Grounded</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-29-1" data-section="s-29-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Acting Verb, Grounded</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-29-1" data-section="s-29-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Acting Verb, Grounded</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">29</span> Chapter 29 — Practice Design & Interventions: The Acting Loop</h1>
+    <p class="chapter-subtitle">From match faults to constrained practice, grounded in the coaching science that actually has evidence</p>
+  </header>
+
+<h3 id="s-29-1"><span class="section-num">29.1</span> The Acting Verb, Grounded</h3>
+
+<p class="section-intro">This chapter closes the five-verb loop: the analysis (watching → tagging → modelling → interpreting) becomes practice. Everything before this chapter produced evidence; this chapter is where the evidence changes what happens on the court and the field on Tuesday morning. The discipline that makes it work is <strong>constraint-led practice</strong> — the coach designs the environment, the athlete discovers the solution. The v1 book's "drill recipes" idea was right in shape and wrong in mechanism: a drill is not an instruction to obey, it is a constraint to explore. Every concept below is <strong>source-backed</strong> (the verified coaching science, cited with URLs in §29.12) and the algorithm is <strong>measured</strong> against the lab's fault→constraint→drill mapping in <code>experiments/c29-practice/outputs/metrics.json</code>.</p>
+
+  <p>The distinction that matters: <strong>a dashboard points; a coach acts.</strong> A dashboard that tells a pickleball player "your third-shot drop landed attackable 61% of the time" has completed the interpreting verb and stopped. The acting verb continues: it converts that fault into a task constraint (the ball must land inside a 2.1 m target zone), builds a representative environment around it (a live defender who punishes every miss), schedules it inside the week's load budget, and then — critically — measures whether the fault rate moved on a no-feedback retention probe. In rugby league the same loop runs on a different fault: "your defensive line was short of the 10 m on 9 of 34 play-the-balls" becomes a marked retreat line, a time gate from the C07 calibration, and a 5v5 line-speed drill where the sprint <em>is</em> the constraint. Same pipeline, different schema.</p>
+
+  <p>The CLA rule is stated once here and enforced everywhere below: <strong>the constraint is the coach's lever; the discovery is the athlete's.</strong> The agent never emits "bend your knees more" or "drop your shoulder into the tackle." It emits "start each rep two feet behind the NVZ line and score only if the ball lands in the target" or "the defensive line must be 10 m back when the ball is played." What the athlete's body does to satisfy the constraint is the learning.</p>
+
+  <figure id="fig-29-04" class="full">
+    <img src="shared/images/c29-practice-loop.png" alt="Circular practice design loop: Fault, Constraint, Drill, Practice, Measure, Retention, with the Constraint node highlighted in burnt orange and a probe arrow returning from Retention to Fault." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.4</span>: The practice design loop. Faults enter from C19 event rows; the constraint node (orange) is the only coach-controlled lever; the retention probe closes the loop back to measurement. The loop is identical for pickleball and rugby league — only the fault taxonomy and drill library differ.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">29.2</span> CLA/RLD: The Verified Foundations</h2>
+  <p>Two frameworks carry the chapter, and both come with a 2024–25 health warning. The constraints-led approach (CLA) and ecological-dynamics literature has spent the last two years cleaning up its own hype, and the corrections are now part of the foundation:</p>
+
+  <ul>
+    <li><strong>CLA is not a quick fix.</strong> It is an evidence-informed design frame, not a license to stop coaching. The 2024 practical-guidelines literature explicitly calls for research-informed practice and warns against over-simplification — the coach still selects, sequences, and measures.</li>
+    <li><strong>Do not mix CLA with command-style instruction in the same session.</strong> Blending constraint manipulation with direct technique cues confuses learners because the two pedagogies assume different control structures. An instruction delivered inside a constrained space cancels the discovery the space was built to produce.</li>
+    <li><strong>The coach is an environment architect, not a movement dictator.</strong> The practitioner's lever is the constraint — task, environment, individual; the athlete's job is to self-organize under it. A 2025 critical appraisal adds the discipline: ecological dynamics is useful when it produces testable practice designs, not when it becomes a post-hoc justification for any drill the coach already liked.</li>
+  </ul>
+
+  <p><strong>Newell's constraints triad (1986)</strong> is the design space the agent manipulates. Skill emerges from the interaction of three constraint families, and the drill generator must own all three boxes, not just "task":</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Constraint family</th>
+        <th>What the agent can change</th>
+        <th>Pickleball example</th>
+        <th>Rugby league example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Individual</strong></td>
+        <td>Fatigue, load, readiness, skill level, injury history</td>
+        <td>Rest between reps, partner ability, pairing with video feedback</td>
+        <td>Position group, return-to-play stage, contact restrictions</td>
+      </tr>
+      <tr>
+        <td><strong>Task</strong></td>
+        <td>Rules, scoring, targets, opposition, time, numbers</td>
+        <td>Side-out scoring, 3-to-1 target game, NVZ-line start position</td>
+        <td>Set-of-six constraints, tackle-only practice, reduced numbers</td>
+      </tr>
+      <tr>
+        <td><strong>Environment</strong></td>
+        <td>Court dimensions, surface, wind, equipment, space</td>
+        <td>Smaller target, outdoor wind, ball pressure</td>
+        <td>Field zone, wet ball, reduced space, marked retreat line</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Representative Learning Design</strong> (Pinder, Davids, Renshaw &amp; Araújo, 2011) supplies the quality bar: practice must preserve the <em>specifying information</em> of the performance environment. "Representative" does not mean "identical to a match"; it means the action-relevant information is still present, so the same decisions and movements arise — <em>action fidelity</em>, not surface realism, is the test. A pickleball kitchen drill played without the NVZ line's consequences is not representative, because the line is precisely the information that shapes the match fault. A rugby tackle drill against a passive bag is not representative, because the ball carrier's evasion is the information the defender must read. The chapter applies a four-point RLD checklist to every drill the agent emits:</p>
+
+  <ol>
+    <li>Does the drill still require the athlete to read the same specifying information as the match fault — a real opponent, real ball flight, real court or field geometry?</li>
+    <li>Is the movement solution constrained but not prescribed?</li>
+    <li>Can the athlete still produce the match error pattern? If the drill is too easy, it cannot address the fault.</li>
+    <li>Is the drill harder than the match in the targeted dimension, but not so hard the athlete abandons the skill?</li>
+  </ol>
+
+  <figure id="fig-29-02" class="full">
+    <img src="shared/images/c29-rld-principles-fixed.png" alt="Representative Learning Design: the three constraint circles — task, individual, environment — converging on the match, drawn in the book's burnt-orange technical style." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.2</span>: Representative Learning Design. The three constraint families converge on the match's informational demands; the drill preserves them rather than reproducing the match's surface.</figcaption>
+  </figure>
+
+  <p><strong>Differential learning</strong> (Schöllhorn) completes the trio: variability is the learning signal. Instead of repeating one ideal movement, the practice adds stochastic perturbations to every repetition, exploiting natural movement fluctuation plus controlled noise. The agent operationalises this as a <strong>"never the same drill twice" generator</strong>: every recipe is a family of variations around the constraint the fault points to — the pickleball 3-to-1 target game rotates target depth (1.8 m, 2.1 m, 2.4 m) and width across reps; the rugby line-speed drill rotates the play-the-ball speed and the attacking shape. The variation is not randomness for its own sake; it is a search across the solution space the constraint leaves open.</p>
+
+  <p>The stance on instruction is precise, not ideological: <strong>direct instruction is appropriate for rules, safety, and the constraint itself; it is not appropriate for prescribing body mechanics.</strong> "The ball must land in the 2.1 m depth target" is a legitimate instruction. "Extend your elbow and follow through" is not — it converts the athlete into an executor of the coach's movement model and invites reinvestment under pressure (§29.3). The one exception is the single external-focus cue or analogy, which constrains <em>attention</em>, not joint angles: "brush sand off the table" for the pickleball dink, "cheek to cheek" for the rugby tackle.</p>
+
+  <h2 class="section-title"><span class="section-num">29.3</span> The Feedback Science: What the Meta-Analyses Say</h2>
+  <p><strong>The guidance hypothesis is NOT supported by the 2022 meta-analysis.</strong> The classic claim (Salmoni et al., 1984) — high-frequency feedback helps practice performance but degrades learning through dependency — failed to replicate across 61 studies: no significant degradation effect, and the authors concluded that robust evidence on feedback frequency is lacking. The practical consequence is stark: <strong>do not dogmatically throttle agent feedback to "fade" it.</strong> A feedback policy built on a scheduled reduction is built on a result the field no longer holds. The evidence-supported mechanisms are these four:</p>
+
+  <ul>
+    <li><strong>Self-controlled pull</strong> (Chiviacowsky &amp; Wulf, 2005): feedback is more effective when the learner decides <em>after</em> a trial whether to receive it, because the decision itself engages error-estimation processes. Post-trial self-control beats pre-trial, which beats yoked schedules. The UX consequence is a <strong>"request feedback" button</strong> on the athlete app — the pull is the learning cue, and autonomy is a learning variable, not a UX nicety.</li>
+    <li><strong>Bandwidth silence</strong> (Sherwood, 1988): feedback only when performance falls outside a tolerance band improves movement consistency on retention tests. The agent's default is <strong>quiet-by-default</strong>: inside the band, say nothing. The band is not a global setting; it is a per-skill tolerance derived from the athlete's own recent baseline — a 3.5-level pickleball player's dink-height band is narrower than a beginner's, and a rugby winger's line-speed band differs from a middle forward's.</li>
+    <li><strong>Retention probes</strong> (Schmidt &amp; Lee): practice performance is not learning; learning shows only in delayed, no-feedback retention or transfer tests. The agent schedules probes — a session with no feedback, a delayed test 48 h or two weeks later, a transfer condition against a different opponent or on a different court. A drill that improves in-session but disappears on the probe is not a learning success.</li>
+    <li><strong>External focus under pressure</strong> (Wulf's 15-year review; Masters' reinvestment programme): cues directed at the <em>effect</em> of the movement beat cues about the body, and under pressure internal focus triggers <strong>reinvestment</strong> — conscious step-by-step control that breaks automatic skills. Masters' <strong>analogy learning</strong> — one biomechanically informed metaphor that hides the rule list — produces learning rates similar to explicit instruction with better retention under pressure. The canonical example is a table-tennis topspin taught as "draw a right-angled triangle with the bat."</li>
+  </ul>
+
+  <p>The agent's cue library therefore has <strong>two lanes</strong>. Training week: discovery, constraints, variability, self-controlled video. Competition week: single external-focus cue or analogy, bandwidth silence, no mechanics. The pickleball player gets "push the ball through the kitchen window" on match day and the full constraint drill on Tuesday; the rugby league edge defender gets "cheek to cheek, win the shoulder" on match day and the tackle-technique circuit (§29.4c) midweek.</p>
+
+  <figure id="fig-29-05" class="full">
+    <img src="shared/images/c29-feedback-schedule.png" alt="Two feedback mechanisms: left, an athlete pulls feedback with a request button that reveals a rally clip; right, a bandwidth strip where error dots inside the tolerance band stay silent and one dot outside triggers a cue flag." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.5</span>: The two load-bearing feedback mechanisms. Left: self-controlled pull — the athlete requests, the clip answers. Right: bandwidth silence — inside the tolerance band the agent says nothing; only an out-of-band error earns a cue.</figcaption>
+  </figure>
+
+  <p>The design rules, condensed:</p>
+
+  <table>
+    <thead>
+      <tr><th>Situation</th><th>Agent behaviour</th><th>Why</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>In-session, inside tolerance</td><td>Silence</td><td>Bandwidth feedback preserves attention (Sherwood)</td></tr>
+      <tr><td>Athlete requests feedback</td><td>Clip + one external cue</td><td>Self-controlled pull engages error estimation (Chiviacowsky &amp; Wulf)</td></tr>
+      <tr><td>Technique fault in training</td><td>Constraint suggestion + video model</td><td>CLA + observational learning</td></tr>
+      <tr><td>Same fault under pressure</td><td>One analogy or single external cue</td><td>Prevents reinvestment (Masters)</td></tr>
+      <tr><td>After a match</td><td>Terminal, 8–12 clips, one message</td><td>Coach–analyst translation beats volume</td></tr>
+      <tr><td>Retention probe</td><td>No feedback, measure only</td><td>Learning only shows here (Schmidt &amp; Lee)</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">29.4</span> The Fault → Constraint → Drill Algorithm (W7.2 Lab)</h2>
+  <p>The pipeline binds the coaching science to the perception stack. Faults are derived from <strong>reviewed C19 event rows</strong>, not from raw movement facts — a fault must be a stable, actionable pattern, not a one-off error:</p>
+
+  <pre><code class="language-text">C19 event rows (movement facts, review windows, contact events)
+    → fault detector (rule + calibrated ML over reviewed rows)
+    → constraint matcher (task / environment / individual families)
+    → drill library lookup (skill level, equipment, load budget)
+    → drill recipe (constraints, representative conditions, probes, review flag)</code></pre>
+
+  <p>The fault taxonomy differs by sport but the row shape does not. Pickleball faults ride on ball-track and pose evidence; rugby league faults ride on possession outcomes:</p>
+
+  <table>
+    <thead>
+      <tr><th>Fault tag</th><th>Required evidence</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>third_shot_drop_too_high</code></td><td>Ball track + contact anchor + height/depth estimate (C12)</td><td>Drop lands attackable inside the NVZ</td></tr>
+      <tr><td><code>late_ready_position</code></td><td>Pose track (C11) + foot-contact timing (E10)</td><td>Still rising from ready stance when the serve arrives</td></tr>
+      <tr><td><code>popped_dink</code></td><td>Contact anchor + ball exit angle/speed</td><td>Dink leaves the net area above knee height</td></tr>
+      <tr><td><code>slow_play_the_ball</code></td><td>C19 ruck rows + tackle-event timing</td><td>PTB duration above the athlete's band, repeatedly</td></tr>
+      <tr><td><code>defensive_line_short</code></td><td>C07-calibrated positions at the PTB instant</td><td>Defence inside 10 m on 9 of 34 play-the-balls</td></tr>
+      <tr><td><code>missed_tackle_width</code></td><td>Tackle events + track geometry</td><td>One-on-one misses on edge runners</td></tr>
+    </tbody>
+  </table>
+
+  <p>The lab's library (from <code>metrics.json</code>, measured against the current evidence — the kitchen foot fault from the PBN rows), applied through the matcher:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Fault</th>
+        <th>Constraint (the coach's lever)</th>
+        <th>Drill (the environment)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Kitchen foot fault</strong></td>
+        <td>Volley only from behind the NVZ line (the line is an invisible wall)</td>
+        <td>3-court NVZ awareness: volleys where the kitchen line is taped; the athlete's job is to volley without crossing it</td>
+      </tr>
+      <tr>
+        <td><strong>Third-shot drop misplaced</strong></td>
+        <td>Drop must land in the kitchen (the drive is not an option this session)</td>
+        <td>Baseline 5–8 m drop to the target zone; score the landing, not the power</td>
+      </tr>
+      <tr>
+        <td><strong>Defensive retreat slow</strong></td>
+        <td>Return to the baseline before the opponent's contact (a time gate)</td>
+        <td>Reaction drills with a trigger; the retreat within the time budget</td>
+      </tr>
+      <tr>
+        <td><strong>Defensive line short (rugby)</strong></td>
+        <td>Line must be 10 m from the PTB when the ball is played (marked line + time gate)</td>
+        <td>5v5 line-speed: six-tackle sets where the retreat is timed and the attack profits from every metre of lateness</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The circuit rule: the constraint is the coach's lever; the discovery is the athlete's.</strong> The fault is identified from C19 event rows (the evidence), the constraint maps to it (the library is the seed), and the drill is the constrained environment. Each recipe is a row in a versioned library:</p>
+
+  <pre><code class="language-text">drill_id:          p-c29-001
+fault_tags:        [third_shot_drop_too_high]
+constraint_family: task
+constraints:       [target_depth=2.1m, scoring=3-to-1, opponent=live]
+representative:    true
+skill_level:       3.0-4.0
+variations:        [target_depth=1.8m, target_depth=2.4m, target_width=0.9m]
+retention_probe:   48h no-feedback test on same target
+load_budget:       15 min / 120 contacts
+review_flag:       false
+source:            C19 review window + human coach tag</code></pre>
+
+  <p>The <code>review_flag</code> is the honesty mechanism: it goes <code>true</code> when the fault-to-constraint match has low confidence — a fault that requires C12 ball evidence the pipeline did not produce, or a C11 pose metric captured out-of-plane. The prescriber is intentionally conservative:</p>
+
+  <pre><code class="language-python">def prescribe(c19_rows, athlete_state, drill_library):
+    faults = detect_faults(c19_rows)          # rule + reviewed ML, per C19
+    recipes = []
+    for fault in faults:
+        constraint = match_constraint(fault, athlete_state)
+        candidates = drill_library.lookup(fault.tag, constraint.family,
+                                          athlete_state.skill_level,
+                                          athlete_state.load_budget)
+        if not candidates or candidates[0].confidence &lt; 0.7:
+            recipes.append(ReviewQueueItem(fault, constraint))  # human first
+        else:
+            recipes.append(candidates[0].add_variation().set_retention_probe())
+    return recipes</code></pre>
+
+  <p><strong>A low-confidence match is not a guess; it is a queue item</strong> for the human coach, with the evidence attached. The agent that silently guesses a constraint from thin evidence is worse than no agent, because the drill will be executed with full commitment against a possibly wrong diagnosis.</p>
+
+  <figure id="fig-29-01" class="full">
+    <img src="shared/images/c29-fault-to-drill-fixed.png" alt="Fault to Constraint to Drill flow: three boxes connected by burnt-orange arrows, with a pickleball paddle icon, a rule-book icon, and a drill icon." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.1</span>: Fault → Constraint → Drill. The C19 fault row maps to a CLA constraint, then to the drill environment — the coach designs the space, the athlete discovers.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">29.4b</span> The Pickleball Drill Library: Three Worked Recipes</h2>
+  <p>Three drills carry the pickleball side of the chapter. Each is written as a constraint environment, each maps to a C19-observable fault, and each embeds a retention probe and a load budget.</p>
+
+  <p><strong>1. The 3-to-1 target game (fault: third-shot drop too high / drive-drop selection).</strong> The attacker at the baseline has three attempts to land the drop in a 2.1 m depth target inside the kitchen; the defender at the NVZ attacks every ball that lands long or high. Scoring is 3-to-1 — the attacker needs three target landings to earn one point; the defender scores on every attackable ball. The constraint is the scoring asymmetry plus the live defender: the drop's margin for error is now exactly the match's margin for error, because the punisher is present (RLD checklist item 1). Variations rotate target depth and width (differential learning). Retention probe: 48 h later, same target, no scoring announced, measure landing distribution from C12 ball tracks. Load budget: 15 minutes, ~120 contacts.</p>
+
+  <p><strong>2. The delayed-start dinks (fault: late ready position / slow transition spacing).</strong> At the kitchen line, the feeder holds the ball visibly and releases on a self-chosen delay; the receiver may not set into the ready stance until the feeder's arm moves. The constraint is a time gate on preparation: the athlete must reach a stable ready position in the window between arm-move and ball arrival — the same window C19 measures between the opponent's contact and the receiver's first movement in match rows. The discovery is the athlete's own pre-stance organisation; the coach never cues "get lower." Variation: the feeder mixes dinks and speed-ups so the receiver cannot pre-decide. Probe: next session, measure reaction window against the athlete's own baseline band — inside the band, silence.</p>
+
+  <p><strong>3. The volley shoulder-only chain (fault: popped dink / wristy volley under pressure).</strong> Volley exchanges at the NVZ with the wrist locked by the task constraint: any ball that leaves above knee height is a point against, regardless of outcome. The single permitted cue is the analogy <em>"brush sand off the table"</em> — an external-focus metaphor that constrains attention to the paddle's path effect without prescribing joint angles (the Masters lane). Video replay is available on pull only. The drill chains directly into the 3-to-1 game so the recalibrated contact height is immediately tested under defensive pressure — the interleaving that §29.5's retention evidence wants.</p>
+
+  <figure id="fig-29-06" class="full">
+    <img src="shared/images/c29-pickleball-drills.png" alt="Three-panel pickleball drill diagram: the 3-to-1 target game with a shaded kitchen target zone, the delayed-start dinks with a ready-stance player and clock, and the shoulder-only volley with the wrist locked." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.6</span>: The pickleball drill library: 3-to-1 target game, delayed-start dinks, shoulder-only volley chain. Each panel is a constraint environment, not a movement prescription.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">29.4c</span> The Rugby League Drill Library: Three Worked Recipes</h2>
+  <p>The rugby side runs the identical pipeline against contact-sport faults, with one hard rule inherited from C31: <strong>contact volume is an individual-constraint input, never an afterthought</strong> — every tackle drill carries a per-athlete contact budget from the load monitor (§29.7).</p>
+
+  <p><strong>1. The 5v5 line-speed drill (fault: defensive line short / slow off the line).</strong> Five defenders on a marked 10 m retreat line, five attackers playing six-tackle sets at full intent. The constraint is the time gate: the defensive line must be set at 10 m <em>before the ball leaves the PTB</em>, and the C07-calibrated tracking measures the gate on every play-the-ball. The attack's job is to profit from lateness — every metre the line is short is the attack's opportunity, so the punishment is structural, not verbal. Variations rotate PTB speed (the attacker playing fast off the ground is the perturbation) and field zone. Probe: next opposed session, line-speed statistics from C19 rows, no in-drill feedback carried over.</p>
+
+  <p><strong>2. The tackle technique circuit (fault: missed tackle width / high-contact drift).</strong> Front-on and side-on tackle stations against live ball carriers at controlled speed, with the constraint on <em>contact height</em>: a legal-contact band is the scoring zone and anything above it ends the rep — the environment enforces the safety rule the coach must never have to shout. The single analogy is <em>"cheek to cheek, win the shoulder."</em> The welfare red line is explicit: tackle-classification outputs from chapter 19 set the operating point for <em>policy</em> (how many contact reps this athlete may take this week), never as a practice gate that benches a player on a screening score. Contact budget per athlete per session, logged against C30 wearable rows.</p>
+
+  <p><strong>3. The ruck clean-out contest (fault: slow play-the-ball conceded / ruck speed lost).</strong> Tackled player on the ground, two defenders over the contest, one arriving attacker whose job is to win the ruck space fast enough for a sub-3-second PTB. The constraint is the contested zone itself: the defenders are coached to legally slow the ruck, so the attacker's solution — body height, entry angle, leg drive — must be discovered against real resistance. The time gate (PTB duration, measured from C19 tackle rows in matches) is the scoreboard. Variation rotates the number of defenders and the tackle type, because match rucks never repeat exactly (differential learning again: repeat the problem, vary the conditions).</p>
+
+  <figure id="fig-29-07" class="full">
+    <img src="shared/images/c29-rugby-drills.png" alt="Three-panel rugby league drill diagram: defensive line speed off a 10-metre retreat line, a front-on tackle with legal shoulder contact band, and a ruck clean-out with contest zone." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.7</span>: The rugby league drill library: 5v5 line-speed off the marked 10 m retreat line, tackle technique with the legal-contact band, and the ruck clean-out contest. Contact budgets apply to every rep.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">29.4d</span> The Ten Use Cases: Diagnosis → Drill Mapping</h2>
+  <p>The drill libraries above are recipes; this section is the applied framework that binds each recipe to the diagnosis that triggers it. Ten use cases in four categories: <strong>A — The Pickleball Kitchen Game (UC 01–02)</strong>, <strong>B — The Pickleball Transition &amp; Serve Game (UC 03–04)</strong>, <strong>C — Rugby League Defensive Shape &amp; Contact (UC 05–07)</strong>, and <strong>D — The Meta-Layer: Feedback, Transfer, Review (UC 08–10)</strong>. Each case follows the same five parts: the practical problem, the constraint mechanism with its design math, a figure, the dual-sport application, and the payoff. Evidence labels are carried per case: <strong>measured</strong> where the book lab has numbers, <strong>source-backed</strong> where the coaching-science literature carries the claim (§29.12), and <strong>[verify]</strong> where the mapping is a practitioner model awaiting validation (§29.11).</p>
+
+  <h3 class="sub-heading">Category A — The Pickleball Kitchen Game (UC 01–02)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Kitchen Firefight Drill</h3>
+  <p><strong>The problem.</strong> Hands battles at the NVZ are decided in under half a second, and they are lost by the player who blinks first — almost always by popping one ball up above the knee. Club players lose these exchanges because they train volleys statically, one fed ball at a time, while the match fault is produced by speed: the C19 review rows show the popped ball arriving on the <em>third or fourth</em> contact of a fast exchange, not the first — a drill that never reaches firefight tempo cannot reproduce the fault (RLD checklist item 3).</p>
+  <p><strong>The mechanism.</strong> Both pairs start at the NVZ line; the coach feeds the first ball at chest height and the rally is volley-only until it resolves. The constraint is environmental: any ball leaving a paddle above the knee-height band — <code>h_contact ≤ h_knee ≈ 0.5 m</code> from the C11 pose track — is a point against, regardless of who wins the rally. The pop-up is punished by the scoring, never by a shout. The challenge-point governor scales the feed speed: success above ~80% and the next feed comes harder; below ~40% it slows. <strong>Pickleball</strong>: this is the native habitat of the <code>popped_dink</code> and attackable-volley faults. <strong>Rugby league</strong>: the analogue is the goal-line defensive scramble — repeated high-speed efforts in a confined space under a contact band, likewise enforced by scoring, not voice. <strong>Payoff:</strong> the popped-ball rate on C19 firefight rows is the outcome measure; the coach gets a drill that punishes exactly the ball the match punishes. [verify — practitioner default band.]</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-kitchen-firefight.png" alt="Pickleball kitchen firefight drill: two players in a rapid volley exchange at the NVZ line with a knee-height band constraint and one popped-up ball flagged." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.9</span>: UC 01 — Kitchen Firefight. Volley-only exchanges at the NVZ under the knee-height band; the scoring punishes the pop-up. <strong>Pickleball</strong>: hands-battle tempo with the height band enforced. <strong>Rugby league</strong>: goal-line scramble defence under a contact-height band.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — The Dink Fidelity Drill</h3>
+  <p><strong>The problem.</strong> Most dinks that lose rallies are not errors into the net — they are dinks that are <em>in</em> but attackable, crossing the tape high enough to be volleyed down. The fault is invisible to the player because the ball landed; it is visible in the data because the apex cleared the tape by more than the attack threshold. </p>
+  <p><strong>The mechanism.</strong> Cross-court dink rallies where only balls passing through a phantom window score: apex <code>≤ tape + 0.3 m</code>, measured from the C12 ball track. The window is the constraint; nothing about the swing is prescribed. Bandwidth silence applies with full force — the agent says nothing while the apex distribution sits inside the athlete's band (§29.3), and speaks only when it drifts. Differential learning rotates the pattern — cross-court, straight, moving receiver. <strong>Pickleball</strong>: the apex window converts the vague instruction "keep it low" into a measurable environment. <strong>Rugby league</strong>: the same apex-window logic governs the attacking grubber into the in-goal — the kick must stay under the reach line and die in the zone; trajectory, not style, is priced. <strong>Payoff:</strong> the dink-apex distribution tightens measurably, and the retention probe (48 h, no window announced) is the honest test. [verify — 0.3 m window pending lab validation on pb-003 ball tracks.]</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-dink-fidelity.png" alt="Pickleball dink fidelity drill: a low dink arc passing through a small window above the net tape, with a high attackable arc crossed out." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.10</span>: UC 02 — Dink Fidelity. The phantom window above the tape is the constraint; the swing is the athlete's discovery. <strong>Pickleball</strong>: apex ≤ tape + 0.3 m from C12 ball tracks. <strong>Rugby league</strong>: grubber trajectory under the reach line into the in-goal.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category B — The Pickleball Transition &amp; Serve Game (UC 03–04)</h3>
+
+  <h3 class="sub-heading">UC 03 — The Third-Shot Drop Drill</h3>
+  <p><strong>The problem.</strong> The third shot is where rallies are structurally decided in pickleball: the serving team starts pinned at the baseline and must buy its way to the NVZ with one ball. The C22 ΔEPV boundary prices the decision — the drop carries positive expected value against a set defence where the drive carries negative [verify — C22 numbers are the lab's current estimate] — and the fault tag <code>third_shot_drop_too_high</code> fires when the drop lands attackable on C12 ball evidence.</p>
+  <p><strong>The mechanism.</strong> The 3-to-1 target game of §29.4b is the drill; the mapping is the use case. Fault → task constraint: the drop must land in the depth window <code>1.8–2.4 m</code> inside the NVZ line; scoring is asymmetric (three target landings to earn a point; the live defender scores on every attackable ball); the drive is removed from the option set this session — a task constraint that forces the search into the drop's solution space. The live defender is what makes the drill representative: the practice margin is now the match's margin. Variations rotate window depth and width; the probe is a no-scoring session measured on landing distribution alone. <strong>Pickleball</strong>: native. <strong>Rugby league</strong>: the last-tackle kick into the in-goal runs the identical logic — a landing window, a live chaser punishing every kick that sits up, and the run-it alternative removed from the option set. <strong>Payoff:</strong> the third-shot decision quality shows up in C22 ΔEPV terms on the next match.</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-third-shot.png" alt="Pickleball third-shot drop drill: top-down court with a high looping arc from the baseline landing in a shaded kitchen target zone against a live defender at the NVZ." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.11</span>: UC 03 — Third-Shot Drop. The 2.1 m depth window plus the live defender: the match's margin installed in practice. <strong>Pickleball</strong>: 3-to-1 scoring on the 1.8–2.4 m window. <strong>Rugby league</strong>: last-tackle kick into the in-goal window under a live chase.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 04 — The Serve-Return Depth Drill</h3>
+  <p><strong>The problem.</strong> The return of serve decides who reaches the NVZ first, and the deciding variable is depth: a return landing short invites the drive and traps the returner in the transition zone. The fault reads from C19 rows as return depth plus the returner's position at the opponent's third-shot contact — still short of the line when the ball arrives. Players practice returns for safety ("get it in") when the match prices depth.</p>
+  <p><strong>The mechanism.</strong> A cooperative-competitive serve-plus-return game with a depth window both ways: the return must land beyond a deep-window line <code>1.5 m</code> inside the baseline (depth read from the E11 court polygons), and the server is penalised for serves landing short of the same window — both sides constrained to the match-relevant depth. A second constraint is the time gate: the returner must cross the transition zone before the third shot is struck, the same window C19 measures between contacts in match rows. Scoring is 2-to-1 in favour of deep returns to make depth, not safety, the priced behaviour. <strong>Pickleball</strong>: native to the serve–return–third-shot sequence. <strong>Rugby league</strong>: the kick-off reception set is the structural mirror — the return metres and the first PTB decide where the set starts, and the chase team's pin inside the 20 m runs the same depth logic from the other side. <strong>Payoff:</strong> transition-zone position at the third shot, measurable directly from tracks; the drill reprices the return from "in" to "deep." [verify — 1.5 m window is a practitioner default.]</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-serve-return.png" alt="Pickleball serve-return drill: top-down court with a serve and a deep return landing in a shaded deep window near the baseline, returner advancing." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.12</span>: UC 04 — Serve-Return Depth. The deep window constrains both server and returner; the time gate carries the returner to the line. <strong>Pickleball</strong>: return beyond the 1.5 m window scores double. <strong>Rugby league</strong>: kick-off reception metres and the chase team's pin inside the 20 m.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category C — Rugby League Defensive Shape &amp; Contact (UC 05–07)</h3>
+
+  <h3 class="sub-heading">UC 05 — The Line-Speed Drill</h3>
+  <p><strong>The problem.</strong> The rugby league defence's currency is metres: every play-the-ball the line is short of the 10 m is metres gifted to the carry. The lab's fault row reads it directly — <code>defensive_line_short</code>: the C07-calibrated positions at the PTB instant show the defence inside 10 m on 9 of 34 play-the-balls (measured). The CLA answer to the "get back" shout is an environment where lateness costs.</p>
+  <p><strong>The mechanism.</strong> The 5v5 line-speed drill of §29.4c: five defenders on a marked 10 m retreat line, the attack playing six-tackle sets at full intent, and a time gate as the binding constraint — <code>t_gate = d / v</code>, the line must be set at <code>d_line ≥ 10 m</code> before the ball leaves the PTB, with the sprint the only solution. The punishment is structural: the attack profits from every metre of lateness, so a short line is scored against by the game itself. Variation rotates PTB speed to keep the problem honest. <strong>Rugby league</strong>: native. <strong>Pickleball</strong>: the transition-zone retreat is the same time gate in miniature — getting from baseline to the NVZ before the opponent's contact, measured by the same C07 logic on the smaller court. <strong>Payoff:</strong> line-set rate (the share of PTBs with the defence at 10 m) is the outcome measure on the next match's C19 rows.</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-line-speed.png" alt="Rugby league line-speed drill: five defenders sprinting up from a marked 10-metre retreat line toward the attack, with the play-the-ball marked." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.13</span>: UC 05 — Line Speed. The marked 10 m line plus the time gate; the attack profits from lateness, so the environment does the coaching. <strong>Rugby league</strong>: 5v5 six-tackle sets at full intent. <strong>Pickleball</strong>: the baseline-to-NVZ retreat under the same time-gate logic.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — The Ruck Clean-Out Drill</h3>
+  <p><strong>The problem.</strong> Ruck speed decides the next play's shape: a slow play-the-ball lets the defensive line reset, and losing the ruck contest means a set played against a set line. The fault tag <code>slow_play_the_ball</code> fires when PTB duration sits above the athlete's band, repeatedly, on C19 tackle rows; the naive fix ("get up faster") is a mechanics shout, while the real problem is the contest itself.</p>
+  <p><strong>The mechanism.</strong> The ruck clean-out contest of §29.4c: tackled player on the ground, two defenders legally slowing the ruck, one arriving attacker whose job is to win the space. The scoreboard is the time gate itself — PTB duration <code>= t(ball played) − t(tackle complete)</code>, target sub-3 seconds [verify — practitioner benchmark, not a law of the game]. Body height, entry angle, and leg drive are discovered against real resistance; the coach sets the contest, not the technique. Differential learning rotates defender numbers and tackle type — match rucks never repeat. <strong>Rugby league</strong>: native. <strong>Pickleball</strong>: the structural analogue is tempo recovery after a speed-up — the resetter must absorb pace and re-establish the soft game within one contact — the same solve-the-contest-fast logic on a one-shot clock. <strong>Payoff:</strong> the PTB-duration distribution on match rows shifts left.</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-ruck-cleanout.png" alt="Rugby league ruck clean-out drill: tackled player on the ground, two defenders over the contest, one attacker arriving to clear, with a PTB clock." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.14</span>: UC 06 — Ruck Clean-Out. The contested zone is the constraint; the PTB clock is the scoreboard. <strong>Rugby league</strong>: sub-3-second PTB against legal slowing. <strong>Pickleball</strong>: one-contact tempo recovery after a speed-up.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — The Tackle Technique Drill</h3>
+  <p><strong>The problem.</strong> Missed one-on-one tackles on edge runners (<code>missed_tackle_width</code>) and the drift of contact height upward under fatigue are the two tackle faults that cost tries. Both are taught worst by commands about body position and best by an environment that enforces the legal, effective contact zone. The welfare constraint is not optional: every contact rep is a budget item, and chapter 19's classification sets contact <em>policy</em> — never a gate that benches a player on a screening score (§29.8).</p>
+  <p><strong>The mechanism.</strong> Front-on and side-on stations against live ball carriers at controlled speed. The binding constraint is the legal-contact band as the scoring zone: any contact above the band ends the rep, so the environment enforces the rule the coach must never have to shout. The single permitted cue is the analogy <em>"cheek to cheek, win the shoulder"</em> — external focus, competition-week legal (§29.3). Contact volume per athlete per session is logged against the C30 wearable rows; the drill lives early in the week under the contact budget (§29.5). <strong>Rugby league</strong>: native, contact budget as the individual constraint. <strong>Pickleball</strong>: the analogue is the paddle-contact band of the shoulder-only volley chain — the scoring, not the coach, enforces the legal contact window, and the "no wrist" rule is built into what counts as a point. <strong>Payoff:</strong> missed-tackle rate on edge runners drops on C19 rows, and contact height stays legal under fatigue — the two numbers the welfare red line exists to protect.</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-tackle-technique.png" alt="Rugby league tackle technique drill: front-on tackle with the defender's shoulder contacting a shaded legal contact band at chest height." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.15</span>: UC 07 — Tackle Technique. The legal-contact band is the scoring zone; the analogy cues attention, not joints. <strong>Rugby league</strong>: contact budget per athlete, C19 classification as policy. <strong>Pickleball</strong>: the paddle-contact band of the shoulder-only chain.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category D — The Meta-Layer: Feedback, Transfer, Review (UC 08–10)</h3>
+
+  <h3 class="sub-heading">UC 08 — The Feedback Schedule: Self-Controlled Pull</h3>
+  <p><strong>The problem.</strong> An agent that talks after every rep trains dependency, and an agent faded on a schedule rests on the guidance hypothesis the 2022 meta-analysis of 61 studies could not confirm (source-backed: McKay et al.).</p>
+  <p><strong>The mechanism.</strong> Two load-bearing rules (§29.3). <em>Bandwidth silence</em>: the per-skill tolerance band is computed from the athlete's rolling baseline — <code>band = median ± k·MAD</code> over recent sessions — and inside the band the agent says nothing (Sherwood, source-backed). <em>Self-controlled pull</em>: the athlete requests feedback post-trial, and the request itself engages error estimation (Chiviacowsky &amp; Wulf, source-backed); post-trial pull beats pre-trial, which beats a yoked schedule. Frequency is an output of the athlete's stability, not a coach setting. <strong>Pickleball</strong>: the dink-apex band stays silent through a clean session and flags the drift. <strong>Rugby league</strong>: the line-speed band differs by position — a winger's band is not a middle forward's. <strong>Payoff:</strong> interventions become rare and therefore salient; request frequency becomes an engagement signal, and retention, not in-session polish, is the tuned metric.</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-feedback-pull.png" alt="Two-panel feedback schedule diagram: athlete pressing a request-feedback button on a phone, and a tolerance band where in-band dots stay silent and one out-of-band dot is flagged." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.16</span>: UC 08 — Self-Controlled Pull + Bandwidth Silence. The athlete pulls; the band keeps the agent quiet. <strong>Pickleball</strong>: dink-apex band. <strong>Rugby league</strong>: per-position line-speed bands.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Practice-to-Match Transfer: The RLD Discipline</h3>
+  <p><strong>The problem.</strong> The most common failure of a drill programme is invisible in training: the drill improves and the match fault does not move. Blocked, decontextualised reps produce clean sessions and dirty Saturdays; the agent that schedules for same-day performance optimises the wrong panel of the crossover graph (§29.5).</p>
+  <p><strong>The mechanism.</strong> The RLD checklist runs as an executable filter on every recipe the prescriber emits: specifying information present (live opponent, real geometry, real consequences), the match error pattern still producible, difficulty above the match in the targeted dimension only. The challenge-point governor keeps drill success inside <code>[0.4, 0.8]</code>; outside that band the constraint, not the athlete, is adjusted. Transfer is measured where it counts — the fault rate on the <em>next match's</em> C19 rows, not on drill scoring — and a drill that improves in-session while the match fault stands still is reported as a transfer failure, not a success. <strong>Pickleball</strong>: the 3-to-1 game keeps the live defender because the punisher <em>is</em> the specifying information. <strong>Rugby league</strong>: the 5v5 line-speed set at full intent replaces tackle-bag retreats because a bag cannot play the ball fast. <strong>Payoff:</strong> only representative drills survive the filter, transfer failures surface honestly within one match cycle, and the coach stops paying for practice that does not travel. Source-backed: Pinder et al. (2011); Guadagnoli &amp; Lee (2004).</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-practice-transfer.png" alt="Practice-to-match transfer diagram: a drill icon passing through an RLD-check gate toward a match icon, with a probe arrow returning from match to drill." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.17</span>: UC 09 — Practice-to-Match Transfer. The RLD gate filters every recipe; the probe arrow measures transfer on the match, not the drill. <strong>Pickleball</strong>: live defender preserved. <strong>Rugby league</strong>: full-intent opposed sets replace bags.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — The Review Loop: Watch → Diagnose → Drill</h3>
+  <p><strong>The problem.</strong> The five-verb loop breaks most often at the joint between watching and acting: the analyst reviews film, the coach runs drills, and the two never bind — the drill chosen on Monday has no traced line to the fault observed on Saturday, and nothing measures whether it worked. This use case is the loop itself, treated as an engineered object with a latency budget.</p>
+  <p><strong>The mechanism.</strong> The closed loop runs on a one-week cycle: C19 reviewed rows → fault detection (rule + calibrated ML) → recipe from the library (or the human review queue when confidence &lt; 0.7, per §29.4) → constrained practice inside the load budget → retention probe → re-measurement of the fault rate on the next match. The design math: fault rate <code>r_t</code> vs <code>r_{t+1}</code> with a Wilson interval, unit of claim = athlete or session (C20), and a null reported as a null (§29.6). Every recipe carries its <code>source</code> back to the review window that produced it — the loop is auditable end to end. <strong>Pickleball</strong>: pb-003 rows → kitchen-foot-fault recipe → retention probe at 48 h (measured pipeline: <code>experiments/c29-practice/outputs/metrics.json</code>). <strong>Rugby league</strong>: nrl-001 rows → line-speed recipe → next-match line-set rate; the rugby fault library is the seed awaiting NRL-analyst validation [verify]. <strong>Payoff:</strong> the acting verb closes the loop the rest of the book opened — every drill traces to a match row, every match row can retire a drill, and the chapter's promise (evidence changing Tuesday morning) becomes checkable.</p>
+
+  <figure class="full">
+    <img src="shared/images/c29-uc-review-loop.png" alt="The review loop: a circular diagram with watch, diagnose, drill, and measure nodes connected in a one-week cycle." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.18</span>: UC 10 — The Review Loop. Watch → diagnose → drill → measure on a one-week latency budget. <strong>Pickleball</strong>: pb-003 to kitchen-fault recipe, measured in the lab. <strong>Rugby league</strong>: nrl-001 to line-speed recipe [verify — library validation pending].</figcaption>
+  </figure>
+
+  <p><strong>What the use cases add to the pipeline.</strong> None of the ten is a new project; each is the acting verb consuming earlier chapters' output. UC 01–04 spend C12 ball tracks, C11 pose timing, and the C22 ΔEPV prices; UC 05–07 spend C07-calibrated positions, C19 tackle rows, and C30 contact loads; UC 08–10 spend C20's honesty machinery and C28's live cockpit channel. The loop also runs backward: UC 09's transfer probes are the retention data §29.11 lists as missing, and UC 10's audit trail is what makes any drill in this chapter retractable when the evidence changes. That is the difference between a drill library and a practice <em>system</em>: the faults retire the drills, not the coach's habit.</p>
+
+  <h2 class="section-title"><span class="section-num">29.5</span> Session Design: The Contextual-Interference Crossover</h2>
+  <p>Blocked (drill A, drill A, drill A) vs random (drill A, B, C interleaved): the research is clear and counterintuitive — <strong>random practice is worse in-session and better at retention</strong>. Shea &amp; Morgan (1979) is the canonical demonstration: the random-practice group underperformed during acquisition and outperformed on retention and transfer. The crossover is the core teaching point: <strong>the practice that looks better today is often the one that learns less.</strong> The agent's scheduler must therefore optimise for the retention probe, not for same-day performance — a session that looks ragged on Tuesday and holds up on Saturday beats a session that looked clean on Tuesday and evaporated.</p>
+
+  <p>Interleaving is a continuum, not a law. Blocked practice has a legitimate role in early acquisition and in confidence repair; serial and mixed schedules suit complex skills that cannot be learned from single trials. The lever the agent actually pulls is the <strong>challenge point</strong> (Guadagnoli &amp; Lee, 2004): learning is maximised when functional difficulty matches the learner's current skill. Operationalised: if the athlete succeeds on more than ~80% of drill reps, increase difficulty (shrink the target, speed the PTB, add a defender); below ~40%, decrease it. The challenge point is measured from the drill's own scoring, so the progression is dynamic rather than a fixed six-week ladder.</p>
+
+  <p>The week shape maps the continuum onto the training microcycle, identically in both sports:</p>
+
+  <table>
+    <thead>
+      <tr><th>Phase</th><th>Goal</th><th>Session design</th><th>Feedback mode</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>MD-4 / MD-3</td><td>Acquisition + load</td><td>Mostly blocked or serial, then small interleaving</td><td>Self-controlled pull, constraint cues</td></tr>
+      <tr><td>MD-2</td><td>Transfer under pressure</td><td>Random / interleaved, variable conditions</td><td>Single external cue, analogy</td></tr>
+      <tr><td>MD-1</td><td>Match-representative</td><td>Representative games, small-sided, full rules</td><td>Minimal; bandwidth silence</td></tr>
+      <tr><td>Match day</td><td>Performance</td><td>The match</td><td>Safety/positioning cues only</td></tr>
+      <tr><td>MD+1</td><td>Recovery / review</td><td>Light, varied, no pressure</td><td>Video review, no corrections</td></tr>
+    </tbody>
+  </table>
+
+  <p>For the pickleball club player the "match day" is the weekend ladder or tournament; the same week-shape applies with the 3-to-1 game living at MD-3 and a representative doubles game at MD-1. For the rugby squad the morphocycle is literal: contact days early in the week under the contact budget, line-speed transfer midweek, and a near-silent captain's run at MD-1.</p>
+
+  <figure id="fig-29-08" class="full">
+    <img src="shared/images/c29-contextual-interference.png" alt="Two-panel chart: in acquisition the blocked-practice line sits above the random-practice line; in retention the random line crosses above the blocked line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.8</span>: The contextual-interference crossover (Shea &amp; Morgan, 1979). Blocked practice wins the session; random practice wins the retention test. The agent schedules for the right panel, not the left.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">29.6</span> Measuring the Intervention</h2>
+  <p><strong>The C20 discipline applies to practice as strictly as to models.</strong> Every intervention claim carries the honesty contract: point estimate, interval, baseline, n, unit of claim, resampling method, and failure case. The unit of claim for a practice intervention is almost always <strong>athlete or session</strong>, never rep or frame — 120 drill contacts from one athlete are one cluster, not 120 data points.</p>
+
+  <p>The honest design for a six-week block:</p>
+
+  <ul>
+    <li><strong>Outcome measure:</strong> a skill-specific test tied to the fault — pickleball third-shot drops landing in the 1.8–2.4 m depth window from C12 ball tracks; rugby PTB duration or line-set distance from C19 rows.</li>
+    <li><strong>Baseline:</strong> two to three pre-test measurements before the block, no feedback during measurement.</li>
+    <li><strong>Control skill:</strong> a similar skill the intervention does not target — serve in-rate for the pickleball study; kick chase distance for the rugby study — to rule out generic maturation and motivation.</li>
+    <li><strong>Post + delayed post:</strong> same test, same conditions, no feedback; repeat at 48 h and, if feasible, two weeks.</li>
+    <li><strong>Analysis:</strong> paired cluster bootstrap over athletes/sessions; effect size (Cohen's d, or Cliff's δ for skewed counts); Wilson or beta-binomial interval for success rates.</li>
+  </ul>
+
+  <p>When n is small — the normal state in sport — single-case experimental designs are more honest than pseudo-group statistics:</p>
+
+  <table>
+    <thead>
+      <tr><th>Design</th><th>Structure</th><th>Use case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>A-B</strong></td><td>Baseline → intervention</td><td>Quick pilot; weak causal inference</td></tr>
+      <tr><td><strong>A-B-A</strong></td><td>Baseline → intervention → withdrawal</td><td>Stronger evidence the intervention caused the change</td></tr>
+      <tr><td><strong>Multiple baseline</strong></td><td>Staggered baseline lengths across athletes</td><td>Best small-n design for coaching; controls history and maturation</td></tr>
+    </tbody>
+  </table>
+
+  <p>The chapter's replicable mini-study template, ready to run on pb-003 footage plus local players:</p>
+
+  <pre><code class="language-text">Title:      Does a 2.1 m target constraint improve third-shot drop depth?
+Athletes:   4-8 pickleball players, same skill band
+Design:     Multiple baseline across athletes, A-B
+Baseline:   2 weeks regular practice + retention probe
+Intervention: 6 weeks, 2x15 min/week of the 3-to-1 target game
+Outcome:    % of drops landing 1.8-2.4 m inside the NVZ, from ball track
+Control:    Serve in-rate (untargeted skill)
+Retention:  48 h and 2-week no-feedback probes
+Analysis:   Tau-U + SMD per athlete; hierarchical beta-binomial summary (C20)
+Null rule:  Reported as a lesson: "the constraint did not transfer; next experiment."</code></pre>
+
+  <p><strong>A null result is a lesson, not a failure.</strong> If the interval includes zero, the correct output is not a smaller p-value or a different drill chosen at random; it is a revised hypothesis — the fault was misidentified, the constraint was too easy, or the transfer test was not representative. The same template runs in rugby league with PTB duration or missed-tackle rate as the outcome and the line-speed drill as the intervention.</p>
+
+  <h2 class="section-title"><span class="section-num">29.7</span> Load & Athlete Monitoring</h2>
+  <p>Practice design consumes load data; it does not produce medical decisions. The two load families: <strong>internal load</strong> — sRPE (session RPE × duration on the CR-10 scale), the cheapest validated metric, capturing the athlete's subjective response to the work; and <strong>external load</strong> — GPS/IMU measures in rugby (distance, high-speed running, accelerations, impacts) and the pickleball equivalents (step count, wrist/watch acceleration, court coverage from the C05/E05 tracks). <strong>Readiness</strong> — sleep, soreness, fatigue, mood — provides daily context, and is useful only with individualised baselines and deviation flags, not squad averages. The wearable data (C30) joins this chapter via the C05 spine.</p>
+
+  <p><strong>The ACWR caveat box (mandatory):</strong> the acute:chronic workload ratio is a <strong>contextual indicator, not an injury predictor</strong>. The 2025 systematic review and meta-analysis of 22 cohort studies confirms the association — injury incidence minimised when ACWR stays within <strong>0.8–1.3</strong> and elevated risk (roughly <strong>2–4×</strong>) above <strong>~1.5</strong> — and the same literature insists on the repositioning. Every time the agent displays ACWR it must display the caveats with it:</p>
+
+  <ul>
+    <li><strong>Association, not causation.</strong> ACWR measures correlation; it does not predict an individual injury.</li>
+    <li><strong>Coupled bias.</strong> Acute and chronic workloads share the same numerator; they are not mathematically independent.</li>
+    <li><strong>Arbitrary windows.</strong> The 7- and 28-day windows are conventions, not biological constants.</li>
+    <li><strong>Heterogeneity.</strong> Effect sizes vary across sports, positions, and load metrics — the meta is mostly running-based team sports; pickleball-specific ACWR numbers do not yet exist.</li>
+    <li><strong>Individual differences.</strong> A squad average can hide one athlete who is spiking.</li>
+    <li><strong>Single-session spikes matter.</strong> A 7-day average can miss one extreme session; spike monitoring relative to the athlete's prior 30 days is a serious alternative, as are per-athlete ML baselines.</li>
+  </ul>
+
+  <p>Load is a <strong>session-adjustment input, not a gate</strong>. High ACWR plus poor readiness → reduce drill volume or swap high-impact constraints for low-impact ones (film review, walk-through reps, the dink-height band drill instead of the contact circuit); normal load plus good readiness → proceed as planned; missing load data → flag the gap, proceed on self-reported RPE, never hide the missingness. In rugby the caveat applies with more force because the injury mode is the contact load, not the running load — an ACWR built only on metres run is blind to the tackle count, so the rugby integration must join the C30 impact rows to the ratio before it means anything.</p>
+
+  <figure id="fig-29-03" class="full">
+    <img src="shared/images/c29-acwr-sweet-spot.png" alt="ACWR sweet spot chart: U-shaped injury-risk curve with the 0.8 to 1.3 band shaded and the region above 1.5 flagged, with the caveat box attached." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 29.3</span>: The ACWR caveat box. Contextual indicator, not injury predictor — the band is 0.8–1.3, risk is 2–4× above ~1.5, and the caveat is mandatory wherever the ratio is displayed.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">29.8</span> The Red Lines</h2>
+  <ul>
+    <li><strong>No force/torque claims from monocular video</strong> (chapter 11). Ground-reaction forces, joint torques, and injury-risk indices are not defensible from a single camera; a practice prescription grounded in "3D-inferred forces" is not grounded. The agent can recommend a drill based on a recurring fault; it cannot claim the athlete is at injury risk because of a video-derived metric.</li>
+    <li><strong>Never gate athletes on screening scores.</strong> The Bath screening sensitivity (~68% [verify against the final C11 numbers]) means a false gate is a real possibility; the correct output of any risk-flavoured flag is a <em>flag for a qualified human</em> with evidence and caveats attached. The human makes the participation decision.</li>
+    <li><strong>Never prescribe injury rehab.</strong> Return-to-play is criteria-based and clinical: medical clearance plus the chapter 31 boundary. The agent may supply load data, readiness context, and drill options; it cannot clear, diagnose, or treat.</li>
+    <li><strong>No causal claims from observational match data.</strong> A fault observed in match footage is <em>associated with</em> the outcome, not proven to cause it. Drill language: "targeted for practice because it recurs in match losses," never "causes losses."</li>
+    <li><strong>No diagnostic labels.</strong> No "hamstring weakness," "knee valgus," or "concussion risk" from video or wearables unless the data was collected under a clinical protocol with consent and the output routes to a clinician.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">29.9</span> The Practice Recipe</h2>
+  <ol>
+    <li><strong>Identify the fault</strong> from reviewed C19 event rows — a stable pattern with evidence, not a one-off error.</li>
+    <li><strong>Map to a constraint</strong> from the task/environment/individual triad; the library is the seed and the CLA rule applies: constraint, never mechanics instruction.</li>
+    <li><strong>Design the drill environment</strong> to the RLD checklist — specifying information preserved, error pattern still possible, difficulty above the match in the targeted dimension; embed variations and the retention probe.</li>
+    <li><strong>Schedule it</strong> on the blocked→random continuum per the week phase, scaled by the measured challenge point, inside the load budget.</li>
+    <li><strong>Measure pre/post</strong> C20-disciplined: control skill, effect size, interval, and a published null if that is what the data says.</li>
+    <li><strong>ACWR caveat box</strong> if load is discussed — contextual, never causal.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">29.10</span> Transfer Note: Rugby League Practice Design</h2>
+  <p>The pickleball kitchen-foot-fault example has a direct rugby analogue: <strong>the 10 m retreat violation</strong>. Fault → constraint → drill: the constraint is "the defensive line must be 10 m from the PTB when the ball is played" (a marked line, plus the time gate the C07 calibration provides); the drill is the 5v5 line-speed set of §29.4c where the defence's retreat is timed and the offence's opportunity is the deviation. The rugby library adds the contact dimension pickleball never faces: the tackle-technique circuit enforces the legal-contact band environmentally, and the ruck clean-out contest measures itself through PTB duration — both faults read directly from C19 event rows, both drills carry per-athlete contact budgets.</p>
+
+  <p>The ACWR caveat applies with more force in rugby (the contact load is the injury mode, not the running load), and the welfare red line is identical in both sports: the tackle-classification operating point is <strong>policy</strong> (chapter 19) — it shapes how much contact an athlete's week contains — and is never a practice gate that benches a player on an algorithmic score. The transfer claim is <strong>concept-transfer</strong>, honestly labelled: the pipeline, the feedback rules, the session-design continuum, and the measurement discipline transfer; the fault taxonomy and drill library must be rebuilt per sport, and the rugby library here is a seed awaiting validation with an NRL analyst [verify].</p>
+
+  <h2 class="section-title"><span class="section-num">29.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li><strong>The 6-week pre/post mini-study</strong> (§29.6) — the chapter's first real effect-size numbers; until it runs, every drill here is a protocol, not a result.</li>
+    <li><strong>Full-pipeline fault detection on pb-003</strong> — the lab currently seeds synthetic fault tags over E06's two movement-only review windows (8.33 s and 12.83 s); once C19 eventing produces reviewed, contact-anchored rows with C12 ball evidence, the recipe pipeline becomes real.</li>
+    <li><strong>Drill library validation with practitioners</strong> — the fault→constraint mappings are plausible but untested; one pickleball coach and one NRL analyst reviewing the library would either harden it or rewrite it [verify — not yet done].</li>
+    <li><strong>Load integration</strong> — join the wearable rows to the practice blocks (the C30 fusion) and compute per-athlete pickleball ACWR and single-session-spike baselines, which do not currently exist.</li>
+    <li><strong>The self-controlled pull UX</strong> — the pull-first button is theoretically supported but not user-tested; prototype it, measure request frequency against learning outcomes, and tune the bandwidth defaults per athlete.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">29.12</span> Sources</h2>
+  <ul>
+    <li>CLA/RLD: Pinder, Davids, Renshaw &amp; Araújo (2011), <em>Representative Learning Design</em> — https://www.aut.ac.nz/__data/assets/pdf_file/0007/380698/Representative-Learning-Design-and-Functionality-of-Research-and-Practice-in-Sport.pdf; Newell (1986) constraints triad; the 2024–25 self-critical reviews — https://www.tandfonline.com/doi/full/10.1080/21640629.2024.2395135 and https://pmc.ncbi.nlm.nih.gov/articles/PMC12011958/.</li>
+    <li>Feedback: McKay et al. (2022) feedback-frequency meta-analysis — https://doi.org/10.1016/j.psychsport.2022.102165; Chiviacowsky &amp; Wulf (2005) self-controlled feedback — https://doi.org/10.1080/02701367.2005.10599260; Sherwood (1988) bandwidth KR — https://doi.org/10.2466/pms.1988.66.2.535; Wulf (2013) attentional-focus 15-year review — https://gwulf.faculty.unlv.edu/wp-content/uploads/2014/05/Wulf_AF_review_IRSEP_20131.pdf; Liao &amp; Masters (2001) analogy learning — https://pdfs.semanticscholar.org/70cd/d1cd8be76679864b902c54d38726b4e15859.pdf; Schmidt &amp; Lee (2011), <em>Motor Control and Learning</em> (5th ed.).</li>
+    <li>Session design: Shea &amp; Morgan (1979) contextual interference — https://doi.org/10.1037/0278-7393.5.2.179; Guadagnoli &amp; Lee (2004) challenge point — https://doi.org/10.3200/jmbr.36.2.212-224; Schöllhorn differential learning — https://perceptionaction.com/dl/.</li>
+    <li>Load: 2025 ACWR systematic review and meta-analysis (22 cohorts) — https://doi.org/10.1186/s13102-025-01332-x; monitoring/RTP integration review — https://pmc.ncbi.nlm.nih.gov/articles/PMC12487117/; ML revisit of ACWR — https://kosmospublishers.com/revisiting-the-acute-chronic-workload-ratio-in-basketball-using-a-machine-learning-approach-2/.</li>
+    <li>Lab (measured): <code>lab/w7_lab_practice.py</code> → <code>experiments/c29-practice/outputs/metrics.json</code>; E06 review windows; C07 calibration; C11 biomechanics defensibility; C19 eventing; C20 statistics; C30 sensors; C31 governance.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="28.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 28</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 28</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</p>
+        </div>
+      </div>
+    </a>
+    <a href="30.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 30</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 30</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The verified inventory, the dead-sensor market reality, and the ~$1,500 M4-native rig</p>
+        </div>
+        <a href="30.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #A2542A;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

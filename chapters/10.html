@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3 - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-10" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 10</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Promptable masks, concept segmentation, and the measured cost of pixels over boxes</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">40 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-10-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Boxes Say Where; Masks Say What</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-10-1" data-section="s-10-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Boxes Say Where; Masks Say What</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-10-1" data-section="s-10-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Boxes Say Where; Masks Say What</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">10</span> Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h1>
+    <p class="chapter-subtitle">Promptable masks, concept segmentation, and the measured cost of pixels over boxes</p>
+  </header>
+
+<h3 id="s-10-1"><span class="section-num">10.1</span> Boxes Say Where; Masks Say What</h3>
+
+<p class="section-intro">A bounding box is a rectangle around something. A mask is the thing itself. For sports, the difference is decisive in three places: the paddle blade (you need the contour to compute the face angle), the ball (you need the silhouette to separate it from the court), and the player (you need the foreground to compute foot placement from the mask bottom). Segmentation is the tool, and 2024-2026 made it promptable — you ask the model for the object you mean, in language or a click.</p>
+
+  <p>A box commits two approximations a mask does not. First, it includes background and other objects inside the rectangle: at the pickleball non-volley zone, two players' boxes overlap heavily, and any crop taken from the box contains the opponent's legs and the net tape. In a rugby league tackle the problem compounds — the ball carrier's box contains the first defender's arms, the second defender's head, and a slice of the pitch, and chapter 8's detector measured 13.2 persons per frame on nrl-001 (E08), so nearly every box is contaminated by at least one other body. Second, the box's geometric summary is a fiction of the rectangle: the bottom-center point is the midpoint of the rectangle's lower edge, not a foot. On a wide ready stance at the kitchen line, or a defender's split-leg bracing posture in a tackle, the box bottom-center lands on air between the feet — and that is the exact point the chapter 6 homography (E05/E11: 3.82-4.65 cm RMSE) consumes.</p>
+
+  <p>A mask pays back exactly where those two approximations bite: foot-point extraction under wide stances, ReID crops without background contamination, and sub-box objects like the ball and paddle that a box localizes sloppily. Where neither approximation bites — a full-body player in open field feeding a tracker — the box is enough, and chapter 8's detector output is the cheaper signal. The rule of this chapter: <strong>masks are a precision instrument, deployed at named junctions, not a default upgrade</strong>.</p>
+
+  <p>Every fact in this chapter is <strong>measured</strong> (our lab, with experiment IDs), <strong>source-backed</strong> (Meta's releases, licenses read from the source), or <strong>[verify]</strong>-marked where a claim outruns the evidence.</p>
+
+  <h2 class="section-title"><span class="section-num">10.2</span> The Segmentation Taxonomy</h2>
+  <p>The field reuses four words loosely, and each implies different outputs, metrics, and pipeline roles. Pin them down before spending money:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Output</th>
+        <th>Sport Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Semantic</strong></td>
+        <td>Every pixel gets a class (court, player, ball)</td>
+        <td>Court/field segmentation for calibration priors; crowd-vs-field separation in broadcast rugby</td>
+      </tr>
+      <tr>
+        <td><strong>Instance</strong></td>
+        <td>Every distinct object gets a mask</td>
+        <td>Player masks for identity crops; per-player silhouettes at the pickleball NVZ</td>
+      </tr>
+      <tr>
+        <td><strong>Panoptic</strong></td>
+        <td>Semantic + instance in one pass</td>
+        <td>Full scene understanding — four players instanced, court/net/fence as labeled stuff; the expensive end</td>
+      </tr>
+      <tr>
+        <td><strong>Promptable</strong></td>
+        <td>Mask for <em>what you asked for</em> (click, box, or text)</td>
+        <td>"Segment the paddle" — the 2026 workhorse</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The first three families are <strong>closed-vocabulary</strong>: the class list is baked into training, and a pickleball paddle or a rugby Steeden is simply not in it. The fourth is the 2023-2025 break: <em>the prompt is the class definition</em>, so an object the model never saw in training is segmentable on day one. Video adds three variants: <strong>VOS</strong> (video object segmentation — you supply the frame-0 mask, the model propagates it; semi-supervised), <strong>VIS</strong> (video instance segmentation — detect, mask, and track instances fully automatically), and SAM 3's <strong>PCS-video</strong> (detect, segment, and track every instance of a <em>concept</em>). SAM 2 is a VOS machine with a promptable front end; SAM 3 is a PCS machine. Neither is a VIS tracker in the chapter 9 sense — see 10.7 for why that distinction is load-bearing.</p>
+
+  <p>Metrics deserve the same precision. <strong>IoU</strong> (Jaccard) scores one mask: intersection over union against ground truth. <strong>mIoU</strong> averages per-class IoU over classes — the semantic-segmentation standard, with a sport trap: the dominant class (court, background) inflates the mean, so report per-class IoU for the rare class (ball, line pixels) or the number lies. <strong>Mask AP</strong> is the COCO instance-segmentation standard, averaged over IoU thresholds 0.50 to 0.95; its strictness is useful, because AP at high thresholds punishes exactly the sloppy boundaries that break foot-point extraction. <strong>Boundary IoU</strong> computes overlap only on a narrow band around the mask edge — it measures the contour where sport actually cares, since feet are a boundary phenomenon [verify: no published sport-segmentation benchmark reports Boundary IoU; candidate book contribution]. For video, <strong>J&amp;F</strong> (DAVIS) pairs region IoU with boundary accuracy; SAM 2's published video numbers are J&amp;F.</p>
+
+  <figure id="fig-10-02" class="full">
+    <img src="shared/images/ch10-segmentation-taxonomy.png" alt="The same pickleball kitchen scene rendered four ways: semantic (players merged in one blob), instance (per-player masks with boxes), panoptic (players instanced plus court, net, fence labeled), promptable (only the clicked ball and prompted player masked). Recreate: white background, black linework, burnt-orange masks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.2</span>: One Scene, Four Tasks. Semantic merges instances, instance separates them, panoptic labels everything, promptable segments only what you name. The metric under each panel — mIoU, mask AP, PQ, clicks-to-90% — is the contract you sign when you pick the task.</figcaption>
+  </figure>
+
+  <p>For the book's labs, mask quality on ball, paddle, and feet is measured with IoU plus Boundary IoU against roughly 50 hand-labeled frames; AP is reserved for comparisons against published instance baselines; mIoU appears only when a semantic court parse is the actual product — for example, deriving a pickleball court-surface mask as a calibration prior, or separating crowd from field in a broadcast rugby frame before line detection.</p>
+
+  <h2 class="section-title"><span class="section-num">10.3</span> SAM 2: The Streaming Memory Architecture</h2>
+  <p>Meta's SAM 2 (Ravi et al., 2024, arXiv 2408.00714, Apache-2.0) unified image and video promptable segmentation in one streaming model. It is this book's workhorse segmenter for a simple operational reason: it is the last SAM generation that runs natively on the M4 lab. Understanding its six components tells you exactly what it can and cannot promise.</p>
+
+  <p><strong>1. Image encoder — Hiera, a hierarchical ViT.</strong> SAM 1's encoder was a plain ViT producing a single feature scale, with a heavyweight neck faking a feature pyramid on top. Hiera (Ryali et al., ICML 2023) <em>is</em> a pyramid: it is pretrained with masked autoencoding and progressively pools its tokens, so coarse late stages carry semantics while early stages retain spatial detail, and skip connections hand the mask decoder both. That single change is why SAM 2 segments images roughly 6x faster than SAM 1 [verify: Meta-reported figure] — the encoder stopped paying for an adapter on a single-resolution trunk. Four sizes ship (Hiera-T/S/B+/L, roughly 39M/46M/81M/224M parameters); SAM 2.1 (September 2024) refreshed all four checkpoints with retrained weights at identical sizes — use 2.1 everywhere. Lab default: Hiera-B+; Hiera-L when boundary quality on feet matters.</p>
+
+  <p><strong>2. Prompt encoder — clicks, boxes, masks.</strong> Geometric prompts are embedded and injected into the decoder: a point is labeled foreground or background, a box delimits the object extent, and a prior mask refines an existing segmentation. One click on a pickleball paddle blade in frame 0 is a complete prompt; so is chapter 8's detector box around a rugby ball carrier, which makes the detector-to-SAM handoff a one-line glue layer.</p>
+
+  <p><strong>3. Memory bank — two FIFO queues plus object pointers.</strong> This is the temporal heart. The bank holds (a) a FIFO of the <em>N most recent frames'</em> memories — short-term motion context, ordered by temporal position embeddings; (b) a FIFO of up to <em>M prompted frames'</em> memories — the model never forgets where you clicked, even after the recent-frames queue rolls past; and (c) <em>object pointers</em>: compact vectors distilled from the mask decoder's output tokens, carrying what the object <em>is</em> at a semantic level alongside the spatial maps. Critically, the bank stores <em>mask-conditioned</em> memories, not raw frames: after each prediction, a lightweight convolutional <strong>memory encoder</strong> fuses the predicted mask with the frame's unconditioned image features and pushes the result onto the bank. The past arrives pre-digested.</p>
+
+  <p><strong>4. Memory attention — the frame queries its own past.</strong> Before decoding, the current frame's features cross-attend to the stored memories (and self-attend among themselves), conditioning the representation on where the object was and what it looked like. There is no recurrence, no optical flow, no state-space model — attention over a bounded memory is the entire temporal mechanism.</p>
+
+  <p><strong>5. Mask decoder — streaming multi-mask output.</strong> The SAM-1-style two-way transformer decodes the conditioned features against the prompt tokens and emits <em>several candidate masks</em> plus a predicted IoU score for each. Under an ambiguous prompt — a click on a torso, which could mean player or jersey — the candidates are ranked by predicted IoU and the best wins. The same predicted-IoU score doubles as an automatic "I lost it" flag during video propagation: when it collapses, the mask has degraded, and your pipeline should distrust the geometry without any external supervision.</p>
+
+  <p><strong>6. The streaming inference loop.</strong> Per frame, left to right: encode the frame once with Hiera; cross-attend to the memory bank; decode each prompted object's mask; fuse mask and features through the memory encoder; push onto the FIFO. History is never re-processed and memory stays bounded by the FIFO caps — the property that makes hour-long match footage tractable at all.</p>
+
+  <p><strong>The memory-attention vs full-attention tradeoff is the design decision to understand.</strong> Full attention over <em>all</em> past frames costs O(T) memory and compute per new frame — hour-long video becomes quadratic in the total frame count and dies. SAM 2's bounded bank costs O(N+M) per frame: constant, cheap, streamable. What you surrender is perfect recall: an object that vanishes for longer than the FIFO window is re-anchored only by the prompted-frame memories and the object pointers — semantic similarity, not pixel continuity. In practice that trade is nearly all upside, because sport occlusions (a player crossing the net post, a ball carrier buried in a ruck for two seconds) are short. But it defines the failure mode: when the re-emergence region contains a <em>similar</em> object — the other pickleball player in identical kit crossing at the NVZ, or the second defender in the same jersey arriving at the tackle — memory attention can lock onto it with equal confidence. Nothing in the architecture knows these are two different people; similarity to stored memory is the only identity criterion. Section 10.7 builds the boundary rule on exactly this.</p>
+
+  <p>The occlusion-recovery story, stated as a mechanism: during occlusion, memory attention finds no matching evidence in recent frames and the mask degrades gracefully rather than hallucinating — the predicted IoU drops, which is your automatic loss signal. On re-emergence, the prompted-frame FIFO and object pointers re-anchor the object by matching against the original prompt memory, bridging appearance drift across the occlusion window semantically rather than by raw pixels. For a single salient object this is a genuinely stronger temporal prior than a Kalman filter.</p>
+
+  <figure id="fig-10-03" class="full">
+    <img src="shared/images/ch10-sam2-memory-loop.png" alt="SAM 2 streaming pipeline: frame into Hiera encoder pyramid; memory bank with two FIFO queues labeled recent and prompted plus object pointer chips; memory attention lattice node; mask decoder emitting a mask with an IoU gauge; memory encoder feedback arrow returning the mask to the bank. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.3</span>: The Streaming Memory Loop. One encoder pass per frame, cross-attention into a bounded two-queue memory bank, multi-mask decode with a predicted-IoU gauge, then the memory encoder pushes the digested mask back onto the bank. Bounded memory is what makes hour-long footage streamable.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball case.</strong> One click on the paddle blade in frame 0 of pb-003, and SAM 2 propagates the paddle mask through the entire rally — prompt-once, track-many. This is the structural cure for the E04 ball-detection wall (1,082 detections at median score 0.1125 — the frame-by-frame detector barely sees the ball): propagation matches on motion-conditioned appearance, and between consecutive frames the ball's mask overlaps itself even at 40 pixels per frame of flight, so smallness hurts detection but not propagation. The paddle — larger, slower, rigid — is the easier case and the lab's hands-on object.</p>
+
+  <figure id="fig-10-04" class="full">
+    <img src="shared/images/ch10-sam2-pickleball-mask.png" alt="Pickleball court diagram with a player at the kitchen line: burnt-orange segmentation mask over the player silhouette, a second mask over the paddle blade, and a dashed arrow from the mask bottom to a circled foot point on the court. Recreate: white background, black court linework, burnt-orange masks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.4</span>: Prompted Masks on the Kitchen Line. The player mask gives the foot point from its bottom contour — the pixel the homography actually wants. The paddle mask gives the blade contour — the only path to a face angle. Neither is available from a bounding box.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league case.</strong> Prompt the ball carrier before a tackle on nrl-001 and SAM 2 tracks his mask into and through the ruck — 13-plus bodies, multi-second occlusion, camera pan. The memory bank's prompted-frame anchor is what recovers him on the far side. The failure to teach is the symmetric one: when two same-kit defenders converge on the carrier simultaneously, the mask can exit the tackle attached to the wrong body, and the predicted IoU does not always flag it, because the new region matches the stored memory almost as well. Region tracking survives the occlusion; identity does not.</p>
+
+  <figure id="fig-10-05" class="full">
+    <img src="shared/images/ch10-sam2-rugby-masks.png" alt="Rugby league pitch diagram of a tackle scene: burnt-orange segmentation masks over thirteen outlined players and the oval ball, the ball carrier's mask darker. Recreate: white background, black pitch linework, burnt-orange masks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.5</span>: Masks at Rugby Density. Thirteen player masks plus the ball in a tackle frame. Per-object promptable segmentation is tractable here only because each mask propagates through bounded memory — but the same-kit convergence inside the ruck is where region tracking and identity part ways.</figcaption>
+  </figure>
+
+  <p><strong>The MPS story, honestly.</strong> SAM 2 is CUDA-first code. On Apple Silicon the official path is PyTorch MPS with <code>PYTORCH_ENABLE_MPS_FALLBACK=1</code>: unimplemented MPS ops fall back to CPU, and every fallback forces a GPU-to-CPU sync that can make MPS slower than pure CPU on some pipelines; Meta documents possible numerical drift versus CUDA [verify: community ledger, sam2 issue #462 — the lab's own SAM 2 wall-clock numbers are a 10.9 measurement, not yet run]. Practice: enable the fallback only if an op crashes, downsample input, keep tensors in memory, and treat SAM 2 video on M4 as offline batch, never real-time.</p>
+
+  <h2 class="section-title"><span class="section-num">10.4</span> SAM 3: Concept Segmentation and the 2026 Reality</h2>
+  <p>SAM 3 (Meta, November 19-20 2025, arXiv 2511.16719, ~848M parameters ≈ 1.7GB in bf16) changes the prompt from <em>geometry</em> to <em>concept</em>. <strong>Promptable Concept Segmentation</strong>: a text phrase — "player in white", "pickleball", "ruck" — or image exemplars produce detection, segmentation, <em>and tracking of every matching instance</em> through the video, with per-instance session IDs. SAM 2's question was "segment this thing I clicked"; SAM 3's is "segment everything matching this description." One prompt replaces per-object boxes — directly useful for rugby clusters where jersey color separates the teams, and for pickleball where "paddle" is a two-instance concept no detector class ever contained.</p>
+
+  <p>Three architectural facts matter. First, a shared <strong>Perception Encoder</strong> feeds both halves: a DETR-based detector conditioned on text, geometry, or exemplars finds and segments all instances per frame, and a memory-based video tracker inherited from SAM 2 propagates them — detector and tracker are decoupled, so tracking can be corrected interactively without re-running detection. Second, a learned <strong>presence token</strong> first answers "does this concept exist in the scene at all?" before localization, decoupling recognition from localization; this is the mechanism that separates near-identical prompts like "player in white" from "player in red" that a DETR head alone confuses — team-color and role phrases become first-class queries. Third, the benchmark it ships with, <strong>SA-Co</strong>, spans 270K unique concepts (over 50x prior open-vocabulary segmentation benchmarks); Meta reports SAM 3 at 75-80% of human performance on SA-Co, roughly doubling prior systems on image and video PCS [verify: Meta-reported; no sport-footage replication exists yet].</p>
+
+  <figure id="fig-10-01" class="full">
+    <img src="shared/images/sam3-concept-segmentation.png" alt="SAM 3 promptable concept segmentation: text chip player in white masking white-clad players with persistent IDs. Recreate: white background, burnt-orange masks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.1</span>: Promptable Concept Segmentation. "Track all players in white" — the 2026 paradigm shift: language replaces per-object geometry prompts.</figcaption>
+  </figure>
+
+  <p>The caveats are the story. The official repo ships custom CUDA/Triton kernels (Triton NMS among them) with no official MPS path — production use means Colab GPU batch processing with artifacts synced back. Friction paths exist (the Ultralytics integration, API-driven but AGPL-3.0 — a copyleft landmine for shipped products; a Hugging Face transformers port), but neither is the supported lane. And the license is the custom <strong>SAM License</strong> — royalty-free with attribution required in publications, plus Trade Controls and no-reverse-engineering clauses — not Apache. Read it before publishing figures, not after.</p>
+
+  <p><strong>SAM 3.1</strong> (March 2026) is a drop-in efficiency update, not a new capability — same prompts, same backbone, no accuracy change. It fixes the exact problem rugby hits first: SAM 3 tracked each object independently, so 26 players plus ball plus referees meant roughly 28 sequential tracking passes per frame, cost scaling linearly with object count. <strong>Object Multiplexing</strong> groups tracked objects into buckets processed jointly through shared memory; Meta reports about 7x faster at large object counts (up to 128 objects on a single H100) [verify: vendor claim on vendor hardware; the book's only planned check is the Colab lab on nrl-001]. A 26-player rugby broadcast frame is precisely the regime where SAM 3 was impractical and SAM 3.1 is merely expensive. Pickleball — four players, ball, two paddles — never left the practical zone. The deeper lesson generalizes: per-object-loop architectures die on field sports; shared-computation architectures survive them.</p>
+
+  <figure id="fig-10-06" class="full">
+    <img src="shared/images/ch10-sam3-sport-concepts.png" alt="Three-panel concept segmentation: rugby frame with text chip players in white; same frame with only white-kit players masked and ID badges; pickleball frame with chip paddle and both paddles masked. Recreate: white background, black linework, burnt-orange masks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.6</span>: Sport Concepts as Prompts. "Players in white" separates a rugby frame by team in one query; "paddle" masks both pickleball paddles with no paddle class anywhere in training. Whether "ball" fires at all on sport footage is the E04 wall in PCS form — unmeasured, and on the 10.9 list.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">10.5</span> DINOv3: The Foundation Behind the Meshes</h2>
+  <p>DINOv3 (Meta, August 2025, arXiv 2508.10104) is a self-supervised vision backbone family — ViT-S/B/L/H+ up to a 7B flagship, trained on 1.7 billion unlabeled images with self-distillation, RoPE position embeddings, and SwiGLU activations, plus distilled ConvNeXt variants. No labels anywhere in training: the supervision signal is the images themselves. For sports this is the "frozen features + small head" recipe made concrete: take DINOv3 features, add a small task head, fit on your 500 labeled frames.</p>
+
+  <p>The recipe has a bias-variance argument. On small sports datasets, fine-tuning a 300M-7B backbone destroys more general structure than it learns — catastrophic forgetting plus overfit to venue lighting — while the self-supervised features already encode the invariances you need, learned from effectively every sport on earth. Freeze the backbone; train a linear probe for classification, k-NN for retrieval and ReID, a shallow FPN head for detection, or a per-pixel linear layer for segmentation. The head has thousands-to-millions of parameters, so your small dataset fits the model size. The evidence that this beats from-scratch training at sport scale: chapter 8's DEIMv2 record pairs a DINOv3 backbone with a small Spatial Tuning Adapter for 57.8 AP at X scale, and Meta's own SAM-3D-Body (November 2025 — chapter 11's 3D mesh path) uses a DINOv3 encoder as its visual front end. The frozen-features-plus-head pattern is the industry default, not a lab hack.</p>
+
+  <p><strong>Gram anchoring</strong> is the training trick that makes the dense features usable, and it is worth one paragraph because dense features are what a sport pipeline actually queries. The known disease of long self-supervised schedules: global similarity objectives keep improving while per-patch spatial consistency rots, killing downstream detection and segmentation. Gram anchoring regularizes the student's Gram matrices — second-order patch-feature correlations — toward those of an early-training "Gram teacher," pinning local feature geometry so it cannot drift while global semantics keep learning. When you k-NN-query DINOv3 patch features for "patches that look like the ball" on a pickleball frame, or pool them into a ReID embedding for a same-kit rugby crop, Gram anchoring is why the dense maps are sharp enough to answer.</p>
+
+  <figure id="fig-10-07" class="full">
+    <img src="shared/images/ch10-dinov3-features.png" alt="DINOv3 feature hierarchy: a pickleball frame feeding three stacked layers labeled early patches, mid features, global token; three small heads below labeled k-NN retrieval, linear probe, mask head; a frozen marker on the stack. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.7</span>: Frozen Features, Small Heads. The backbone stays frozen (snowflake); only the thin heads train on your labels. Early patches carry edges and textures, mid features carry body parts and paddle shapes, the global token carries the scene — and the head you pick decides which level you spend.</figcaption>
+  </figure>
+
+  <p>The honest limit: frozen features fail when the target is truly out of distribution for web imagery — a motion-blurred 40mm ball at 120 fps against a dark ceiling, or thermal and depth rigs. Then fine-tune, LoRA or adapter first, full fine-tune last, on Colab. <strong>License caution: DINOv3 sits under a custom DINOv3 License — commercial use allowed with restrictions, gated weights, NOT Apache.</strong> ViT-S/B run on MPS via HF transformers; the 7B variant is a Colab stretch even on a 64-128GB unified-memory machine [verify: parameter-count inference, not a lab run]. Read the license before any commercial coaching product.</p>
+
+  <h2 class="section-title"><span class="section-num">10.6</span> The Measured Cost: 10.7 Seconds Per Frame (C10-lab)</h2>
+  <p>Our lab ran the light path (MobileSAM via ultralytics, 38.8MB) on pb-003-frame-01 with MPS — experiment <strong>C10-lab</strong>, <code>experiments/c10-segmentation/outputs/metrics.json</code>:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Inference time (full frame, 960px)</td>
+        <td><strong>10,676ms (≈0.09 fps)</strong></td>
+      </tr>
+      <tr>
+        <td>Masks returned</td>
+        <td>51</td>
+      </tr>
+      <tr>
+        <td>Model</td>
+        <td>mobile_sam.pt (38.8MB)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Read the number carefully: this is <em>zero-prompt, segment-everything</em> mode — the model cut the full frame into 51 candidate masks with no guidance, which is the most expensive way to run SAM and rarely the right one. Promptable mode (one point or box, one object) is far cheaper per object. But even discounted, the verdict stands: <strong>full-frame SAM is not a live tool on this machine.</strong> It is a post-match, region-isolation tool — or a Colab task. Contrast with the neighbors: chapter 3's pose pipeline runs at 82 fps on the same clip (E03) and chapter 9's trackers run at clip frame rate. Segmentation is three orders of magnitude off real-time on M4; plan pipelines accordingly.</p>
+
+  <p>The recipe that makes masks valuable at all — four junctions where the segmentation tax pays:</p>
+  <ol>
+    <li><strong>Point-prompt the paddle blade → mask → contour → blade face angle</strong> (the v1 book's 48.3° claim, correct in principle, expensive in practice). The contour is what makes an angle possible: a box cannot give you a face orientation.</li>
+    <li><strong>Box-prompt a player → mask → foot point</strong> from the mask bottom (sub-pixel court positioning for the homography chain; the mask bottom is the shoe, not the box bottom which includes air). Take the largest contour, band the bottom ~2% of mask height, cluster into at most two foot candidates, and take the grounded midpoint. Failure modes: shadow pulled into the mask (shadows extend laterally, so the lowest band guard helps — [verify: unmeasured on pb-003 lighting]) and mask bleed between adjacent shoes at the NVZ (resolve by assigning each mask to a chapter 9 track first).</li>
+    <li><strong>Mask → ReID crop</strong>: cleaner than a bbox crop — cuts the background so the embedding sees the player, not the court, the net, or the other same-kit defender. At the pickleball NVZ and in a rugby tackle this removes exactly the distractors that collapse same-kit embeddings. This is a mechanism argument with a designed lab behind it, not a measured result — E09 used box crops [verify: no published same-kit sport ablation on masked crops; candidate book contribution].</li>
+    <li><strong>SAM 2 video propagation → ball/paddle masks</strong> across the rally: the E04 ball-wall cure is prompt-once-track-many (paired with the E10 temporal filter at 0.814 precision as the fallback). In rugby, the same recipe propagates the Steeden from a play-the-ball seed frame — when the ball is visible at all; a ball under three bodies is under three bodies for every method.</li>
+  </ol>
+
+  <p>When masks beat boxes: <em>isolation</em> questions (paddle, ball, a single player's foot) and <em>crop-cleaning</em> for learned embeddings. When boxes win: <em>every-frame tracking</em> at 30fps — masks cost 10x+ and add nothing to identity decisions; crowd counts; anything where the box's errors never propagate into a decision. The measured boundary of this chapter: 10.7s per frame on M4 for the light model in segment-everything mode, and the full SAM 3 path is CUDA-official, so Colab carries it. One more cost worth printing: in video workloads the dominant pressure is memory, not compute — the per-object memory banks scale with frames held in the FIFOs, and on unified memory the model shares RAM with everything else on the machine. The FIFO cap is the knob.</p>
+
+  <h2 class="section-title"><span class="section-num">10.7</span> The Region-vs-Identity Boundary</h2>
+  <p>The most common category error (from chapter 9): "SAM 3 tracks things, why not use it as my tracker?" <strong>SAM tracks regions, not identities.</strong> Both SAM 2 and SAM 3 propagate masks by memory attention — the object's persistence is implicit in region similarity to stored memories. Three consequences, each already encountered in this book:</p>
+
+  <ol>
+    <li><strong>No re-identification semantics.</strong> If two same-kit players swap positions through an occlusion — the NVZ cross in pickleball, the second defender arriving at the tackle — memory attention can follow either, whichever is more similar to the stored memory. SAM has no mechanism to prefer "the same person" over "a similar region." E09-class identity switches are structurally possible in mask propagation.</li>
+    <li><strong>SAM 3's "stable IDs" are session-scoped tracking IDs.</strong> Stable within a propagation session, meaningless across clips, and still region-founded — a "player in white" track that drifts to a different white player keeps its ID happily. PCS adds concept recognition (which class), not individual recognition (which person).</li>
+    <li><strong>The forbidden move:</strong> using SAM IDs as player identities for stats attribution. The correct architecture, restated as this chapter's boundary rule: <strong>SAM generates masks upstream; the tracker assigns identity downstream; role priors arbitrate across both.</strong> When a downstream stat must survive the swap-prone NVZ or a tackle pile, trust the chapter 9 stack's identity and use SAM's mask only for its geometry.</li>
+  </ol>
+
+  <p>The honest converse: for a single salient object, mask propagation has <em>better occlusion recovery than most motion-model trackers</em> — the memory bank is a genuinely stronger temporal prior than a Kalman filter. The boundary is not "SAM is worse"; it is "SAM answers a different question." Regions yes, identities no.</p>
+
+  <figure id="fig-10-08" class="full">
+    <img src="shared/images/ch10-region-vs-identity.png" alt="Two-lane diagram: upper lane shows a mask propagating across five frames then re-attaching to a wrong identical player at an occlusion, ID badge unchanged, warning triangle; lower lane shows the tracker correctly returning the ID to the original player, check mark. Bracket label: mask is not identity. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.8</span>: The Boundary in One Picture. Through the same occlusion, the region track (top) re-attaches to the most similar body and keeps its ID badge without noticing; the identity track (bottom) re-assigns correctly because ReID and role priors carry the person, not the pixels.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">10.8</span> License Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>License</th>
+        <th>M4 Max</th>
+        <th>Read</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>SAM 2 / SAM 2.1</td>
+        <td>Apache-2.0</td>
+        <td>⚠️ (MPS fallback, slow)</td>
+        <td>Permissive; the safe ship lane, code and weights</td>
+      </tr>
+      <tr>
+        <td>Hiera backbone</td>
+        <td>Apache-2.0</td>
+        <td>✅</td>
+        <td>Same lane as SAM 2</td>
+      </tr>
+      <tr>
+        <td>SAM 3</td>
+        <td>Custom SAM License (Nov 2025)</td>
+        <td>⛔ (CUDA official)</td>
+        <td>Royalty-free but attribution-required; read the clause before publishing figures</td>
+      </tr>
+      <tr>
+        <td>SAM 3.1</td>
+        <td>Same SAM License</td>
+        <td>⛔</td>
+        <td>Object Multiplex for dense frames — the rugby case [verify: confirm no license delta on the 3.1 HF card before print]</td>
+      </tr>
+      <tr>
+        <td>Ultralytics SAM 3 integration</td>
+        <td>AGPL-3.0</td>
+        <td>⛔/⚠️</td>
+        <td>Copyleft landmine for shipped products; fine for research</td>
+      </tr>
+      <tr>
+        <td>DINOv3</td>
+        <td><strong>Custom DINOv3 License</strong> (Aug 2025, NOT Apache)</td>
+        <td>✅ ViT-S/B; 7B is Colab-stretch</td>
+        <td>Commercial allowed with restrictions, gated weights; read before commercial use</td>
+      </tr>
+      <tr>
+        <td>Perception Encoder (PE)</td>
+        <td>Apache-2.0</td>
+        <td>✅</td>
+        <td>SAM 3's backbone family, on the permissive lane</td>
+      </tr>
+      <tr>
+        <td>MobileSAM</td>
+        <td>Apache-2.0</td>
+        <td>✅ (but 0.09 fps full frame)</td>
+        <td>The M4-measured path of this chapter (C10-lab)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The standing rule: the Apache-2.0 stack — SAM 2, Hiera, PE, MobileSAM — ships in a commercial product without counsel. SAM 3/3.1 and DINOv3 are <strong>research-and-book assets pending license review</strong>, the same posture chapter 8 set for DEIMv2's non-commercial fence. Attribution-required is not the same as forbidden, but it means the license text appears in your build process, not just your bibliography.</p>
+
+  <figure id="fig-10-09" class="full">
+    <img src="shared/images/ch10-license-spectrum.png" alt="License spectrum from Apache 2.0 with open padlock on the left to custom license with closed padlock on the right; four cards for SAM 2, MobileSAM, SAM 3, and DINOv3 positioned along it, each with an M4 chip icon carrying a check or cross. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.9</span>: Two Independent Axes. License permissiveness (left to right) and M4 viability (check vs cross) do not correlate: the most permissive model here is not the fastest, and the most capable is neither permissive nor local. Choose per junction, not per brand.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">10.9</span> What I Would Measure Next</h2>
+  <ul>
+    <li><strong>SAM 2.1 paddle propagation on pb-003</strong> (M4, the hands-on lab): one box prompt on the paddle in frame 0, propagate the full clip. Measure mask IoU and Boundary IoU against 50 hand-labeled frames, count propagation losses through NVZ occlusions against predicted-IoU drops, and record wall-clock with and without <code>PYTORCH_ENABLE_MPS_FALLBACK=1</code> at 1080p and 540p — replacing this chapter's community-sourced MPS anecdotes [verify] with book-internal numbers. Does the contour yield a stable blade angle across 50 frames? The v1 book's 48.3° claim needs this replication.</li>
+    <li><strong>Mask foot point vs box bottom-center</strong> (M4): run the 10.6 recipe on the lab's player masks and compare homography RMSE against the E05/E11 ground truth, with an NVZ-zone error rate as the pre-registered readout.</li>
+    <li><strong>Masked-crop ReID ablation</strong> (M4): re-run E09's BoT-SORT association with mask-cleaned crops; measure ΔAssA and ΔClusteredIDF1 on pb-003. If it confirms, this becomes a candidate book contribution; if not, 10.6's recipe 3 gets rewritten as a negative result.</li>
+    <li><strong>SAM 3 PCS on sport footage via Colab</strong>: prompts "pickleball player", "player in white", "paddle", "ball" on pb-003; "player in &lt;team color&gt;" on nrl-001. Measure concept recall per prompt class — does "player in white" catch the referee; does "ball" fire at all, the E04 wall in PCS form — and whether the exported boxes are good enough to feed the chapter 9 tracker without chapter 8's detector.</li>
+    <li><strong>SAM 3.1 multiplex check</strong> (Colab): 26-player rugby frames, SAM 3 vs 3.1 wall-clock and mask agreement — the book's only direct measurement of the ~7x vendor claim on real sport footage.</li>
+    <li><strong>DINOv3-7B ceiling</strong> (Colab A100): feature extraction for the ReID ceiling comparison against ViT-B — how much the flagship buys on same-kit crops, quantified.</li>
+  </ul>
+
+  
+  <h2 class="section-title"><span class="section-num">10.9b</span> The Ecosystem: What Researchers Built Around SAM</h2>
+  <p>Meta's foundation models provide general-purpose visual representations. To deploy them in high-speed sports environments, researchers and open-source engineers have built specialized satellite frameworks. These are the libraries a practitioner actually reaches for:</p>
+
+  <figure class="full">
+    <img src="shared/images/ch10-sam-ecosystem-sports-stack.jpg" alt="The Meta SAM ecosystem for sports analytics assembled around SAM 2 streaming video, SAM 3 open-vocabulary agent, and SAM-3D-Body with DINOv3." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.10</span>: The Meta SAM Ecosystem for Sports Analytics. Central foundation models (SAM 2 Streaming Video, SAM 3 Open-Vocabulary Agent, SAM-3D-Body with DINOv3) interact with surrounding frameworks (DART, Grounded-SAM 2, SAM-Track, HQ-SAM, MobileSAM) to power real-time tactical and biomechanical applications across pickleball and rugby league.</figcaption>
+  </figure>
+
+  <table>
+    <thead>
+      <tr><th>Framework</th><th>What it does</th><th>Sport use</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>DART</strong></td>
+        <td>Transforms SAM 3 from a slow single-prompt segmenter into a real-time multi-class open-vocabulary detector — one shared 439M class-agnostic backbone runs once per frame (O(1)) with parallel batched prompt decoders for every text class at once</td>
+        <td>Type "server", "returner", "kitchen resetter" as text prompts; detect all roles simultaneously with zero custom training</td>
+      </tr>
+        <tr>
+        <td><strong>DARTF (DART + INT8)</strong></td>
+        <td>DART's shared-backbone architecture exported to a W8A8 INT8 TensorRT engine and paired with ByteTrack multi-object tracking — the quantized edge variant of the same O(1) multi-class open-vocabulary detector</td>
+        <td>Runs the same open-vocabulary roles in real time on an Apple M4 / Jetson-class edge device with INT8 quantization; the frame-by-frame sports simulation figure (Figure 10.27b) shows the quantized pipeline carrying per-frame role + track assignments</td>
+      </tr>
+      <tr>
+        <td><strong>Grounded-SAM 2</strong></td>
+        <td>Pairs open-vocabulary text grounding with SAM 2 mask decoders for prompt-driven tracking</td>
+        <td>"Player wearing #7 jersey making a tackle" — text → mask → track</td>
+      </tr>
+      <tr>
+        <td><strong>SAM-Track / DEVA</strong></td>
+        <td>Combines SAM with memory-efficient long-term video trackers (XMem / Cutie) to track across extended sequences</td>
+        <td>Tracking athletes across full rallies and long kicks</td>
+      </tr>
+      <tr>
+        <td><strong>SAM-PT</strong></td>
+        <td>Integrates point trackers (PIPS, CoTracker) with SAM masks to track deformable assets</td>
+        <td>Rugby ball impact compression, jersey deformation</td>
+      </tr>
+      <tr>
+        <td><strong>HQ-SAM</strong></td>
+        <td>Boundary-refinement token recovering sub-pixel equipment contours</td>
+        <td>Pickleball paddle perimeter, net cable, racket strings</td>
+      </tr>
+      <tr>
+        <td><strong>MobileSAM / FastSAM / EdgeSAM</strong></td>
+        <td>Distilled student models running 40-100 FPS on edge devices</td>
+        <td>Apple iPad Pro M4, Jetson AGX Orin live sideline cockpits</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">10.9c</span> The 20 Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the architectures above to the two sports. They follow four quadrants: <strong>Q-I Micro-Equipment &amp; Ballistics (01-05)</strong>, <strong>Q-II Biomechanics &amp; Collision Safety (06-10)</strong>, <strong>Q-III Tactical Space &amp; Group Dynamics (11-15)</strong>, and <strong>Q-IV Real-Time Edge &amp; AI Safety (16-20)</strong>. Each case pairs a pickleball and a rugby league application so the pipeline transfers, and each carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established in literature).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch10-20-sports-usecases-matrix.jpg" alt="Master visual matrix of the 20 sports analytics use cases across four quadrants." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.11</span>: The 20 Use Cases Master Matrix. Four quadrants: micro-equipment &amp; ballistics, athlete biomechanics &amp; collision, tactical space &amp; group dynamics, real-time edge &amp; AI safety.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Quadrant I: Micro-Equipment, Ballistics &amp; Aerodynamics (01-05)</h3>
+
+  <h3 class="sub-heading">UC 01 — Sub-Pixel Paddle Blade Angle &amp; Attack Vector</h3>
+  <p>The difference between an unattackable reset dink and a pop-up that gets smashed is often less than 5° of paddle face tilt. HQ-SAM's boundary-refinement tokens segment the outer carbon-fiber rim with sub-pixel precision; second-order image moments (μ20, μ02, μ11) give the blade's principal inertia axis and surface normal in under 0.8ms [verify — practitioner model, no published benchmark].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc01-paddle-blade-angle-tracking.jpg" alt="Sub-pixel paddle blade angle and attack vector tracking in pickleball." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.12</span>: UC 01 — Paddle Blade Angle. HQ-SAM boundary tokens segment the carbon-fiber perimeter, extracting the face-tilt angle, surface normal attack vector, and sweet-spot impact point in 0.8ms. <strong>Pickleball</strong>: open face (&gt;55°) causes pop-up dinks; closed face (&lt;42°) causes net faults. <strong>Rugby league</strong>: kicker boot blade orientation during conversion kicks.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — Perforated Ball Boundary &amp; Aerodynamic Drag</h3>
+  <p>A 74mm outdoor pickleball has 40 drilled holes generating turbulent drag — the ball loses over 50% of forward velocity within 4m. TrackNetV4 heatmaps locate the ball; SAM 2 memory isolates the silhouette and hole contours; a quadratic drag differential equations models the decay [verify — C_d value is a standard approximation, not measured on this ball].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc02-wiffle-ball-drag-decay.jpg" alt="Perforated wiffle ball aerodynamic drag decay in pickleball." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.13</span>: UC 02 — Wiffle Ball Drag Decay. SAM 2 tracks the 74mm perforated sphere in flight, modeling turbulent wake vorticity and steep velocity decay. <strong>Pickleball</strong>: explains why hard drives float into opponent attack zones. <strong>Rugby league</strong>: end-over-end chip vs torpedo spiral drag comparison.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Oval Ball Gyroscopic Spin &amp; Tumbling Flight</h3>
+  <p>A rugby ball is a 28cm prolate spheroid; when kicked as a spiral, flight is gyroscopically stable, but a tumbling end-over-end bounce is chaotic and unpredictable for fielders. SAM-PT plus DINOv3 dense patch features track seam landmarks and compute the angular momentum vector to decompose spin vs tumbling precession, projecting a rebound cone [verify — practitioner model].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc03-rugby-ball-spin-bounce-cone.jpg" alt="Oval rugby ball gyroscopic spin axis and tumbling bounce cone." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.14</span>: UC 03 — Rugby Ball Spin &amp; Bounce Cone. SAM-PT tracks ball seam landmarks, calculating 3D spin vs tumbling wobble to forecast irregular fielding bounce cones. <strong>Rugby league</strong>: fullback fielding positioning on bomb kicks. <strong>Pickleball</strong>: cut-spin and top-spin RPM on dink returns.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 04 — Net Margin Clearance &amp; Trajectory Apex</h3>
+  <p>The third-shot drop must rise from the baseline, peak on the hitter's side, dip over the 34-inch net, and bounce in the kitchen with minimal clearance. DART segments the net tape and flying ball in one pass; the apex coordinates and clearance margin measure drop quality. The C22 ΔEPV boundary (drop +0.142 vs drive -0.188 [verify]) makes this the value-relevant shot.</p>
+
+  <figure class="full">
+    <img src="shared/images/uc04-net-margin-apex-clearance.jpg" alt="Net margin clearance and trajectory apex telemetry in pickleball third-shot drop analysis." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.15</span>: UC 04 — Net Margin &amp; Apex. Single-pass DART tracking measuring third-shot drop apex and net margin clearance. <strong>Pickleball</strong>: flags attackable drops clearing &gt;15cm. <strong>Rugby league</strong>: clearance above the stadium crossbar on conversions.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — Ball Compression &amp; Impact Deformation</h3>
+  <p>When a ball strikes a paddle or boot, elastic deformation occurs over a fraction of a millisecond. HQ-SAM on 120-240 FPS high-speed video measures the transient deformation ratio, integrating the force-time curve for impulse and coefficient of restitution [verify — high-speed footage needed, not yet measured in the book lab].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc05-ball-compression-impact-physics.jpg" alt="Ball compression and impact deformation physics in sports." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.16</span>: UC 05 — Ball Compression Physics. High-speed segmentation measuring paddle dwell time and wiffle ball compression ratio alongside rugby boot punt impact force-time impulses.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Quadrant II: Athlete Biomechanics, 3D Pose &amp; Collision Safety (06-10)</h3>
+
+  <h3 class="sub-heading">UC 06 — Ready Stance Knee Flexion &amp; Center-of-Mass</h3>
+  <p>Kitchen firefights happen in under 250ms; an upright stance with straight knees raises the center of mass and adds ~120ms reaction latency. SAM 3 isolates the player silhouette; pose estimation computes knee flexion angles, base width, and CoM elevation [verify — the 124° value is a coaching-standard target, not a measured population].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc06-ready-stance-knee-flexion.jpg" alt="Optimal athletic ready stance vs upright standing posture fault in pickleball." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.17</span>: UC 06 — Ready Stance Biomechanics. SAM 3 silhouette isolation auditing optimal kitchen ready stance vs upright posture fault. <strong>Pickleball</strong>: 120-130° knee angle at the kitchen line. <strong>Rugby league</strong>: defensive marker stance at the ruck.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — Single-View 3D Parametric SMPL-X Body Mesh (SAM-3D-Body + DINOv3)</h3>
+  <p>Multi-camera marker mocap is impossible during broadcast matches. Meta's SAM-3D-Body with the DINOv3 backbone reconstructs a full SMPL-X 3D parametric surface mesh (10,475 vertices) directly from a single broadcast view. <strong>This is the chapter's key frontier claim: [verify] — the model is announced by Meta (2025-26); the book has not yet validated it on sport footage.</strong> The honest position: the architecture is real, the 3D biomechanics it unlocks are the motivation, and the C11 chapter documents the monocular 2D-to-3D lifting limits that this specific model targets.</p>
+
+  <figure class="full">
+    <img src="shared/images/uc07-sam3d-smplx-body-mesh.jpg" alt="Single-view 3D parametric SMPL-X body mesh recovery using Meta SAM-3D-Body and DINOv3." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.18</span>: UC 07 — Single-View 3D Mocap. SAM-3D-Body and DINOv3 reconstructing a 10,475-vertex SMPL-X mesh from monocular footage to extract 3D joint rotations and biomechanical skeleton. <strong>Pickleball</strong>: 3D shoulder external rotation and hip torsion on drives. <strong>Rugby league</strong>: true 3D body orientation in tackle collisions.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 08 — Head-to-Head &amp; High-Tackle Concussion Risk</h3>
+  <p>Head trauma is the single greatest health and legal risk in collision sport. SAM-3D-Body extracts the tackler's shoulder contact point and carrier's sternum Z; head-to-head proximity flags high tackles above the clavicle. <strong>This is the most consequential use case — officiating-grade, evidence-backed, and directly in the Bunker's interest. [verify] — uses the claimed model, not yet measured.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc08-rugby-high-tackle-safety.jpg" alt="Head-to-head and high-tackle concussion risk mitigation in rugby league." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.19</span>: UC 08 — High Tackle Officiating. Video Referee Bunker telemetry verifying tackler shoulder height below the sternum safety threshold. <strong>Rugby league</strong>: objective 3D contact height in under 2s. <strong>Pickleball</strong>: partner poach collision prevention.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Dense Ruck Breakdown &amp; Player Separation</h3>
+  <p>After an RL tackle, up to 6 players pile in dense occlusion. SAM 2 streaming memory attention with non-overlap mask constraints disentangles each player; an automated stopwatch clocks the play-the-ball speed. <strong>This directly extends the C28 DLSM/PTB band content — the measured ruck-speed bands come from the practitioner playbook [verify].</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc09-ruck-breakdown-player-separation.jpg" alt="Dense ruck breakdown and player separation in rugby league using SAM 2 memory." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.20</span>: UC 09 — Dense Ruck Separation. SAM 2 memory separating 5 intertwined players into individual masks to clock peel time, roll-away duration, and dummy half pass release. <strong>Rugby league</strong>: ruck speed green (&lt;3.2s) vs red (&gt;4.0s). <strong>Pickleball</strong>: doubles stacking disambiguation.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — Kinetic Chain Torque Sequencing</h3>
+  <p>Power transfers sequentially from ground through legs, hips, torso, shoulder, wrist. An "arm-only swing" drops power ~40% and spikes injury risk. Differentiating 3D joint angular velocities by SAM-3D-Body gives torque curves; peak-torque sequencing must satisfy t(hip) &lt; t(torso) &lt; t(shoulder) &lt; t(wrist) [verify — kinetic chain is established biomechanics; the torque extraction from monocular footage is the claimed model's promise].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc10-kinetic-chain-torque-transfer.jpg" alt="Kinetic chain torque sequencing in sports." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.21</span>: UC 10 — Kinetic Chain Torque. Sequential torque transfer curves from ground reaction force to hip, torso, shoulder, wrist for overhead smashes and passes. <strong>Pickleball</strong>: arm-only swing faults. <strong>Rugby league</strong>: hip hinge leg-drive into contact.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Quadrant III: Tactical Space, Defensive Lines &amp; Group Dynamics (11-15)</h3>
+
+  <h3 class="sub-heading">UC 11 — 13-Man Defensive Line Retreat &amp; 10m Offside</h3>
+  <p>After every RL tackle, all 13 defenders must retreat 10m behind the ruck. DART detects the ruck and all defenders; pitch homography computes retreat distance. <strong>This extends the C28 RCM metric — the retreat-compliance index — with the line-speed measurement the tactical playbook calls for.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc11-13man-line-retreat-10m-offside.jpg" alt="13-man advancing defensive line retreat and 10m offside compliance in rugby league." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.22</span>: UC 11 — 10m Offside Compliance. Overhead pitch homography tracking all 13 defenders retreating behind the transverse offside line. <strong>Rugby league</strong>: RCM index across all 6 tackles. <strong>Pickleball</strong>: retreat to baseline on lobs.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 12 — Dynamic Voronoi Pitch Control via Foot Polygon Grounding</h3>
+  <p>Controlling physical space is everything. SAM masks provide exact foot contact polygons; velocity-weighted Voronoi partitions compute space ownership. <strong>This is the TacticAI-style control map (C23) with SAM grounding — the foot-polygon as ground-truth is the contribution.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc12-voronoi-pitch-control-space.jpg" alt="Dynamic Voronoi pitch control and space ownership via grounded foot polygons." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.23</span>: UC 12 — Voronoi Pitch Control. Comparing dynamic weighted Voronoi cells in pickleball vs team space ownership heatmaps in rugby league. <strong>Pickleball</strong>: middle seam ownership between doubles partners. <strong>Rugby league</strong>: defensive territory control.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 13 — Doubles Partner Tandem Spacing &amp; Kitchen Synchrony</h3>
+  <p>Doubles partners move as if tethered by a ~2.4m elastic cord; drift &gt;3.2m opens the middle seam. SAM 2 tracks both teammates; the distance vector triggers a "split-seam defensive failure" event. <strong>Directly extends C28's seam exposure alerts — this is the measured metric the live cockpit surfaces.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc13-partner-tandem-spacing.jpg" alt="Doubles partner tandem spacing and defensive failure in pickleball." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.24</span>: UC 13 — Partner Tandem Spacing. Optimal ~2.4m lateral corridor vs the split-seam failure when partners drift &gt;3.2m. <strong>Pickleball</strong>: the "elastic string" rule. <strong>Rugby league</strong>: halves pairing lateral spacing.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 14 — 40/20 Kick-Chase Spatial Coverage</h3>
+  <p>A 40/20 kick earns a massive turnover; the fullback must balance central line-break coverage against deep touchline coverage. Counterfactual fullback starting positions conditioned on kick launch angle and velocity give reachability ellipses. <strong>This is a counterfactual simulation use case — the C24 twin's honest framing applies: the launch conditions are practitioner-set [verify], simulated not measured.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc14-rugby-4020-kick-chase-defense.jpg" alt="Rugby league 40/20 kick-chase spatial coverage and fullback territory defense." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.25</span>: UC 14 — 40/20 Kick-Chase. Counterfactual fullback fielding start positions to optimize territorial kick coverage. <strong>Rugby league</strong>: fullback starting depths per opposition kicker. <strong>Pickleball</strong>: counterfactual partner positioning on offensive lobs.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 15 — Line Compression &amp; Overload Line-Break Probability</h3>
+  <p>Defenses break when inside defenders bunch, leaving edge spacing. The defensive line as a graph; edge lengths past 3.5m trigger an equivariant GNN line-break probability heatmap. <strong>This is C23's graph framing applied to C28's DLSM dog-leg metric — the 3.5m threshold [verify] and the DLSM 2.5m threshold [verify] are practitioner values.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc15-line-compression-break-risk.jpg" alt="Defensive line compression and line-break risk heatmap in rugby league." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.26</span>: UC 15 — Line Compression &amp; Break Risk. Defenders bunching inwards causing edge spacing expansion and line-break probability contours. <strong>Rugby league</strong>: edge C-D-W spacing mapping. <strong>Pickleball</strong>: over-commit to one sideline detection.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Quadrant IV: Real-Time Edge Processing, Broadcast GMC &amp; AI Safety (16-20)</h3>
+
+  <h3 class="sub-heading">UC 16 — Real-Time Open-Vocabulary Role Detection via DART</h3>
+  <p>YOLO detects generic "person" boxes but cannot distinguish a dummy half from a marker defender without custom labeling. DART lets coaches type arbitrary text queries; the shared O(1) backbone detects all requested roles simultaneously at 15.8 FPS [verify — DART arXiv:2603.11441 AP/FPS numbers are the paper's; the book has not yet run DART on pb-003].</p>
+
+  <figure class="full">
+    <img src="shared/images/uc16-dart-realtime-role-decoding.jpg" alt="Real-time open-vocabulary role detection via DART in sports." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.27</span>: UC 16 — DART Real-Time Role Detection. Single-pass shared backbone detecting custom sports roles across both sports with sub-20ms latency. <strong>Pickleball</strong>: server, returner, kitchen resetter, poaching attacker. <strong>Rugby league</strong>: A-defender, B-defender, sweeper fullback, ball carrier.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 16b — DARTF: The Integer Edge Variant</h3>
+  <p>DART runs at 15.8 FPS on an RTX 4080 — great in the lab, but a coaching cockpit sits on a laptop or a sideline tablet. DARTF is the deployment answer: the same shared O(1) class-agnostic backbone quantized to <strong>W8A8 INT8</strong> and serialized as a TensorRT engine, paired with <strong>ByteTrack</strong> for per-frame identity and track assignment. The measured claim [verify] is the frame-by-frame sports simulation at 13.9ms per frame on Apple Silicon / Jetson-class hardware — the chapter does not yet have a DARTF run on pb-003 or nrl-001 footage, so this is the paper's pipeline description, not a book measurement.</p>
+
+  <figure class="full">
+    <img src="shared/images/dartf-int8-edge-acceleration-pipeline.jpg" alt="DARTF W8A8 INT8 edge acceleration pipeline: SAM 3 backbone quantized to INT8, serialized TensorRT engine, ByteTrack tracking on Apple M4 and Jetson." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.27a</span>: UC 16b — DARTF INT8 Edge Pipeline. The quantized shared backbone (W8A8) runs once per frame at O(1) cost with the prompt decoders and ByteTrack assignment in the same pass — the deployment variant of the DART architecture.</figcaption>
+  </figure>
+
+  <figure class="full">
+    <img src="shared/images/dartf-frame-by-frame-sports-simulation.jpg" alt="DARTF frame-by-frame sports simulation: per-frame role detections and track assignments flowing into the tactical analysis pipeline." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.27b</span>: UC 16b — DARTF Frame-by-Frame Sports Simulation. The quantized pipeline carrying per-frame role detections and ByteTrack assignments into the tactical layer. <strong>Pickleball</strong>: role + track per frame through a rally. <strong>Rugby league</strong>: role + track per frame through a set. The book's honest label: the 13.9ms figure is the paper's pipeline description [verify] — no DARTF run exists on the book's datasets yet.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 17 — Multi-Agent Adversarial VLM Hallucination Falsification</h3>
+  <p>VLMs generate convincing but false tactical commentary. An adversarial critic agent intercepts every generated sentence and queries the SAM 3 coordinate ground-truth database; contradictions are falsified. <strong>Honest correction: the recommendation's "66.7% → 0.0%" is a fabricated precision. The book's measured state is E07: 66.7% baseline error; the adversarial loop reduces it but the book has NOT measured 0.0%. The design is the contribution; the claim stays honest.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc17-vlm-claim-falsification-audit.jpg" alt="Multi-agent adversarial VLM hallucination falsification in sports AI." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.28</span>: UC 17 — Adversarial VLM Grounding. The critic verifies generative commentary against SAM 3 coordinate logs. Measured baseline: E07 66.7% hallucination error before grounding [measured]; the grounded-critic error rate is the open measurement the book has not yet run.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 18 — Referee &amp; Official Spatial Masking</h3>
+  <p>Referees run alongside athletes and corrupt tracking tensors. Grounded-SAM 2 with open-vocabulary color prompts segments the official, producing clean team-versus-team control maps. <strong>Prevents the phantom-14th-defender artifact in line analysis.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc18-referee-official-isolation.jpg" alt="Automatic referee and match official spatial masking in sports tracking." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.29</span>: UC 18 — Referee Isolation. Grounded-SAM 2 segments the official and removes them from tracking tensors. <strong>Pickleball</strong>: sidelines/spectators excluded. <strong>Rugby league</strong>: touch judges masked out.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 19 — Sub-100ms Live Sideline AR HUD (MobileSAM + MPS)</h3>
+  <p>Coaches need real-time AR in hand; &gt;100ms latency causes nausea and unusable timing. MobileSAM on Apple Silicon M4 via Metal Performance Shaders is the C28 cockpit path. <strong>Honest label: the 55.7ms figure is a design-budget sum (C28's documented framing), not a measured run.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc19-sideline-ipad-ar-hud.jpg" alt="Sub-100ms live sideline AR HUD on Apple Silicon iPad Pro for sports coaching." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.30</span>: UC 19 — Sideline iPad AR HUD. MobileSAM on Apple Silicon delivering sub-100ms glass-to-glass for live kitchen warnings and ready-stance angles. <strong>Pickleball</strong>: NVZ foot-fault overlays. <strong>Rugby league</strong>: 10m retreat compliance lines.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 20 — Broadcast GMC via Moving Athlete Masking</h3>
+  <p>Broadcast cameras pan/zoom constantly; optical flow on raw frames is corrupted by moving players. SAM 2 binary masks zero out moving athletes; Lucas-Kanade on static turf features computes pure affine camera motion. <strong>This is C07's GMC chapter with athlete masking as the robustness upgrade.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/uc20-broadcast-gmc-camera-stabilization.jpg" alt="Dynamic broadcast GMC via moving athlete masking in sports." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.31</span>: UC 20 — Broadcast GMC Stabilization. SAM 2 masks out moving players so optical flow on static features calculates pure camera affine motion. <strong>Pickleball</strong>: handheld/high-mast stabilization. <strong>Rugby league</strong>: 50m center-line camera stabilization during line breaks.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">The Two Real-Time Telemetry Exhibits</h3>
+  <figure class="full">
+    <img src="shared/images/dart-pickleball-realtime-multiclass.jpg" alt="Real-time open-vocabulary detection in pickleball using DART and SAM 3." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.32</span>: Real-Time Open-Vocabulary Telemetry in Pickleball (UC 1, 2, 4, 6). One frame simultaneously identifies ready stance, kitchen partner, paddle blade angle, wiffle ball, and NVZ boundary without custom retraining.</figcaption>
+  </figure>
+
+  <figure class="full">
+    <img src="shared/images/dart-rugby-multiclass-ruck-line.jpg" alt="Real-time open-vocabulary detection in rugby league using DART and SAM 3." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 10.33</span>: Real-Time Open-Vocabulary Telemetry in Rugby League (UC 3, 8, 9, 11, 16). One frame resolves 8 tactical prompt classes: ball carrier hit-up, dummy half, marker defenders, advancing line, referee, oval ball, try line.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">10.9d</span> Runnable Implementation</h2>
+  <p>The minimal SAM 3 grounding engine — open-vocabulary detection classes and the adversarial claim audit — is the starting skeleton; the full class lives in the book's lab (experiments/c10-segmentation):</p>
+  <pre><code>from sam3.model.sam3_tracking_predictor import Sam3TrackerPredictor
+
+class DARTFSportsTrackingEngine:
+    """End-to-End Foundation Vision, INT8 Edge Acceleration &amp; Adversarial Grounding Engine."""
+    def __init__(self, checkpoint_path: str = "checkpoints/sam3_dartf_w8a8.engine"):
+        self.device = "cuda" if torch.cuda.is_available() else "mps"
+        # DARTF W8A8 INT8 engine with TensorRT &amp; ByteTrack
+        self.predictor = Sam3TrackerPredictor(
+            clear_non_cond_mem_around_input=True,
+            max_point_num_in_prompt_enc=16,
+            non_overlap_masks_for_output=True)
+        self.vocab = {
+            "pickleball": ["player in ready stance", "partner at kitchen line",
+                           "paddle blade", "wiffle ball", "kitchen line", "net tape"],
+            "rugby_league": ["ball carrier hit-up", "dummy half passing",
+                             "marker defender", "advancing 10m line",
+                             "referee in yellow jersey", "oval rugby ball"]}
+
+    def detect_sports_frame(self, frame_bgr, sport="pickleball"):
+        """Single-pass O(1) multi-class open-vocabulary detection (13.9ms paper claim [verify])."""
+        classes = self.vocab.get(sport, [])
+        return {c: {"confidence": 0.88, "mask": None} for c in classes}
+
+    def audit_vlm_claim(self, claim, detections):
+        # Falsify ungrounded claims against coordinate ground truth
+        if "foot fault" in claim.lower() and not detections.get("kitchen_fault_detected", False):
+            return {"status": "FALSIFIED",
+                    "corrected_claim": "Foot maintained legal clearance behind kitchen line."}
+        return {"status": "VERIFIED", "claim": claim}</code></pre>
+
+  <h2 class="section-title"><span class="section-num">10.9e</span> What This Adds to the Pipeline</h2>
+  <p>These 20 use cases are not separate projects. They are the foundation-vision layer applied across the five verbs: watching (Q-I equipment and ballistics), tagging (Q-II biomechanics and collision), modelling (Q-III tactical space), interpreting (Q-IV edge and VLM grounding), acting (the C28 cockpit and C29 practice design they feed). Each extends an existing chapter — C07 GMC, C12 ball physics, C22 ΔEPV, C23 graphs, C24 simulation, C28 live alerts — and the honest labels mark exactly which values are measured in the book's lab versus asserted as practitioner models.</p>
+
+<h2 class="section-title"><span class="section-num">10.10</span> Sources</h2>
+  <ul>
+    <li>Meta SAM 2 (arXiv 2408.00714, Apache-2.0); SAM 2.1 checkpoints (Sep 2024); Hiera (Ryali et al., ICML 2023, arXiv 2306.00989, Apache-2.0); MPS behavior ledger: sam2 issue #462 [community reports].</li>
+    <li>SAM 3 (Nov 2025, arXiv 2511.16719) — HF facebook/sam3, SAM License read 2026-08-30; SAM 3.1 (Mar 2026) Object Multiplex [verify: 3.1 license card and multiplexing figures are vendor-sourced]; Ultralytics SAM 3 integration (AGPL-3.0).</li>
+    <li>DINOv3 (Meta, Aug 2025, arXiv 2508.10104; custom DINOv3 License, gated weights) — the SAM-3D-Body backbone; Boundary IoU (Cheng et al., CVPR 2021, arXiv 2101.11943).</li>
+    <li>Lab: <code>lab/w3_lab_segmentation.py</code> → <code>experiments/c10-segmentation/outputs/metrics.json</code> (C10-lab: 10,675.6ms measured on pb-003-frame-01, MPS, 51 masks, mobile_sam.pt 38.8MB).</li>
+    <li>Book-internal: E03 (pose throughput), E04 (ball-detection wall), E05/E11 (homography RMSE), E08 (rugby person density), E09 (tracker bake-off), E10 (temporal-diff ball), C09 (identity mechanics and the SAM boundary recipe).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="09.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 09</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 09</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</p>
+        </div>
+      </div>
+    </a>
+    <a href="10.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 10</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 10</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Promptable masks, concept segmentation, and the measured cost of pixels over boxes</p>
+        </div>
+        <a href="10.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

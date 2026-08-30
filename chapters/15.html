@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 15 — Audio & Multimodal Cues: The Free Sensor - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #C2410C;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-15" style="background-color: #C2410C; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 15</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Paddle pops, whistles, and crowd roar: why the audio track is your cheapest event detector</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">29 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-15-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Audio Proposes, Vision Confirms</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-15-1" data-section="s-15-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Audio Proposes, Vision Confirms</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-15-1" data-section="s-15-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Audio Proposes, Vision Confirms</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">15</span> Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h1>
+    <p class="chapter-subtitle">Paddle pops, whistles, and crowd roar: why the audio track is your cheapest event detector</p>
+  </header>
+
+<h3 id="s-15-1"><span class="section-num">15.1</span> Audio Proposes, Vision Confirms</h3>
+
+<p class="section-intro">Every match recorded over a broadcast feed or a court camera already carries an audio track — and that track contains timestamped physics: a paddle hit, a ball bounce, a referee's whistle, a tackle's thud. Vision struggles to time these precisely (the ball is 8px and hides behind hips); audio times events to millisecond precision at zero vision cost. <em>Timing density is the argument:</em> a 44.1kHz track stamps a contact to <strong>0.023ms</strong> — roughly <strong>1,500× denser</strong> temporal sampling than 30fps video frames, which quantize any event to ±16.7ms at best. No occlusion, no homography, no calibration, no model. The 2026 fusion rule this chapter teaches: <strong>audio proposes an event timestamp, vision confirms the event's content.</strong></p>
+
+  <p>The cheap-sensor economics deserve stating plainly. A MEMS microphone element costs about a dollar in quantity, and the microphone on the phone or camera you already own costs nothing extra at all. That one-dollar sensor catches three event classes that cost the vision stack dearly: the pickleball ball-wall bounce that E04's detector wall (1,082 candidate detections at median confidence 0.11, measured) could never time cleanly, the rugby tackle impact that is visible only as a pile of bodies, and the referee whistle that is not visible at all. An onset detector that harvests these events is roughly twenty lines of librosa running on CPU. Compare the vision path to the same timestamp: detector (E04's noise floor) → tracker (E09's ByteTrack/BoT-SORT machinery) → pose (E03, 16.46 kps mean) → contact inference. Audio skips the entire stack for the <em>when</em>.</p>
+
+  <p>The evidence supplies the motivation: the pb-003 manual contact review found <strong>0 of 6 vision-confirmed contacts</strong> in the still-frame set. Vision alone cannot time a contact on this fixture; audio can. Both book clips carry usable sound — the nrl-001 broadcast audio and the pb-003 source audio are ffprobe-verified stereo AAC 44.1kHz — so everything in this chapter runs on media the reader already has. All lab numbers below are <strong>measured</strong> on our own clips; external claims are marked, and practitioner-model numbers carry [verify].</p>
+
+  <h2 class="section-title"><span class="section-num">15.2</span> The Signals: A Two-Sport Taxonomy</h2>
+  <p>Audio events divide into three acoustic families, and both of our sports populate all three. <strong>Impulsive transients</strong> are broadband spikes a few milliseconds long — the pickleball paddle pop, the ball-court bounce thud, the rugby tackle impact on a field-side mic. <strong>Sustained narrowband tones</strong> are the referee whistle's signature: a stable, periodic tone holding energy in roughly the 2–4kHz band for 0.3–1s [verify per whistle model]. <strong>Slow broadband beds</strong> are the crowd: spectrally stable, varying on a 0.1Hz scale, correlated with moment salience but never an event trigger. The families matter because each wants a different detector: transients want spectral flux, tones want narrowband-ratio and flatness features, beds want slow RMS envelopes.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Audio Event</th>
+        <th>Acoustic Family</th>
+        <th>What It Means</th>
+        <th>Sport</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Paddle/ball contact (pop)</strong></td>
+        <td>Impulsive transient</td>
+        <td>Shot event timestamp — zero vision cost; inter-onset interval = rally tempo</td>
+        <td>Pickleball, tennis, badminton</td>
+      </tr>
+      <tr>
+        <td><strong>Ball bounce (thud)</strong></td>
+        <td>Impulsive transient, low-weighted</td>
+        <td>Separates rally state; bounce-side prior for the C10 event log</td>
+        <td>Pickleball</td>
+      </tr>
+      <tr>
+        <td><strong>Net contact (twang)</strong></td>
+        <td>Impulsive transient, mid-band ring</td>
+        <td>Let cord / net-cord anomaly flag</td>
+        <td>Pickleball</td>
+      </tr>
+      <tr>
+        <td><strong>Referee whistle</strong></td>
+        <td>Sustained narrowband tone</td>
+        <td>Decision moment (held, knock-on, six-again, 10m penalty); hard segment boundary</td>
+        <td>Rugby League</td>
+      </tr>
+      <tr>
+        <td><strong>Tackle impact</strong></td>
+        <td>Impulsive transient</td>
+        <td>Collision timestamp on field mics; buried under commentary in broadcast mixes (gap, §15.8)</td>
+        <td>Rugby League</td>
+      </tr>
+      <tr>
+        <td><strong>Crowd roar</strong></td>
+        <td>Slow broadband bed</td>
+        <td>Pressure proxy; moment saliency for review prioritization — correlational, never causal</td>
+        <td>Both</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-15-02" class="full">
+    <img src="shared/images/ch15-audio-taxonomy.png" alt="Audio cue taxonomy tree with two branches: pickleball (pop, thud, twang) and rugby league (whistle, roar, tackle), each leaf with a line icon." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.2</span>: The two-sport audio cue taxonomy. Every leaf is detectable with the same three-family machinery; only the confounds differ per sport.</figcaption>
+  </figure>
+
+  <p>The division of labor is asymmetric on purpose. Audio owns <em>when</em>; it can never say <em>who</em> hit the ball or <em>where</em> it landed — a single microphone has no geometry. Vision owns <em>what, who, and where</em> but pays frame quantization, occlusion, and detector noise for the privilege. That split, not any model choice, is the chapter's spine.</p>
+
+  <h2 class="section-title"><span class="section-num">15.2b</span> The Two-Sound Problem: Pop vs Thud</h2>
+  <p>Pickleball's core audio problem is that the two most important rally events — paddle contact and ball bounce — are both impulsive transients from the same ball, often inside the same second. Distinguishing them is a spectral problem, and it is tractable because the physics differ. A paddle pop is a hard broadband strike: community-noise measurements of pickleball consistently describe contact as a short impulse with energy prominent around 1–2kHz [verify exact band on pb-003 — our own lab pass is the §15.10 plan], produced by polymer-on-polymer at arm's length from the mic. A bounce thud is the same ball against a court surface: lower-weighted energy, softer attack, shorter high-frequency content. On a spectrogram the pop is a tall stripe; the thud is a low blob. Per-onset features — peak flux, spectral centroid, decay time — separate them without any learning, and the same features yield a free drive-vs-dink prior: a drive's pop is louder with a sharper attack, a dink tap is the same spectral shape at lower amplitude into a quieter local floor. That prior disambiguates; it never labels a shot alone (that is vision plus court position, C10).</p>
+
+  <p>Rugby league has the same structural problem one family up: the whistle (narrowband tone) must be separated from the mic'd referee's voice, which shares harmonic content with the whistle band. The discriminator is stability — the whistle is amplitude- and pitch-stable where speech is modulated, so spectral flatness over time separates them. And one honest gap belongs here: the tackle impact, the transient fans care about, exists on field-side microphones but is sub-mixed beneath commentary and crowd in broadcast audio [INFERENCE] — treat it as a target for venue mics, not a broadcast feature.</p>
+
+  <figure id="fig-15-03" class="full">
+    <img src="shared/images/ch15-pop-vs-thud.png" alt="Two spectrogram panels: paddle pop shown as a tall broadband vertical stripe; ball bounce shown as a low-frequency blob labeled thud." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.3</span>: The two-sound problem on a spectrogram. Pop and thud share the ball but not the spectrum — peak flux, centroid, and decay time split them (concept diagram; pb-003 measured bands pending §15.10).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">15.3</span> Methods: The Three Escalation Lanes</h2>
+  <p><strong>Lane 1 — librosa spectral-flux onsets</strong> (the 80% solution, ✅ M4): an onset is a frame-to-frame spectral magnitude <em>change</em>, so a transient spikes the flux regardless of the steady-state noise floor that kills naive RMS thresholds; <code>backtrack=True</code> snaps each detection to the local energy rise, recovering the true contact instant rather than detector lag. Combine onset times with per-window spectral centroid to classify brightness: a whistle is bright and tonal (4kHz+ peak), crowd is low rumble (<1.5kHz), commentary sits between. This is what our lab ran — 107 onsets in 20s of nrl-001 audio (measured, §15.4) — and it is the entire pickleball-contact solution until SNR kills it. Its failures are visible on a spectrogram, which is why you start here.</p>
+
+  <p><strong>Lane 2 — MFCC + small CNN</strong> (whistle-vs-confounds classifier, literature-verified): MFCC frames with delta-MFCC for transient dynamics — drop MFCC-0, which carries loudness rather than timbre, so the model stays invariant to broadcast mix compression — fed as a 2D coefficient matrix to a small CNN. The recipe is on record for exactly our problem: CNN whistle detection distinguishing referee whistles from supporter whistles and excited commentary (MDPI <em>Applied Sciences</em> 2022, 12(23):12151, CC-BY). The known trap is <strong>weak labels</strong>: training clips mark "whistle somewhere in here," not the onset — use weakly-supervised framing or hand-label onsets for your own few hundred clips. Train on a Colab free tier, export ONNX, infer on the M4.</p>
+
+  <p><strong>Lane 3 — pretrained audio foundation models</strong>: PANNs CNN14 (MIT, ✅ CPU-real-time, AudioSet "Whistle"/"Crowd" classes zero-shot), YAMNet (Apache-2.0, ⚠️ TF-on-macOS friction), AST (MIT, ⚠️ heavier attention over spectrogram patches), and the 2026 audio-first multimodal models — Phi-4-multimodal (MIT, Feb 2025, 5.6B, runs quantized locally) and Qwen3-Omni (Apache-2.0, Sep 2025; successor Qwen3.5-Omni Mar 2026, license [verify]) — which make audio a first-class perception channel and can name the referee's call as semantics, not just detect a transient. Enforce the division of labor: these are windowed semantic layers (~0.5–1s decisions), <strong>not</strong> millisecond timers. Lane 1 stamps the event; lane 3 narrates it.</p>
+
+  <figure id="fig-15-04" class="full">
+    <img src="shared/images/ch15-audio-pipeline.png" alt="Audio event detector pipeline: microphone to FFT to spectral-flux onset curve to onset timestamp list to classifier branching to whistle, pop, crowd." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.4</span>: The lane-1 detector pipeline. Everything left of CLASSIFY is sample-accurate and training-free; escalation to lanes 2–3 replaces only the last box.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">15.4</span> What We Measured (C15 Lab)</h2>
+  <p>We extracted 20s of the nrl-001 broadcast audio (<code>ffmpeg -vn -ac 1 -ar 22050</code>, mono WAV) and ran the lane-1 onset + centroid stack (<code>experiments/c15-audio/outputs/metrics.json</code>, measured):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Onsets detected (20s)</td>
+        <td><strong>107</strong> (well-timed event candidates; 0.19s median spacing) — measured</td>
+      </tr>
+      <tr>
+        <td>Tempo estimate</td>
+        <td>103 BPM (crowd rhythm, not a signal) — measured</td>
+      </tr>
+      <tr>
+        <td>Window classes</td>
+        <td>voice/commentary (peaks at 2430–2497Hz) vs transient_bright (4103Hz = whistle-class) — measured</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The honest reading:</strong> onset detection finds transients — but separating WHISTLE from CROWD needs either a trained classifier or a large spectral contrast. This baseline proves the raw signal is rich enough for audio-proposes-vision-confirms fusion; it does not claim a working whistle detector. The 4103Hz transient_bright window is a whistle-<em>candidate</em>, and the broadcast mix's compression means spectral shape (narrowband ratio, flatness) is the trustworthy feature, never raw energy. On the pickleball arm, the pb-003 source track (verified stereo AAC 44.1kHz) awaits its own pop-detection pass — the six contacts vision could not confirm are exactly the rows audio should close (§15.10).</p>
+
+  <figure id="fig-15-05" class="full">
+    <img src="shared/images/ch15-rl-audio-events.png" alt="Three stacked spectrogram strips for rugby league: whistle as a sustained narrowband line near 3kHz, crowd roar as a swelling low-frequency band, tackle as a single short broadband stripe." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.5</span>: Rugby league's three audio events by family. The whistle's tonal stability is the detector's friend; the tackle stripe is a field-mic event, not a broadcast one (concept diagram).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">15.5</span> The Multimodal Fusion Rule</h2>
+  <ol>
+    <li>Audio onset at t=1.53s (a bright transient — a real onset from the measured list above).</li>
+    <li>Look up the video frames at t ± 50ms: is there a ball-position discontinuity (the E10 temporal-diff cue, 0.814 precision on record) or a pose-velocity spike at the contact limb (E03 stream)?</li>
+    <li>Record the event only when audio AND vision agree.</li>
+  </ol>
+
+  <p>The asymmetry is load-bearing. Audio is high-precision timing with low semantics; vision is high semantics with low-precision timing (frame quantization, E04's noise floor, occlusion). Running the fusion in reverse — vision proposes, audio confirms — would force the ball detector past its demonstrated wall before the one-dollar sensor even gets a vote. The proposed direction spends vision only where it is strong: a ±50ms crop around a known instant, with tracking context (C09) already warm. Fusion output carries a <strong>two-bit confidence state</strong> with an explicit event-log policy: <code>audio+vision</code> is a full-confidence event feeding shot attribution (C10); <code>audio-only</code> stays a candidate — and is <em>not a failure</em>, because E04 teaches the ball is often invisible, so absent visual confirmation is weak negative evidence; <code>vision-only</code> is suspicious (missed pop or visual false positive) and flagged for review; <code>none</code> marks the silence between rallies, itself useful for rest-period stats.</p>
+
+  <p>Two fusion refinements matter per sport. In rugby, whistle onsets are <strong>hard segment boundaries</strong>: the match becomes a list of (previous whistle → this whistle) windows, and every downstream vision job — tackle detection, PTB speed, C09 re-tracking — is scoped to a window instead of 80 minutes of PTZ video. That is the single largest compute saving in this chapter. In both sports, the crowd channel <em>modulates but never triggers</em>: raise review priority for events inside a swell, annotate the log with a pressure flag, and expect a whistle within seconds of a sustained roar at goal-line defense — with the correlational-not-causal wording held in every claim (§15.8).</p>
+
+  <figure id="fig-15-01" class="full">
+    <img src="shared/images/audio-fusion.png" alt="Audio-vision fusion: onsets into t±50ms junction, vision frames into same, four confidence states. Recreate: white background, burnt-orange banner." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.1</span>: Audio Proposes, Vision Confirms. Two lanes meet at a ±50ms junction and produce one of four confidence states. Only "both" records an event.</figcaption>
+  </figure>
+
+  <figure id="fig-15-06" class="full">
+    <img src="shared/images/ch15-confidence-states.png" alt="Four confidence state cards: A+V solid border with waveform and eye, A ONLY dashed with waveform, V ONLY with flag, NEITHER empty dotted." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.6</span>: The two-bit confidence states and their event-log policies. The audio-only card survives because E04 says the ball is often invisible.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">15.6</span> Sync: The Practical Discipline</h2>
+  <p>The fusion rule lives or dies at the timestamp boundary. Target <strong>±50ms</strong> — comfortably inside broadcast A/V-tolerance practice (ITU-R BT.1359 [verify exact ms values]) and fine enough to look up the right frame for any rally event. Sync is a <em>measurement</em>, not an assumption: C04's clock math applies to the audio sample clock as much as the video frame clock, and one clap at each end of the session plus one cross-correlation check per device pair retires the entire risk class for minutes of effort.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>Drift</th>
+        <th>Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Phone clock</td>
+        <td>10-20 ppm ≈ 1ms/min (30min = 30-60ms ≈ 2 frames @30fps)</td>
+        <td>Loud clap at start <em>and end</em>; compute drift rate, stretch one timeline; re-clap every 15-20min</td>
+      </tr>
+      <tr>
+        <td>Multi-camera / separate recorder</td>
+        <td>different clocks, arbitrary offset</td>
+        <td>Genlock / timecode (pro); clap or flash (amateur); <strong>GCC-PHAT cross-correlation</strong> (Knapp &amp; Carter 1976) recovers sub-millisecond offset from ambient audio alone — pure NumPy, ✅ M4</td>
+      </tr>
+      <tr>
+        <td>Broadcast (nrl-001)</td>
+        <td>already muxed</td>
+        <td>Verify once: a visible whistle arm-signal or kick impact should land within a frame or two of its onset</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>On the 30s book clips, drift is negligible (<1ms); the protocol matters the day you record a full session. GCC-PHAT is also the load-bearing technique for any multi-mic rig (§15.7) and for marrying a courtside recorder to camera audio in either sport.</p>
+
+  <h2 class="section-title"><span class="section-num">15.7</span> The Industry Pattern: Zenniz's 30-Mic Array</h2>
+  <p>Verified: Zenniz (tennis) combines 30 audio sensors + 4 cameras for ball tracking and line calling, with 25+ countries deployed — the audio-first outlier in a smart-court market that is otherwise camera-only, and evidence the pattern survives commercial reality. The architecture lesson: <strong>distributed audio + multi-camera + central fusion</strong>. The physics is time-difference-of-arrival (TDoA) multilateration: each mic stamps the impact, and arrival-time differences across the array localize it in 3D. The numbers make it concrete — <strong>1ms = 34.3cm (c = 343 m/s); one sample at 48kHz = 7mm of sound path</strong> — so a sample-synchronized sensor ring has physically comfortable headroom for sub-decimeter impact localization [INFERENCE from geometry; Zenniz internals are proprietary]. The cameras then never hunt a 200km/h ball from scratch: audio says <em>when</em> and <em>roughly where</em> the bounce happened; vision confirms IN/OUT at the line. Audio-proposes-vision-confirms is a shipping architecture, not our invention.</p>
+
+  <figure id="fig-15-07" class="full">
+    <img src="shared/images/ch15-mic-array.png" alt="Overhead pickleball court with four corner microphones, an impact point near the kitchen line, and intersecting TDoA hyperbola arcs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.7</span>: TDoA gating at hobbyist scale: corner mics, GCC-PHAT-synced, reject any pop whose arrival-time difference falls outside the known court polygon — the pickleball adjacent-court-bleed fix (concept diagram).</figcaption>
+  </figure>
+
+  <p>What the book's rig copies at a hundredth of the price: 2–4 USB or phone mics at the court corners, GCC-PHAT-synchronized (§15.6), TDoA-gated to the known court polygon. That gate is also the answer to pickleball's signature confound — an adjacent court's pop is the <em>same event class</em>, spectrally indistinguishable, and only geometry (or vision fusion) can reject it [proposed lab extension, not yet run].</p>
+
+  <h2 class="section-title"><span class="section-num">15.8</span> The Limits Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Limit</th>
+        <th>Mechanism</th>
+        <th>Consequence / Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>HVAC hum</strong></td>
+        <td>50/60Hz + harmonics raise the noise floor under everything</td>
+        <td>Stationary low-band noise; flux-invisible to onset detection; a high-pass filter is the cheap fix. Indoor pickleball: high severity</td>
+      </tr>
+      <tr>
+        <td><strong>Outdoor wind</strong></td>
+        <td>Broadband gusts and mic buffeting bury one-shot pops</td>
+        <td>Wind screens or indoor capture; the pop lives above ~1kHz, so a 200Hz high-pass helps. Outdoor pickleball: high</td>
+      </tr>
+      <tr>
+        <td><strong>Adjacent-court bleed</strong></td>
+        <td>Neighbor paddles are the same event class in the same band — spectral features cannot reject them</td>
+        <td><strong>The pickleball confound</strong> — TDoA gating or per-court directional mics; amplitude gating is fragile under phone AGC</td>
+      </tr>
+      <tr>
+        <td><strong>Whistle ≈ referee verbal</strong></td>
+        <td>Mic'd referee speech shares harmonics with the whistle band</td>
+        <td>Spectral flatness + duration separate them; a lane-2 CNN handles supporter whistles and commentary squeals. Rugby: moderate</td>
+      </tr>
+      <tr>
+        <td><strong>Broadcast compression</strong></td>
+        <td>Mix compressors flatten amplitude cues; loudness features lie</td>
+        <td>Onset detection still works; use spectral shape (narrowband ratio, flatness), never raw energy. Rugby broadcast: structural</td>
+      </tr>
+      <tr>
+        <td><strong>Phone AGC</strong></td>
+        <td>Automatic gain rescales amplitude between events</td>
+        <td>A loud crowd can mask a pop and corrupts drive-vs-dink amplitude priors; disable AGC where the app allows, else use relative/spectral features only</td>
+      </tr>
+      <tr>
+        <td><strong>Tackle impact sub-mixed</strong></td>
+        <td>Collision thuds sit under commentary and crowd in broadcast mixes [INFERENCE]</td>
+        <td>Field-mic feature, not broadcast; flag as a gap, not a capability</td>
+      </tr>
+      <tr>
+        <td><strong>Crowd as proxy</strong></td>
+        <td>Correlational only — Nevill/Balmer/Williams 2002 found ~15.5% fewer fouls against the home team with crowd noise; COVID ghost games shrank but did not erase home advantage</td>
+        <td>Crowd pressure on <em>referees</em> is real; crowd→player-performance is equivocal. Context channel, never causal wording</td>
+      </tr>
+      <tr>
+        <td><strong>Privacy</strong></td>
+        <td>Venue audio captures bystander speech</td>
+        <td>Broadcast commentary contains voices — consent and C31 rights apply to re-publication; default to storing events, not raw audio</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">15.9</span> The Audio-Fusion Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Extract</strong>: <code>ffmpeg -vn -ac 1 -ar 22050</code> WAV (the C15 lab's exact command).</li>
+    <li><strong>Onset-detect</strong>: librosa spectral flux with <code>backtrack=True</code>; stamp times; threshold on brightness (spectral centroid per window).</li>
+    <li><strong>Classify by event</strong>: whistle (2–4kHz narrowband, sustained, low flatness) vs pop (broadband transient, ~1–2kHz-weighted) vs thud (low-weighted blob) vs crowd (slow broadband bed).</li>
+    <li><strong>Sync check</strong>: loud clap at recording start and end; measure the A/V offset and drift rate; correct (±50ms target).</li>
+    <li><strong>Fuse</strong>: at each candidate τ, look at the video frames at τ ± 50ms — vision confirms the event, audio timed it.</li>
+    <li><strong>Record only when audio AND vision agree</strong>; keep audio-only as a candidate; flag vision-only for review (the two-bit confidence state).</li>
+    <li><strong>Escalate</strong> to an audio foundation model (Phi-4-multimodal local, Qwen3-Omni on Colab) when the event taxonomy needs semantics — e.g. which call the referee made.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">15.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Paddle-pop detection on pb-003's source audio: does each onset align with a contact frame (the E06 state machine input), and does the pop-vs-thud split reproduce on our own footage? Acceptance: every hand-audible pop matched within ±50ms; onset count vs manual rally count.</li>
+    <li>Whistle vs crowd classifier on the nrl-001 audio (a small CNN on MFCCs — the honest few-hundred-clip labeling task), with PANNs' zero-shot "Whistle" head as the baseline to beat.</li>
+    <li>Multi-mic time-of-arrival: 2–4 phone mics on a pickleball court — can GCC-PHAT-synced TDoA localize the bounce side and reject adjacent-court pops?</li>
+    <li>Referee semantics: a Qwen3-Omni pass over nrl-001 whistle windows — "did the whistle blow, and what did the referee say?" — the decision-content layer above the decision-timestamp layer.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">15.10b</span> The Audio Toolkit: What to Reach For</h2>
+  <p>The use cases below run on a small, boring toolkit. The rule is the §15.3 escalation ladder in table form: start free and training-free, buy a classifier only for the whistle-vs-confounds problem, and reserve the foundation models for semantics. Every row lists the sport job it actually does.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>License / M4</th>
+        <th>Role in the Stack</th>
+        <th>Pickleball Use</th>
+        <th>Rugby League Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>librosa</strong> (onset_detect, spectral_centroid, RMS)</td>
+        <td>ISC / ✅</td>
+        <td>Lane 1: sample-accurate onsets, spectral-flux transient detection, centroid classification</td>
+        <td>Pop/thud detection, rally segmentation, drive-vs-dink prior</td>
+        <td>Whistle-band candidate extraction, crowd-envelope channel</td>
+      </tr>
+      <tr>
+        <td><strong>GCC-PHAT</strong> (Knapp &amp; Carter 1976, pure NumPy)</td>
+        <td>n/a / ✅</td>
+        <td>Sync and TDoA: sub-millisecond offset recovery between devices, multi-mic gating</td>
+        <td>Corner-mic rig sync; adjacent-court pop rejection</td>
+        <td>Camera-audio ↔ field-recorder alignment; sideline array</td>
+      </tr>
+      <tr>
+        <td><strong>MFCC + small CNN</strong> (own code; recipe source-backed: MDPI Appl. Sci. 2022, 12(23):12151, CC-BY)</td>
+        <td>MIT/Apache parts / ✅ infer, Colab train</td>
+        <td>Lane 2: whistle-vs-confounds classifier (drop MFCC-0 for loudness invariance)</td>
+        <td>Pop vs hand-clap vs adjacent-court classification</td>
+        <td>Referee whistle vs supporter whistles and commentary squeals</td>
+      </tr>
+      <tr>
+        <td><strong>PANNs CNN14</strong> (arXiv:1912.10211)</td>
+        <td>MIT / ✅ CPU-real-time</td>
+        <td>Lane 3 baseline: AudioSet 527-class heads — "Whistle", "Crowd", "Applause" zero-shot</td>
+        <td>Zero-shot pop/bounce class prior for labeling</td>
+        <td>Zero-shot whistle baseline the lane-2 CNN must beat</td>
+      </tr>
+      <tr>
+        <td><strong>YAMNet</strong></td>
+        <td>Apache-2.0 / ⚠️ TF-on-macOS friction [verify ONNX]</td>
+        <td>Lane 3 edge baseline (MobileNet-depthwise AudioSet classifier)</td>
+        <td>On-device tagging reference</td>
+        <td>On-device tagging reference</td>
+      </tr>
+      <tr>
+        <td><strong>AST</strong> (arXiv:2104.01778)</td>
+        <td>MIT / ⚠️ heavier</td>
+        <td>Lane 3 attention over spectrogram patches — stronger, costlier embeddings</td>
+        <td>Shot-type embedding research direction</td>
+        <td>Broadcast-scene embedding research direction</td>
+      </tr>
+      <tr>
+        <td><strong>Phi-4-multimodal</strong> (5.6B, Feb 2025)</td>
+        <td>MIT / ⚠️ quantized local, not real-time</td>
+        <td>Zero-shot audio QA: "did a whistle blow here, and what was said?"</td>
+        <td>Rally narration over audio windows</td>
+        <td>Referee-verbal reading fallback (local)</td>
+      </tr>
+      <tr>
+        <td><strong>Qwen3-Omni</strong> (30B-A3B, Sep 2025; successor Qwen3.5-Omni Mar 2026, license [verify])</td>
+        <td>Apache-2.0 / ⛔ full, Colab</td>
+        <td>Joint audio+video semantics — one model that watches and listens</td>
+        <td>Zero-shot rally QA on fused clips</td>
+        <td>Whistle-window referee semantics: the call, not just the timestamp</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">15.10c</span> The 10 Use Cases: Applied Framework</h2>
+  <p>Everything above is machinery. This section is where it earns court time: ten concrete jobs, grouped into four categories — pickleball contact events (UC 01–02), rugby league decisions and impacts (UC 03–05), the fusion layer (UC 06–08), and rigging with honest limits (UC 09–10). Each use case states the practical problem, the exact mechanism and math, a figure, the pickleball and rugby league applications, and who collects the payoff. The starting skeleton for every contact-event case is the same dozen lines:</p>
+  <pre><code>import librosa, numpy as np
+
+y, sr = librosa.load("match.wav", sr=22050, mono=True)   # the §15.9 extract
+onsets = librosa.onset.onset_detect(y=y, sr=sr, backtrack=True,
+                                    units="time")                     # sample-accurate t
+S = np.abs(librosa.stft(y))
+cent = librosa.feature.spectral_centroid(S=S, sr=sr)[0]  # pop vs thud vs tone
+for t in onsets:                                          # the fusion contract
+    window = video.frames(t - 0.050, t + 0.050)           # ±50ms, §15.6 budget
+    emit_event(t, confidence=two_bit(onset=t, vision=window))</code></pre>
+
+  <h3 class="sub-heading">Category I: Pickleball Contact Events (UC 01–02)</h3>
+
+  <h3 class="sub-heading">UC 01 — Paddle-Pop Contact Timing (the Vision Problem Audio Already Solved)</h3>
+  <p>The practical problem: the pb-003 manual contact review confirmed <strong>0 of 6</strong> contacts from still frames (measured) — vision cannot time a kitchen-line contact on this fixture, full stop. The mechanism is lane 1: spectral flux measures frame-to-frame magnitude change, S(n) = Σ<sub>k</sub> max(0, |X(n,k)| − |X(n−1,k)|), spiking on the pop regardless of the venue's noise floor; <code>backtrack=True</code> snaps the detection to the local energy rise, recovering the true contact instant. The math that matters is timing density: 44.1kHz stamps the event to 0.023ms against 30fps video's ±16.7ms quantization — roughly 1,500× denser, with no occlusion, homography, or model in the path. The pop band itself (~1–2kHz prominence) is community-noise literature until §15.10 measures it on pb-003 [verify].</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc01-paddle-pop.png" alt="Annotated spectrogram of a pickleball paddle pop: one tall broadband vertical stripe labeled POP with an orange onset marker, paddle-and-ball inset at the kitchen line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.8</span>: UC 01 — The Paddle Pop. A broadband stripe, backtracked to its energy rise, at 0.023ms stamp density. <strong>Pickleball</strong>: contact timestamps, rally segmentation, serve detection from the first onset after the longest gap. <strong>Rugby league</strong>: boot-ball contact on kickoffs and restarts from field-side mics [verify broadcast audibility].</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> officiating and coaching — contact timestamps enter the C10 event log at zero vision cost, converting an unsolved detection problem into solved signal processing.</p>
+
+  <h3 class="sub-heading">UC 02 — Ball-Bounce Detection (the Second Transient)</h3>
+  <p>The practical problem: the two most important rally events — paddle contact and ball bounce — are the same ball, same second, same impulsive family; a pipeline that cannot split them cannot score the two-bounce rule or localize a kitchen-fault review. The mechanism is spectral, and tractable because the physics differ: the bounce is lower-weighted energy with a softer attack and less high-frequency content. The discriminating features per onset are peak flux, spectral centroid C(n) = Σ f·|X| / Σ |X|, and decay time; on a spectrogram the pop is a tall stripe and the thud a low blob. Both bands await the pb-003 lab pass before shipping unhedged [verify].</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc02-ball-bounce.png" alt="Two spectrogram panels side by side: a tall broadband POP stripe and a low soft THUD blob, with an orange centroid bracket between them and a bouncing wiffle ball inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.9</span>: UC 02 — Pop vs Thud. Same ball, different spectrum: centroid height and decay split the contact from the bounce (concept diagram; measured bands pending §15.10). <strong>Pickleball</strong>: bounce-side prior for the two-bounce rule and C10 event log. <strong>Rugby league</strong>: grubber and bomb bounce instants on field mics, anchoring the C12 bounce model [verify on broadcast].</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> rally state machines — the C19 eventing layer gets bounce boundaries without asking ball tracking to survive the E04 wall.</p>
+
+  <h3 class="sub-heading">Category II: Rugby League Decisions &amp; Impacts (UC 03–05)</h3>
+
+  <h3 class="sub-heading">UC 03 — The Referee Whistle: A Decision Clock for 80 Minutes</h3>
+  <p>The practical problem: an 80-minute broadcast is one long PTZ video, and every downstream vision job wants stoppage boundaries it currently has to find by pixels. The whistle is the boundary — every knock-on, penalty, six-again, and half-time is whistle-anchored, and NRL referees are mic'd for broadcast so the tone sits hot in the mix. The lane-1 mechanism: narrowband energy ratio (2–4kHz band energy over total [verify per whistle model]), spectral flatness SF = exp(mean(log|X|)) / mean(|X|) — a whistle is tonal, so SF is low where crowd roar is noise-like and high — plus duration 0.3–1s. The lane-2 escalation is the source-backed recipe (MDPI <em>Applied Sciences</em> 2022, 12(23):12151, CC-BY): MFCC + Δ-MFCC with MFCC-0 dropped for loudness invariance, into a small CNN that rejects supporter whistles and commentary harmonics. Hand-label onsets; the literature's known trap is weak clip-level labels.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc03-rl-whistle.png" alt="Spectrogram of a referee whistle: a sustained narrowband horizontal line labeled WHISTLE above a fuzzy crowd band, with a referee arm-signal inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.10</span>: UC 03 — The Decision Clock. A stable tonal line at ~3kHz over a noise-like crowd bed; flatness and duration are the features, loudness is the lie. <strong>Rugby league</strong>: hard segment boundaries — every vision job scopes to (whistle → whistle) windows instead of 80 minutes. <strong>Pickleball</strong>: officiated tournament stoppages and let calls get the same anchor.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the largest compute saving in this chapter — whistle-window scoping cuts the vision workload for C09 re-tracking, tackle detection, and PTB speed to the minutes that matter.</p>
+
+  <h3 class="sub-heading">UC 04 — Crowd Swell: The Energy State, Not an Event</h3>
+  <p>The practical problem: review prioritization and highlight selection need a salience signal, and the venue is already shouting it. The mechanism is the third acoustic family: a slow broadband bed whose RMS envelope, low-passed at the 0.1Hz scale, swells with moment salience — line breaks, tries, goal-line stands, firefight endings. The math is deliberately boring: E(t) = LPF(RMS), flag a swell when E crosses a venue-relative percentile. The honesty is the feature: crowd audio <strong>modulates, never triggers</strong>. The evidence supports crowd→referee bias (Nevill, Balmer &amp; Williams 2002: ~15.5% fewer fouls against the home team with crowd noise, source-backed; COVID ghost games shrank but did not erase home advantage — Reade &amp; Singleton) while crowd→player-performance remains equivocal. Causal wording is banned in every claim.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc04-crowd-cue.png" alt="Spectrogram of crowd noise: a slowly swelling low-frequency broadband bed labeled CROWD with an orange 0.1Hz envelope curve and a grandstand inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.11</span>: UC 04 — The Pressure Proxy. A slow envelope over a broadband bed; the caption rule is "never a trigger." <strong>Rugby league</strong>: a sustained roar at goal-line defense predicts a whistle within seconds and flags the window for review. <strong>Pickleball</strong>: small-venue surges mark firefight endings and upsets for recap reels.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> editorial and review triage — the C28 cockpit and highlight pipeline get a salience channel that costs one envelope computation and zero causal claims.</p>
+
+  <h3 class="sub-heading">UC 05 — Tackle-Impact Detection (the Field-Mic Event)</h3>
+  <p>The practical problem: the collision fans and welfare staff care about is visible only as a pile of bodies — vision sees a ruck forming, not the impact instant. The mechanism is UC 01's transient detector one weighting down: a tackle thud is a broadband impulse with more low-frequency mass, so flux plus a low-band ratio extracts it <em>on field-side microphones</em>. The honest boundary belongs in the mechanism sentence: in the broadcast mix the same thud is sub-mixed beneath commentary and crowd [INFERENCE] — this is a venue-mic feature, not a broadcast one, and UC 10 exists to say so. Where a field mic or referee-adjacent feed exists, the detected impact hands C11 pose a collision frame and C30's IMU streams a cross-check timestamp.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc05-tackle-impact.png" alt="Spectrogram of a tackle impact on a field microphone: one short broadband stripe labeled TACKLE between two colliding player silhouettes, with a sideline microphone inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.12</span>: UC 05 — The Collision Stripe. Detectable on field mics, buried in broadcast [INFERENCE]. <strong>Rugby league</strong>: tackle counts and play-the-ball window anchors for welfare and load monitoring. <strong>Pickleball</strong>: the structural analog is rare body/paddle contact faults and doubles near-collisions at the kitchen — same transient machinery, lower stakes.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> player welfare — collision counts and timestamps for load management, scoped honestly to rigs that carry a field mic.</p>
+
+  <h3 class="sub-heading">Category III: The Fusion Layer (UC 06–08)</h3>
+
+  <h3 class="sub-heading">UC 06 — Kitchen-Firefight Audio: Rally Tempo at 250ms</h3>
+  <p>The practical problem: a kitchen firefight is a burst of sub-250ms exchanges that 30fps video smears into ambiguity — the exact scenario where E04's detector wall and frame quantization compound. The mechanism needs no new detector, only a new reading of UC 01's output: inter-onset intervals. IOI<sub>n</sub> = t<sub>n+1</sub> − t<sub>n</sub>; a firefight is a run of IOIs below a tempo threshold (~400ms [verify — practitioner threshold, pending pb-003 measurement]), and the IOI distribution inside the burst <em>is</em> the hand-speed curve. The same clustering segments ordinary rallies: pops chained below a gap threshold form a rally, and the first onset after the longest gap is the serve.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc06-kitchen-firefight.png" alt="Spectrogram of a kitchen firefight: a dense cluster of rapid vertical stripes labeled FIREFIGHT with orange inter-onset gap brackets and a two-player volley inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.13</span>: UC 06 — The Firefight Burst. Onset density is the excitement curve; the gaps are the tempo. <strong>Pickleball</strong>: firefight detection, hand-speed proxies, and the practice-design input for C29. <strong>Rugby league</strong>: the analog is rapid tap-pass sequences and kicking duels — onset bursts on field mics [verify].</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — quantifies the drill that decides kitchen battles, from a sorted list of floats instead of a tracking pipeline.</p>
+
+  <h3 class="sub-heading">UC 07 — Audio-Video Fusion: the Multimodal Join</h3>
+  <p>The practical problem: audio knows <em>when</em> with no semantics; vision knows <em>what, who, where</em> with ±16.7ms timing and an occlusion problem. Neither is believed alone for a claim that feeds the event log. The mechanism is the chapter's spine as an algorithm: onset at t proposes; vision confirms inside W = [t − 50ms, t + 50ms] using the book's own verified machinery — the E10 temporal-diff ball cue (0.814 precision, measured) or an E03 pose-velocity spike at the contact limb. The asymmetry is load-bearing: reversing the direction forces the ball detector past its demonstrated wall (median confidence 0.11, measured) before the one-dollar sensor votes. Vision is spent only where it is strong — a ±50ms crop with C09 tracking context already warm.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc07-av-fusion.png" alt="Two-lane fusion diagram: microphone to onset detector in the upper lane, video frames to tracks in the lower lane, meeting at a 50ms junction box feeding an event log." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.14</span>: UC 07 — The Join. Audio lane stamps, vision lane confirms, the ±50ms junction decides. <strong>Pickleball</strong>: contacts confirmed behind NVZ occlusion — the six pb-003 frames vision missed are the rows this closes. <strong>Rugby league</strong>: whistle-window scoping plus tackle corroboration where field mics exist.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the C10 event log upgrades from vision-only guesses to corroborated events — the difference between a highlights guess and an officiating record.</p>
+
+  <h3 class="sub-heading">UC 08 — Audio Event Confidence: the Two-Bit Policy</h3>
+  <p>The practical problem: fusion output needs a policy for the frequent case where only one modality fires — silence is information too. The mechanism is a two-bit confidence state attached to every candidate: <code>audio+vision</code> is a full-confidence event feeding shot attribution (C10); <code>audio-only</code> stays a candidate — and is <em>not a failure</em>, because E04 (measured) says the ball is often invisible, so absent visual confirmation is weak negative evidence; <code>vision-only</code> is suspicious — a missed pop or a visual false positive — and is flagged for review; <code>none</code> marks the silence segments between rallies, itself useful for rest-period statistics. The construction is the book's own [verify against C10's attribution slots]; it earns its place when the §15.10 labs show the split behaving as claimed on pb-003.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc08-audio-confidence.png" alt="Four confidence state cards in a row: A+V solid border with waveform and eye, AUDIO dashed, VISION with a flag, NONE dotted and empty." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.15</span>: UC 08 — The Four States and Their Policies. The audio-only card survives on E04's evidence. <strong>Pickleball</strong>: occluded kitchen contacts persist as candidates instead of vanishing. <strong>Rugby league</strong>: vision-only discontinuities inside the ruck queue for human review rather than polluting the log.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> downstream analytics honesty — C21 ratings and C22 EPV can weight every event by its confidence state instead of treating all rows as equal.</p>
+
+  <h3 class="sub-heading">Category IV: Rigging &amp; Honest Limits (UC 09–10)</h3>
+
+  <h3 class="sub-heading">UC 09 — Mic Placement: the One-Dollar Rig That Fixes Geometry</h3>
+  <p>The practical problem: one microphone timestamps but cannot locate — and cannot reject pickleball's signature confound, the adjacent court's pop, which is the <em>same event class</em> in the same band. The mechanism is geometry, not spectral cleverness: 2–4 USB or phone mics at the court corners, GCC-PHAT-synchronized to sub-millisecond from ambient audio alone (Knapp &amp; Carter 1976, pure NumPy), then TDoA-gated against the known court polygon — an arrival-time difference outside the possible range is a foreign pop. The numbers set the headroom: c ≈ 343 m/s, so 1ms of TDoA error is 34.3cm and one 48kHz sample is 7mm of sound path — sub-decimeter localization is physically comfortable [INFERENCE from geometry]. This is the Zenniz pattern (30 audio sensors + 4 cameras, verified zenniz.com) at a hundredth of the price [proposed lab extension, not yet run].</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc09-mic-placement.png" alt="Overhead split diagram: a pickleball court with four corner microphones and TDoA arcs localizing one impact near the kitchen line, beside a rugby pitch with three sideline microphones and a wind arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.16</span>: UC 09 — The Rig. Corner mics plus GCC-PHAT sync turn timing into location. <strong>Pickleball</strong>: the adjacent-court-bleed fix — TDoA gating to the court polygon. <strong>Rugby league</strong>: sideline arrays along the touchline for tackle-impact capture (UC 05), with windscreens against the outdoor limit (§15.8).</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the cheapest hardware upgrade in the book — a few dollars of microphones retiring a confound no classifier can solve.</p>
+
+  <h3 class="sub-heading">UC 10 — Broadcast-Mix Separation: the Honest Limit</h3>
+  <p>The practical problem: broadcast audio is not venue audio. It is a produced mix — commentary ducked over crowd, compressors flattening amplitude — and the events a fan most wants (the tackle thud) are sub-mixed beneath both [INFERENCE]. The mechanism is disciplined feature choice plus a scoped ambition: loudness features lie under compression, so whistle detection runs on spectral shape (narrowband ratio, flatness, duration) and the crowd channel runs on envelope shape; source-separation models (demucs-class) could in principle unmix stems, but sport-specific performance is unestablished [verify]. The honest engineering answer for tackle audio is not a better separator — it is a different microphone (UC 09). What broadcast audio can deliver is already large: the whistle clock (UC 03) and the crowd state (UC 04), both measured-feasible on nrl-001's lane-1 pass (107 onsets in 20s, the 4103Hz transient class).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch15-uc10-broadcast-mix.png" alt="Layered broadcast mix diagram: a thick COMMENTARY band on top, a wide fuzzy CROWD bed in the middle, and a thin faint TACKLE stripe partially hidden underneath with an orange marker." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 15.17</span>: UC 10 — The Sub-Mixed Event. The tackle exists in the mix the way a whisper exists in a crowd [INFERENCE]. <strong>Rugby league</strong>: accept whistle + crowd from broadcast; route impact capture to field mics. <strong>Pickleball</strong>: the contrast case — clean fixed-camera court audio shows the limit is the production mix, not the sport.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> scope discipline — the chapter's claims stay inside what each audio source can honestly deliver, which is what keeps the rest of the pipeline believable.</p>
+
+  <h2 class="section-title"><span class="section-num">15.10d</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are one sensor read ten ways, and each feeds an existing chapter rather than starting a project. UC 01–02 and UC 06–08 populate the C10 event log with corroborated contacts and bounces, scoped by the UC 08 confidence states that C21 ratings and C22 ΔEPV weight; UC 03's whistle windows are the compute budget for C09 re-tracking and C19 eventing in the rugby arm; UC 04's crowd channel modulates C28 cockpit review priority; UC 05 and UC 09 hand C11 pose collision frames and C30 IMU streams their sync timestamps; UC 07's ±50ms join is the C16 video-understanding alignment budget; and UC 10 keeps every one of those claims inside the honesty boundary C31's rights-and-consent framing expects. The sync discipline underneath all of it is C04's clock math, measured rather than assumed.</p>
+
+  <h2 class="section-title"><span class="section-num">15.11</span> Sources</h2>
+  <ul>
+    <li>librosa (ISC) onset/spectral methods — librosa.org; PANNs CNN14 (MIT, arXiv:1912.10211); YAMNet (Apache-2.0, TF Hub); AST (MIT, arXiv:2104.01778); Phi-4-multimodal / Qwen3-Omni (audio-first models — license check before use).</li>
+    <li>CNN whistle detection: MDPI <em>Applied Sciences</em> 2022, 12(23):12151 (CC-BY, mdpi.com/2076-3417/12/23/12151). Crowd/referee evidence: Nevill, Balmer &amp; Williams 2002 (<em>Psychology of Sport and Exercise</em>); Reade &amp; Singleton closed-doors analysis.</li>
+    <li>Zenniz (zenniz.com, verified 2026-08-30) — 30-audio-sensor + 4-camera smart court; internals proprietary. Sync: GCC-PHAT (Knapp &amp; Carter 1976); ITU-R BT.1359 broadcast A/V tolerance [verify exact ms].</li>
+    <li>Lab: <code>lab/w3_lab_audio.py</code> → <code>experiments/c15-audio/outputs/metrics.json</code> (107 onsets/20s; 4103Hz transient class — measured).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="14.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 14</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 14</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</p>
+        </div>
+      </div>
+    </a>
+    <a href="16.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 16</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 16</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The 2026 recipe, the SoccerNet suite, and the measured gap between describing and deciding</p>
+        </div>
+        <a href="16.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

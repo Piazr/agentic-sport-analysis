@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #A2542A;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-12" style="background-color: #A2542A; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 12</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Why single-frame detectors fail on projectiles, and the physics prior that rectifies them</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">42 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-12-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Ball Is the Ground Truth — and the Hardest Object</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-12-1" data-section="s-12-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Ball Is the Ground Truth — and the Hardest Object</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-12-1" data-section="s-12-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Ball Is the Ground Truth — and the Hardest Object</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">12</span> Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h1>
+    <p class="chapter-subtitle">Why single-frame detectors fail on projectiles, and the physics prior that rectifies them</p>
+  </header>
+
+<h3 id="s-12-1"><span class="section-num">12.1</span> The Ball Is the Ground Truth — and the Hardest Object</h3>
+
+<p class="section-intro">The ball decides whether a shot was in, who made contact, and who won the point. It is also the object every generic detector fails on: small, fast, blurred, and colored like the floor. This chapter is the measured anatomy of that failure and the temporal solution.</p>
+
+  <p>In pickleball the ball is the scoring instrument: the kitchen-line call, the let, the third-shot drop that lands two centimeters short — every event row in the PBN state machine (C07) is ultimately a claim about where a 74mm perforated sphere was at one instant. In rugby league the ball plays a different but equally structural role: it is the <em>possession anchor</em>. The tackle count, the play-the-ball, the set of six, the kick on the last — all of them are states of a ball that is mostly <em>carried</em>, occasionally passed, and rarely in free flight. A tracker that loses the ball loses the sport's entire event grammar in both cases, but for opposite reasons: in pickleball the ball is too small and too fast to see; in rugby league it is too often hidden inside a ruck to see at all.</p>
+
+  <p>All pickleball numbers in this chapter are <strong>measured</strong> on our fixtures: E04's noise floor, E10's temporal filter, the C12 lab's physics-prior fit. Where a number comes from a paper or a vendor rather than our own runs, it carries a [verify] label or is explicitly framed as a projection target — the same honesty discipline the rest of the book applies to pose (C05) and identity (C13).</p>
+
+  <h2 class="section-title"><span class="section-num">12.2</span> The Physics of the Ball Wall</h2>
+  <p>Three interlocking impossibilities for a per-frame detector, each one measurable before you train anything:</p>
+  <ol>
+    <li><strong>Tiny footprint</strong>: a 74mm pickleball (26g, 40 holes) at 1080p spans 8×8 to 14×14 pixels — under 0.01% of the frame. On the C04 rig table that is ~6px on a wide end-cam (12.8 mm/px), ~12px at 6.4 mm/px, ~24px on a 2× tele rig (3.1 mm/px). A standing player on the same frame is 400+px tall. COCO's <code>sports ball</code> class was built on broadcast close-ups where balls are 30–100px; at 8–14px the ball sits below the class's training distribution — a class-distribution root cause (C08), not a tunable deficiency.</li>
+    <li><strong>Motion blur</strong>: blur is $b = v \cdot t$. At 20 m/s and 1/60s shutter, the ball smears 333mm — <strong>~83px</strong> at pb-003's ~4mm/px mid-court scale (the C04 rigs bracket 52–107px; the smear-to-footprint ratio is the invariant). At 1/1000s the streak is 5px — a trackable point. The C04 rule follows: keep blur under one ball radius (37mm), so standardize on ≥1/1000s at drive speeds.</li>
+    <li><strong>Background clutter</strong>: white shoes, court-line corners, net tape, and crowd shirts all carry more local edge energy than an 11px grey smear. E04's false positives were exactly those structures. Indoor court lighting adds a fourth insult: mixed-temperature fixtures and glossy floor reflections create bright, moving specular patches that a per-frame detector scores above the ball itself.</li>
+  </ol>
+
+  <figure id="fig-12-01" class="full">
+    <img src="shared/images/ball-blur-gallery.png" alt="Blur streak gallery across six shutter speeds: 83px at 1/60s down to 2.5px at 1/2000s, usable from 1/1000s highlighted. Recreate: white background, black trajectories, burnt-orange usable panels." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.1</span>: Shutter vs Blur, Measured. The streak length IS the detection failure: at 1/60s the ball is a 83px line; at 1/1000s it is a 5px point.</figcaption>
+  </figure>
+
+  <p>Two consequences deserve plain statements. First, <strong>the blurred ball's centroid is not its center</strong>: a streak is the time-integral of position over the exposure, and the intensity-weighted centroid lags or leads the shutter-reference instant by up to half a streak length (~40px at 1/60s) — a systematic bias, not noise, and it lands exactly on the contact frames you care most about. Second, <strong>the ball's surface texture is gone</strong>: the 40-hole pattern, logos, and seam survive only at ≥1/1000s, which becomes decisive in §12.9 when we ask whether spin is observable at all.</p>
+
+  <p>The measured consequence (E04): <strong>1,082 ball candidate detections over 900 frames at median confidence 0.1125</strong> — indistinguishable from sensor noise. A 2× crop of the court region made it only slightly less bad (median 0.145, a +28.9% relative lift from "very low" to "slightly less low") while cutting throughput to 36.6fps. Note the cherry-pick trap: max confidence hit 0.92, high enough to screenshot one frame and claim success. Median confidence tells the truth. This is the Ball Wall, and preprocessing does not climb it — the next move is a representational change, not more optimism about COCO boxes.</p>
+
+  <h2 class="section-title"><span class="section-num">12.2b</span> The Rugby League Ball: A Different Wall</h2>
+  <p>The rugby league ball is the opposite object: a 28cm prolate spheroid at ~410g, ten times the pickleball's mass, visible at hundreds of pixels even on a wide broadcast shot of a 100×68m field. Scale is not the problem. On nrl-001 (grand-final broadcast, PTZ) the ball's problem is <strong>occlusion and possession state</strong>, and the failure statistics invert pickleball's:</p>
+  <ul>
+    <li><strong>Carried, not flying.</strong> Across a typical set of six, the ball spends most of its time clamped in two arms at a runner's chest, then on the ground at the play-the-ball, then in the dummy-half's hands. Free flight — a pass, a kick — is the exception. A flight-dynamics prior has nothing to attach to during a carry; the honest model is a <em>ball-carry model</em>: track the carrier, bind the ball to the torso region, and hand the track off at pass or kick.</li>
+    <li><strong>Occlusion windows are seconds long.</strong> In a tackle and the ruck that forms over it, the ball disappears entirely under bodies. Pickleball occlusion is a 2–3 frame gap at the net or at contact; rugby occlusion is a 40–80 frame hole during which the ball's position is defined by the ruck, not by physics.</li>
+    <li><strong>The bounce is chaotic by design.</strong> A prolate spheroid does not have a bounce point; it has a bounce <em>cone</em>. The end-over-end kick that sits up perfectly or skews sideways is a design feature of the sport, and §12.7 shows why: drag triples when the ball tumbles.</li>
+  </ul>
+
+  <figure id="fig-12-02" class="full">
+    <img src="shared/images/c12-rugby-ruck-trajectory.png" alt="Top-down rugby league pitch with a ruck cluster, a dashed burnt-orange ball path emerging from the occlusion zone to the halfback and on as a spiral pass to the winger. Recreate: white background, black linework, grey occlusion zone over the tackle pile." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.2</span>: The Rugby Ball's Real Trajectory. Most of the path is possession, not flight: the ball vanishes into the ruck's occlusion zone, re-emerges at the play-the-ball, and only the spiral pass gives a ballistic prior anything to fit.</figcaption>
+  </figure>
+
+  <p>The C08 dossier's note — "rugby's ball problem is occlusion, not scale" — predicts that E10-style temporal energy transfers poorly to broadcast rugby, because the ball rarely moves fast in the open and the PTZ camera moves constantly (frame differencing needs global motion compensation first, C07). That prediction is currently untested; §12.11 schedules the nrl-001 run rather than claiming the result.</p>
+
+  <h2 class="section-title"><span class="section-num">12.3</span> Why Heatmaps, Not Boxes</h2>
+  <p>A box regression loss expects a crisp object boundary. A ball is motion-blurred and sub-pixel; the right target is a <strong>Gaussian heatmap</strong> peaked at the ball's center — the loss punishes <em>where</em> not <em>whether</em>, and a heatmap is robust to blur and partial occlusion. Concretely, box regression on an 8–14px target fails four ways at once:</p>
+  <ol>
+    <li><strong>Label noise dominates.</strong> A 2px annotation jitter is 15–25% of box width; IoU collapses and gradients go noisy. CIoU/DIoU refinements do not fix sub-pixel label noise.</li>
+    <li><strong>The anchor grid is coarser than the object.</strong> At stride-32 backbone features, an 11px ball sits inside a single feature cell — the head is asked to hallucinate sub-cell offsets the backbone cannot see.</li>
+    <li><strong>w and h are fake degrees of freedom.</strong> The ball's apparent size is set by camera geometry, not by the ball; learning extent wastes capacity and invites aspect-ratio false positives (line corners are box-shaped).</li>
+    <li><strong>NMS is undefined at singleton scale.</strong> The post-processing assumes multiple overlapping candidates of measurable extent; a point target makes the machinery dead weight.</li>
+  </ol>
+
+  <p>The TrackNet lineage's move (Huang et al. 2019) is to label a 2D Gaussian $G(x,y) = \exp(-((x-x_0)^2 + (y-y_0)^2)/2\sigma^2)$ at the ball center, train a fully-convolutional network with a per-pixel loss, and read the center as the soft-argmax — the weighted centroid above a threshold: $x^* = \sum x\,\hat{H}(x,y) \,/\, \sum \hat{H}(x,y)$. Four properties follow that a box+score cannot give you. Label tolerance is built in: a Gaussian degrades gracefully under 1–2px annotation error instead of cliff-edging on IoU. Sub-pixel centers come free: E10's temporal pipeline already exploits this (centroid RMSE 1.42px against manual review). The whole heatmap is a <em>confidence surface</em> — secondary peaks are visible evidence of ambiguity, which a box score hides — and that is what makes a candidate-plus-physics-gate pipeline debuggable. And occlusion has a representation: "no detection" becomes a low, flat heatmap, which is information that gates trajectory rectification instead of fabricating a box.</p>
+
+  <figure id="fig-12-03" class="full">
+    <img src="shared/images/c12-heatmap-detection.png" alt="Two panels: a crossed-out bounding box around a blurred ball streak labeled box fails, and concentric burnt-orange Gaussian heatmap rings with a crosshair centroid labeled heatmap. Recreate: white background, black linework, burnt-orange contours." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.3</span>: Box vs Heatmap on the Same Blurred Ball. Left: the box regressor's four failure modes in one image. Right: the Gaussian target absorbs blur and annotation jitter, and the soft-argmax centroid recovers a sub-pixel center.</figcaption>
+  </figure>
+
+  <p>The rugby analogue confirms the representation from the other end: even where the ball is large, heatmap + center-point tracking is what WASB-SBDT runs across five sports including soccer and basketball — the heatmap is not a small-ball hack, it is the small-object-and-occlusion interface the whole literature converged on. No box regressor has displaced it on small-fast-ball benchmarks since 2019.</p>
+
+  <h2 class="section-title"><span class="section-num">12.4</span> The Temporal Baselines (E10 Measured)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Approach</th>
+        <th>Median conf</th>
+        <th>Precision@50</th>
+        <th>Track continuity</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Single-frame YOLO (E04)</td>
+        <td>0.134</td>
+        <td>0.042</td>
+        <td>8.5%</td>
+      </tr>
+      <tr>
+        <td><strong>3-frame temporal energy (E10)</strong></td>
+        <td>0.685</td>
+        <td><strong>0.814</strong></td>
+        <td>76.2%</td>
+      </tr>
+      <tr>
+        <td>TrackNetV4 (benchmark target)</td>
+        <td>0.892</td>
+        <td>0.938</td>
+        <td>91.5%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The 3-frame temporal difference ($\Delta = |I_t - I_{t-1}| \odot |I_{t+1} - I_t|$) isolates accelerating projectiles from static background. The AND is the physics: a pixel must change in <em>both</em> 33ms intervals — once is noise or a static edge lighting up, twice is a moving object. Threshold, filter contours by area (6–150px²) and circularity (&gt;0.4), render survivors as a Gaussian motion heatmap. Thirty lines of OpenCV, no GPU, no training data — and it beats a production detector by 19× on precision.</p>
+
+  <p>The full E10 artifact (pb-003, 250 frames) adds the sequence-level numbers: 312 candidates at median confidence 0.685, <strong>precision@50px 0.814</strong>, recall 87.2%, track continuity 76.2%, sub-pixel centroid RMSE 1.42px against manual review — versus the single-frame baseline's precision@50px of 0.042 and continuity of 8.5%. The remaining 50 false positives are the honest residue: net-cord flutter, paddle-tip motion, player shadows at line crossings. And 76.2% continuity is the frontier of the cheap method: the filter still drops the ball exactly when the physics is interesting — occlusion behind a body at the net, the 2–3 frame window around contact where paddle and ball merge into one blob, and the slow apex of a dink where inter-frame difference falls below threshold. Those named failure windows are the labeled test set for whatever learned model comes next.</p>
+
+  <p>The TrackNetV4 row is a <strong>projection target, not a lab result</strong> — recorded from the paper's tennis/badminton numbers, waiting for the §12.11 Colab lab to replace it with a measured pickleball number. Every learned model this book evaluates must beat E10 on the same clip before it earns its complexity. For rugby, this baseline's transfer is an open question (§12.2b): broadcast PTZ motion has to be compensated (C07) before frame differencing sees anything but camera pan.</p>
+
+  <h2 class="section-title"><span class="section-num">12.4b</span> Honest Metrics, and the 25Hz vs 60Hz Trap</h2>
+  <p>Ball-tracking papers report a menagerie of metrics; four of them carry the load, and one popular one is meaningless here:</p>
+  <ul>
+    <li><strong>Detection rate (recall):</strong> fraction of frames where the ball exists and the system emits a point near it. E10: 87.2% on pb-003.</li>
+    <li><strong>Precision at a pixel tolerance:</strong> fraction of emitted points within $r$ px of the reviewed center. The tolerance <em>is</em> the unit — 50px on a 1080p frame is ~20cm at mid-court scale, generous for a line call, fine for rally analysis. E10: 0.814 @50px. Always print the tolerance next to the number.</li>
+    <li><strong>Track continuity:</strong> fraction of the ball's visible trajectory covered by one unbroken track. This is the metric downstream consumers actually feel — an event detector (C10) cannot consume a track that re-identifies every 20 frames. E10: 76.2%; the E04 single-frame baseline: 8.5%.</li>
+    <li><strong>Centroid RMSE against manual review:</strong> E10: 1.42px — sub-pixel readout working as designed.</li>
+    <li><strong>Tracking IoU is the wrong metric here.</strong> IoU needs an extent; a point object has none. Systems that report "ball IoU" are evaluating their own box-drawing convention, not the trajectory. Heatmap systems report precision-at-tolerance instead, and so do we.</li>
+  </ul>
+
+  <p>The frame-rate trap is arithmetic, and it bites both sports. At 20 m/s the ball moves <strong>0.80m between frames at 25fps versus 0.33m at 60fps</strong>. In pb-003's mid-court scale that is ~200px per hop at 25Hz against a 12px footprint — consecutive frames never overlap, so no per-frame association metric (and no IoU-overlap tracker heuristic) can ever fire; only a velocity-explicit temporal model bridges hops that large. At 60Hz the hop shrinks to ~83px, and at 120fps to ~40px — the regime where simple nearest-neighbor gating starts to work. pb-003 is 25fps broadcast footage and nrl-001 is 25/50Hz PTZ: both fixtures live in the hard regime, which is why this chapter's stack is temporal-first rather than detection-first. When you control the rig, buy frame rate and shutter before you buy model complexity (C04); when you inherit broadcast footage, the physics prior (§12.6) is what you have instead.</p>
+
+  <h2 class="section-title"><span class="section-num">12.5</span> TrackNetV3/V4/V5 and WASB</h2>
+  <p>The TrackNet family is best taught as a sequence of named failure fixes, not a version ladder:</p>
+  <ul>
+    <li><strong>TrackNet (2019, Huang et al., NYCU)</strong>: proved heatmaps + 3 consecutive frames beat conventional CV by a wide margin on tennis. The number to carry is the generalization gap: same-match split scores 99.7/97.3/98.5 (precision/recall/F1) collapse to <strong>95.3/75.7/84.3 under 10-fold cross-validation on unseen matches</strong> — identical capture, different footage. That 14-point F1 drop is the standing warning for every fine-tune this book runs.</li>
+    <li><strong>TrackNetV2 (2020)</strong>: the engineering generation — 3-in-3-out MIMO, real-valued 2D heatmaps, weighted cross-entropy, 2.6 → 31.8fps. The lesson: ball tracking is a deployment problem (30+fps at court-side) as much as an accuracy problem.</li>
+    <li><strong>TrackNetV3 (MMAsia 2023)</strong>: the first explicit occlusion model — an estimated background as an auxiliary input to suppress static clutter, a trajectory <em>prediction</em> module, and a trajectory <em>rectification</em> module that repairs broken tracks by inpainting; 97.51% accuracy on shuttlecock. The division of labor the book keeps: the network proposes, the trajectory module repairs.</li>
+    <li><strong>TrackNetV4 (ICASSP 2025, Raj/Wang/Gedeon)</strong>: names the disease "partial observability" and treats motion as a <em>first-class input channel</em>. The architecture: a 5-frame temporal window; frame differencing → a learnable <strong>motion prompt layer</strong> → <strong>motion attention maps</strong> fused with the visual features (element-wise multiply + concat); a heatmap regression head producing per-frame Gaussians; trajectory readout by soft-argmax. It is plug-and-play on the V2/V3 backbone rather than a new backbone, which is why the paper frames it as a component — and why the book's lab plan is "fine-tune V2 with the V4 motion-attention plugin," not "adopt a monolith." Published parameter counts for the full temporal stack sit around 75M [verify against the ICASSP paper's model table]; the V4 plugin itself is small by design. No official code release [verify]; the reimplementation path is the paper plus the yastrebksv V2 base [license verify].</li>
+    <li><strong>TrackNetV5 (arXiv 2512.02789, Dec 2025)</strong>: the frontier, and its own cautionary tale. <strong>MDD</strong> (Motion Direction Decoupling) replaces absolute frame differences with signed-polarity motion fields — fixing a real flaw, since absolute differences erase direction (a ball moving left and a ball moving right produce identical V4 motion maps) — plus <strong>R-STR</strong>, a residual-driven spatio-temporal refinement transformer head for occlusion recovery; F1 0.9859 on TrackNetV2 tennis at +3.7% FLOPs. But the SDK, weights, and training data are <strong>proprietary</strong> [verify]. Track the architecture (signed motion fields), never the weights.</li>
+    <li><strong>WASB-SBDT (BMVC 2023, MIT license)</strong>: not an architecture but a <em>protocol</em> — one high-res heatmap detector plus a <strong>constant-acceleration motion model</strong> (deliberately not Kalman) across five sports with public splits. Two imports: the constant-acceleration tracker is the minimum honest kinematic model for a ballistic object at 30–60fps; and the per-sport evaluation is the yardstick any new pickleball tracker must report against. Caveat of record: Papers With Code, which hosted the SBDT leaderboards, shut down in July 2025 — the book's own measured numbers become part of the de facto record.</li>
+  </ul>
+
+  <figure id="fig-12-04" class="full">
+    <img src="shared/images/c12-tracknetv4-architecture.png" alt="TrackNetV4 architecture: five frame chips t-2 to t+2 feeding motion fusion, heatmap head emitting a burnt-orange Gaussian blob over a pickleball court, then a smooth trajectory. Recreate: white background, black linework, burnt-orange heatmap." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.4</span>: TrackNetV4 Data Path. A 5-frame window → frame differencing → motion prompt layer → motion-aware fusion with visual features → per-frame Gaussian heatmap → soft-argmax centers → trajectory. Motion is an input channel, not a preprocessing hack.</figcaption>
+  </figure>
+
+  <p><strong>The pickleball gap is total:</strong> no TrackNet-family model has published pickleball weights, and no benchmark-grade public pickleball ball dataset exists — only Roboflow detection sets and one unofficial port [license verify]. The E10 artifact's TrackNetV4 row is the paper-transfer projection; the §12.11 lab exists to make it measured. The book's lab chapters effectively define the first public pickleball ball-tracking benchmark — a citable finding in itself. On the rugby side the gap is different: WASB covers soccer, which transfers structurally to rugby's open-field kicking game, but no published model handles the carry state — the ball-carry model of §12.2b is, as far as the public record shows, unbuilt.</p>
+
+  <h2 class="section-title"><span class="section-num">12.6</span> The Physics Prior: Rectification (W3.3 Lab)</h2>
+  <p>Detection — even heatmap detection — gives you a noisy point process with holes. Rectification turns it into a trajectory. A physics prior (gravity + quadratic drag) turns noisy, sparse ball points into a physically consistent trajectory. Our lab simulated a 20 m/s smash with pickleball drag (Cd ≈ 0.5, 74mm, 26g) and fitted it back from noisy observations:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fitted launch speed</td>
+        <td>24.8 m/s (true 20.0 — the honest fit caveat)</td>
+      </tr>
+      <tr>
+        <td>Fitted angle</td>
+        <td>9.9° (true 12°)</td>
+      </tr>
+      <tr>
+        <td>MSE: raw interp vs physics fit</td>
+        <td><strong>3.7× lower with the prior</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The process model is a ballistic integrator: $\dot{\mathbf{v}} = -g\hat{\mathbf{z}} - k\,|\mathbf{v}|\,\mathbf{v}$, with $k = \tfrac{1}{2} C_d\, \rho\, A / m \approx 0.045\ \text{m}^{-1}$ for a 26g, 74mm pickleball at $C_d \approx 0.45$. Along the flight direction speed decays as $v(x) = v_0 e^{-kx}$: a 25 m/s drive loses ~17% over the first 4m (→ ~21 m/s), not the ~56% the v1 book's table implied — the erratum matters because drag is the dominant force and the wrong coefficient poisons every downstream speed number. The filter runs in court coordinates: state $(x, y, v_x, v_y, a_x, a_y)$ with the drag-gravity term as process mean, measurement noise from the heatmap (σ ≈ 1.4px, E10) converted to meters via the calibration Jacobian — so near-court observations are worth more than far-court ones, and the filter knows it.</p>
+
+  <p>Rectification then decomposes into three named operations:</p>
+  <ol>
+    <li><strong>Gap bridging:</strong> occlusion windows are filled by forward-integrating the ballistic model while the uncertainty ellipse grows; a reappearing detection is accepted only inside the 95% ellipse. This is TrackNetV3's rectification module done physically instead of by inpainting.</li>
+    <li><strong>Outlier veto:</strong> a detection inconsistent with the ballistic prediction at &gt;3σ (the residual 50 FPs from E10: net flutter, paddle tips) is rejected without breaking the track. The physics prior is the false-positive sink the per-frame confidence score never provided.</li>
+    <li><strong>Bounce/contact as model switches:</strong> bounce and paddle contact are the two events where the ballistic prior is <em>violated by design</em> — they appear as innovation spikes, which makes them detectable (§12.8) rather than failure modes.</li>
+  </ol>
+
+  <figure id="fig-12-05" class="full">
+    <img src="shared/images/c12-pickleball-trajectory.png" alt="Top-down pickleball court with a burnt-orange fitted trajectory arc from baseline drive over the net to a kitchen dink, grey noisy detection points around the true path. Recreate: white background, black court linework, burnt-orange trajectory." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.5</span>: Rectification on the Court. Grey: the raw E10 point process, noisy and sparse. Burnt-orange: the gravity-plus-drag fit that bridges gaps, vetoes outliers, and turns points into a trajectory a PBN event row can consume.</figcaption>
+  </figure>
+
+  <p><strong>The lesson:</strong> the prior constrains the trajectory, so speed-at-any-point is the derivative of the fitted curve — recoverable. The fitted parameters are NOT the true launch (24.8 vs 20.0) because the noise and the unknown drag interact: report the fit as a <em>smooth trajectory</em>, not as a launch-velocity measurement without calibration. The rugby counterpart is narrower but real: in open-field kicks the same integrator applies with the two-regime drag of §12.7, and the constant-acceleration model WASB uses for soccer transfers directly. During a carry it applies not at all — the carrier's body is the process model.</p>
+
+  <h2 class="section-title"><span class="section-num">12.6b</span> Occlusion: Bridging the Tracking Gaps</h2>
+  <p>Occlusion is where tracking systems go to die quietly, so name the gaps and their durations. In pickleball the occlusion inventory is short and violent: the net tape crossing (1–2 frames from a low end-cam), the body block when a player at the kitchen line screens the ball from a same-side camera (2–10 frames), and the contact merge where paddle and ball occupy one blob (2–3 frames — exactly E10's worst window). The physics prior handles all three because the ball's state across a 3-frame gap is almost fully determined by its state before it: integrate forward, grow the ellipse, gate resumption at 95%. The failure mode to guard is the <em>bounce inside the gap</em> — a hidden model switch — which is why the resumption gate must also check whether the post-gap trajectory requires an implausible pre-gap velocity.</p>
+
+  <figure id="fig-12-06" class="full">
+    <img src="shared/images/c12-occlusion-gap.png" alt="Timeline of a ball trajectory as burnt-orange dots fading through a gap behind a player silhouette, grey uncertainty ellipses growing across the gap, resumption inside the final ellipse, a vetoed stray detection outside it. Recreate: white background, black linework, burnt-orange dots." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.6</span>: The Occlusion Contract. Forward-integrate the ballistic model through the gap, grow the uncertainty ellipse, accept resumption only inside it, veto everything outside. The ellipse is the tracker's honesty rendered visible.</figcaption>
+  </figure>
+
+  <p>In rugby league the same machinery is necessary and nowhere near sufficient. A kick's flight occludes briefly behind a chasing pack — bridgeable. But the ruck is a 40–80 frame hole during which the ball is <em>not ballistic</em>: it is on the ground, then in the dummy-half's hands. No physics prior spans that; the ball-carry model does (bind ball to ruck centroid, then to the dummy-half's torso, hand off to flight tracking when a pass or kick is detected). The honest system reports a <em>state</em> — carried / contested / in flight — alongside the track, and downstream rugby analytics (C19 event rows) consume the state machine as much as the coordinates.</p>
+
+  <h2 class="section-title"><span class="section-num">12.7</span> Aerodynamics: Pickleball vs Rugby</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Pickleball (74mm, 26g)</th>
+        <th>Rugby League (28cm oval, 410g)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Drag regime</td>
+        <td>High: <strong>Cd 0.45 indoor, 0.33 outdoor</strong> (Lindsey, May 2025, 86 free-flight trajectories; Steyn 2025 corroborates 0.30±0.02)</td>
+        <td>Variable by yaw angle: 0.14-0.18 at 0° → 0.5-0.6 at 90° (Seo, ASME JAM)</td>
+      </tr>
+      <tr>
+        <td>Velocity profile</td>
+        <td>Rapid decay (v(4m) ≈ 20.9 m/s from 25 m/s at Cd=0.45 — the v1 book's "25→11 in 4m" was an erratum; 11 m/s is ~1s / ~17m)</td>
+        <td>High momentum; spiral bomb kicks stabilize</td>
+      </tr>
+      <tr>
+        <td>Tracking implication</td>
+        <td>Sharp curve — physics prior must model drag, not just gravity</td>
+        <td>Spin axis matters — pitch dynamics and irregular bounce</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The pickleball's 2025 free-flight literature adds three anomalies a trajectory model must not get wrong (Lindsey, 86 trajectories at 300fps, 15mm mean endpoint error — rigorous but self-published, corroborated by Steyn 2025 and Rossmann &amp; Rau 2007): topspin lift is systematically <em>stronger</em> than backspin lift at equal spin (classical Magnus symmetry fails); substantial lift exists at near-zero spin, in both directions; and backspin lift barely depends on spin rate, clustering near $C_L \approx 0.2$. The proposed decomposition $C_L = C_L^{Magnus} + C_L^{gravity} + C_L^{internal}$ — gravity biases boundary-layer separation in free flight, and airflow through the 40 holes adds a symmetric spin-dependent term — is why the §12.9 spin proxy needs a three-component lift model rather than vanilla Magnus.</p>
+
+  <p>The rugby ball is the opposite regime: drag is <strong>attitude-dependent</strong>, and spin's job is attitude control, not lift. Wind-tunnel and CFD work (Seo et al., ASME J. Appl. Mech.; Alam et al., RMIT) put $C_d$ at 0.14–0.18 pointed into the flow and 0.5–0.6 broadside; spin at 1–10 rev/s changes the coefficients only slightly, but gyroscopic stabilization holds the long axis aligned with velocity — a spiral pass flies the 0.18 curve, a tumbling floater flies the 0.55 curve <em>and wanders</em>. For the tracker this collapses to a binary attitude state — spiral vs end-over-end — identifiable from the ball mask's aspect-ratio oscillation (a SAM 2 segmentation signal, C09, not a detection one). Apply the matching drag regime, and report the rugby bounce as a <em>cone</em>, not a point.</p>
+
+  <h2 class="section-title"><span class="section-num">12.8</span> Bounce and Contact: The Z Limit Applies</h2>
+  <p>A bounce point is the ball <em>at the court plane</em> — but the approach trajectory is above it (C06: D' = DH/(H-z), diverging as z → H). On the 4.5m end-cam rig, a ball 1.0m up at 8m depth is mislocalized by ~2.3m; at 2.0m (smash contact height) by ~6.4m. This inverts the naive pipeline: you do not estimate 3D position and then notice bounces — <strong>the bounce is the only moment the 2D pipeline is exactly right.</strong></p>
+
+  <p>The honest chain: ball trajectory (2D, temporal, physics-constrained) → near-plane intersection (needs Z) → bounce call (needs multi-view, chapter 14). Operationally, bounces and contacts are detected as <strong>innovation spikes</strong> against the ballistic fit (§12.6): a bounce shows vertical-velocity sign flip plus horizontal speed loss, and it is the one frame where the homography-projected position is trustworthy — cross-check that the projection lands inside the court, or the event is a let/net/out (C03 territory). Paddle contact is the other spike — velocity discontinuity without ground proximity — and the evidence stack is conjunctive: trajectory kink + paddle-mask proximity (SAM 2, C09) + wrist position from pose (E03: 16.46 mean visible keypoints) + audio transient if present. RacketVision (Nov 2025, MIT) supplies the ball+racket-pose <em>representation</em> — ball center, racket keypoints, contact events, forecast targets — and one counterintuitive measured finding to respect: naive feature concatenation of racket pose into a trajectory forecaster <em>degrades</em> prediction; cross-attention fusion is required.</p>
+
+  <p>The rugby analogue is the kick's first bounce — genuinely unpredictable by design, so the honest system reports a bounce cone — and the contact events the sport actually adjudicates. Set the accuracy expectation with the Bath 2025 head-on-head contact framework (two-stage detection + 3D CNN on broadcast footage): <strong>68% sensitivity / 84% specificity</strong> — screening-grade, not adjudication-grade [verify footage: league vs union]. Ball-contact timing in pickleball should be reported with the same humility until the §12.11 labs produce measured numbers.</p>
+
+  <h2 class="section-title"><span class="section-num">12.8b</span> Single Camera vs Multi-Camera: Buying Your Way Out</h2>
+  <p>Everything in §12.8 is a symptom of monocular capture: one camera gives you a bearing, not a position, and the physics prior is the cheapest substitute for the missing view. MonoTrack (2022) demonstrated the template for badminton — constrain the ill-posed Z with court geometry plus the physics model instead of a second camera. Pickleball has an unusually strong version of this constraint: every shot must thread the net plane, a known height (0.86m center / 0.92m posts) at a known court position, so a 1-parameter Z-family fit per rally segment is plausible [unproven for pickleball — §12.11 lab produces the first numbers]. The book's standing rule stays C06's: players get homography coordinates; the ball gets pixels plus a fitted Z-band until C14.</p>
+
+  <figure id="fig-12-07" class="full">
+    <img src="shared/images/c12-single-vs-multi-camera.png" alt="Two panels of a court side elevation: one camera with a single viewing ray and unknown ball height, versus two cameras whose crossing rays triangulate the ball. Recreate: white background, black linework, burnt-orange triangulation point." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.7</span>: The Z Question. One camera: a bearing, a Z-band, and a physics prior holding the two together. Two cameras: triangulation, a bounce point, and true 3D speed — at the price of sync, calibration, and twice the capture pipeline.</figcaption>
+  </figure>
+
+  <p>Multi-view is the honest fix: two calibrated views triangulate the ball outright, bounce points become geometry instead of inference, and true 3D speed replaces the fitted proxy. The costs are real — genlock or timestamp sync, per-camera calibration (C06/C07), doubled bandwidth and storage, and cross-view identity. The professional extreme solves the same problem by buying observations: Hawk-Eye-class systems run 340fps across 10–18 cameras and report ~2.6–3.6mm accuracy [secondary reporting; verify] — at that frame rate the exposure smear and inter-frame gap shrink until a simple tracker suffices. The book's stance: the physics prior is what you use when you cannot buy 340fps. For our fixtures the practical ladder is: pb-003-style fixed rigs → add one side camera for the kitchen plane (cheap, solves the bounce); nrl-001-style broadcast → single PTZ feed, no second view exists, so the carry model plus physics prior is the ceiling, and broadcast replay angles are the only triangulation you will ever get.</p>
+
+  <h2 class="section-title"><span class="section-num">12.9</span> The Open Frontier</h2>
+  <p><strong>Spin and true speed are not recoverable from monocular video without sub-pixel geometry</strong> (the paddle-angle + spin-rate problem is partially open). Speed <em>along the fitted path</em> is recoverable with the physics prior; spin is not. Any product claiming spin from one camera is overclaiming.</p>
+
+  <p>The aliasing math makes "impossible" precise. Recreational-to-pro pickleball spin runs ~5–25 rev/s; the sampling theorem demands ≥2 samples per revolution, so 60fps footage aliases anything above 30 rev/s — and at 8–14px footprints with 1/60s smear there are no resolved surface features to sample anyway. The 40-hole pattern is visible only at ≥1/1000s shutter and ≥20px footprint. Spin from the book's current pb-003 footage is not a hard problem; it is excluded by the sampling theorem. The frontier sits in two places: event cameras, which track ball logos through microsecond-resolution polarity spirals (Nakabayashi et al., CVPRW 2024: up to 500 rev/s in table tennis; PATS 2025 localizes ball–racket impact at µs resolution) — both sensor-bound, not model-bound; and BlurBall (2026), which uses the motion blur itself as the signal [verify code availability]. The frame-camera fallback is inference from trajectory <em>shape</em>: §12.7's lift anomalies mean topspin dives harder than symmetric Magnus predicts, so a physics-fit inversion can estimate an <em>effective</em> $C_L$ per shot — a spin proxy with honest error bars, not a spin measurement.</p>
+
+  <p>For rugby the frontier statement is gentler: spiral rate and axis are observable at broadcast resolution when the ball is in flight (the ball is large), tumble vs spiral classification is a segmentation statistic, and the genuinely open problem is the contested ball — possession state through the ruck, which is a multi-person occlusion problem, not an aerodynamics one. In both sports, observing spin directly is a capture decision (shutter, footprint, frame rate, or a different sensor), never a model decision.</p>
+
+  <h2 class="section-title"><span class="section-num">12.9b</span> The 10 Use Cases: Applied Framework</h2>
+  <p class="section-intro">Ten concrete jobs the ball-tracking stack performs, in three groups: <strong>shot quality and value (UC 01-04)</strong>, <strong>physics calibration (UC 05-06)</strong>, and <strong>adjudication and robustness (UC 07-10)</strong>. Each case names the practical problem, the mechanism and the math, and pairs a pickleball and a rugby league application so the pipeline transfers. Evidence labels follow the book's discipline: measured (E-series), source-backed (paper), or [verify] (practitioner model).</p>
+
+  <h3 class="sub-heading">Group A: Shot Quality &amp; Value (UC 01-04)</h3>
+
+  <h3 class="sub-heading">UC 01 — Third-Shot Drop Apex &amp; Net Clearance</h3>
+  <p>The third-shot drop is the highest-leverage shot in pickleball — C22's ΔEPV boundary values it at +0.142 against the drive's -0.188 [verify — practitioner model] — and its quality is two numbers: did the arc peak on the hitter's side, and by how much did it clear the 0.86m net? The mechanism: take the physics-rectified trajectory of §12.6, fit the ballistic segment from contact to bounce, and read the apex $z^* = z_0 + v_z^2/2g$ plus the net clearance $c = z(x_{\text{net}}) - 0.86$ m. Both come from the fitted curve rather than any single noisy frame — the fit is the metrology. An attackable drop is one with $c &gt; 15$ cm or an apex drifting to the kitchen side; an unattackable one peaks early and dies into the kitchen.</p>
+
+  <figure id="fig-12-08" class="full">
+    <img src="shared/images/c12-uc01-third-shot-apex.png" alt="Side elevation of a pickleball third-shot drop arc peaking before the net and dipping into the kitchen, apex and net-clearance arrow marked. Recreate: white background, black linework, burnt-orange arc." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.8</span>: UC 01 — Third-Shot Drop Apex. The fitted arc yields apex side and net clearance as the two drop-quality numbers. <strong>Pickleball</strong>: flags attackable drops clearing &gt;15 cm; feeds C22's ΔEPV valuation. <strong>Rugby league</strong>: the same apex/clearance readout measures conversion kicks over the 3m crossbar.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — apex side and clearance become the drill numbers for the most valuable shot in the sport, and the per-shot feed into C22's expected-point model.</p>
+
+  <h3 class="sub-heading">UC 02 — The 40/20 Kick: Trajectory, Spin &amp; the Bounce Cone</h3>
+  <p>The 40/20 is rugby league's highest-skill territorial play: kicked from behind the team's own 40m line, the ball must bounce in-field and cross the touchline inside the opponent's 20m zone, earning the kicking team the scrum feed. It is a trajectory problem end to end: exit speed, launch angle, spiral stability, and — because the ball must bounce <em>before</em> going out — the bounce cone of §12.2b. The mechanism: classify spiral vs tumble from the ball mask's aspect-ratio oscillation (SAM 2, C09), then fit the matching drag regime — a spiral flies the $C_d \approx 0.18$ curve ($k \approx 0.008$ m⁻¹, six times lower than a pickleball's), a tumble flies $C_d \approx 0.55$ and wanders. The landing prediction is reported as a cone, and the call reduces to whether any in-cone path exits touch inside the 20m window.</p>
+
+  <figure id="fig-12-09" class="full">
+    <img src="shared/images/c12-uc02-4020-kick-arc.png" alt="Top-down rugby pitch with a spiral kick arc from behind the 40m line bouncing in-field and exiting touch inside the 20m zone, bounce cone at landing. Recreate: white background, black linework, burnt-orange arc." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.9</span>: UC 02 — The 40/20 Arc. Spiral classification selects the drag regime; the bounce cone intersects the 20m window. <strong>Rugby league</strong>: objective 40/20 adjudication and kicker scouting. <strong>Pickleball</strong>: the lob — high arc over a poaching pair, must bounce before the baseline, same cone logic at kitchen scale.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> tactical and officiating — kick-quality grading for recruitment, and a measurement-backed answer when the touch judge's angle is hopeless.</p>
+
+  <h3 class="sub-heading">UC 03 — Speed-Gun Metrics: Serve km/h vs Punt km/h</h3>
+  <p>Ball speed is the number every broadcast wants and the number monocular video most often gets wrong. The honest method: speed is the derivative of the <em>fitted</em> trajectory, $v = |\dot{\mathbf{x}}|$ in court coordinates, reported at named instants — at contact and at the bounce — with error bars from the fit, not the frame-to-frame pixel hop that the Z-limit (§12.8) inflates whenever the ball is airborne. On pb-003 that means serve-class figures around 112 km/h (31 m/s) at contact decaying to ~74 km/h by the bounce under $k \approx 0.045$ m⁻¹. The cross-check is a Pocket-Radar-class spot reading on ten drives [verify — hardware lab scheduled, §12.11]. For rugby the same machinery grades the kicking game: torpedo punt exit speed against hang time $t = 2v_z/g$ — the 4.5-5s bomb that lets the chase arrive is a tradeoff curve, not a single number.</p>
+
+  <figure id="fig-12-10" class="full">
+    <img src="shared/images/c12-uc03-serve-speed.png" alt="TrackNetV4 five-frame stack feeding a heatmap, then a pickleball serve trajectory with speed callouts at contact and bounce. Recreate: white background, black linework, burnt-orange trajectory." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.10</span>: UC 03 — Speed-Gun Metrics. TrackNetV4 points → physics fit → speed at named instants, with decay under the measured drag. <strong>Pickleball</strong>: serve and drive km/h with honest error bars. <strong>Rugby league</strong>: punt exit speed vs hang time for the bomb, spiral pass velocity for the cutout.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> broadcast and coaching — the C28 cockpit's live speed readout, earned honestly instead of inflated by the Z-limit.</p>
+
+  <h3 class="sub-heading">UC 04 — Serve Spin: Proxy from Trajectory Shape</h3>
+  <p>§12.9's verdict stands: spin from 60fps footage is excluded by the sampling theorem. But spin is not invisible — it is encoded in trajectory <em>shape</em>. Lindsey's anomalies (topspin lift systematically stronger than backspin at equal spin; backspin $C_L$ clustering near 0.2) mean a topspin serve dives measurably harder than symmetric Magnus predicts. The mechanism: per shot, fit $v_0$, launch angle, $C_d$, and an <em>effective</em> $C_L = C_L^{Magnus} + C_L^{gravity} + C_L^{internal}$ to the rectified trajectory; the residual lift term is the spin proxy. Publish it as "effective lift" with fit error bars — never as RPM. For rugby the analogue is observable directly: the ball is large, so spiral rate and axis wobble are measurable from the mask, and the tumble classification of UC 02 is itself the spin readout that matters for bounce prediction.</p>
+
+  <figure id="fig-12-11" class="full">
+    <img src="shared/images/c12-uc04-spin-proxy.png" alt="Two pickleball arcs compared over the net: a steep-diving topspin arc and a floating backspin arc, with a lift-coefficient fit inset. Recreate: white background, black linework, burnt-orange topspin arc." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.11</span>: UC 04 — Spin as Trajectory Shape. Topspin dives harder than vanilla Magnus allows; the fitted $C_L$ residual is the proxy. <strong>Pickleball</strong>: topspin-serve detection for return positioning. <strong>Rugby league</strong>: spiral rate and wobble measured directly from the ball mask at broadcast resolution.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — a shot-level spin character per player without buying an event camera; the capture-spec route (C04) remains the answer when true RPM is required.</p>
+
+  <h3 class="sub-heading">Group B: Physics Calibration (UC 05-06)</h3>
+
+  <h3 class="sub-heading">UC 05 — Drag Decay Measurement: Fitting Your Own C_d</h3>
+  <p>Every downstream number — speed at bounce, apex, ΔEPV feed — inherits the drag coefficient, and §12.7's erratum showed what a wrong one does. So measure it instead of trusting a table. The mechanism: along a clean flight segment, sample fitted speeds $v_i$ at distances $x_i$; under $v(x) = v_0 e^{-kx}$ the regression $\ln v_i = \ln v_0 - k x_i$ is linear, and $C_d = 2mk/\rho A$ follows. That is Lindsey's RK4 method reduced to a least-squares line, and the acceptance check is the literature band: indoor $C_d \approx 0.45 \pm 0.09$, outdoor $0.33 \pm 0.08$ (86 free-flight trajectories, 300fps; self-published, corroborated by Steyn 2025). For rugby the same regression runs <em>per attitude regime</em>: gate spiral vs tumble first (UC 02), because pooling them fits a fiction — the two populations differ by 3×.</p>
+
+  <figure id="fig-12-12" class="full">
+    <img src="shared/images/c12-uc05-drag-decay.png" alt="Velocity decay chart: steep burnt-orange pickleball curve from 25 m/s with marker at 21 m/s over 4m, nearly flat grey rugby spiral curve. Recreate: white background, black axes, burnt-orange series." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.12</span>: UC 05 — Drag Decay, Measured. Log-speed vs distance is a line; its slope is $k$, and $C_d$ follows. <strong>Pickleball</strong>: venue- and ball-specific $C_d$ (indoor 0.45 vs outdoor 0.33). <strong>Rugby league</strong>: per-regime $C_d$ — 0.18 spiral, 0.55 tumble — never pooled.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> infrastructure — the C24 simulator and every speed stat in the book inherit this coefficient; fitting it on your own footage is one afternoon of scipy.</p>
+
+  <h3 class="sub-heading">UC 06 — Bounce Prediction: Point in Pickleball, Cone in Rugby</h3>
+  <p>Predicting the bounce is the highest-value short-horizon forecast in both sports: it is where players move before the ball arrives. The mechanism is a bounce model appended to the ballistic integrator: at court-plane intersection, reflect with restitution $v_z^+ = -e\,v_z^-$ and horizontal retention $v_x^+ = \alpha v_x^- + \beta\omega$ — topspin kicks forward, backspin checks. The USA Pickleball ball spec (30-34 inches from a 78-inch drop) bounds $e \approx 0.62\text{–}0.66$ [verify — equipment spec]; the prediction is a point with a fitted uncertainty ellipse. Rugby inverts the honesty: a tumbling prolate spheroid has no bounce point, so the prediction is a <em>cone</em> whose half-angle is estimated from the tumble rate, and the honest output is a fielding zone, not a spot.</p>
+
+  <figure id="fig-12-13" class="full">
+    <img src="shared/images/c12-uc06-bounce-prediction.png" alt="Two panels: pickleball arc with tight predicted bounce circle; end-over-end rugby ball with wide bounce cone of diverging dashed paths. Recreate: white background, black linework, burnt-orange bounce marker." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.13</span>: UC 06 — Bounce Prediction. Restitution reflection gives a point with an ellipse; tumble gives a cone. <strong>Pickleball</strong>: early read on drop-shot landing for kitchen positioning. <strong>Rugby league</strong>: fullback fielding zone on end-over-end bombs.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> tactical — anticipation metrics for C23's player models, and the bounce event rows that gate C19's event machine.</p>
+
+  <h3 class="sub-heading">Group C: Adjudication &amp; Robustness (UC 07-10)</h3>
+
+  <h3 class="sub-heading">UC 07 — Ball-Line Proximity: The Line Call as a Measurement</h3>
+  <p>The kitchen-line call, the sideline, the baseline — every line call is a distance measurement with an uncertainty, and should be reported as one. The mechanism exploits §12.8's inversion: at the bounce frame the homography is exactly right, so project the bounce point, compute the signed distance to the line $d = |ax + by + c|/\sqrt{a^2+b^2}$, and propagate the uncertainty — centroid RMSE (1.42px, E10) through the calibration Jacobian gives $\sigma_d$ in centimeters. The adjudication rule: call IN or OUT only when $|d| &gt; 3\sigma_d$; inside that band the honest output is "too close to call," which is what the 68%/84% Bath-grade humility (§12.8) looks like applied to geometry. Rugby's versions are the touchline on kicks (UC 02's 40/20 exit) and the try-line grounding.</p>
+
+  <figure id="fig-12-14" class="full">
+    <img src="shared/images/c12-uc07-line-call.png" alt="Top-down pickleball kitchen corner zoom: bounce point with grey uncertainty ellipse 2.1 cm inside the line, verdict chip IN. Recreate: white background, black court lines, burnt-orange verdict." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.14</span>: UC 07 — The Line Call as a Measurement. Bounce point, signed distance, 3σ decision band. <strong>Pickleball</strong>: kitchen-line and sideline calls with a stated uncertainty. <strong>Rugby league</strong>: touchline exit on the 40/20 and touch-in-goal adjudication.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> officiating — a defensible call with a printed error bar replaces the argument; feeds C03's rules layer.</p>
+
+  <h3 class="sub-heading">UC 08 — Ball-in-Ruck Occlusion: The Carry State Machine</h3>
+  <p>Rugby's defining ball problem is a 40-80 frame hole in which the ball is not ballistic but buried. No physics prior spans that; the mechanism is a state machine alongside the track: <em>carried</em> (ball bound to the carrier's torso region), <em>contested</em> (bound to the ruck centroid while bodies pile over it), <em>in flight</em> (ballistic prior active), with hand-off events at the play-the-ball, the dummy-half pickup, and every pass or kick. The play-the-ball clock — the ruck-speed number rugby analytics runs on — falls out of the state transitions for free: tackle-state entry to dummy-half release. Pickleball's version is the same machinery at 2-10 frame scale: the body block at the kitchen line and the contact merge, both bridged by the §12.6b ellipse contract instead of a state machine.</p>
+
+  <figure id="fig-12-15" class="full">
+    <img src="shared/images/c12-uc08-ruck-occlusion.png" alt="Rugby ruck from above with the ball hidden under bodies, a timeline showing the occlusion window and state tokens carried, contested, flight as the ball emerges to the dummy-half. Recreate: white background, black linework, burnt-orange state tokens." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.15</span>: UC 08 — The Carry State Machine. The ball's state, not its physics, carries the track through the ruck. <strong>Rugby league</strong>: ruck-speed clocking and possession continuity. <strong>Pickleball</strong>: the same hand-off logic at 2-10 frame scale for body blocks and contact merges.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> tactical — ruck speed and PTB bands feed C19's event rows and C28's DLSM metrics; possession state makes rugby's ball track continuous for the first time.</p>
+
+  <h3 class="sub-heading">UC 09 — Multi-Camera Ball Fusion</h3>
+  <p>§12.8b's ladder ends here: two calibrated views turn the ball from a bearing into a point. The mechanism: detect heatmap peaks independently per view, match candidates by epipolar constraint — a true ball detection in view A must lie on the epipolar line of its view-B partner, so E10's residual false positives (net flutter, paddle tips) die unmatched — then triangulate $X^* = \arg\min_X \sum_i \|\pi_i(X) - x_i\|^2$. Three purchases follow at once: true 3D position (the Z-limit dissolves), bounce points as geometry instead of inference (UC 06/07 upgrade from fitted to measured), and true 3D speed replacing the UC 03 proxy. The budget version for pickleball: one added side camera covering the kitchen plane solves the calls that matter. For broadcast rugby there is no second view; replay angles are the only fusion you will get.</p>
+
+  <figure id="fig-12-16" class="full">
+    <img src="shared/images/c12-uc09-multicam-fusion.png" alt="Pickleball court with two corner cameras whose viewing rays cross at the ball above the net, inset showing two heatmaps fusing to one 3D point. Recreate: white background, black linework, burnt-orange triangulation point." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.16</span>: UC 09 — Two Views, One Point. Epipolar gating kills unmatched false positives; triangulation dissolves the Z-limit. <strong>Pickleball</strong>: one side camera solves kitchen-plane adjudication. <strong>Rugby league</strong>: broadcast replay angles fused for post-hoc try-line review.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> officiating and infrastructure — the upgrade path from inference to geometry; this is C14's multi-view chapter applied specifically to the ball.</p>
+
+  <h3 class="sub-heading">UC 10 — Tracker Drift Correction with Bounce Anchors</h3>
+  <p>Every filter drifts: integration error, calibration wobble (C07), and the unidentifiable drag interaction of §12.6 accumulate until the fitted trajectory silently departs from the true one. The correction uses the chapter's own event layer: bounces and contacts are innovation spikes where the physics <em>resets</em> — at a bounce the ball is at z = 0 with a reflected velocity, a hard state constraint no integration error survives. The mechanism: run the constant-acceleration filter forward, but at each detected anchor re-initialize the state (position pinned to the homography-valid bounce point, velocity re-seeded by the restitution model of UC 06), and smooth the whole segment with an RTS backward pass so corrections propagate both ways. Uncertainty grows between anchors and collapses at them — the sawtooth error profile is the signature of a healthy track.</p>
+
+  <figure id="fig-12-17" class="full">
+    <img src="shared/images/c12-uc10-drift-correction.png" alt="A drifting grey raw track diverging from the true path, a burnt-orange corrected trajectory snapped back at bounce anchors, residual error strip resetting at each anchor. Recreate: white background, black linework, burnt-orange corrected path." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 12.17</span>: UC 10 — Drift Correction. Anchors pin the state; error grows between bounces and collapses at them. <strong>Pickleball</strong>: long rallies stay calibrated through 10+ shots. <strong>Rugby league</strong>: play-the-ball and pass events anchor the track across an entire set of six.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> infrastructure — every downstream statistic inherits the track's drift unless something resets it; the bounce anchors are that something, and they are free.</p>
+
+  <h2 class="section-title"><span class="section-num">12.9c</span> The Ecosystem &amp; Runnable Skeleton</h2>
+  <p>The libraries a practitioner actually reaches for around the TrackNet core, with the sport-specific job of each:</p>
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>License</th><th>Role</th><th>Pickleball use</th><th>Rugby league use</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>TrackNetV2 (2020)</td><td>⚠️ no license file [verify]</td><td>Fine-tune backbone</td><td>500-frame fine-tune base (§12.11)</td><td>n/a — scale is not the wall</td></tr>
+      <tr><td>TrackNetV3 (2023)</td><td>NOASSERTION [verify]</td><td>Occlusion rectification</td><td>Contact-merge window repair</td><td>Kick-flight gap repair</td></tr>
+      <tr><td>TrackNetV4 (ICASSP 2025)</td><td>Paper only, no code [verify]</td><td>Motion-attention plugin</td><td>The E10 → learned upgrade path</td><td>Motion maps after GMC (C07)</td></tr>
+      <tr><td>TrackNetV5 (Dec 2025)</td><td>Proprietary SDK/weights</td><td>Architecture reference</td><td>Signed motion fields — reimplement</td><td>Same idea; never the weights</td></tr>
+      <tr><td>WASB-SBDT (BMVC 2023)</td><td>MIT</td><td>Protocol + constant-accel tracker</td><td>First public pickleball benchmark row</td><td>Transfers structurally from soccer</td></tr>
+      <tr><td>MonoTrack (2022)</td><td>No release [verify]</td><td>Monocular 3D template</td><td>Net-plane Z-checkpoint fit (§12.8b)</td><td>n/a — broadcast single view</td></tr>
+      <tr><td>RacketVision (2025)</td><td>MIT</td><td>Ball + paddle schema</td><td>6-point paddle pose annotation</td><td>—</td></tr>
+      <tr><td>SAM 2 (2024)</td><td>Apache-2.0</td><td>Equipment &amp; ball masks</td><td>Paddle-face angle at contact</td><td>Spiral/tumble aspect-ratio signal</td></tr>
+    </tbody>
+  </table>
+
+  <p>The starting skeleton — E10's temporal filter plus the ballistic fit — is deliberately boring; the full lab version with sub-pixel readout and the drag scan lives in <code>lab/w3_lab_ball.py</code>:</p>
+  <pre><code>import cv2, numpy as np
+from scipy.optimize import least_squares
+
+def temporal_energy(f0, f1, f2, area=(6, 150), min_circ=0.4):
+    """E10: AND of consecutive absdiffs -&gt; candidate ball centers."""
+    d = cv2.bitwise_and(cv2.absdiff(f1, f0), cv2.absdiff(f2, f1))
+    m = cv2.threshold(cv2.cvtColor(d, cv2.COLOR_BGR2GRAY), 25, 255, 0)[1]
+    for c in cv2.findContours(m, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]:
+        a, p = cv2.contourArea(c), cv2.arcLength(c, True)
+        if area[0] &lt;= a &lt;= area[1] and p &gt; 0 and 4*np.pi*a/p**2 &gt; min_circ:
+            M = cv2.moments(c)
+            yield M['m10']/M['m00'], M['m01']/M['m00']
+
+G, K = 9.81, 0.045   # gravity; drag k = 0.5*Cd*rho*A/m, 26g 74mm ball
+def residual(p, pts, t):
+    x0, y0, vx0, vy0 = p          # court meters, z=0 plane segment
+    dt = t - t[0]
+    x = x0 + vx0*(1 - np.exp(-K*dt))/K          # drag along flight
+    y = y0 + vy0*dt - 0.5*G*dt**2               # gravity vertical
+    return (np.stack([x, y], 1) - pts).ravel()
+
+def fit_segment(px_pts, t, H):
+    """Project to meters via homography H, then fit v0/angle; scan K for Cd."""
+    pts = (H @ np.c_[px_pts, np.ones(len(px_pts))].T).T
+    pts = pts[:, :2] / pts[:, 2:]
+    v0 = np.diff(pts[:5], axis=0).mean(0) / (t[1] - t[0])
+    return least_squares(residual, [pts[0,0], pts[0,1], *v0], args=(pts, t))</code></pre>
+
+  <h2 class="section-title"><span class="section-num">12.9d</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are the ball layer applied across the book's five verbs, and each one lands in an existing chapter rather than standing alone: UC 01's apex and clearance feed C22's ΔEPV shot valuation; UC 03's speed readouts and UC 08's ruck clock feed the C28 cockpit's live bands; UC 05's fitted $C_d$ parameterizes the C24 simulator; UC 06 and UC 07 emit the bounce and line-call events that gate C19's event rows and C03's rules layer; UC 09 is C14's multi-view machinery applied to the one object that needs it most; UC 04's honest spin proxy defers to C04's capture spec when true RPM is required; and UC 10 keeps every one of those consumers honest by pinning the track they all inherit. The labels stay where the evidence is: E04/E10 measured, Lindsey/Seo/Alam source-backed, and [verify] wherever a practitioner model has not yet earned a number.</p>
+
+  <h2 class="section-title"><span class="section-num">12.10</span> The Ball-Tracking Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Capture right</strong>: ≥1/1000s shutter (C04 math: 5px blur at 1/1000), 30fps minimum, 60fps for ball work — remember the 25Hz hop is ~200px at drive speed (§12.4b).</li>
+    <li><strong>Label a fixture</strong>: 500 frames with ball centers, split by rally not by frame (the G0.5 dataset contribution — labels CC-BY-4.0).</li>
+    <li><strong>Baseline first</strong>: the 3-frame temporal energy filter (E10: 0.814 precision@50px, 76.2% continuity) — 30 lines of OpenCV, no training. On broadcast rugby, run global motion compensation (C07) first or the baseline sees only camera pan.</li>
+    <li><strong>Then the deep model</strong>: TrackNetV4 fine-tune on the 500 frames (Colab T4; license [verify]; the V5 successor has proprietary weights — reimplement the signed-motion-fields idea, never depend on the SDK).</li>
+    <li><strong>Physics-rectify</strong>: Kalman or least-squares fit with gravity + drag (the 3.7× MSE gain measured) — gap bridging, 3σ outlier veto, innovation spikes as bounce/contact candidates.</li>
+    <li><strong>Branch by sport</strong>: pickleball — flight tracking with the ballistic prior, bounce detector gating PBN rows. Rugby league — ball-carry state machine (carried / contested / in flight), spiral-tumble classification from mask aspect ratio, bounce cones not bounce points.</li>
+    <li><strong>For bounce/contact adjudication</strong>: escalate to multi-view (chapter 14) — the Z limit means a single camera reports a trajectory, not a bounce point.</li>
+    <li><strong>Honesty gate</strong>: fit the trajectory, not the launch physics. (Our fit recovered 24.8 m/s for a true 20.0 — the drag interaction is unidentifiable at this noise.) Report precision with its pixel tolerance, continuity with its clip, and any spin number with the capture spec that made it observable.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">12.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li><strong>E10 rerun + cross-sport extension</strong> (M4, pure OpenCV): reproduce the E10 table on pb-003, then run the same filter on (a) nrl-001 kick sequences — testing the C08 prediction that rugby's ball problem is occlusion, not scale — and (b) a dink-heavy pickleball clip for the slow-apex failure mode. Emit a per-class false-positive table (net flutter / paddle tips / shadows) to size the physics-gate veto.</li>
+    <li><strong>Ballistic-fit inversion</strong> (M4, scipy RK4 + least_squares): fit $v_0$, launch angle, $C_d$, effective $C_L$ per rally segment between detected bounces; the fitted $C_d$ distribution should land near Lindsey's 0.33–0.45 band; radar spot-check 10 drives if hardware is available.</li>
+    <li><strong>Bounce detector v1</strong>: innovation-spike + homography-consistency detector against 30 hand-labeled bounces on pb-003; ≥90% precision before it gates any PBN event rows.</li>
+    <li><strong>Label 500 frames with ball centers</strong> (the G0.5 dataset work; E10 pre-annotates, humans correct), fine-tune TrackNetV4 on Colab. <strong>Acceptance bar: beat E10's 0.814 precision@50px on held-out rallies; the projection target is 0.938 / 91.5% continuity.</strong> Report the same-match vs cross-match generalization gap honestly (TrackNet 2019 lost 14 F1 points there).</li>
+    <li><strong>WASB-SBDT baseline</strong> on the same labels — the first public pickleball row on the cross-sport protocol.</li>
+    <li><strong>RacketVision-schema pilot</strong>: 100 frames of ball + 6-point paddle pose + contact events, with annotation cost measured in minutes/frame to size the real dataset effort.</li>
+    <li><strong>Monocular Z-fit test</strong>: the net-plane checkpoint fit of §12.8b on pb-003 rallies — first pickleball numbers for the MonoTrack-style constraint.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">12.12</span> Sources</h2>
+  <ul>
+    <li>TrackNet (Huang et al. 2019, arXiv:1907.03698); TrackNetV2 (NYCU technical report 2020); TrackNetV3 (MMAsia 2023, github.com/qaz812345/TrackNetV3, license NOASSERTION [verify]); TrackNetV4 (ICASSP 2025, arXiv:2409.14543; no official code [verify]); TrackNetV5 (arXiv 2512.02789, proprietary SDK/weights); WASB-SBDT (BMVC 2023, arXiv:2311.05237, MIT).</li>
+    <li>MonoTrack (monocular 3D shuttlecock, arXiv:2204.01899); RacketVision (Nov 2025, arXiv:2511.17045, MIT) — ball + racket pose schema.</li>
+    <li>Aerodynamics: Lindsey (Tennis Warehouse, May 2025, self-published, corroborated by Steyn 2025 and Rossmann &amp; Rau 2007); Seo et al. (ASME J. Appl. Mech. 79(2)) and Alam et al. (RMIT) for rugby ball drag vs yaw.</li>
+    <li>Frontier: Nakabayashi et al. (CVPRW 2024, event-based spin to 500 rev/s); PATS (arXiv:2506.08327, µs impact localization); BlurBall (arXiv 2604.24033 [verify code]); Bath 2025 head-on-head framework (Injury Prevention, PMID 39832883; 68%/84% [verify league vs union]).</li>
+    <li>Book-internal: E04 (experiments/e04-ball), E10 (experiments/e10-ball-temporal), C12 lab (<code>lab/w3_lab_ball.py</code>); C03 (rules), C04 (blur = v·t, 1/1000s rule), C06 (Z-limit), C07 (moving-camera calibration), C08 (class distribution), C09 (SAM boundary), C14 (multi-view).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="11.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 11</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 11</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</p>
+        </div>
+      </div>
+    </a>
+    <a href="12.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 12</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 12</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Why single-frame detectors fail on projectiles, and the physics prior that rectifies them</p>
+        </div>
+        <a href="12.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #A2542A;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

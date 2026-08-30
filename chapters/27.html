@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 27 — The Agent Harness for Sport Analytics - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #C2410C;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-27" style="background-color: #C2410C; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 27</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 27 — The Agent Harness for Sport Analytics</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The role registry, the Teamwork loop, and how the book becomes a spec your agents can execute</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">32 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-27-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Harness Is a Contract, Not a Framework</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-27-1" data-section="s-27-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Harness Is a Contract, Not a Framework</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-27-1" data-section="s-27-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Harness Is a Contract, Not a Framework</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">27</span> Chapter 27 — The Agent Harness for Sport Analytics</h1>
+    <p class="chapter-subtitle">The role registry, the Teamwork loop, and how the book becomes a spec your agents can execute</p>
+  </header>
+
+<h3 id="s-27-1"><span class="section-num">27.1</span> The Harness Is a Contract, Not a Framework</h3>
+
+<p class="section-intro">This chapter is the book's reason to exist: a practitioner in a professional team needs an <em>operating system</em> for the AI stack — who does what, what they may touch, and what happens before anything reaches a coach. The harness is a <strong>role registry + a contract</strong>: eight roles, scoped tools, and the Teamwork loop that makes claims testable. Everything is <strong>measured</strong> (the harness lab ran the loop on the real artifact) or <strong>source-backed</strong> (the verified MCP/framework landscape).</p>
+
+  <p>Twenty-six chapters have built a perception-to-action pipeline: calibration, detection, tracking, pose, ball, event rows, statistics, expected value, tactical ML, simulation. Each piece works on its own footage. The failure mode arrives when you point a single general-purpose agent at the whole stack and ask it to "do the analysis." The book has that failure measured: in E07 a local VLM narrating raw pickleball frames hallucinated <strong>4 of 6 claims (66.7%)</strong> because nothing grounded its language in an artifact. In E13 the same model, forced to argue against a critic and verify against a <code>metrics.json</code>, dropped to <strong>0.0% hallucination</strong>. The delta between those two numbers is not a better model — it is a <em>harness</em>: a structured argument between agents with a verification gate in the middle.</p>
+
+  <p>The ladder dossier (the 4-Rung Sports Agentic Ladder, source-backed) names the stage most teams are stuck at: <strong>Rung 2</strong>, a sprawl of point tools — a ball tracker here, a tagging spreadsheet there, a GPS dashboard somewhere else — none of which share a coordinate system, a schema, or an evidence standard. A pickleball club at Rung 2 has a serve-speed video app, a manual scorecard, and a coach's notebook; an NRL analyst at Rung 2 has broadcast video, a Catapult GPS export, and a tagging tool whose events never reconcile to the same clock. The harness is the move to <strong>Rung 3</strong>: those point capabilities bundled into one closed-loop architecture where every claim carries its evidence and every handoff is contractual. What the harness deliberately is <em>not</em>: Rung 4, the generative match digital twin. Section 27.7c draws that boundary precisely.</p>
+
+  <figure id="fig-27-01" class="full">
+    <img src="shared/images/harness-architecture.png" alt="Harness architecture: eight roles in a flow with the critic-oracle-gate loop highlighted and the human principal gatekeeper spanning the bottom." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.1</span>: The Harness Architecture. Eight roles in a flow with the critic-oracle-gate loop highlighted; the human principal gatekeeper spans the bottom. The perception roles decompose into the camera-detector-tracker-identity swarm; the reporting side decomposes into model and reporter under the critic's audit.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">27.2</span> The Eight Roles</h2>
+  <p>The registry derives from the book's four layers — evidence, representation, interpretation, action — plus three governance roles. Each role owns exactly one verb and a scoped tool list; a role that cannot touch the claims register cannot mint a claim. The orchestrator is not a ninth role with its own verb: it is the scheduler that reads the recipe registry, assigns roles to agents, and enforces the loop. Keeping the orchestrator brainless is a design decision — the intelligence lives in the roles and the contract, not in a monolithic controller that would itself need a critic.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Verb</th>
+        <th>Tools</th>
+        <th>Duty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Capture</strong></td>
+        <td>watching</td>
+        <td>video, tracking</td>
+        <td>Ingest, extract + hash frames, clip manifest (C05)</td>
+      </tr>
+      <tr>
+        <td><strong>Perception</strong></td>
+        <td>watching</td>
+        <td>vision, tracking, video</td>
+        <td>Detect, track, pose, ball (C06-C16)</td>
+      </tr>
+      <tr>
+        <td><strong>Eventing</strong></td>
+        <td>tagging</td>
+        <td>tracking, data, vision</td>
+        <td>Coordinates to PBN/NRLSheet rows (C17-C19)</td>
+      </tr>
+      <tr>
+        <td><strong>Model</strong></td>
+        <td>modelling</td>
+        <td>data, code, vision</td>
+        <td>Ratings, value, tactical ML, simulation (C21-C24)</td>
+      </tr>
+      <tr>
+        <td><strong>Interpreter</strong></td>
+        <td>interpreting</td>
+        <td>data, vlm, report</td>
+        <td>Numbers to narrative, scouting (C26)</td>
+      </tr>
+      <tr>
+        <td><strong>Critic</strong></td>
+        <td>interpreting</td>
+        <td>claims, data, code</td>
+        <td>Falsify claims against artifacts (the E13 pattern)</td>
+      </tr>
+      <tr>
+        <td><strong>Oracle</strong></td>
+        <td>acting</td>
+        <td>data, vlm, report</td>
+        <td>Domain expertise: rules, coaching knowledge</td>
+      </tr>
+      <tr>
+        <td><strong>Gatekeeper</strong></td>
+        <td>acting</td>
+        <td>claims, report</td>
+        <td>The human gate — always human (C31 discipline)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The first four roles are the <strong>perception swarm</strong> the ladder dossier describes, and inside the Perception role the decomposition continues: a <em>camera</em> agent owns the ingest clock (fixed court-side GoPro on pb-003; broadcast PTZ on nrl-001), a <em>detector</em> agent runs per-frame inference (four players plus ball on the pickleball court; thirteen-a-side plus referees on the rugby pitch), a <em>tracker</em> agent owns identity persistence across occlusions (ByteTrack-style association on the 13.41×6.10 m court; ReID across broadcast cuts and pile-ups on the 100×68 m field), and an <em>identity</em> agent binds tracks to named athletes (bib, jersey number, or roster prior). The eventer converts those tracks to rows; the model and reporter convert rows to value and language. That is the full eight-role pipeline in the vocabulary a practitioner already uses.</p>
+
+  <p>The tool-scope rule is the safety mechanism, and it is worth stating as a failure mode. The E07 hallucination happened because a generative model had access to nothing but its own prompt and frames — no artifact to cite, no register to check. Under the registry, the interpreter can read data and render reports but cannot write claims directly; the critic can read claims and data but cannot run vision inference; the oracle reasons about already-structured evidence only. A pickleball interpreter that wants to say "Alice's third-shot drop rate is 42%" must route through the eventing artifact; an NRL interpreter claiming "their right edge leaks line-breaks" must cite the dog-leg rows, not the vibe of the highlight reel. Scoping turns fabrication from an accident into an impossibility of interface.</p>
+
+  <h2 class="section-title"><span class="section-num">27.3</span> The Worked Loop: Run, Verify, Iterate (W6.3 Lab, Measured)</h2>
+  <p>The agent loop is three moves repeated: <strong>run</strong> a recipe, <strong>verify</strong> the claim against the artifact, <strong>iterate</strong> on rejection. The harness lab implemented the loop and ran it on a real claim pair:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Input claim</th>
+        <th>Critic audit</th>
+        <th>Gate verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>"The annotation kappa is 0.400 (fair) on 6 frames"</td>
+        <td>Cites the artifact value; does not exceed it</td>
+        <td><strong>APPROVED</strong></td>
+      </tr>
+      <tr>
+        <td>"Labels are 100% accurate"</td>
+        <td>Exceeds what the artifact could show (kappa 0.400)</td>
+        <td><strong>REJECT_OVERCLAIM</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The mechanism: the gate checks claims against artifact values, not against words.</strong> A claim that cites what the artifact contains (0.400) with a caveat (fair, n=6) is approved; a claim that exceeds it (100% on six frames) is rejected. This is the claims-register discipline (chapter 2, the C-01..C-24 register) running as a runtime check — and it is what separates this harness from a chatbot.</p>
+
+  <figure id="fig-27-05" class="full">
+    <img src="shared/images/ch27-agent-loop.png" alt="The agent loop: Run, Artifact, Claim, Critic, Oracle, Gate, Register with a reject path to the review queue and a revise loop back to Claim." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.2</span>: The Agent Loop. Run → Artifact → Claim → Critic → Oracle → Gate → Register, with the reject path dropping to the review queue and the revise edge returning to Claim. The human gatekeeper spans every stage.</figcaption>
+  </figure>
+
+  <p>The critic's audit is a six-point rubric, hardened from E13: (1) does the cited artifact exist at the declared path; (2) does it contain the value the claim cites; (3) does the claim's language match the evidence tier ("on this footage" versus "in general"); (4) does the interval exist with an appropriate resampling unit (rally, set, match — never frame unless the claim is about frames); (5) does the claim exceed the artifact; (6) is the coaching language safe given the evidence layer. A single "no" routes the claim to revision. Iteration is bounded: a claim that fails twice lands in the human review queue rather than looping forever — the pickleball example being a VLM-generated "frame 120 shows a third-shot drop" that the eventing layer never confirmed; the rugby example a confident "that was a forward pass" that the tracking geometry cannot support at broadcast frame rate. Both are exactly the claims a chatbot would have shipped.</p>
+
+  <h2 class="section-title"><span class="section-num">27.4</span> Tool Interfaces: The MCP Sport Server</h2>
+  <p>Agents communicate through tools, not chat. Eight tool classes, delivered through an MCP server (the 2026 connective standard, source-backed: modelcontextprotocol.io): video, tracking, vision, data, vlm, code, claims, report. Each tool is a typed function with a schema; each role's tool list is the whitelist of what it may call. The communication contract is therefore an API contract: the eventing agent never "asks" the perception agent anything — it calls <code>query_tracks(clip_id, frame_idx, class="person")</code> and gets rows back, in MOT/kloppy format for the rugby lane and court-meter rows for the pickleball lane.</p>
+
+  <figure id="fig-27-06" class="full">
+    <img src="shared/images/ch27-mcp-contract.png" alt="Agent communication contract: agent frameworks on the left, a central MCP server, and eight sport tools on the right, with pb-003 and nrl-001 data sources feeding the data tool." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.3</span>: The Communication Contract. Any framework (LangGraph, Claude Agent SDK, CrewAI) attaches to one MCP server; the server exposes the eight scoped sport tools; the pb-003 and nrl-001 one-spines feed the data layer. Frameworks are interchangeable because the contract lives in the server, not the agent.</figcaption>
+  </figure>
+
+  <p><strong>The verified gap: no mature MCP server exists for tracking data or calibrated court coordinates</strong> (source-backed, verified 2026-08). The C27 project is exactly that: a tracking-data MCP serving calibrated court coordinates — the schema-first integration that makes the book's one-spine (C05) agent-accessible. The contract that matters most is geometric: every tool returning a position must include <code>(x_m, y_m)</code> plus the transform metadata <code>(homography_id, rmse_cm, calibration_date)</code>. A claim about a third-shot drop landing in the NVZ is only as good as the homography that produced the coordinates; a claim about a 10-metre retreat in rugby league is only as good as the pitch calibration behind it. Exposing the calibration alongside the value makes the coordinate system itself auditable — the critic can reject a claim whose <code>rmse_cm</code> exceeds the effect size it asserts.</p>
+
+  <p>The frameworks (LangGraph stateful graphs, Claude Agent SDK computer-use, OpenAI Agents SDK handoffs, Google ADK 2.0, CrewAI role crews — all source-backed) attach to the same server. That interchangeability is the point: the pickleball club that prototypes on CrewAI and the NRL department that standardizes on LangGraph share tools, schemas, and the claims register. Switching frameworks changes the orchestrator, never the contract.</p>
+
+  <h2 class="section-title"><span class="section-num">27.5</span> Prompt &amp; Context Contracts</h2>
+  <p>Each agent receives a <strong>dossier</strong>, not a chat: the chapter's lab is a callable recipe (command, artifacts, pass criteria); the agent's prompt is the recipe plus the chapter's evidence contract. The book-as-spec design: an agent reads C17 (schema) to know the event-row contract, runs C19 (eventing) to produce rows, queries C05 (the one-spine) for the answer, and emits a claim with evidence_refs.</p>
+
+  <pre><code class="language-yaml">recipe_id: c17-event-data
+objective: "Produce PBN v2 event rows from the pb-003 clip that validate against the schema."
+inputs: [clip_id: pb-003, frame_map, court_tracks, schema: pb003.schema.json]
+commands:
+  - run: lab/w4_lab_event_data.py --clip pb-003
+  - validate: jsonschema -i outputs/pbn_rows.json pb003.schema.json
+artifacts: [outputs/pbn_rows.json, outputs/metrics.json]
+pass_criteria: [schema_validation: PASS, review_required: yes]
+claims_to_register: [C-17a, C-17b]</code></pre>
+
+  <p>The rugby mirror is the same shape with nrl-001 inputs and the 6-tackle schema; the recipe registry holds one per chapter per sport. Context-window discipline keeps agents honest and cheap: perception agents get the clip manifest and detector config, never the manuscript; interpreter agents get event rows and the coach-audience brief, never raw tensors; critics get the claim, the artifact, and the pass criteria — nothing else, to reduce motivated reasoning; the oracle gets the rulebook excerpt (USAP rules for the NVZ plane; NRL Laws for the 10 m and the play-the-ball) but not the claim under judgment, so its domain answer is independent.</p>
+
+  <h2 class="section-title"><span class="section-num">27.6</span> Evaluation: Agents Under the Same Discipline</h2>
+  <p>The claims register is the agent's report card: a generated claim is evaluated the way a label is — <strong>agent-as-rater vs human gold standard, per claim family, with the kappa/IoU discipline of chapter 18</strong>. The C20 honesty contract applies verbatim to agent output: the n must match the unit (a "42% drop rate" must say whether it is 12 rallies, 1 clip, or 300 matches); intervals are mandatory; a baseline is mandatory (beat majority-class or the prior model before the claim is interesting); the resampling unit is mandatory (cluster bootstrap by rally in pickleball, by set-of-six or match in rugby league); the failure case is mandatory; the evidence tier caps the language. The critic applies the rubric; the gatekeeper (human) has final authority. Observability (Langfuse/Phoenix, chapter 25) makes the whole loop auditable — the hallucination-loop claims become verifiable traces, not anecdotes.</p>
+
+  <p>The four harness KPIs, published the way the annotation kappa is published: <strong>claim-to-artifact alignment</strong> (critic audit pass rate, target ≥95% before the gate), <strong>post-critic hallucination rate</strong> (oracle/human audit of what the critic missed, target &lt;5%), <strong>gate clearance time</strong> (median claim-to-verdict, the human-attention budget), and <strong>evidence-tier discipline</strong> (fraction of claims using correct tier language, target 100%). A pickleball program and an NRL department report the same four numbers; that comparability is what makes the harness an operating system rather than a demo.</p>
+
+  <h2 class="section-title"><span class="section-num">27.7</span> Cost &amp; Latency Budget</h2>
+  <p>M4-first: perception/eventing/model are local (the whole book's assumption); the VLM lane is local up to 8B, API for long-video (Gemini 3); the Colab lane is the training side. The per-role map: capture/perception/eventing = M4 local; interpreter = local VLM or API; oracle = API (the long-context knowledge lane); gatekeeper = human. The cost asymmetry that shapes the design: the critic runs on <em>every</em> claim, so it must be the cheapest model that passes the rubric (Haiku/Sonnet class, &lt;5 s per claim); the oracle runs sparingly, so it may be the expensive one. The gatekeeper's cost is human attention, not tokens — which is why the loop optimizes for few, well-formed claims rather than many raw ones.</p>
+
+  <p>Caching is by content hash so a second agent never re-pays the first agent's bill: frame features keyed by <code>(clip_id, frame_idx, model_version, hash)</code>; VLM outputs by <code>(clip_id, window_s, prompt_hash, model_version)</code>; one-spine query results by <code>(query_hash, spine_version)</code>. On pb-003 that means the interpreter's question about a rally reuses the perception pass the eventer already paid for; on an 80-minute nrl-001 broadcast it is the difference between an overnight job and a post-match review that finishes before the press conference.</p>
+
+  <h2 class="section-title"><span class="section-num">27.7b</span> The Compounding Argument: Why the Harness Pays (E23)</h2>
+  <p>The harness's ROI is the compounding capability it builds. The E23 benchmark measured the transfer of the pickleball foundation modules to the NRL domain: <strong>81.4% code reuse</strong> across the homography engine (82.4%), the ByteTrack/SAM perception (84.5%), the spatiotemporal state machine (73.8%), the tactical graph network (80.0%), and the edge HUD (85.4%); deployment accelerated from <strong>159 build days to 26 (6.1× faster, an 83.6% time-to-deploy reduction)</strong>. The engineering logic: the one-spine schema, the calibration engine, the tracker, and the state machines are sport-agnostic — the domain-specific layer (court lines vs pitch lines, PBN rows vs NRL-set rows) is a small fraction of the total. <strong>Honest label: the reuse percentage is a code-metrics estimate from refactor line counts</strong>, not a controlled study — but it is the measured argument for why a second sport is a configuration exercise, not a rebuild. The harness is what makes that reuse safe: without the contract, reused code produces unverifiable claims in a new domain faster.</p>
+
+  <figure id="fig-27-04" class="full">
+    <img src="shared/images/ch27-compounding-transfer.png" alt="Compounding capability transfer: five reusable foundation modules between a pickleball court and a rugby league pitch, with 81 percent reuse and deployment dropping from 159 to 26 days." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.4</span>: The Compounding Capability Stack (E23, measured). Core reusable modules — homography, tracker, state machine, tactical ML, edge HUD — transfer from the pickleball court to the rugby league pitch at 81.4% reuse; development goes 6.1× faster per new sport.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">27.7c</span> Rung-3 Maturity: The Perception Swarm, Not the Twin</h2>
+  <p>The ladder dossier distinguishes the two rungs this book straddles, and the distinction disciplines the chapter. <strong>Rung 3 is the closed-loop perception swarm</strong>: ingest, calibrate, detect, track, event, model, report — with humans above the loop receiving exceptions, not feeds. The measured Rung-3 artifact is E17, the live exception-gating engine: <strong>1,000 input events reduced to 119 surfaced alerts, an 88.1% noise suppression, at 0.08 ms processing latency</strong>. Its pickleball alerts are exactly the two a coach wants at 11 pm: NVZ foot-fault warnings (foot 3.0 cm from the kitchen line during an airborne volley, p = 0.012) and middle-seam exposures (partner gap 3.79 m against a 2.7 m norm, p = 0.034). Its rugby league alerts are the same shape at pitch scale: offside non-compliance (defenders failing the 10 m retreat, p = 0.008) and dog-leg ruptures (a 3.08 m edge gap between second-rower and centre, p = 0.021). That is the swarm doing the watching so the human does the deciding.</p>
+
+  <p><strong>Rung 4 is the generative match digital twin</strong> — counterfactual rollouts over a calibrated simulation of the match itself. It exists in the book (chapter 24's twin; E16's rollout benchmark), but it is a different contract: the twin <em>imagines</em> plausible futures, the swarm <em>verifies</em> what happened. Mixing the two without a boundary is how a simulator's fluent fiction enters the claims register as fact. The harness enforces the separation structurally: twin outputs enter the register only as <em>simulation claims</em> with their own tier, never as event evidence. This chapter's maturity target is Rung 3 done honestly; Rung 4 is a consumer of the register, not a producer of its ground truth.</p>
+
+  <figure id="fig-27-07" class="full">
+    <img src="shared/images/ch27-rung-ladder.png" alt="The four-rung agentic ladder: manual, point tools, agent swarm, digital twin, with Rung 3 highlighted as this chapter's target and Rung 4 shown as out of scope." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.5</span>: The 4-Rung Ladder. Rung 1 manual, Rung 2 point tools, Rung 3 the agent swarm (this chapter, E17-measured), Rung 4 the digital twin (chapter 24's lane — deliberately out of scope here).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">27.8</span> The Book-as-Agent-Spec: The Pickleball Rally Workflow</h2>
+  <p>The worked example (from the dossier): "what's the third-shot drop rate this season?" → an agent reads C17 (schema), runs C19 (eventing) with the C32 lab runner, filters the one-spine (C05), calls the C22 value model for the expected value, and emits the answer with evidence_refs — through the critic and the gate. The book is the spec; the harness is the runner.</p>
+
+  <p>On a single pb-003 rally the workflow is concrete. <strong>Detect:</strong> the camera agent's fixed court-side feed yields four player boxes and a ball candidate per frame; the calibrated homography (rmse in centimetres, logged) maps every detection to court metres. <strong>Track:</strong> the tracker agent holds identities through the kitchen-line scramble; the identity agent binds tracks to Alice and her partner. <strong>Event:</strong> the eventing agent's state machine parses serve, return, third-shot drop, NVZ entry, contact — each row carrying <code>clip_id, frame_idx, pts_s</code> so any claim can be re-opened at the exact frame. <strong>Model:</strong> the model agent scores the rally (drop quality, expected value of the fifth shot). <strong>Report:</strong> the interpreter writes one coach sentence — "third-shot drop landed in the NVZ, attack conceded on shot five" — which the critic audits against the rows and the gatekeeper approves. Detect → track → event → model → report is not a slogan; it is five role handoffs, each with a schema, each leaving an artifact.</p>
+
+  <figure id="fig-27-08" class="full">
+    <img src="shared/images/ch27-pickleball-workflow.png" alt="Pickleball agent workflow: from a pb-003 rally court view through Detect, Track, Event, Model, Report stages with a review queue drop and an iterate loop." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.6</span>: The Pickleball Agent Workflow. One rally through five handoffs — detect (YOLO), track (ByteTrack + identity), event (PBN rows), model (expected value), report (coach HUD) — with the review queue catching what the state machine cannot confirm.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">27.8b</span> The Rugby League Agent Workflow: The Same Loop on a Set</h2>
+  <p>The rugby lane runs the identical contract on a harder input. The camera is a broadcast PTZ, so the capture agent also owns global motion compensation (chapter 14's problem): the calibration updates as the camera pans, and every coordinate claim carries its per-window homography, not a season-long one. <strong>Detect:</strong> thirteen players a side, referees, and a ball that disappears into rucks. <strong>Track:</strong> ReID across jersey similarity and pile-up occlusions; the identity agent leans on the roster prior and jersey numbers where the broadcast zoom allows. <strong>Event:</strong> the state machine speaks the 6-tackle grammar — play-the-ball, tackle count, kick, error — into NRLSheet rows instead of PBN. <strong>Model:</strong> the same expected-value machinery, re-parameterized to pitch zones (chapter 22). <strong>Report:</strong> the exception feed of 27.7c — offside risk, dog-leg rupture — rather than a narration of everything.</p>
+
+  <figure id="fig-27-09" class="full">
+    <img src="shared/images/ch27-rugby-workflow.png" alt="Rugby league agent workflow: from an nrl-001 broadcast pitch view through Detect, Track, Event, Model, Report stages with a review queue drop and an iterate loop." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.7</span>: The Rugby League Agent Workflow. One set-of-six through the same five handoffs — detect (PTZ), track (ReID), event (6-tackle rows), model (EPV), report (analyst HUD). The schemas differ from pickleball; the contract does not.</figcaption>
+  </figure>
+
+  <p>What transfers and what does not is the E23 lesson in workflow form: the loop, the tools, the critic rubric, and the gate are untouched; the schemas (PBN vs NRL-set), the geometry (NVZ plane vs 10 m line), and the occlusion priors are sport-specific configuration. Honest boundary: the rugby lane's recipes are thinner than the pickleball lane's — nrl-001 needs its own tracking and eventing schema maturity before the rugby workflow is as measured as the pickleball one (the gap register, item 10).</p>
+
+  <h2 class="section-title"><span class="section-num">27.9</span> The Harness Skeleton</h2>
+  <p>The registry schema (this chapter's lab output): roles with tool scopes, the claim contract, the loop stages (run → artifact → claim → critic → oracle → gate → register with a reject path to the review queue). Concretely it is one JSON document — <code>harness_id</code>, <code>version</code>, the <code>roles</code> map (verb, tools, duty, default model, can_register_claims), the <code>tools</code> map (interface, MCP server, cost flag), the <code>recipes</code> map (objective, inputs, commands, artifacts, pass criteria), the <code>claims_register</code> pointer, and the <code>teamwork_loop</code> definition. Versioning the registry like code is what lets a pickleball club and an NRL department run the same harness release and diff their configurations: theirs should differ only in schemas, rosters, and geometry files.</p>
+
+  <p>One clarification that prevents real confusion: the <code>.hf-cache/.agent_harnesses.json</code> file in the repo is the <em>device-detection</em> layer — a list of 27-plus coding-agent harnesses (Claude Code, Codex, Cursor, and friends) keyed by the environment variables that identify them. Its job is answering "which agent is running in this repo right now." The role registry is this chapter's design, answering "which agent may do what to my sport data." Different artifacts, different jobs; the names colliding is an accident of vocabulary.</p>
+
+  <h2 class="section-title"><span class="section-num">27.10</span> The Harness Lifecycle</h2>
+  <p>The loop, as executable stages: <strong>Run</strong> (a chapter lab executes) → <strong>Artifact</strong> (metrics.json, transcripts, frames on disk) → <strong>Claim</strong> (the agent emits a claim with evidence_refs) → <strong>Critic</strong> (audited against the artifact — the E13 mechanism) → <strong>Oracle</strong> (domain check) → <strong>Gate</strong> (human approves or rejects; reject routes to the review queue) → <strong>Register</strong> (the C-01..C-XX claim enters the claims register with its status). Every stage writes state; nothing is a black box.</p>
+
+  <p>The measure of the harness working is not "the agent did the task" — it is <strong>the claim count that survives the critic and the gate without correction</strong> (the auto-accept rate from chapter 19, applied to narrative claims), plus the correction rate on the rest. Those two numbers are the harness's KPIs, and they are published the way the annotation kappa is (chapter 18). A season of pickleball reviews and a season of NRL reviews should show the same trend line: auto-accept rising as recipes mature, corrections falling as the critic learns the failure families — and if either number stalls, the recipe, not the model, is what you fix first.</p>
+
+  <h2 class="section-title"><span class="section-num">27.10b</span> The Honest Boundary: The Harness Executes, It Does Not Think</h2>
+  <p>Everything the harness does is execution of contracts written by humans: the recipes are human-authored, the schemas are human-authored, the rubric is human-authored, and the gate <em>is</em> a human. The harness does not decide what is worth measuring; it does not notice that a pickleball team's real problem is serve-plus-one rather than the third shot someone asked about; it does not know that an NRL club's finals campaign hinges on a matchup the EPV model has never seen. It has no tactics of its own. What it has is integrity of process: given a question, it guarantees the answer traces to an artifact, survives an adversarial audit, and carries its uncertainty in the open. The failure modes that remain are therefore honest ones — a bad recipe faithfully executed (fix the recipe), a calibration error propagated into every downstream claim (the reason <code>rmse_cm</code> travels with coordinates), and a gatekeeper rubber-stamping at volume (the reason gate clearance time is a KPI). What the harness eliminates is the dishonest failure: the fluent, confident, unverifiable claim. E07 showed that failure at 66.7%; the loop showed it can be driven to zero — not by smarter agents, but by refusing to let any agent's confidence count as evidence.</p>
+
+  <h2 class="section-title"><span class="section-num">27.10c</span> The 10 Use Cases: The Harness in Operation</h2>
+  <p>The architecture above is only credible if it runs. The ten use cases below are the harness doing its ordinary work — the jobs a pickleball club and an NRL department actually hand it — organized in three lanes: <strong>Lane A, The Automated Runs (01-03)</strong>: footage in, verified claims out. <strong>Lane B, The Contract Under Failure (04-06)</strong>: what the tool contract, the error path, and the adversarial handoff do when things break. <strong>Lane C, Operations &amp; Governance (07-10)</strong>: scheduling, the human gate, observability, and the compounding payoff. Each case names its mechanism and tool contract, and each carries its evidence label — measured (E-series), source-backed, or [verify].</p>
+
+  <h3 class="sub-heading">Lane A: The Automated Runs (01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Automated Pickleball Rally Run</h3>
+  <p>A club coach films a Tuesday session and wants rally facts Wednesday morning, not a weekend of tagging. The scheduler selects the eventing recipe from the registry: the capture agent extracts and hashes frames into the clip manifest (chapter 5); perception runs detection and tracking on the fixed court-side feed; eventing's state machine parses serve, return, third shot, and NVZ entries into PBN rows (chapters 17-19). The tool contract is the recipe call: <code>run_recipe("c19-auto-eventing", clip_id="pb-003")</code> → artifacts <code>[pbn_rows.json, metrics.json]</code>, pass criteria <code>schema_validation: PASS</code>, <code>review_required: yes</code> on the first pass. The measured anchor is E06: two four-player active rally windows of 8.33 s and 12.83 s derived from on-court track counts — the windows the run must find without a human pointing at them. <strong>Payoff:</strong> the coach opens a review queue of 8-12 nominated clips (chapter 26's rule), not 90 minutes of raw video.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc01-pb-automated-run.png" alt="Automated pickleball rally run: a pb-003 court plan view feeding a Capture, Detect, Track, Event, Report pipeline with a review queue drop and an overnight clock badge. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.8</span>: UC 01 — The Automated Rally Run. One recipe call walks a session clip through five handoffs to a review queue; E06's 8.33 s and 12.83 s rally windows are what the run must recover (measured). <strong>Pickleball</strong>: overnight session-to-queue on pb-003. <strong>Rugby league</strong>: the identical recipe shape on a training drill clip, pending nrl-001 schema maturity.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — The Automated Rugby League Set Run</h3>
+  <p>The rugby lane runs the same contract on a harder input: a broadcast PTZ camera, thirteen players a side, and a ball that disappears into rucks. The capture agent owns global motion compensation (chapter 14's problem) so the calibration updates as the camera pans; the eventing state machine speaks the 6-tackle grammar — play-the-ball, tackle count, kick, error — into NRLSheet rows instead of PBN. The tool contract is geometric: <code>query_events_by_zone(clip_id, zone_polygon, event_type)</code> returns rows only with their per-window homography metadata attached, so a claim about a right-edge dog-leg names the calibration window it stands on. Honest label: the rugby recipes are thinner than the pickleball lane's — nrl-001 needs its own tracking and eventing schema maturity before this run is as measured as UC 01 (the dossier's gap register, item 10) [verify]. <strong>Payoff:</strong> the analyst gets a set chart — tackles, play-the-ball times, kick rows — before the press conference, not midweek.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc02-rl-automated-run.png" alt="Automated rugby league set run: a broadcast PTZ camera over a 100 by 68 metre pitch feeding a GMC, Detect, Track, Event, Report pipeline with thirteen player glyphs and a six-tackle row strip. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.9</span>: UC 02 — The Automated Set Run. The PTZ feed forces per-window calibration into the contract; the 6-tackle grammar replaces the PBN grammar and nothing else changes. <strong>Rugby league</strong>: one set-of-six evented end-to-end. <strong>Pickleball</strong>: the fixed-camera lane this recipe is ported from (E23's transfer direction, run backwards).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — The Agent Loop in Production: Run, Verify, Iterate</h3>
+  <p>The loop of section 27.3 becomes production motion when it runs on every claim, not just the lab pair. The mechanism is a checked assertion, not a vibe: the gate verdict is <code>(claim.value == artifact[claim.value_key]) ∧ (claim.language ≤ evidence_tier) ∧ (n, interval, baseline, resampling_unit present)</code>, and a single failed conjunct routes to revision. Iteration is bounded — a claim that fails twice lands in the human review queue rather than looping forever. The measured pair stands as the contract's unit test: "the annotation kappa is 0.400 (fair) on 6 frames" was APPROVED because it cited the artifact with its caveat; "labels are 100% accurate" was REJECT_OVERCLAIM because it exceeded what kappa 0.400 could show (W6.3 lab, measured). <strong>Payoff:</strong> every sentence that reaches a coach or the manuscript is one that survived the loop — verification is the default path, not an audit after the fact.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc03-agent-loop-production.png" alt="The production agent loop: Run, Artifact, Claim, Critic, Oracle, Gate, Register stages in a cycle, with a bounded two-strike revise edge and a reject drop to the review queue; an approved stamp and an overclaim stamp beside two example claims. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.10</span>: UC 03 — Run, Verify, Iterate. The APPROVED / REJECT_OVERCLAIM pair (measured, W6.3) as the loop's unit test; two strikes route to the human queue. <strong>Pickleball</strong>: a VLM's "frame 120 shows a third-shot drop" rejected until eventing confirms the row. <strong>Rugby league</strong>: an "85% ruck-speed win" claim rejected when the artifact says 61%.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Lane B: The Contract Under Failure (04-06)</h3>
+
+  <h3 class="sub-heading">UC 04 — The MCP Tool Contract: Calibrated Coordinates as the API</h3>
+  <p>The verified gap (source-backed, 2026-08): no mature MCP server exists for tracking data or calibrated court coordinates — so this chapter builds the contract. The load-bearing tool is <code>get_court_coordinates(clip_id, frame_idx, u, v)</code> → <code>(x_m, y_m)</code> <em>plus</em> <code>(homography_id, rmse_cm, calibration_date)</code>: every position an agent can obtain carries the transform that produced it, so the coordinate system itself is auditable. A third-shot-drop claim is only as good as the homography behind its NVZ coordinates; a 10-metre-retreat claim is only as good as the pitch calibration for that pan window. This is the feed chapter 34's deployment lane consumes: any framework — LangGraph, Claude Agent SDK, OpenAI Agents SDK, ADK 2.0, CrewAI — attaches through the one schema-first server. <strong>Payoff:</strong> frameworks become interchangeable; the club prototyping on CrewAI and the department standardized on LangGraph share tools, schemas, and one claims register.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc04-mcp-coordinate-contract.png" alt="The MCP coordinate contract: pixel coordinates u,v entering a transform box and emerging as court metres x,y with homography id, rmse, and calibration date badges; a pickleball NVZ zone and a rugby 10 metre line as consumers. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.11</span>: UC 04 — Coordinates Carry Their Transform. Pixels in, court metres out, with the homography's identity and error attached — the audit trail every positional claim inherits. <strong>Pickleball</strong>: NVZ membership from a 3.82-4.65 cm RMSE calibration (E05/E11, measured). <strong>Rugby league</strong>: 10 m retreat compliance from the per-window PTZ homography.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — Error Handling: What Happens When the Detector Fails</h3>
+  <p>The book's measured failure is E04: the ball detector returned 1,082 detections at a median confidence of 0.1125 — it barely sees the ball. The harness's answer is structural, not hopeful. Low-confidence windows drop to the review queue instead of minting rows; a claim citing a missing artifact fails the critic's rubric at point one (does the artifact exist?); retries are bounded — two failures and the item goes to a human with the failure reason attached. Downstream, the eventing grammar suppresses what the bad detection would have implied: a contact with no legal predecessor never becomes a row (chapter 19). The design rule: a failed component degrades the run to a smaller honest output, never to a confident wrong one. <strong>Payoff:</strong> failures arrive as queue items with reasons — "ball track lost, frames 412-438" — never as silently wrong numbers in a coach's report.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc05-error-handling.png" alt="Error handling path: a detector box emitting faint ball detections with a 0.1125 confidence badge, a confidence gate diverting them to a review queue, a two-strike retry loop, and a grammar filter blocking an illegal event row. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.12</span>: UC 05 — Failure as a Routing Problem. E04's 0.1125 median confidence (measured) meets three walls: the confidence gate, the bounded retry, the grammar filter. <strong>Pickleball</strong>: the 40 mm ball the detector cannot see. <strong>Rugby league</strong>: the ball disappearing into the ruck — occlusion is the same failure in a bigger jersey.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — The Multi-Agent Workflow: Generator + Critic</h3>
+  <p>The book's foundational agent result is the E07 → E13 pair: a local VLM narrating raw pickleball frames hallucinated 4 of 6 claims (66.7%, measured); the same model, forced to argue against a critic and verify against a <code>metrics.json</code> artifact, dropped to 0.0% (measured). The harness generalizes that loop into the default handoff. The generator (interpreter role) may only emit claims in the register's JSON shape — <code>{asserted_claim, artifact_path, value_key, evidence_refs}</code>; the critic receives the claim, the artifact, and the six-point rubric and <em>nothing else</em> — the context firewall that suppresses motivated reasoning; the oracle answers domain questions independently of the claim under judgment. This is chapter 25's adversarial VLM loop promoted from experiment to infrastructure. <strong>Payoff:</strong> hallucination stops being a model property and becomes a routing outcome — rejected claims return with reasons, and only survivors cost human attention.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc06-generator-critic.png" alt="Generator and critic agents facing each other over a metrics artifact: the generator holds a claim card with evidence refs, the critic holds a six-point rubric checklist, and a context firewall separates them from the manuscript. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.13</span>: UC 06 — The Adversarial Handoff. Generator and critic meet only at the artifact; the rubric, not rhetoric, decides (E07 66.7% → E13 0.0%, measured). <strong>Pickleball</strong>: rally narration grounded in event rows. <strong>Rugby league</strong>: set-summary prose grounded in NRLSheet rows and the per-window homography log.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Lane C: Operations &amp; Governance (07-10)</h3>
+
+  <h3 class="sub-heading">UC 07 — Scheduling: The Batch Overnight Run</h3>
+  <p>The recipe registry is the unit of scheduling: a night's batch is an ordered recipe list over a dependency graph — capture before perception, perception before eventing, eventing before modelling — with the content-hash cache as the budget multiplier. The caching contract: frame features keyed <code>(clip_id, frame_idx, model_version, hash)</code>; VLM outputs keyed <code>(clip_id, window_s, prompt_hash, model_version)</code>; one-spine query results keyed <code>(query_hash, spine_version)</code> — a second agent never re-pays the first agent's bill. On an 80-minute nrl-001 broadcast, cache hits are the difference between an overnight job and a post-match review that finishes before the press conference; on a pickleball session, the interpreter's rally question reuses the perception pass the eventer already paid for [verify — the cache-hit economics are the design target, not yet measured end-to-end]. <strong>Payoff:</strong> human attention arrives in the morning to finished artifacts and a bounded queue, never to a running job.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc07-overnight-scheduling.png" alt="Overnight batch schedule: a night timeline from 22:00 to 06:00 with two job lanes — a pickleball session and an NRL match — each a chain of recipe stages, cache-hit badges on shared stages, and a morning review queue at the right edge. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.14</span>: UC 07 — The Night Shift. Recipes chain by dependency; content-hash caching shares stages between consumers; both sports' queues land before breakfast. <strong>Pickleball</strong>: session clip to 8-12 review clips. <strong>Rugby league</strong>: 80-minute broadcast to set chart and exception list.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 08 — The Human Gate: Who Approves (E22)</h3>
+  <p>The gate is always human for claims entering the manuscript or a coaching plan — models propose, a person owns the verdict. The gate's cost is human attention, so the harness's job upstream is volume control, and the measured instrument is E22 (experiments/e22-humans-above-the-loop): a 1,000-event stream across both sports routed through the state machine plus a p &lt; 0.05 gate surfaced <strong>119 alerts — 88.1% routine-noise suppression at 0.08 ms per event</strong>. The gatekeeper then works a bounded set with three dispositions — confirm, correct, reject — and rejections are kept as negative training examples (chapter 26). Honest label: E22's stream is constructed; the suppression mechanics are measured, but its p-values are model parameters, not statistics of real footage [verify on real video]. <strong>Payoff:</strong> the coach decides on the 12% that matters with evidence attached, instead of drowning in the 88% that does not.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc08-human-gate.png" alt="The human gate: a funnel narrowing 1000 events to 119 alerts through a p less than 0.05 filter, a human figure with confirm, correct, and reject stamps, and a silent log collecting the 881 routine events. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.15</span>: UC 08 — Who Approves. E22's gate crushes volume (1,000 → 119, 88.1% suppressed, measured mechanics); the human's three dispositions produce truth, and rejections train the next pass. <strong>Pickleball</strong>: 27 NVZ foot-fault warnings and 25 middle-seam exposures surfaced. <strong>Rugby league</strong>: defensive-line compression and dog-leg rupture alerts through the identical filter.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Agent Observability: The Claims Register as the Dashboard</h3>
+  <p>The repo's <code>state/claims-register.json</code> — 24 claims with VERIFIED, BLOCKED, and RE-LABEL statuses — is the observability layer made concrete. Under the harness, every agent claim becomes a candidate row carrying <code>critic_status</code>, <code>oracle_status</code>, and <code>gate_status</code> fields, so the system's health is readable as a ledger, not inferred from logs. The four harness KPIs publish per sport: <strong>claim-to-artifact alignment</strong> (critic audit pass rate, target ≥ 95% before the gate), <strong>post-critic hallucination rate</strong> (oracle/human audit of what the critic missed, target &lt; 5%), <strong>gate clearance time</strong> (median claim-to-verdict; &lt; 30 min simple claims, &lt; 1 day complex), and <strong>evidence-tier discipline</strong> (fraction using correct tier language, target 100%). A pickleball program and an NRL department report the same four numbers. <strong>Payoff:</strong> "are the agents reliable?" becomes four published numbers with trend lines — and when one stalls, you fix the recipe, not the model.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc09-claims-register.png" alt="The claims register as observability: a ledger table of claim rows with critic, oracle, and gate status columns, VERIFIED, BLOCKED, and RE-LABEL badges, and a sidebar of four KPI gauges. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.16</span>: UC 09 — The Register as Dashboard. Every claim carries its audit trail as row fields; the four KPIs read off the ledger directly. <strong>Pickleball</strong>: a season of rally claims trended by auto-accept rate. <strong>Rugby league</strong>: a match week of set claims with the same four numbers.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — The Compounding Replay (E23, Measured 6.1×)</h3>
+  <p>The harness pays because the second sport replays the first. E23 measured the pickleball-to-NRL transfer: <strong>81.4% code reuse</strong> across the homography engine (82.4%), the ByteTrack/SAM perception (84.5%), the spatiotemporal state machine (73.8%), the tactical graph network (80.0%), and the edge HUD (85.4%); deployment accelerated from <strong>159 build days to 26 — 6.1× faster</strong>. The replay mechanism is the registry itself: versioned like code, a new sport is a configuration delta — PBN rows versus NRL-set rows, the NVZ plane versus the 10 m line, occlusion priors — not a rebuild. Honest label: the reuse percentages are measured on the book's own modules [verify against an external codebase]; the day counts are the lab's build logs, not an industry benchmark. <strong>Payoff:</strong> the second sport costs 16% of the first, and the third costs less — the harness turns each chapter's work into capital the next sport spends.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch27-uc10-compounding-replay.png" alt="The compounding replay: five reusable module chips moving from a pickleball court to a rugby league pitch with an 81 percent reuse badge, and two horizontal bars showing 159 days shrinking to 26 days with a 6.1 times arrow. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 27.17</span>: UC 10 — The Second Sport Is a Delta. Five foundation modules transfer at 81.4% reuse; 159 → 26 build days (E23, measured on the book's modules). <strong>Pickleball</strong>: the source lane the modules were proven on. <strong>Rugby league</strong>: the destination lane that paid only for schemas, geometry, and priors.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">27.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Build the MCP sport-tools server (the tracking-data gap — the chapter project), starting with <code>video</code>, <code>data</code>, <code>claims</code>, <code>code</code>, then <code>get_court_coordinates</code> with its homography metadata contract.</li>
+    <li>Run a 2-agent gen-critic loop on a real pb-003 rally artifact with Langfuse tracing (the observable version of this lab) — then the rugby mirror on an nrl-001 set once its schema matures.</li>
+    <li>Measure the four harness KPIs (alignment, post-critic hallucination, gate clearance time, tier discipline) across a full pickleball session and a full NRL match week, published per sport.</li>
+    <li>Wire the E17 exception engine into the loop end-to-end: alert → claim → critic → gate, and measure what fraction of the 119 surfaced alerts a coach actually acts on.</li>
+    <li>Promote the w6_harness.py stub's function-critic to a real model critic and re-run the APPROVED / REJECT_OVERCLAIM pair to confirm the verdicts survive a smarter adversary.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">27.12</span> Sources</h2>
+  <ul>
+    <li>MCP specification (2026 standard): https://modelcontextprotocol.io/specification/2025-11-25/architecture; LangGraph https://github.com/langchain-ai/langgraph; Claude Agent SDK https://docs.anthropic.com/en/api/agent-sdk; OpenAI Agents SDK https://github.com/openai/openai-agents-python; Google ADK 2.0 https://google.github.io/adk-docs/; CrewAI https://github.com/crewAIInc/crewAI (all verified 2026-08/09).</li>
+    <li>E13 (experiments/e13-vlm-adversarial-loop) — the critic's lineage; E07 (experiments/e07-vlm-narration) — the 66.7% hallucination baseline; E17 (experiments/e17-humans-above-the-loop) — 88.1% noise suppression, 119/1,000 alerts, 0.08 ms; E23 (experiments/e23-compounding-transfer) — 81.4% reuse, 6.1× acceleration; claims register (state/claims-register.json).</li>
+    <li>The 4-Rung Sports Agentic Ladder and Domain Architecture (book-research/Technology Dossiers) — the Rung 2→3→4 framing; enterprise AI transformation principles behind the rung model.</li>
+    <li>USAP Official Rulebook (NVZ plane definitions for the oracle's pickleball domain checks); NRL Laws of the Game (10 m retreat, play-the-ball) for the rugby oracle.</li>
+    <li>Lab: <code>lab/w6_harness.py</code> → <code>experiments/c25-agent-harness/outputs/harness.json</code> (APPROVED / REJECT_OVERCLAIM measured).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="26.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 26</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 26</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</p>
+        </div>
+      </div>
+    </a>
+    <a href="28.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 28</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 28</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The latency budget re-verified, the live/async split, and the alert semantics coaches can trust</p>
+        </div>
+        <a href="28.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

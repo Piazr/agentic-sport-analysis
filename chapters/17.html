@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 17 — Event Data &amp; the Common Representation - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #9A5A2E;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-17" style="background-color: #9A5A2E; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 17</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 17 — Event Data &amp; the Common Representation</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">PBN formalization, rugby's missing schema, and the one-spine standards that make it all queryable</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">29 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-17-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Coordinates Are Not Analysis</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-17-1" data-section="s-17-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Coordinates Are Not Analysis</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-17-1" data-section="s-17-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Coordinates Are Not Analysis</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">17</span> Chapter 17 — Event Data &amp; the Common Representation</h1>
+    <p class="chapter-subtitle">PBN formalization, rugby's missing schema, and the one-spine standards that make it all queryable</p>
+  </header>
+
+<h3 id="s-17-1"><span class="section-num">17.1</span> Coordinates Are Not Analysis</h3>
+
+<p class="section-intro">A coach does not read 10,000 coordinate rows. The bridge from "where everyone was" to "what happened" is the <strong>event row</strong> — a typed, timestamped, evidence-linked statement about the game. The discipline of this chapter: <em>the event row is a contract, and the contract is conservative</em>. It says what it knows, marks what it does not, and refuses to invent. Everything here is <strong>source-backed</strong> (kloppy/SPADL/EPTS standards) or <strong>measured</strong> (the PBN validator ran on our own 11 rows).</p>
+
+  <p>Start with the object itself. <strong>What is an event?</strong> In pickleball, the atomic event is a <em>shot</em> — one player, one contact (or candidate contact), one ball state — and the tactical unit above it is the <em>rally</em>, the ordered span of shots from serve to fault or dead ball. In rugby league, the atomic event is the <em>tackle</em> — ball-carrier stopped, play-the-ball begun — and the tactical unit above it is the <em>set</em>: up to six tackles, conditioned by the count, terminated by a try, an error, a kick, or a handover. The two sports look different on video, yet every event in both answers the same five questions: <strong>who</strong> (athlete), <strong>what</strong> (action), <strong>when</strong> (time), <strong>where</strong> (location), and <strong>what came of it</strong> (outcome). A third-shot drop at frame 214 by the near-left player landing in the kitchen, and a hit-up on tackle 2 at 31 metres from the attacking line, are the same shape of fact. That shape is the common representation.</p>
+
+  <p>The book's own Pickleball Notation (PBN) schema is the reference implementation. Its 31-field data dictionary (written 2026-06-29, validated 2026-09-01) is a real, enforceable contract — and it carries the field's most important convention: <strong>"unknown" is a legal value</strong>. The schema does not force a shot label; it forces honesty. A PBN row is a structured evidence object: what is known, what is candidate, what is missing, and what a human must correct before it becomes stronger evidence.</p>
+
+  <figure id="fig-17-01" class="full">
+    <img src="shared/images/pbn-row-anatomy.png" alt="PBN event row anatomy: contract bar with event_id rally_id source_clip frame_id timestamp player_slot shot_type contact_state confidence evidence_refs, shot_type unknown badge. Recreate: white background, burnt-orange underline." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.1</span>: The PBN Row as a Contract. Eleven of the thirty-one fields, with the honesty clause visible: shot_type carries an "unknown" badge, and that is legal.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.2</span> The One-Spine Data Model</h2>
+  <p>Chapter 5 established the one spine: tracks + events in one schema, one join key. The reason a practitioner needs a spine at all is fragmentation — every vendor ships its own coordinate system, its own event vocabulary, and its own file format. The proven answer, from the soccer ecosystem, is a <strong>provider-agnostic object model with one canonical coordinate space and one join key</strong>. kloppy is the working proof: load StatsBomb, Opta, Wyscout, Metrica, Sportec, Tracab, SkillCorner, or Second Spectrum through separate serializers into the <em>same</em> <code>EventDataset</code>/<code>TrackingDataset</code> objects, then <code>.transform()</code> to whatever coordinate system and orientation the analysis needs. The book extends that pattern in two directions the soccer tools never went: the join key reaches back to <strong>video frames</strong>, not just match time, and every row carries an <strong>evidence layer</strong>.</p>
+
+  <p>The standards that make it real:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Standard</th>
+        <th>What It Gives</th>
+        <th>License</th>
+        <th>Integration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>kloppy</strong> (PySport, 3.19.0)</td>
+        <td>Data model + vendor serializers; periods, frames, events, players, pitch dimensions</td>
+        <td><strong>BSD-3-Clause</strong> (verified 2026-09-01 — corrects an earlier Apache-2.0 note)</td>
+        <td>The ingestion spine — vendor feeds in, kloppy objects out</td>
+      </tr>
+      <tr>
+        <td><strong>SPADL</strong></td>
+        <td>Atomic play-by-play actions (start/end/result) — the <em>explicit PBN ancestor</em></td>
+        <td>Apache-2.0</td>
+        <td>Event semantics: what an action row must contain</td>
+      </tr>
+      <tr>
+        <td><strong>FIFA EPTS</strong></td>
+        <td>Standard tracking data format — the export contract clubs ingest</td>
+        <td>FIFA docs</td>
+        <td>Export lane: "book outputs are EPTS-readable"</td>
+      </tr>
+      <tr>
+        <td><strong>MOTChallenge CSV</strong></td>
+        <td>Benchmark track format (1-based, id=-1 dets)</td>
+        <td>challenge</td>
+        <td>Evaluation lane: track exports comparable to benchmarks</td>
+      </tr>
+      <tr>
+        <td><strong>SoccerNet GSR JSON</strong></td>
+        <td>Broadcast-derived game-state format</td>
+        <td>challenge</td>
+        <td>Reference for the rugby broadcast lane</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Three of these shape the book's schema directly. <strong>kloppy</strong> splits data into <code>EventDataset</code> and <code>TrackingDataset</code>, both wrapped in metadata that declares coordinate system, pitch dimensions, teams, and players — the PBN rule at annotation scale: slot first, stable identity only when it survives review. <strong>SPADL</strong> contributes the row semantics: one row per action, with start and end coordinates, a separate action type vocabulary, and a separate result vocabulary. The design decisions the book inherits: actions are the atom; the action is a vector; result stays separate from type; provider converters map vendor feeds into the language. PBN is, in this book's framing, <em>SPADL for racket sports with evidence fields</em>. <strong>FIFA EPTS</strong> is the professional export contract: a metadata header plus one line per frame sample, per-person channels in centimeters in a center-origin metric frame, ball as its own channel — the vendor-neutral interchange IFAB mandated in 2015.</p>
+
+  <p>The join key is <code>(clip_id, frame_idx, pts_s)</code> — everything joins on it; nothing is matched on fuzzy timestamps. The triplet, not a pair, because the E06 review windows are <em>time intervals</em> but the review UI and dataset schema key <em>frames</em>. <code>pts_s</code> bridges the analyst's clock and the pipeline's frame index, and both must come from one authoritative <code>frame_map.csv</code> — never recomputed downstream. Spine rules: meters canonical, pixels evidence, feet presentation; every event row's <code>evidence_refs</code> resolves to existing <code>(clip_id, frame_idx)</code> pairs; MOTChallenge export is a projection (drop spine columns, fill <code>x,y,z=-1</code>), so TrackEval/HOTA is one SQL query away.</p>
+
+  <figure id="fig-17-02" class="full">
+    <img src="shared/images/event-standards-stack.png" alt="One-spine stack: kloppy SPADL EPTS MOTChallenge GSR chips converging into a DuckDB cylinder. Recreate: white background, burnt-orange converging arrows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.2</span>: The One Spine and Its Standards. Five open formats feed one track+event table; the join key is (clip_id, frame_idx, pts_s).</figcaption>
+  </figure>
+
+  <figure id="fig-17-03" class="full">
+    <img src="shared/images/ch17-spine-er-diagram.png" alt="Entity-relationship diagram: clip manifest, frame map, track rows, event rows, annotators, corrections all joined to a burnt-orange spine bar labeled with the join key (clip_id, frame_idx, pts_s)." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.3</span>: The Spine as an Entity Graph. Six tables — clip manifest, frame map, track rows, PBN event rows, annotators, and the correction layer — each carrying the join key. The correction layer is first-class: first-pass generated rows are never overwritten in place; human corrections live alongside until a regeneration pass supersedes them.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.3</span> Coordinate Conventions</h2>
+  <p>A coordinate is meaningless without its tag. kloppy formalizes three degrees of freedom — <code>Origin</code>, <code>VerticalOrientation</code>, and <code>PitchDimensions</code> — plus the separate <em>orientation</em> problem. The practitioner meets four systems in the wild:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Convention</th>
+        <th>Origin / units</th>
+        <th>Used by</th>
+        <th>Failure mode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Normalized [0..1]</strong></td>
+        <td>Corner origin, unit square</td>
+        <td>kloppy default; event vendors projecting to 100×100 equivalents</td>
+        <td>Distances meaningless until mapped back — all metric information is distorted in standardization</td>
+      </tr>
+      <tr>
+        <td><strong>Own-center metric</strong></td>
+        <td>Pitch/court center, m or cm</td>
+        <td>FIFA EPTS raw data (cm, signed — verified against FIFA's own example file)</td>
+        <td>Needs declared dimensions to interpret in/out of bounds</td>
+      </tr>
+      <tr>
+        <td><strong>Corner metric</strong></td>
+        <td>A corner, all-positive</td>
+        <td>Most tracking vendors</td>
+        <td>Origin/orientation varies per vendor — silent flips when merging feeds</td>
+      </tr>
+      <tr>
+        <td><strong>Image pixels</strong></td>
+        <td>Top-left, y down, px</td>
+        <td>Every detector; MOTChallenge bbox columns</td>
+        <td>Useless for tactics until a homography; the book's rule: pixels are <em>evidence</em>, never canonical</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The book's choice is <strong>metric everywhere, declared on the row</strong>: pickleball on the 13.41 × 6.10 m court, NVZ 2.13 m (C03-verified); rugby league on the 100 × 68 m field, 6–11 m in-goal (C03-verified). Three sport-specific consequences. First, <strong>all bounding lines are part of the NVZ</strong>, so zone-membership predicates use <code>&lt;=</code>/<code>&gt;=</code> on the line, never <code>&lt;</code> — an off-by-one-pixel bug becomes a foot-fault mislabel. Second, the NVZ governs <em>contact</em>, not airspace, so a volley label needs foot position at contact. Third, rugby's 10 m stripes are a calibration gift: broken lines every ten metres make broadcast homography easier than soccer's sparse markings, which puts pitch-meter coordinates within reach for nrl-001. Every other space — pixels, feet, normalized — is a deterministic projection declared in the manifest. Never mix: the coordinate column declares its space and every query filters on it.</p>
+
+  <figure id="fig-17-04" class="full">
+    <img src="shared/images/ch17-coordinate-conventions.png" alt="Four panels of the same pickleball court with a player and ball dot mapped through normalized, corner-metric, center-metric, and pixel coordinate systems; the center-metric panel highlighted as canonical." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.4</span>: One Point, Four Spaces. The same pickleball court position expressed in the four conventions a practitioner actually meets. The canonical store is court meters; the other three are projections with declared parameters.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.4</span> The PBN Contract (Validated W4.1)</h2>
+  <p>The 31 PBN fields group into five blocks, and the grouping is the teaching object: <strong>identity &amp; spine</strong> (<code>event_id, rally_id, sequence_id, source_clip, frame_id, timestamp, event_index</code>), <strong>actor</strong> (<code>player_slot, player_id, team_side, court_zone, bbox</code>), <strong>action</strong> (<code>shot_phase, shot_type, contact_state, ball_visible, paddle_visible, body_state, movement_before/after_contact</code>), <strong>context</strong> (<code>partner_spacing, opponent_spacing, cue, court_state, outcome</code>), and <strong>evidence &amp; governance</strong> (<code>evidence_level, evidence_refs, confidence, human_correction, review_required, coaching_note</code>). The data dictionary's rules, in the form that matters:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rule</th>
+        <th>Contract</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Player identity</strong></td>
+        <td>Player <em>slot</em> (near_left/near_right/far_left/far_right/unknown/not_visible) is the unit; <code>player_id</code> is optional and <em>blank</em> until identity survives multi-frame review — never a name</td>
+      </tr>
+      <tr>
+        <td><strong>Shot type</strong></td>
+        <td><code>unknown</code> is expected unless contact/ball evidence supports the label</td>
+      </tr>
+      <tr>
+        <td><strong>Contact</strong></td>
+        <td><code>contact_state ∈ {confirmed, candidate, not_visible, not_contact, unknown}</code>; <code>candidate</code> means "might be contact, needs review" — not "contact"; do not infer ball path from body posture alone</td>
+      </tr>
+      <tr>
+        <td><strong>Evidence</strong></td>
+        <td><code>evidence_level ∈ {real-experiment-output, real-experiment-output+manual-proxy, manual-proxy, concept-transfer}</code>; <code>evidence_refs</code> point at disk artifacts (e.g. <code>pb-003-frame-01; det_id=1; yolo_conf=0.8713</code>), never claims</td>
+      </tr>
+      <tr>
+        <td><strong>Review</strong></td>
+        <td><code>review_required=yes</code> until a human pass completes; <code>confidence ∈ {high, medium, medium-low, low}</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The dictionary's safe-versus-unsafe note discipline is the chapter's ethics in one example. Safe: <em>"This row can be used as a contact-review target. Shot type is not confirmed."</em> Unsafe: <em>"The player executed a poor speed-up and left the middle open"</em> — a tactical claim from a row with no confirmed ball path, contact, outcome, or identity. The schema cannot enforce taste, but it makes the overreach visible: the unsafe sentence asserts fields the row marks unknown.</p>
+
+  <p>The action vocabulary is the pinned 12-event taxonomy from the dataset schema (E06, ch07 v1): <code>serve, return, third_shot_drop, third_shot_drive, dink, speedup, lob, volley, fault, let, kitchen_foot_fault, contact</code>, with <code>actor ∈ {A1, A2, B1, B2, null}</code>. Notice what the taxonomy encodes about the sport: the third shot gets <em>two</em> types (drop and drive) because it is pickleball's decisive tactical fork; the kitchen foot fault is an event type of its own because the NVZ rule (17.3) makes it detectable from foot-at-contact geometry; and <code>contact</code> exists as a bare type so the pipeline can log a confirmed contact before anyone commits to a shot label. That last entry is the honesty clause operating at the vocabulary level.</p>
+
+  <figure id="fig-17-05" class="full">
+    <img src="shared/images/ch17-pbn-taxonomy.png" alt="Pickleball court from above with twelve event-type chips (serve, return, third shot drop, third shot drive, dink, speedup, lob, volley, fault, let, NVZ fault, contact) pointing at the court locations where each occurs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.5</span>: The PBN 12-Event Taxonomy on the Court. Each event type placed where it lives: serves and returns at the baseline, dinks and NVZ faults at the kitchen line, the third-shot fork in the transition zone. The taxonomy is sport-specific; the row structure carrying it is not.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.4b</span> The Honest Experiment: Validating the Contract</h2>
+  <p>A schema nobody has run is a draft. Our lab loaded the actual canonical event rows — <strong>11 rows × 31 fields</strong>, from the pb-003 clip with its manual contact-review correction layer — and validated every machine-checkable dictionary rule: enum membership for <code>player_slot</code>, <code>contact_state</code>, <code>ball_visible</code>, <code>paddle_visible</code>, <code>evidence_level</code>, <code>confidence</code>, <code>human_correction</code>, <code>review_required</code>, and <code>team_side</code>; non-empty <code>evidence_refs</code>; and the spine rule that every referenced frame resolves in the manifest. The measured result (transcript and metrics on disk at <code>experiments/c17-event-data/outputs/metrics.json</code>): <strong>0 violations, verdict PASS</strong>. Mandatory-field coverage was 100%; <code>player_id</code> was correctly 0% filled — identity unresolved, which is chapter 13's problem, and the schema behaving exactly as designed by <em>not</em> guessing.</p>
+
+  <p>The validator is about 30 lines of Python and runs on every commit. Its lesson, verbatim from the lab output: <em>"The PBN contract is conservative BY DESIGN: unknown is a legal value, candidate is not confirmed, human_correction=needed is expected on most rows. Validation is about catching typos, not forcing spec — the honesty gate is the 'unknown' bucket."</em> This is the failure mode the chapter exists to prevent, stated positively: most event pipelines fail by being too confident — every detector guess promoted to a fact, every gap silently interpolated. A schema whose allowed values include <code>unknown</code>, <code>candidate</code>, and <code>not_visible</code> makes under-confidence representable, and the CI gate makes overconfidence a build failure. The validator catches typos; the taxonomy catches hubris.</p>
+
+  <h2 class="section-title"><span class="section-num">17.5</span> The Rugby Schema: NRLSheet</h2>
+  <p>The verified gap: rugby has no kloppy-equivalent open event pipeline and no public tracking corpus. The official NRL pipe is closed — Stats Perform/Opta is the official data provider (a decade-long partnership feeding NRL.com and broadcast), Hudl owns the club workflow, Catapult owns wearables. What exists openly is aggregate-level: <code>nrlR</code> (CRAN) scrapes NRL.com, Rugby League Project, and Zero Tackle into tidy tibbles of fixtures, ladders, and player stats; Rugby League Project provides the stable entity IDs that make entity resolution possible; UselessNRLStats ships cleaned CSVs of in-game stats. Whether any open source exposes true <em>tackle-by-tackle</em> event rows, rather than match aggregates, is <strong>[verify]</strong> — the sources on record are aggregate-level, and that gap is precisely the book's contribution.</p>
+
+  <p>The model for filling it is <strong>Cricsheet</strong>, which solved the same problem in cricket: a closed official pipe and a community that needed a shareable, versioned, ball-by-ball open format. Its lessons transfer directly: one delivery equals one row with innings/over/ball addressing — rugby league's equivalent addressing is <strong>set:tackle</strong>; a registry of people IDs separate from names; a structured source of truth (YAML/JSON) with CSV as a projection; and a per-file metadata header (match, teams, venue, date) so rows are interpretable standalone. The book's proposal — <strong>NRLSheet</strong> — is tackle-by-tackle: set count, tackle number, PTB timestamp, field position, possession, kick type, try/conversion/penalty fields.</p>
+
+  <p>The field semantics differ from football in the way the set grammar demands. A soccer SPADL row is a pass or a shot; a rugby league row is a <em>state</em> row: the tackle count is the conditioning variable (a run on tackle 1 is a field-position play; on tackle 6 with no kick it is a turnover). Contact, which soccer records only as fouls and cards, is the centre of the rugby game — a tackle event carries <code>tackler_ids[]</code>, <code>tackle_type</code>, and, in the welfare lane, head-contact flags per the Bath 2025 CV framework. NRLSheet therefore carries: <code>set_number</code>, <code>tackle_number</code> (1-6, plus six-again resets), <code>ptb_timestamp</code>, <code>field_position_m</code> (metres from the attacking team's own try line on the 100 × 68 m field), <code>possession</code>, <code>kick_type ∈ {grubber, bomb, chip, touch_finder, goal_line_dropout, last_tackle}</code>, <code>outcome ∈ {try, error, handover, penalty}</code>, and the identity fields (<code>player_id</code> from the roster join, chapter 13). The schema is the book's contribution, and it is stated as such.</p>
+
+  <p>Why not just reuse kloppy? Because kloppy is soccer-first by construction: its event taxonomy (<code>PassEvent</code>, <code>ShotEvent</code>, <code>CardEvent</code>, …) and serializers cover association-football providers only — no rugby serializers, no rugby event types, no set/tackle counting semantics, no play-the-ball, no kick-on-last structure; even scoring breaks the model (try = 4, conversion, penalty goal, field goal). What transfers is the chassis — datasets, metadata, coordinate systems, <code>.transform()</code> — which is why NRLSheet is specified as kloppy-<em>shaped</em> plus the PBN evidence layer rather than as a kloppy fork. And the schema is validated by a published model's appetite: Kempton, Kennedy &amp; Coutts (2016) built the canonical NRL expected-possession-value model on 768 matches (2010–13), showing possession value rises monotonically toward the try line. EPV needs exactly the fields NRLSheet proposes — set, tackle, field position, outcome — so the value model for the schema already exists in the literature.</p>
+
+  <p>The honest boundary: NRLSheet v1 codifies what <em>event data</em> can say. Tracking data (per-frame positions) stays a separate table under MOTChallenge/EPTS conventions, joined by <code>(clip_id, pts_s)</code>. Events reference the track-level evidence that produced them, and the evidence-tier column carries the same four labels as PBN.</p>
+
+  <figure id="fig-17-06" class="full">
+    <img src="shared/images/ch17-nrl-set-of-six.png" alt="Rugby league field strip marked in 10m bands with six tackle-event markers stepping toward the try line, play-the-ball icons between them, each marker carrying a small data chip such as set 3, tackle 2, x_m 68, ptb 2.9s." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.6</span>: NRLSheet Row Anatomy — a Set of Six. Rugby addressing is set:tackle, not clock time. Each tackle marker carries its data chip: field position in metres from the attacking team's own line, and PTB (play-the-ball) speed — the ruck-speed metric CV must infer from the PTB frame to first touch.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.5b</span> The Common Representation Across Sports</h2>
+  <p>The five questions of §17.1 map onto both row contracts:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>SPADL (soccer)</th>
+        <th>PBN (pickleball)</th>
+        <th>NRLSheet (rugby league)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Athlete</strong></td>
+        <td><code>player_id, team_id</code></td>
+        <td><code>player_slot</code> + blank <code>player_id</code></td>
+        <td><code>actor_id</code> (roster join) / <code>tackler_ids[]</code></td>
+      </tr>
+      <tr>
+        <td><strong>Action</strong></td>
+        <td><code>actiontype, bodypart</code></td>
+        <td>12-event enum + <code>shot_phase</code></td>
+        <td>tackle / PTB / run / pass / kick / try</td>
+      </tr>
+      <tr>
+        <td><strong>Time</strong></td>
+        <td><code>period_id, time_seconds</code></td>
+        <td><code>frame_id, timestamp</code> (spine key)</td>
+        <td><code>half, clock_s</code> + <code>set_no, tackle_no</code></td>
+      </tr>
+      <tr>
+        <td><strong>Location</strong></td>
+        <td><code>start_x/y, end_x/y</code> (105×68)</td>
+        <td>court meters, NVZ-aware zones</td>
+        <td><code>field_position_m</code> from own try line</td>
+      </tr>
+      <tr>
+        <td><strong>Outcome</strong></td>
+        <td><code>result</code> (separate from type)</td>
+        <td><code>outcome</code>, unknown-first</td>
+        <td><code>outcome ∈ {try, error, handover, penalty}</code></td>
+      </tr>
+      <tr>
+        <td><strong>Evidence</strong></td>
+        <td>— (provider-trusted)</td>
+        <td><code>evidence_level, evidence_refs, confidence</code></td>
+        <td>same four-tier layer, CV or scrape sourced</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The evidence row is where the schemas diverge from their ancestors on purpose. SPADL rows trust the provider; PBN and NRLSheet rows carry provenance because they are produced by a CV pipeline that can be wrong, corrected by a human layer, and versioned by a schema that evolves. The taxonomies stay sport-specific — nobody needs <code>dink</code> in rugby or <code>six_again</code> in pickleball — but the skeleton and the evidence layer are shared verbatim. "Common representation" means one <em>shape</em> for the fact, with the vocabulary as a pluggable enum. The payoff: C18, C19, and C20 each read one row shape; the sport-specific code is the enum and the geometry, nothing else.</p>
+
+  <figure id="fig-17-07" class="full">
+    <img src="shared/images/ch17-common-representation.png" alt="Pickleball rally panel and rugby league tackle panel both converging via arrows into one shared row of five boxes: athlete, action, time, location, outcome, with an evidence bar beneath." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.7</span>: The Common Representation. A pickleball rally and a rugby league set produce the same five-field fact plus an evidence layer. The sport lives in the taxonomy and the geometry; the row shape is shared.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.6</span> Versioning &amp; Validation</h2>
+  <p>The PBN v2 proposal (from the dossier) is experiment-gated — each delta ships only when a lab proves it: the spine key on every row, court-meter start/end coordinates, taxonomy promotion, structured evidence_refs, schema_version, review_state machine, rally-span fields. Non-goals stated: no per-player identity as a hard field (identity is chapter 13), no spin fields (the C12 frontier), no rugby fields in PBN (NRLSheet is a sibling schema, not a superset — the spine and evidence layer are shared, the taxonomy is not).</p>
+  <p>A schema without tests is a suggestion. The discipline:</p>
+  <ol>
+    <li><strong>Schema as JSON Schema</strong>: the dataset/pb003 schema is v1 (12 court keypoints, 4 players, ball states, 12 event types, draft 2020-12 with a versioned <code>$id</code>, <code>const</code> pins on identity fields, patterns on frame IDs, enums on every categorical). It is machine-validatable and it is what the G0.5 dataset contribution ships.</li>
+    <li><strong>Data dictionary in markdown</strong>: the PBN dictionary's 31 fields with allowed values and the "current rule" column — the human-readable half of the contract. The two halves must never drift: every enum in the schema appears in the dictionary; every dictionary rule that <em>can</em> be an enum <em>is</em> an enum.</li>
+    <li><strong>Validation tests</strong>: every row against the dictionary in CI (the C17 validator is 30 lines of Python; it ran on our 11 rows: 0 violations, 100% mandatory-field coverage).</li>
+    <li><strong>Migration rules</strong>: v1 → v2 additive (new fields default to unknown; no renames without a migration script plus a fixture assert). Old files stay valid under their declared version; readers dispatch on <code>schema_version</code>.</li>
+    <li><strong>Manifest hash on every change</strong>: the schema version is part of the evidence chain; a row produced by v1 is not the same as one from v2, and a diff of the schema is a diff of the dataset's meaning.</li>
+    <li><strong>The unknown is first-class</strong>: the schema's allowed values include unknown, candidate, not_visible. The validation is about catching typos, not forcing spec.</li>
+  </ol>
+
+  <p>Two further rules deserve emphasis. <strong>Annotation quality is schema-level</strong>: the pb003 schema carries an <code>annotators</code> block with role, agreement metric (<code>cohen_kappa, iou, distance_px</code>), and value — inter-rater reliability is part of the dataset, not a paper afterthought, and C18 and C20 read it. <strong>License travels with the data</strong>: the <code>license</code> object is required, not metadata-by-convention — pb-003 labels can ship while PPA frames stay non-redistributable, and NRLSheet rows scraped via nrlR inherit their sources' terms. The lesson generalizes from C16's licensing landmines.</p>
+
+  <figure id="fig-17-08" class="full">
+    <img src="shared/images/ch17-event-json-schema.png" alt="JSON schema drawn as an indented tree: event root with event_id, clip_id, frame_idx, pts_s, actor, action, x_m, y_m, outcome children; the evidence_refs subtree highlighted in burnt orange expanding into clip, frame, det_id, conf; small type tags on leaves." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.8</span>: The Event Row as a Machine Contract. The v2 event object: spine key fields first, the five-question skeleton in the middle, and the evidence_refs subtree — structured so the spine rule "every reference resolves in the manifest" is checkable in CI rather than enforced by hope.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">17.6b</span> The Event-Model Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the contracts above to daily practice. They follow three categories: <strong>Cat-A The Row as a Contract (01-03)</strong>, <strong>Cat-B Time, Space &amp; Provenance (04-07)</strong>, and <strong>Cat-C Storage, Granularity &amp; Audit (08-10)</strong>. Each case pairs a pickleball and a rugby league application so the spine transfers, and each carries its evidence label: measured (book experiment), source-backed (paper/standard), or [verify] (practitioner model, not yet established).</p>
+
+  <h3 class="sub-heading">Category A: The Row as a Contract (01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Reading a PBN Row: Anatomy of One Shot</h3>
+  <p>A coach asks "what happened on the third shot?" and the honest answer is a row, not a paragraph. The mechanism is the five-block read: identity &amp; spine fields resolve the row against <code>frame_map.csv</code>; actor fields give the slot, never a guessed name; action fields say what is confirmed versus candidate; context fields state visibility honestly; evidence fields point at disk artifacts. Formally the row is a tuple over the 31-field dictionary with enum domains — <code>contact_state ∈ {confirmed, candidate, not_visible, not_contact, unknown}</code> — and the compliance test is: every claim the row makes is licensed by a field whose value supports it. <strong>Measured: the canonical 11-row pb-003 set passes this read with 0 violations (W4.1).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc01-pbn-row-read.png" alt="One PBN event row exploded into labeled field chips, with the shot_type chip carrying an unknown-OK badge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.9</span>: UC 01 — PBN Row Read. The five blocks of one shot row, with the honesty badge visible. <strong>Pickleball</strong>: a third-shot row with <code>shot_type=unknown</code>, <code>contact_state=candidate</code> — a review target, not a verdict. <strong>Rugby league</strong>: the same read discipline applied to a tackle row whose <code>ptb_speed_s</code> is still provisional.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the reviewer and the coach — one row answers "what do we actually know?" in under a minute, and the unknowns route straight into the C18 review queue.</p>
+
+  <h3 class="sub-heading">UC 02 — Reading an NRL-Set Row: Set:Tackle Addressing</h3>
+  <p>A rugby league possession is not a timestamp range — it is a numbered set of up to six tackles, and the tackle count is the conditioning variable. The mechanism: address every event by <code>(half, clock_s, set_no, tackle_no)</code>, store <code>field_position_m</code> as metres from the attacking team's own try line with an orientation flag, and compute ruck speed as <code>ptb_speed_s = t(first_touch) − t(ptb_frame)</code>. The schema is validated by a published model's appetite: Kempton, Kennedy &amp; Coutts (2016) need exactly set, tackle, field position, and outcome for expected possession value — 768 matches, source-backed.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc02-nrl-set-row.png" alt="Rugby league field strip with one event row exploded into chips: set 3, tackle 2, x_m 68, ptb 2.9s." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.10</span>: UC 02 — NRL-Set Row Read. Rugby addressing is set:tackle, not clock time. <strong>Rugby league</strong>: a tackle-2 row at 68 m with a 2.9 s PTB — a fast ruck in attacking territory. <strong>Pickleball</strong>: the equivalent addressing is rally:shot_index, with the third shot as the tactical fork.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the analyst — EPV-style value models (C22) become computable on day one because the schema was designed around the covariates the literature already proved matter.</p>
+
+  <h3 class="sub-heading">UC 03 — The Common Representation in One Query</h3>
+  <p>The test of a common representation is not a diagram — it is whether one SQL query runs unchanged against both sports' rows. The mechanism: one row shape (the five questions plus the evidence layer), the sport isolated in the taxonomy enum and the geometry. A query like <code>SELECT actor, event, x_m, outcome FROM events WHERE evidence_level = 'real-experiment-output'</code> reads PBN rows and NRLSheet rows identically; swapping sports means swapping the enum, not the schema. <strong>Source-backed design (SPADL/kloppy); measured on the PBN side (11 rows); NRLSheet side is the proposed sibling [verify] until its v1 validator runs (17.8).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc03-common-representation-query.png" alt="Pickleball shot row and rugby tackle row converging into one shared five-box row with an evidence bar and a query chip." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.11</span>: UC 03 — One Shape, Two Sports. The row skeleton is shared; the vocabulary is a pluggable enum. <strong>Pickleball</strong>: shot rows with the 12-event taxonomy. <strong>Rugby league</strong>: tackle rows with set:tackle addressing — same skeleton, different enum.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the data engineer — C18, C19, and C20 each read one row shape; the sport-specific code is the enum and the geometry, nothing else.</p>
+
+  <h3 class="sub-heading">Category B: Time, Space &amp; Provenance (04-07)</h3>
+
+  <h3 class="sub-heading">UC 04 — Event Timestamp Alignment: One Clock, One Map</h3>
+  <p>The analyst thinks in seconds; the pipeline thinks in frames; the review UI scrubs frames while the review windows are time intervals. The mechanism is the spine triplet <code>(clip_id, frame_idx, pts_s)</code> with the rule that <code>pts_s = frame_idx / fps</code> is computed <em>once</em>, in the ingest <code>frame_map.csv</code>, and never recomputed downstream — every recomputation is a drift opportunity. <strong>Measured context: E06's review windows (8.33 s / 12.83 s) are time intervals, but the dataset schema keys frames (<code>^pb-003-frame-[0-9]{3}$</code>) — the triplet is what makes both addressable from one row.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc04-timestamp-alignment.png" alt="Frame timeline aligned to a seconds axis through burnt-orange ticks rooted in a frame_map.csv table chip." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.12</span>: UC 04 — One Clock, One Map. Frames and seconds join only through the authoritative frame map. <strong>Pickleball</strong>: a contact frame pinned to pts_s for the review scrubber. <strong>Rugby league</strong>: broadcast 25 fps aligned to the match clock for PTB timing.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the reviewer — a click in the review UI lands on the exact frame the detector saw, not a frame 40 ms away because someone recomputed time downstream.</p>
+
+  <h3 class="sub-heading">UC 05 — Event Metadata: Model, Version, Confidence</h3>
+  <p>An event row without provenance is an assertion; with provenance it is evidence. The mechanism: <code>evidence_refs</code> is structured, not free text — <code>{clip_id, frame_idx, det_id, model, model_version, conf}</code> — and <code>evidence_level</code> carries the four provenance tiers (<code>real-experiment-output → concept-transfer</code>). Confidence is a pinned enum (<code>high, medium, medium-low, low</code>), not a float that invites false precision. The canonical rows already smuggle this in text (<code>det_id=1; yolo_conf=0.8713</code>); v2 makes it queryable and makes the spine rule "every reference resolves in the manifest" checkable in CI.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc05-event-metadata.png" alt="Event row chip with a provenance ribbon showing model, version, confidence, evidence tier, and a human review tick." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.13</span>: UC 05 — Provenance on the Row. Every claim carries its producing artifact and its honesty tier. <strong>Pickleball</strong>: a dink row traced to det_id=1 at yolo_conf=0.8713. <strong>Rugby league</strong>: a tackle row traced to the CV tackle candidate that proposed it, tier-labeled until human-confirmed.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the auditor and the downstream model — C19's automatic eventing can filter "CV-sourced, unreviewed" rows out of any published stat with one WHERE clause.</p>
+
+  <h3 class="sub-heading">UC 06 — Coordinate Conventions in Practice: The Tagged-Space Rule</h3>
+  <p>The most expensive silent bug in sport analytics is merging two feeds with different corner origins and watching every player teleport 6 metres. The mechanism is kloppy's formalization — every coordinate carries <code>(Origin, VerticalOrientation, PitchDimensions)</code> plus an orientation flag, and transform is a pure function between tagged spaces — with the book's storage rule on top: meters canonical, pixels evidence, feet presentation. Sport geometry rides the same rule: NVZ membership is <code>&lt;=</code> on the line because all bounding lines are part of the zone (C03-verified); rugby's <code>field_position_m</code> is meaningless without the orientation flag saying which end they attack.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc06-coordinate-tag.png" alt="Pickleball court with one ball dot and four axis tags — pixels, court meters, feet, normalized — meters highlighted as canonical." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.14</span>: UC 06 — One Point, Tagged Four Ways. Every coordinate carries its space tag; the canonical store is court/field meters. <strong>Pickleball</strong>: NVZ predicates in meters on the 13.41 × 6.10 m court. <strong>Rugby league</strong>: metres from own try line on the 100 × 68 m field, orientation flag attached.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the data engineer — merging a CV feed with a vendor feed becomes a declared transform instead of a debugging week, and foot-fault predicates stop having off-by-one-pixel bugs.</p>
+
+  <h3 class="sub-heading">UC 07 — The JSON Schema in Production: CI as the Contract's Teeth</h3>
+  <p>A schema nobody runs is a suggestion. The mechanism: JSON Schema draft 2020-12 with a versioned <code>$id</code>, <code>const</code> pins on identity fields (<code>dataset_id</code>, clip path, <code>fps: 25</code>), regex patterns on frame IDs, and enums on every categorical — validated by the <code>jsonschema</code> library in CI on every commit, plus the 30-line dictionary validator that checks the rules the schema cannot express. <strong>Measured: the pb-003 schema validates the canonical 11 rows × 31 fields with 0 violations and 100% mandatory-field coverage (experiments/c17-event-data/outputs/metrics.json, 2026-09-01).</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc07-json-schema-ci.png" alt="JSON tree flowing through a burnt-orange CI gate into a database cylinder, with a PASS shield and one FAIL cross." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.15</span>: UC 07 — The Schema with Teeth. Rows that violate the contract fail the build; rows that pass land in the spine. <strong>Pickleball</strong>: the pb003 v1 schema gating every label batch. <strong>Rugby league</strong>: the same CI pattern reserved for the NRLSheet v1 schema (17.8).</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the whole pipeline — overconfidence becomes a build failure, and "the dataset changed meaning" shows up as a schema diff, not a silent drift.</p>
+
+  <h3 class="sub-heading">Category C: Storage, Granularity &amp; Audit (08-10)</h3>
+
+  <h3 class="sub-heading">UC 08 — Event Storage &amp; the C19 Feed</h3>
+  <p>Event rows are write-once, read-many: the CV pipeline and the correction layer write them; annotation (C18), automatic eventing (C19), and statistics (C20) read them. The mechanism: event rows land in Parquet beside the track rows, both keyed by the spine triplet, with DuckDB as the SQL layer — and the standards projections are views, not copies: MOTChallenge export is one query (drop spine columns, fill <code>x,y,z=-1</code>), so TrackEval/HOTA evaluation of any tracking change is one SQL statement away. The correction layer is first-class storage: first-pass generated rows are never overwritten in place; human corrections live alongside until a regeneration pass supersedes them.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc08-event-storage-feed.png" alt="Pipeline from video clip through detector and event rows into Parquet and a database cylinder, branching to review, eventing, and stats consumers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.16</span>: UC 08 — One Store, Three Readers. The spine feeds annotation, eventing, and statistics from one Parquet store. <strong>Pickleball</strong>: pb-003 rows feeding the E06 review UI. <strong>Rugby league</strong>: scraped nrlR rows and CV tackle rows sharing the same store, tier-labeled apart.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the pipeline owner — no export scripts to maintain, no stale copies; the benchmark projection and the coaching query read the same bytes.</p>
+
+  <h3 class="sub-heading">UC 09 — Fine Events vs Coarse Events: The Granularity Tradeoff</h3>
+  <p>Every annotation program picks a granularity and pays for it twice — once in labeling time, once in error surface. Fine events (12 shot types per rally) maximize tactical resolution but multiply the rows a human must review; coarse events (rally spans with outcomes) are cheap and robust but cannot answer "was the third shot a drop or a drive?" The mechanism is the honest rule: <strong>record at the finest granularity you can validate, publish at the coarsest granularity that answers the question</strong> — the fine rows carry <code>review_required=yes</code>, the coarse aggregates carry only what survived review. E06's rally spans (8.33 s / 12.83 s) are the measured coarse layer; the 12-event taxonomy is the pinned fine layer.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc09-fine-vs-coarse.png" alt="Two timelines of the same rally: a dense fine timeline of twelve shot ticks and a coarse timeline of two rally-span brackets." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.17</span>: UC 09 — The Granularity Tradeoff. Fine rows for review, coarse rows for publishing. <strong>Pickleball</strong>: shot-level rows beneath rally-level spans. <strong>Rugby league</strong>: tackle-level rows beneath set-level summaries (completion, meters gained) — the NRL headline stats are the coarse projection.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the analyst and the budget — review effort concentrates on the rows that carry tactical value, and published numbers never rest on unreviewed fine grain.</p>
+
+  <h3 class="sub-heading">UC 10 — The Event-Quality Audit: Agreement as Data</h3>
+  <p>An event dataset without a measured disagreement rate is an unaudited claim. The mechanism is schema-level: the <code>annotators</code> block carries <code>role</code> and an agreement metric (<code>cohen_kappa</code>, <code>iou</code>, or <code>distance_px</code>) with its value, so inter-rater reliability ships inside the dataset — C18 and C20 read it directly, with Landis-Koch interpretation on record. The audit loop closes against C16's lesson: any generated sentence about a match is falsifiable against the rows (E07 measured a 66.7% ungrounded-claim error baseline), and every correction lands in the correction layer, never as a silent overwrite. <strong>[verify] for the rugby side: no public tackle-by-tackle corpus exists to audit against — the audit discipline is what NRLSheet v1 must be born with.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/ch17-uc10-quality-audit.png" alt="Magnifier over an event table, two annotator icons joined by a kappa symbol, agreeing rows checked and one disputed row flagged." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 17.18</span>: UC 10 — Agreement as Data. Inter-rater reliability is a schema field, not a paper afterthought. <strong>Pickleball</strong>: kappa over the 12-event taxonomy on pb-003 review windows. <strong>Rugby league</strong>: the same block reserved for NRLSheet annotators — CV model versus human coder.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the reviewer and the reader — every published stat carries its measured agreement, and every correction is auditable back to the row it superseded.</p>
+
+  <p>These ten use cases are one system read ten ways: the row as contract (01-03), the spine in operation (04-07), and the store under audit (08-10). They extend existing chapters — C05's spine, C18's review workflow, C19's automatic eventing, C20's statistics, C22's value models — and the honest labels mark exactly which claims are measured in the book's lab (the 11-row validation, the E06 windows, the E07 baseline) versus proposed for the rugby sibling (NRLSheet v1).</p>
+
+  <h2 class="section-title"><span class="section-num">17.7</span> The Event-Row Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Schema first</strong>: define the row contract (event_id, rally_id, clip, frame, time, slot, type, confidence, evidence_refs) — the PBN dictionary is the pickleball reference; NRLSheet is the rugby one. Answer the five questions (athlete, action, time, location, outcome) plus evidence; plug in the sport's taxonomy as an enum.</li>
+    <li><strong>Validate in CI</strong>: every row against the dictionary's allowed values (the C17 validator is 30 lines of Python and runs on every commit).</li>
+    <li><strong>Coordinate declare</strong>: metric court/pitch coordinates; never mix spaces without declaring; respect sport geometry (NVZ lines inclusive with <code>&lt;=</code>; rugby metres from the attacking team's own line with an orientation flag).</li>
+    <li><strong>Conservative defaults</strong>: shot_type=unknown, player_id blank, contact_state=candidate — the schema's honesty IS the value.</li>
+    <li><strong>Evidence links</strong>: every row's evidence_refs point at the artifact that produced it, and CI checks that the referenced frames exist in the manifest.</li>
+    <li><strong>Version the schema</strong>: additive migrations, manifest hash, fixture assert against format drift; corrections live in a correction layer, never as silent in-place overwrites.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">17.8</span> What I Would Measure Next</h2>
+  <ul>
+    <li><strong>Convert the PBN rows to kloppy-normalized events</strong> (the vendor-format bridge): wrap the pb-003 track rows and E06 rally spans (8.33 s / 12.83 s) in a kloppy-shaped object — one <code>RallyPeriod</code> per rally, A1–B2 player slots, 13.41 × 6.10 m <code>PitchDimensions</code> with NVZ markings at 2.13 m — and prove the <code>.to_df()</code> output joins the Parquet track rows on <code>(clip_id, frame_idx, pts_s)</code> with zero orphans.</li>
+    <li><strong>Draft the NRLSheet schema v1 and validate 50 nrlR event rows against it</strong> — then the harder, more valuable half: produce one NRLSheet-conformant tackle sequence from the nrl-001 broadcast by hand-coding one set of six (tackle candidates from the C19 detector lane per the Bath 2025 framework, field position via homography on the 10 m stripes, PTB speed from PTB frame to first-touch frame, evidence layer exactly as PBN). Acceptance: one JSON file passing the v1 NRLSheet JSON Schema — the schema itself is the deliverable — with rows joining nrl-001's <code>frame_map.csv</code>.</li>
+    <li><strong>The pklmart prior bridge</strong>: 300K+ shot records across ~1,000 matches give pickleball its first scale-grade statistical prior (license <strong>[verify]</strong> before print); a pklmart→PBN serializer would let priors and video-evidence rows share one shape.</li>
+    <li><strong>The EPTS writer</strong>: no open-source Python EPTS writer was found (<strong>[verify]</strong> once more before building); shipping one would make every book output club-ingestable.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">17.9</span> Sources</h2>
+  <ul>
+    <li>kloppy (PySport, BSD-3-Clause, 3.19.0): <code>https://kloppy.pysport.org/</code>, <code>https://github.com/PySport/kloppy</code>, coordinates guide <code>https://kloppy.pysport.org/user-guide/concepts/coordinates/</code>; SPADL/socceraction (Apache-2.0): <code>https://socceraction.readthedocs.io/en/latest/documentation/spadl/spadl.html</code>; Atomic VAEP arXiv:2011.00126 <strong>[verify arXiv id]</strong>.</li>
+    <li>FIFA EPTS Standard Data Format (page updated 2026-04-01): <code>https://inside.fifa.com/innovation/standards/epts/research-development-epts-standard-data-format</code>; MOTChallenge: <code>https://motchallenge.net/instructions/</code> + TrackEval format spec; SoccerNet GSR: <code>https://github.com/SoccerNet/sn-gamestate</code>.</li>
+    <li>Kempton, Kennedy &amp; Coutts (2016), NRL expected possession value, 768 matches: <code>https://pubmed.ncbi.nlm.nih.gov/26190116/</code>; Bath 2025 head-contact CV framework: <code>https://pubmed.ncbi.nlm.nih.gov/39832883/</code>.</li>
+    <li>NRL open data: nrlR <code>https://cran.r-project.org/package=nrlR</code>; Rugby League Project <code>https://www.rugbyleagueproject.org</code>; UselessNRLStats <code>https://github.com/uselessnrlstats/uselessnrlstats</code>; Stats Perform/Opta NRL partnership <code>https://www.statsperform.com/insights/ten-years-as-official-nrl-data-provider/</code>; Cricsheet <code>https://cricsheet.org</code> (exact license <strong>[verify]</strong>); pklmart <code>https://www.kaggle.com/datasets/cakesofspan/pklmarts-competitive-pickleball-extracts</code> (license <strong>[verify]</strong>).</li>
+    <li>PBN Data Dictionary (book-research/PBN, 2026-06-29) — 31 fields, allowed values; canonical rows <code>2026-06-29-pb-003-pbn-event-rows.csv</code> + correction layer <code>2026-06-29-pb-003-manual-contact-review.csv</code>; dataset schema <code>dataset/pb003/pb003.schema.json</code>.</li>
+    <li>Lab: <code>lab/w4_lab_event_data.py</code> → <code>experiments/c17-event-data/outputs/metrics.json</code> (11 rows, 0 violations, measured 2026-09-01).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="16.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 16</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 16</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</p>
+        </div>
+      </div>
+    </a>
+    <a href="18.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 18</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 18 — Annotation: The Ground-Truth Workflow</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 18</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 18 — Annotation: The Ground-Truth Workflow</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 18 — Annotation: The Ground-Truth Workflow</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Tooling, label budgets, inter-annotator agreement, and the discipline that makes labels trustworthy</p>
+        </div>
+        <a href="18.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #A2542A;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

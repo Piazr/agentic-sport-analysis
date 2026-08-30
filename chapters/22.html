@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-22" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 22</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The possession-value ladder, pickleball's missing model, and the rugby anchor that needs no tracking data</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">33 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-22-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Value Is a Decision-Relevant Number</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-22-1" data-section="s-22-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Value Is a Decision-Relevant Number</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-22-1" data-section="s-22-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Value Is a Decision-Relevant Number</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">22</span> Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h1>
+    <p class="chapter-subtitle">The possession-value ladder, pickleball's missing model, and the rugby anchor that needs no tracking data</p>
+  </header>
+
+<h3 id="s-22-1"><span class="section-num">22.1</span> Value Is a Decision-Relevant Number</h3>
+
+<p class="section-intro">A coach's question is rarely "what happened" — it is "was that the right choice?" The answer requires a <strong>value model</strong>: what is a court state worth, and what was the action worth from that state? This chapter is the ladder of value models, the pickleball gap this book fills, and the rugby anchor that exists precisely because rugby league's public data is event-based, not tracking-based.</p>
+
+  <p>Two running decisions anchor the chapter. In <strong>pickleball</strong>: third shot, serving team, the return has come back deep with backspin — drive it hard, or drop it soft into the kitchen? In <strong>rugby league</strong>: fifth tackle, ball on the opposition thirty-metre line — run the set play, or kick for the corner? Neither question is answerable from event counts alone. "He dropped 60% of his third shots" describes behavior; it says nothing about whether the drop was <em>worth</em> more than the drive from that state. The value model is the bridge between the PBN/NRLSheet event rows of chapter 17 and a number a coach can act on.</p>
+
+  <p>Every claim in this chapter carries one of three labels. <strong>Source-backed</strong>: a published method with a citable paper (xG, xT, VAEP, the Sawczuk rugby EPV family). <strong>Measured</strong>: our lab's own experiment output, cited by its experiment ID (the C22-lab calibration report). <strong>[verify]</strong>: a practitioner-model number that TacticalVerify could not find in the literature — real enough to teach with, not real enough to cite as established. The Delta-EPV decision boundary of §22.4 is the chapter's one [verify] artifact, and it is labeled as such every time it appears.</p>
+
+  <figure id="fig-22-01" class="full">
+    <img src="shared/images/value-xt-heatgrid.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.1</span>: The xT Heat Grid (transferred). Value of location: the kitchen is darkest (highest threat), the baseline lightest. The grid is the value model's visual.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.2</span> The Possession-Value Ladder</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Computes</th>
+        <th>Sport Fit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>xG</strong></td>
+        <td>P(shot becomes a goal)</td>
+        <td>Soccer; not applicable to pickleball's rally structure (no discrete shot-to-goal)</td>
+      </tr>
+      <tr>
+        <td><strong>xT</strong></td>
+        <td>Expected threat of being in a location with the ball</td>
+        <td>Any sport with location states — the heat grid (karun.in)</td>
+      </tr>
+      <tr>
+        <td><strong>VAEP</strong></td>
+        <td>Action value = value(state after) − value(state before)</td>
+        <td>Soccer (socceraction/SPADL); the transferable accounting</td>
+      </tr>
+      <tr>
+        <td><strong>EPV</strong></td>
+        <td>Expected points of a possession through time</td>
+        <td>Basketball (Cervone 2014), NFL; the possession worth</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The ladder matters because each rung answers a different question, and picking the wrong rung is the most common practitioner error. <strong>xG</strong> asks "was that shot a good idea?" — a binary-outcome probability conditioned on shot location, angle, body part, and defensive pressure. It is descriptive, not magical: it tells you what an average finisher does from that spot, not whether your striker is elite. <strong>xT</strong> (Expected Threat, Karun Singh 2018) asks "where is danger?": the pitch is cut into a 16×12 grid, historical event streams estimate P(goal | possession passes through zone z), and an action's value is xT(end zone) − xT(start zone). <strong>VAEP</strong> asks "what did the action change?" — the only rung of the three that sees defensive value, because a tackle that collapses the opponent's scoring probability scores positive. <strong>EPV</strong> asks "what is this possession worth right now?" — a continuous surface over game states that can value a pass option <em>before</em> the ball is played.</p>
+
+  <p>The sport fit follows from the scoring structure. Pickleball's rally structure makes VAEP the natural fit: each shot is a discrete action that changes the state, and the state (court zone, rally phase, who is at the kitchen line) is small enough to estimate honestly. Rugby league's set-of-six structure makes EPV the fit: each set is a possession with a measurable point outcome (try, penalty goal, dropout, turnover), and field position dominates the value — which is why the rugby models in §22.5 need only event data. xG, the most famous rung, fits <em>neither</em> of our sports well: pickleball has no shot-to-goal event, and a rugby league try is the end of a six-tackle sequence, not a single shot. That is a useful lesson in itself — the most popular model is popular because soccer is popular, not because it is the right abstraction everywhere.</p>
+
+  <p>The accounting transfer is the point: socceraction's SPADL→VAEP pipeline is the <em>mechanism</em>, and the mechanism ports to any rally sport with a defined state. Pickleball's state is (court zone, shot phase, player positions) — small enough that a logistic or Markov is the honest first cut — and the shot-decision question (drive vs drop on the third shot) is exactly where value models answer coaching questions. The pklmart corpus (300k+ shots, ~1,000 matches, CC BY-NC-SA 4.0) is the first statistical prior; the book's model is the first-of-kind validation. Rugby's equivalent prior is the published record: 768 NRL matches in Kempton 2016 and 99,966 possessions in Sawczuk 2024.</p>
+
+  <figure id="fig-22-02" class="full">
+    <img src="shared/images/value-vaep-states.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.2</span>: VAEP State Accounting. S_before and S_after, the action between them, and the delta as the value. Every rally-sport model is this accounting with a sport-specific state.</figcaption>
+  </figure>
+
+  <figure id="fig-22-03" class="full">
+    <img src="shared/images/value-ladder.png" alt="Four-rung ladder comparing xG, xT, VAEP, and EPV with an icon per rung." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.3</span>: The Ladder in One View. Each rung trades data appetite for granularity: xG needs only shot rows; EPV wants tracking. Pick the rung that matches the decision and the data you actually have.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.3</span> VAEP in Depth</h2>
+  <p>VAEP's insight is clean: a state has two probabilities (P our team scores, P opponent scores); an action's value is the change it induces in both. The accounting identity, for action a_i moving the game from state S_{i−1} to S_i:</p>
+
+  <pre><code>VAEP(a_i) = [P_score(S_i) − P_score(S_{i−1})]
+          − [P_concede(S_i) − P_concede(S_{i−1})]</code></pre>
+
+  <p>The sign convention rewards actions that raise your scoring probability <em>or</em> lower the opponent's. A sideways pass that keeps the ball in a low-threat zone scores near zero. A tackle that kills a counter-attack scores strongly positive, because it collapses the opponent's P_score — this is what separates VAEP from xT, which is blind to defensive actions. The socceraction library (pip, Apache-2.0, M4 ✅) implements the full recipe over SPADL event rows — one row per on-ball action with game_id, period, time, team, player, start/end coordinates, action type, bodypart, and result. The training recipe, reproducible on the open StatsBomb dataset:</p>
+
+  <pre><code>1. Convert provider events → SPADL (StatsBombLoader / OptaLoader / WyscoutLoader)
+2. Build states S_i = {a_{i−2}, a_{i−1}, a_i}   (k = 3 previous actions)
+3. Orient all play left-to-right (fs.play_left_to_right)
+4. Label: scores = 1 if team scores within next 10 actions; concedes likewise
+5. Features: actiontype, result, goalscore, start/end location, movement,
+   space_delta, start/end polar, team  (socceraction.vaep.features)
+6. Train two XGBoost classifiers: P_score, P_concede
+7. VAEP(a_i) = ΔP_score − ΔP_concede   per action</code></pre>
+
+  <p>Two refinements matter for the transplant. <strong>Atomic SPADL</strong> (Decroos &amp; Davis 2020, arXiv 2011.00126) splits each action into movement plus action-plus-result, so the movement between contacts is valued separately — the PBN v2 proposal's start/end court coordinates are exactly the pickleball atomic layer. <strong>The 2025 U-Net EPV recipe</strong> (Overmeer et al., arXiv 2502.02565) decomposes a pass into reward (EPV if it succeeds) and risk (cost if it fails), with net value = reward × P(success) − risk × P(failure), and reports 78% accuracy on its OJN pass benchmark with better calibration error than the baselines. That reward/risk split is the most transferable idea in the modern literature: it is precisely the shape of the drive-vs-drop problem.</p>
+
+  <p><strong>Pickleball transfer.</strong> Each shot is a VAEP action: P_score becomes P(serving team wins the rally), P_concede becomes P(receiving team wins it). A third-shot drop that lands in the kitchen raises the serving team's P(win) slightly and — more importantly — slashes the receiving team's P(win now) by denying the put-away. The value is mostly in the concede term, which is why drop-happy players look ordinary in winner counts but strong in VAEP accounting. <strong>Rugby transfer.</strong> Each tackle is an action: a hit-up that gains eight metres on tackle two raises P(try this set); a dominant tackle that pins the ball-carrier behind the gain line lowers it. Rugby league's concede term is real too — a slow play-the-ball hands the defensive line time, raising the defense's P(force turnover or error). The practitioner playbook's ruck-speed bands (lightning-quick ball vs controlled ruck) are, in VAEP language, a claim about how the concede term moves with ruck time [verify].</p>
+
+  <h2 class="section-title"><span class="section-num">22.3b</span> EPV: The Possession Through Time</h2>
+  <p>EPV generalizes VAEP from action deltas to a continuous state value. The founding model is Cervone, D'Amour, Bornn &amp; Goldsberry 2014 (arXiv 1408.0777): a multiresolution stochastic process with a micro level (how players move) and a macro level (what players decide — pass, shoot, turn over), producing the expected points of a basketball possession at any instant given all ten players and the ball. EPV is the most powerful rung and the most dangerous: because it can value things that never happened — the pass option not taken — it is the easiest to over-interpret.</p>
+
+  <p>Basketball EPV is the closest published analogue to what our two sports need, because all three are point-based, possession-limited, and spatially continuous. The transplant recipe: swap the court for the pickleball court or the 100×68 m rugby league field; swap the possession-ending events (shot, turnover) for the sport's outcomes (rally won/lost; try, penalty, dropout, handover); swap the macro decision vocabulary for drive/drop/dink or run/pass/kick. In <strong>rugby league</strong> the possession is the set of six, and the EPV line through the set is a coaching visual in its own right: value climbs with each tackle that gains metres, spikes on a line break, and collapses on a forced error. In <strong>pickleball</strong> the possession is the rally, and the EPV line is nearly binary at the serve (low, symmetric) but widens dramatically after the third shot — the moment the value model earns its keep, because that is where the drive/drop choice sets the trajectory.</p>
+
+  <figure id="fig-22-04" class="full">
+    <img src="shared/images/value-epv-possession-line.png" alt="EPV line rising across a rugby league set of six tackles, with tackle markers T1 through T6." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.4</span>: EPV Through the Set. Expected possession value climbing across six rugby league tackles; each tackle's gain moves the line. The pickleball analogue is the rally: flat through serve and return, decisive at the third shot.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.4</span> The Pickleball Gap: First-of-Kind</h2>
+  <p><strong>Verified: no public EPV/xT/pitch-control/Markov work exists on pickleball</strong> (research pass of 2026-08-30). The sport has ratings (DUPR, UTR-P), one tracking-grade clip corpus (pb-003), and one scale-grade event corpus — but no published model that answers the central coaching question: given the state of this rally, what is each available shot worth? This book's practitioner model is, to our knowledge, the first.</p>
+
+  <p><strong>The data plumbing.</strong> The statistical prior is the pklmart Kaggle corpus: 300k+ shot records across ~1,000 competitive doubles matches, skill range 4.0 to professional, relational tables for games, rallies, shots, players, teams, and tournaments, licensed CC BY-NC-SA 4.0. The pklshop Python loader (PyPI, M4 ✅) reads the tables into pandas; the book's pklmart→PBN serializer maps them into the PBN v2 row shape of chapter 17, adding the evidence layer and spine key (clip_id, frame_idx, pts_s) that pklmart itself does not carry. The same VAEP/xT tooling then runs on pklmart history and on pb-003 video-derived rows without a schema break. One honest dependency: full xT-style court surfaces are blocked until PBN v2 start/end court-metre coordinates are extracted (chapter 6 homography × chapter 17 v2 migration).</p>
+
+  <p><strong>The first honest model.</strong> Deliberately small — the state space is court zones × rally phases × shot types, roughly 100–300 states, so a logistic or Markov chain is the defensible first cut, not a neural net:</p>
+
+  <pre><code>1. P(server_wins_point | state, shot_type, target_zone)   — logistic, pklmart rows
+2. P(next_phase | state, shot_type, outcome)              — empirical transitions
+3. EPV = P(win now)·(+1) + P(lose now)·(−1) + P(continue)·V(next_state)
+4. Decision: compare EPV(drive) vs EPV(drop) from the same state</code></pre>
+
+  <p><strong>The Delta-EPV decision boundary.</strong> The practitioner model evaluates the third shot as ΔEPV(S) = E[Y | drop, x] − E[Y | drive, x], conditioned on the return state. The resulting boundary — the chapter's one [verify] artifact, a practitioner estimate that TacticalVerify could NOT-FOUND in the published literature — is:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Return state</th>
+        <th>ΔEPV</th>
+        <th>Call</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Deep with backspin (X_ret ≤ 2.0 ft from baseline)</td>
+        <td>+0.142 [verify]</td>
+        <td><strong>Drop</strong> — neutralize, take the kitchen</td>
+      </tr>
+      <tr>
+        <td>Short, high bounce (X_ret &gt; 5.5 ft, apex z &gt; 0.9 m)</td>
+        <td>−0.188 [verify]</td>
+        <td><strong>Drive</strong> — attack before they set</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Read the signs through the VAEP lens: against a deep, backspin return the drive's failure modes (net, long, attackable pop-up) dominate its reward, so the drop's value is positive relative to it; against a short, sitting return the drop forfeits a rare attack state, so the drive's value exceeds it by nearly two-tenths of a point. Treat both numbers as a hypothesis the pklmart-fitted model should test — the table is what a coach believes; the lab is what the data says.</p>
+
+  <p><strong>Rugby mirror.</strong> Rugby league has the same conditioned-decision shape at fifth tackle: kick early from deep in your half (low EPV either way, so take the territory) versus run the shape inside the opposition twenty (high EPV, keep the ball alive). The difference is that rugby's boundary has forty years of event data behind it; pickleball's has one practitioner table and a corpus waiting to be fitted.</p>
+
+  <figure id="fig-22-05" class="full">
+    <img src="shared/images/value-pb-delta-epv-tree.png" alt="Decision tree for the pickleball third shot: deep return leads to drop (+0.142), short high return leads to drive (−0.188)." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.5</span>: The Delta-EPV Decision Tree. Third-shot call conditioned on return depth and bounce height. Values are the practitioner model [verify]; the tree structure is the deliverable — refit the leaves on pklmart.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.5</span> The Rugby Anchor: Sawczuk Bayesian EPV</h2>
+  <p>Rugby league's value model exists precisely because its public data is event-based — the constraint forced the right model. The lineage has three rungs. <strong>Kempton, Kennedy &amp; Coutts 2016</strong> (Journal of Sports Sciences) analysed all 768 regular-season NRL matches from 2010–2013 with an iterative point-equity estimate: possession value rises monotonically toward the opposition try line; possessions following an opposition error, penalty, or goal-line dropout are the most likely to produce a try; possessions following a completed set or restart are the least. Field position dominates — the foundational evidence. <strong>Sawczuk et al. 2021</strong> (PLOS ONE) modeled 59,233 plays from 180 Super League matches (2019) as a Markov Reward Process over pitch zones, testing grids from 9 to 308 zones; the 19-zone and 13-zone models (EPV-19, EPV-13) gave the best balance of reproducibility and useful variation. <strong>Sawczuk, Palczewska, Jones &amp; Palczewski 2024</strong> (PLOS ONE 19(11):e0308222; arXiv 2212.10904) is the anchor: a Bayesian mixture model over 99,966 observations from the 2021 Super League season with 33 spatial centres (30 in the field of play, 3 in the opposition in-goal), estimating P(converted try), P(unconverted try), P(penalty goal), P(drop goal), and P(no points), interpolated into a smooth EPV surface — <em>from event data only, no tracking required</em>.</p>
+
+  <p>That last property is why it is the book's anchor: the inputs (field position, tackle count, possession outcome) are exactly the fields the NRLSheet schema of chapter 17 proposes, so a practitioner with nrlR scrapes plus manual set-coding can replicate the pipeline on day one. The official NRL feed is closed (Stats Perform/Opta); the open paths are nrlR, Rugby League Project, and UselessNRLStats aggregates — which is also why the book's one canonical set-of-six from the nrl-001 broadcast clip (manual set-coding plus CV-derived tackle candidates, chapters 17–19) is a genuine contribution, not a tutorial exercise.</p>
+
+  <p><strong>The six-again era is the open reader project.</strong> The NRL introduced the six-again rule in 2020; every published value predates its effect on the NRL. Set restarts now cost the defense an extra tackle rather than conceding a penalty, which should raise the value of ruck speed and shift the EPV surface's gradient in the middle third. Re-estimating Sawczuk's Bayesian mixture on post-2020 NRL data is a well-scoped project with a real answer at the end — and a natural publication.</p>
+
+  <p><strong>Pickleball mirror.</strong> Note what rugby did <em>not</em> wait for: tracking data. The Bayesian EPV runs on coded events with field position — the same data class pklmart already provides for pickleball. The rugby anchor is the proof of concept that the pickleball gap of §22.4 is fillable with the data that exists today.</p>
+
+  <figure id="fig-22-06" class="full">
+    <img src="shared/images/value-rugby-epv-surface.png" alt="Smooth EPV contour surface over a rugby league field, darkest at the attacking try line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.6</span>: The Rugby Field-Position Value Map. Smooth EPV over the 100×68 m field in the Sawczuk style: value concentrates at the attacking try line and decays toward your own. Kempton's monotonicity finding, made visual.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.6</span> Pitch Control</h2>
+  <p>Beyond value: <strong>space control</strong>. Voronoi ownership (the book's chapter-8 base) is the geometric first cut — fast, interpretable, and wrong the way a cartoon is wrong: it assumes every player reaches their region instantly and ignores velocity, reaction time, and ball flight. Spearman's pitch control (2018 MIT Sloan, <em>Beyond Expected Goals</em>) makes it probabilistic: control(x, y, t) is the probability a player can reach and control a ball placed at (x, y), computed from a time-to-arrival distribution over each player's position, velocity, and acceleration. A player running toward a space controls more of it than a stationary player at the same distance — the single most important correction to the Voronoi intuition.</p>
+
+  <p>The marriage to EPV is the payoff: pitch control answers "who can reach this space?", EPV answers "what is it worth if they do?". A pass option is valuable only when both are high — the receiver controls the landing zone <em>and</em> the zone has value. TacticAI (DeepMind, Nature Communications 2024; arXiv 2310.10553) is the extreme end: a D₂-equivariant GNN over all 22 players that recommends positional adjustments on corners; Liverpool's expert coaches preferred its suggestions to real tactics 90% of the time. exPress (MIT Sloan 2025) extends the ladder to defense, valuing individual pressing actions off the ball.</p>
+
+  <p><strong>Pickleball case.</strong> The kitchen is the highest-value zone and the middle seam is its weakest-control corridor — the chapter-8 finding, restated in value language. The Forehand Alpha convention (left-side player owns the central corridor) is a control-allocation rule: it assigns the seam to the player whose forehand reaches it fastest, maximizing team control over the highest-EPV strip of court. <strong>Rugby case.</strong> The defensive line is a control surface problem: when adjacent defenders drift more than ~2.5 m apart (the dog-leg), the attacker owns the gap and line-break probability jumps sharply [verify] — the control surface tearing, in Spearman's terms. Both sports teach the same lesson: value without control is a wish; control without value is a sweat.</p>
+
+  <figure id="fig-22-07" class="full">
+    <img src="shared/images/value-pitch-control.png" alt="Pickleball court with overlaid control regions around four players and a value contour at the kitchen line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.7</span>: Control × Value, One Surface. Doubles control regions (grey) overlaid with the point-value contour (burnt orange, peaked at the kitchen). The middle seam is where high value meets contested control — aim there.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.7</span> Calibration: The C20 Discipline Applied</h2>
+  <p>A value model with good ranking and bad calibration is unusable for decisions. Ranking (AUC) tells you the model orders states correctly; calibration tells you the numbers mean what they say — and decisions consume the numbers. When the model says the drive is worth 0.65 and the drop 0.50, the coach acts on the gap; if the true rates are 0.52 and 0.50, the advice is noise with confidence. The scoring-rule choice matters: <strong>Brier score</strong> (mean squared probability error) is proper, bounded, and decomposable into reliability and resolution — the teaching default. <strong>Log loss</strong> punishes confident errors without bound — use it when probabilities feed downstream decisions where a confident wrong 0.95 is catastrophic. <strong>ECE</strong> (binned |accuracy − confidence|) is the audit number, but it is unstable across bin choices — always disclose the binning protocol. And never report AUC alone: a model can rank perfectly while every probability is 0.2 too high.</p>
+
+  <p>Our lab's honest threat model (C22-lab; logistic, 4 features, 200 synthetic states; experiments/c22-expected-value/outputs/metrics.json) reports the shape of the report every value model must ship:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Bin</th>
+        <th>Predicted mean</th>
+        <th>Observed rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0.00-0.25</td>
+        <td>0.145</td>
+        <td>0.115</td>
+      </tr>
+      <tr>
+        <td>0.25-0.50</td>
+        <td>0.384</td>
+        <td>0.339</td>
+      </tr>
+      <tr>
+        <td>0.50-0.75</td>
+        <td>0.620</td>
+        <td>0.700</td>
+      </tr>
+      <tr>
+        <td>0.75-1.00</td>
+        <td>0.815</td>
+        <td>0.846</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Brier score 0.1728; the bins track within ~0.05.</strong> That is an honest, calibrated toy — and it demonstrates the report every value model must ship: Brier + per-bin reliability, never AUC alone (chapter 20). When a model fails the bins, the first fix is temperature scaling (Guo et al. 2017, arXiv 1706.04599): one scalar fitted on a validation set, ~20 lines of PyTorch, which routinely fixes overconfident neural value models. Isotonic regression (sklearn's CalibratedClassifierCV) is the non-parametric alternative when the miscalibration is not monotone-uniform. The known soccer failure modes translate directly: location-only xG models overrate open looks and underrate crowded-box chances — the pickleball equivalent is a zone-only model that overrates kitchen-line dinks and underrates the speed-up from the same zone. Both sports' audits must exist from day one, and both must resample uncertainty at the <em>match</em> level, not the row level — 300k pklmart shots are ~1,000 independent matches, not 300k independent observations.</p>
+
+  <figure id="fig-22-08" class="full">
+    <img src="shared/images/value-calibration-curve.png" alt="Reliability diagram with a diagonal perfect-calibration line and four bin points hugging it." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.8</span>: The Reliability Diagram. Predicted probability against observed frequency for the C22-lab bins; the diagonal is perfect calibration. This figure — not an AUC number — is the trust certificate for any value model.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">22.8</span> Honest Limits</h2>
+  <ul>
+    <li><strong>Action value is context-dependent</strong>: a drive is worth different amounts depending on opponent position, rally phase, and score — the state space is the hard part, not the model. The same limitation bites rugby: tackle-two EPV from the thirty-metre line is an average over very different defensive shapes.</li>
+    <li><strong>EPV is not causality</strong>: the value tells you the state's worth, not that the action <em>caused</em> it. A player with high VAEP may simply be handed good states by teammates. Report value added over a same-state baseline, never raw value (chapter 24's counterfactual framing is the fix).</li>
+    <li><strong>Selection bias is structural</strong>: players attempt hard shots only when they judge the state favorable. The pklmart drive-vs-drop estimate will overstate the drive's value if only strong drivers attempt it — condition on player or instrument the choice.</li>
+    <li><strong>On-ball blindness</strong>: xG/xT/VAEP and most EPV models value only on-ball events. The pickleball partner pinching the middle and the rugby fullback's kick-return positioning are invisible unless the state representation includes them.</li>
+    <li><strong>Pickleball's model is small-state</strong>: court zones × shot types ≈ 100-300 states — a logistic or Markov is the honest first cut, not a neural net. And its headline numbers are [verify] practitioner estimates until the pklmart fit lands.</li>
+    <li><strong>Rule drift staleness</strong>: every published rugby value predates the NRL's six-again era; pickleball's own rulebook (the 2025 serve and rally-scoring experiments) will do the same to any model the moment it is fitted.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">22.8b</span> The 10 Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the ladder (§22.2) to the two sports. They follow three categories: <strong>Category A — Pickleball Shot Decisions (UC 01-03)</strong>, <strong>Category B — Rugby League Possession Decisions (UC 04-06)</strong>, and <strong>Category C — Model Discipline &amp; Transfer (UC 07-10)</strong>. Each case carries its practical problem, the mechanism and math, a figure, a pickleball and a rugby league application box, and a payoff line naming who benefits. Evidence labels hold throughout: source-backed (paper), measured (book experiment E-ID), or [verify] (practitioner model not established in the literature). The Delta-EPV boundary of §22.4 remains [verify] everywhere it appears.</p>
+
+  <h3 class="sub-heading">Category A: Pickleball Shot Decisions (UC 01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Third-Shot Decision: Drop vs Drive</h3>
+  <p>The canonical pickleball decision: serving team, third shot, the return has come back deep with backspin. The problem is that neither event counts nor winner totals answer it — "he drops 60% of his third shots" describes a habit, not a value. The mechanism is the one-step expected-value model of §22.4: EPV = P(win now)·(+1) + P(lose now)·(−1) + P(continue)·V(next_state), and the decision rule is the sign of ΔEPV(S) = E[Y | drop, x] − E[Y | drive, x]. The practitioner boundary — deep backspin return: drop by +0.142; short high return: drive by −0.188 — is [verify]: a coaching-belief table the pklmart fit must test, per the lab plan in §22.9.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc01-third-shot-tree.png" alt="Pickleball third-shot decision tree: deep backspin return branches to the drop, short high return to the drive." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.9</span>: UC 01 — The Third-Shot Tree, Expanded. The §22.4 decision boundary with both branches' value tags visible. <strong>Pickleball</strong>: drop when the return is deep with backspin (+0.142 [verify]); drive when it sits up short and high (−0.188 [verify]). <strong>Rugby league</strong>: the fifth-tackle mirror — kick for territory from deep in your half, keep the ball alive inside the opposition twenty.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — a rehearsed shot-selection rule with a number attached, replacing "it depends" with a conditioned boundary the player can drill.</p>
+
+  <h3 class="sub-heading">UC 02 — Serve-Selection Value</h3>
+  <p>The serve is the only fully controlled shot in pickleball, and the serving team starts the rally at a structural disadvantage — both opponents are already set at the kitchen. The problem: is a hard, deep, corner serve worth more than a safe spin serve to the middle? The mechanism values the serve by what it produces, not by what it is: V(serve_t) = Σ_r P(return r | serve_t)·V(state after return r) − P(fault | serve_t)·V(side-out). A serve whose only effect is a neutral return has near-zero value even at 100 km/h; a serve that buys a short, attackable return has value equal to the third-shot boundary it unlocks (UC 01). Component probabilities are [verify] until the pklmart fit; the accounting shape is source-backed (the VAEP action-value identity, §22.3).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc02-serve-selection.png" alt="Overhead pickleball court with three serve target zones: deep corner, body, and short wide." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.10</span>: UC 02 — Serve-Selection Values. Three serve targets valued by the return state they induce. <strong>Pickleball</strong>: deep corner serve to the weaker backhand; body serve to jam the returner; short wide serve only when the opponent cheats back. <strong>Rugby league</strong>: kick-off selection — a short contestable kick-off versus a deep kick values exactly the same way: the field position of the first tackle it produces.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching and scouting — serve plans keyed to opponent return weakness, and a number to defend the choice in review.</p>
+
+  <h3 class="sub-heading">UC 03 — Dink Exchange Value</h3>
+  <p>The dink rally is where recreational players get impatient and professionals get paid. The problem: when do you keep dinking, and when do you speed up? The mechanism is the concede term of the VAEP identity: a cross-court dink barely moves P(win) but steadily suppresses the opponent's P(win now) by keeping the ball below net height; a speed-up is a high-variance action whose value is P(attack wins)·reward − P(counterattack)·risk. The math says the speed-up is positive only after the dink has already created the attack state — ball above net height, opponent stretched wide — which is why value models reward patience sequences that winner counts call passive. Component rates are [verify]; the reward/risk split is source-backed (Overmeer et al. 2025, §22.3).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc03-dink-exchange.png" alt="Side view of a pickleball dink exchange: safe cross-court arc versus risky down-the-line arc." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.11</span>: UC 03 — The Dink Exchange. Cross-court (long net distance, low risk) versus down-the-line (short, attacks the seam) with the clearance margin marked. <strong>Pickleball</strong>: the cross-court dink's value is in the concede term — denial, not winners. <strong>Rugby league</strong>: the one-out hit-up in your own half — a low-variance action whose value is field position and ruck speed, not line breaks.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — patience training with a number attached; the drill stops being "dink fifty times" and becomes "dink until the state value turns".</p>
+
+  <h3 class="sub-heading">Category B: Rugby League Possession Decisions (UC 04-06)</h3>
+
+  <h3 class="sub-heading">UC 04 — Field-Position Value: The Kempton Lineage</h3>
+  <p>How much is ten metres worth? Every rugby league coach acts on the answer; the lineage of §22.5 is the published attempt to measure it. The mechanism is a possession-outcome model over field position: EPV(x) = Σ_o P(outcome o | position x)·points(o), over the five outcomes of Sawczuk 2024 — converted try, unconverted try, penalty goal, drop goal, no points. Kempton 2016 (768 NRL matches, source-backed) established the monotonicity: value climbs toward the opposition try line, and possessions after an opposition error or dropout out-value possessions after a completed set. Sawczuk 2024 (99,966 Super League possessions, source-backed) made the surface smooth with a 33-centre Bayesian mixture — no tracking data required.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc04-field-position-map.png" alt="Rugby league field with possession-value zones climbing toward the attacking try line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.12</span>: UC 04 — The Field-Position Value Map. Zonal EPV over the 100×68 m field, darkest at the attacking try line (Kempton monotonicity, source-backed). <strong>Rugby league</strong>: the number behind "winning the territory battle". <strong>Pickleball</strong>: court-position value — baseline, transition zone, kitchen line — is the same map on a 13.41×6.10 m court, and the reason the drop shot exists at all.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> recruiting and in-game tactics — territory decisions stop being folklore and become a tradeable quantity.</p>
+
+  <h3 class="sub-heading">UC 05 — Tackle Value: When to Give Up a Tackle</h3>
+  <p>The counterintuitive rugby league decision: sometimes the right tackle is the one you don't contest. The problem — defenders fight for a dominant, slow play-the-ball on every tackle, but against a spread attack a surrendered quick play-the-ball can keep the line set and be worth more. The mechanism values the tackle by its effect on the rest of the set: VAEP(tackle) = ΔP_concede over the remaining tackles, where a slow ruck lowers the attack's EPV on tackles two and three but a quick one preserves the defensive line's shape. The six-again era sharpens the question: an infringement now costs an extra tackle instead of a penalty, which should raise the value of ruck control — but every published value predates the rule, so the magnitude is [verify] until the §22.5 re-estimation lands.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc05-tackle-value.png" alt="Rugby league tackle with two branches: dominant slow play-the-ball versus conceded quick play-the-ball." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.13</span>: UC 05 — The Tackle Value Fork. Dominant tackle (slow PTB, lower attack EPV next tackles) versus conceded tackle (quick PTB, defensive line stays set). <strong>Rugby league</strong>: surrender the ruck when the line's shape is worth more than the ruck's speed. <strong>Pickleball</strong>: the reset dink — deliberately conceding pace to neutralize an attack state is the same trade, one shot at a time.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> defensive coaching — a principled answer to "when do we contest the ruck?" instead of an effort-maximizing default.</p>
+
+  <h3 class="sub-heading">UC 06 — Kick Value: The 40/20 Versus Field Position</h3>
+  <p>Fifth tackle, own forty, nothing on. The problem: attempt the 40/20 for the scrum feed and an attacking set, or kick long and safe and trust the defence? The mechanism is the reward/risk split of the 2025 U-Net EPV recipe (source-backed, §22.3): Net(kick) = P(success)·EPV(after 40/20) + P(touch, no 40/20)·EPV(opposition set) + P(out on the full or returned)·EPV(counter-attack). The 40/20's reward is large — possession near halfway with a set of six — but its failure modes hand the opponent either seven tackles or a broken-field return. The safe kick's value is boring and positive: it trades a small reward for a collapsed risk term. Component probabilities from the Sawczuk surface; the exact NRL magnitudes are [verify] on closed data.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc06-kick-value.png" alt="Rugby league kicker with three fifth-tackle options: 40/20 touchline kick, grubber into the in-goal, bomb to the corner." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.14</span>: UC 06 — The Fifth-Tackle Kick Fork. 40/20, grubber, and bomb valued as reward × P(success) − risk × P(failure). <strong>Rugby league</strong>: the 40/20 attempt pays only when the kicker's success rate clears the risk-adjusted threshold. <strong>Pickleball</strong>: the lob — high reward (both opponents pinned at the kitchen), high risk (a short lob is a smash) — is the identical reward/risk shape.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> kicking strategy — a decision threshold the kicker rehearses, calibrated to their own leg rather than the league average.</p>
+
+  <h3 class="sub-heading">Category C: Model Discipline &amp; Transfer (UC 07-10)</h3>
+
+  <h3 class="sub-heading">UC 07 — The xG Transplant: The Honest Gap</h3>
+  <p>Every pickleball analyst gets asked for "xG for pickleball". The honest answer: it does not transplant, and knowing why is worth a use case. The problem is structural — xG values a shot because soccer has a shot-to-goal terminal event; pickleball's terminal event (the rally) is one to three shots away and opponent-dependent, so there is no clean binary to regress. The mechanism that survives the transplant is the conditioning, not the target: a point-probability model P(server wins rally | shot type, zone, phase) fitted on pklmart rows (§22.4). The math gap is selection bias: xG conditions on "a shot was attempted", and soccer shots are nearly all genuine attempts; pickleball's attempt set is endogenous — players only drive when the state flatters the drive — so naive per-shot success rates overstate the aggressive option (§22.8). Source-backed in soccer; concept-transfer in pickleball.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc07-xg-transplant.png" alt="Soccer pitch with a shot-to-goal arc on the left, pickleball court with a rally exchange on the right, and a gap bridge between them." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.15</span>: UC 07 — The Transplant Gap. xG's shot-to-goal arc (left) versus pickleball's rally exchange (right); the bridge is the missing terminal event. <strong>Pickleball</strong>: what a pickleball xP needs — pklmart priors plus PBN v2 coordinates, not a soccer model with the goal painted over. <strong>Rugby league</strong>: try probability from field position on tackle five is rugby's working xG — it transplants because the set structure defines the shot.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the analyst — stops a wasted quarter fitting soccer models to rally sports, and redirects the effort to the state-value model the sport actually supports.</p>
+
+  <h3 class="sub-heading">UC 08 — The Value-per-Event Dashboard: The C28 Feed</h3>
+  <p>A value model that lives in a notebook helps no one at courtside. The problem: the coach needs a per-event value at the moment of decision, in the same glance as the score. The mechanism is a schema append, not a new pipeline: every PBN/NRLSheet event row (chapter 17) gets a ΔEPV/VAEP column written at ingest time, and the cockpit (chapter 28) renders it — value heat on the court minimap, a value-per-shot-type bar chart, the running EPV line through the rally or set. The math is streaming inference: XGBoost on ~20 state features is sub-frame on an M4 [verify — the lab has not yet benchmarked the fitted model; the synthetic C22-lab logistic runs in microseconds]. The real latency is upstream event detection (chapters 8-12, 19), not the value model.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc08-value-dashboard.png" alt="Coach dashboard with a court value minimap, a value-per-shot-type bar chart, a running EPV line, and a calibration gauge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.16</span>: UC 08 — The Value Dashboard. The four panels chapter 28 renders from the ΔEPV column. <strong>Pickleball</strong>: a live third-shot value feed in practice sessions — the drop/drive boundary visible as it is trained. <strong>Rugby league</strong>: a set-of-six EPV ticker on the broadcast or the coach's box, one number per tackle.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the coach — value lands where decisions are made, not in a post-match PDF.</p>
+
+  <h3 class="sub-heading">UC 09 — Calibration: How to Score the Model</h3>
+  <p>A value model with good ranking and bad calibration is worse than no model, because decisions consume the numbers, not the ordering. The problem: "the drive is worth 0.65 and the drop 0.50" is actionable advice; if the true rates are 0.52 and 0.50 it is noise with confidence. The mechanism is the chapter-20 discipline applied to value outputs: Brier score as the teaching default, log loss when probabilities feed downstream decisions, and the reliability diagram as the trust certificate. The math: Brier = (1/N)Σ(p_i − y_i)², reported against a base-rate Brier skill score, with a fixed, disclosed binning protocol so figures compare across models (§8 of the dossier). The lab's toy logistic (C22-lab, measured: Brier 0.1728, bins within ~0.05) is the shape of the report every value model must ship; temperature scaling (Guo et al. 2017) is the first fix when the bins fail.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc09-calibration-plot.png" alt="Reliability diagram: predicted probability against observed frequency, four bin points hugging the diagonal." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.17</span>: UC 09 — The Reliability Diagram as Scoring Rule. C22-lab bins against the perfect-calibration diagonal (measured, C22-lab). <strong>Pickleball</strong>: bootstrap confidence intervals over matches, not rally rows — rallies within a match are correlated, and row-wise CIs lie. <strong>Rugby league</strong>: the Sawczuk surface must ship with per-zone reliability, not just a smooth map — a pretty contour with unknown calibration is decoration.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> everyone downstream — calibration is the difference between a model the coach can bet a game plan on and a chart for the wall.</p>
+
+  <h3 class="sub-heading">UC 10 — The Game-State Context: Score and Time</h3>
+  <p>The same third-shot drop is worth different amounts at 10-2 and at 10-10, and a value model that ignores it gives wrong advice precisely when the match is on the line. The problem: EPV as defined in §22.2-22.4 values the rally, but the decision target is the match. The mechanism is a state extension — score differential and time enter the feature vector — and an objective correction: the right maximand is P(win match), which decomposes over future rallies and diverges from rally-EPV when variance itself has option value. The math: trailing late, a team should prefer higher-variance actions even at lower mean EPV, because it needs the tails of the distribution, not the middle. The variance-seeking principle is source-backed in game theory; its pickleball quantification is [verify] — no fitted model exists. Rugby league's version is the clock: trailing by eight with ten minutes left, the completion-rate grind is worth less than the kick-chase, and any EPV that can't see the scoreboard will recommend the grind.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch22-uc10-game-state.png" alt="Two pickleball rally panels, one at 10-2 and one at 10-10, with different value bars under the identical third-shot drop." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 22.18</span>: UC 10 — Context Changes Value. The identical third-shot drop valued at 10-2 and at 10-10; the bars differ because the objective is the match, not the rally. <strong>Pickleball</strong>: at 10-10 the drop's low variance is the point; at 2-10 down the drive's variance is the point. <strong>Rugby league</strong>: trailing by eight with ten to play — the kick-chase out-values the grind even when its per-set EPV is lower.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the decision-maker — value models grow up from "what is good on average" to "what is good now", which is the only question a coach actually asks.</p>
+
+  <h2 class="section-title"><span class="section-num">22.8c</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are consumers and producers across the book's stack. <strong>Upstream:</strong> every case consumes the PBN/NRLSheet event rows of chapter 17 and the court/field geometry of chapter 3; UC 01-03 and UC 07 additionally block on the PBN v2 coordinate extraction (chapter 6 homography) for a true metre-scale value surface. <strong>Downstream:</strong> the ΔEPV column is the value feed for the chapter-28 cockpit (UC 08); per-action values aggregated over a season are the input to chapter-21 ratings (value-added over a same-state baseline, not raw totals, per §22.8); the reward/risk decomposition feeds chapter-23 tactical ML's action recommendation; and the counterfactual discipline — what would the rejected option have been worth — is chapter-24 simulation's home ground. The calibration report (UC 09) is chapter 20's contract made specific to value models, and the game-state extension (UC 10) is the bridge to chapter 21's clutch-weighted ratings. Nothing in the ladder is an endpoint; every rung is a column in someone else's table.</p>
+
+  <h2 class="section-title"><span class="section-num">22.9</span> What I Would Measure Next</h2>
+  <ul>
+    <li>socceraction tutorial on StatsBomb open data — the full SPADL→xT→VAEP recipe with a calibration report (M4, no GPU).</li>
+    <li>Pickleball drive-vs-drop model on pklmart rows via pklshop → PBN v2 — the first-of-kind validation, with bootstrap CIs over matches and a head-on test of the +0.142 / −0.188 boundary [verify].</li>
+    <li>Colab: Sawczuk-style Bayesian EPV re-estimated on six-again-era NRL data — the open re-estimation the literature is missing.</li>
+    <li>PBN v2 coordinate extraction from pb-003 (chapter 6 homography × chapter 17 v2) — the unblock for a true pickleball xT surface over court metres.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">22.10</span> Sources</h2>
+  <ul>
+    <li>xT: Karun Singh, Expected Threat — https://karun.in/blog/expected-threat.html; socceraction (SPADL/VAEP/xT, Apache-2.0) — https://github.com/ML-KULeuven/socceraction · https://socceraction.readthedocs.io/</li>
+    <li>VAEP refinements: Atomic SPADL — https://arxiv.org/abs/2011.00126; U-Net EPV with pass reward/risk split — https://arxiv.org/abs/2502.02565</li>
+    <li>EPV: Cervone et al. 2014 basketball EPV — https://arxiv.org/abs/1408.0777; nflfastR expected points — https://github.com/nflverse/nflfastR</li>
+    <li>Rugby anchor: Kempton et al. 2016 — https://pubmed.ncbi.nlm.nih.gov/26190116/; Sawczuk et al. 2021 — https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0259536; Sawczuk et al. 2024 — https://arxiv.org/abs/2212.10904</li>
+    <li>Pitch control &amp; tactical ML: Spearman 2018 (MIT Sloan); TacticAI — https://arxiv.org/abs/2310.10553; exPress (MIT Sloan 2025) — https://www.sloansportsconference.com/research-papers/contextual-valuation-of-individual-players-within-pressing-situations-in-football</li>
+    <li>Pickleball data: pklmart (Kaggle, 300k+ shots, CC BY-NC-SA 4.0) — https://www.kaggle.com/datasets/cakesofspan/pklmarts-competitive-pickleball-extracts; pklshop — https://pypi.org/project/pklshop/</li>
+    <li>Calibration: Guo et al. 2017 temperature scaling — https://arxiv.org/abs/1706.04599; chapter 20's Brier/ECE discipline.</li>
+    <li>Lab: <code>lab/w5_lab_expected_value.py</code> → <code>experiments/c22-expected-value/outputs/metrics.json</code> (C22-lab; Brier 0.1728). Practitioner Delta-EPV boundary: Technology Dossiers/Pickleball and NRL Practitioner Tactical Playbook.md [verify — NOT-FOUND in literature].</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="21.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 21</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 21</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</p>
+        </div>
+      </div>
+    </a>
+    <a href="23.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 23</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 23</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">TacticAI's architecture, the rotation test, and why 84.6% on one clip is a hypothesis</p>
+        </div>
+        <a href="23.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #9A5A2E;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

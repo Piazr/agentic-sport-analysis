@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #C2410C;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-21" style="background-color: #C2410C; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 21</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The rating math, the three rival systems, and the honest truth about small samples</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">31 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-21-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Ratings Are the Skill Currency</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-21-1" data-section="s-21-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Ratings Are the Skill Currency</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-21-1" data-section="s-21-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Ratings Are the Skill Currency</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">21</span> Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h1>
+    <p class="chapter-subtitle">The rating math, the three rival systems, and the honest truth about small samples</p>
+  </header>
+
+<h3 id="s-21-1"><span class="section-num">21.1</span> Ratings Are the Skill Currency</h3>
+
+<p class="section-intro">Pickleball runs on DUPR; tennis on UTR; rugby league on the ladder and the betting line. A rating answers two questions at once — "how good is this player?" and "how sure are we?" — and in 2026 the answer is increasingly fed by computer vision: the eventing pipeline (chapter 19) produces match results, and a rating system converts them into a skill estimate. This chapter is the math, the three rival systems, and the honest truth about what 60 matches can tell you.</p>
+
+  <p>The same job is done differently in each sport. In pickleball, a DUPR of 4.0 with a 60% reliability score is tournament entry, seeding, and social claim all at once. In rugby league, the NRL ladder decides finals and the betting line prices a single Sunday; analysts treat the ladder as season narrative and the closing line as measurement. Same task: convert a history of outcomes into a number that predicts the next one.</p>
+
+  <p>Everything here is <strong>source-backed</strong> (the systems' own documentation, verified 2026-08-30) or <strong>measured</strong> (our lab's from-scratch implementation, E21).</p>
+
+  <figure id="fig-21-01" class="full">
+    <img src="shared/images/rating-family-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.1</span>: The Rating Family Tree. Elo roots a family of systems; Glicko adds uncertainty, TrueSkill multi-player; DUPR and UTR-P are the domain variants. The book contribution branches off the Glicko line.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.2</span> Rating Math From First Principles</h2>
+  <p>All rating systems are one idea: <strong>expected score from a logistic, then move the ratings by the surprise</strong>. Latent skill produces an expected outcome; the observed outcome arrives; the gap updates the skill estimate. The systems differ only in the distribution of skill, the link function, and whether uncertainty is explicit.</p>
+
+  <p>Elo: expected = 1/(1+10^((Rb−Ra)/400)), update = K×(result − expected). Glicko-1/2 adds <strong>rating deviation</strong> (RD) — a per-player uncertainty that widens with inactivity and narrows after matches — and Glicko-2 adds volatility (how fast the player's rating changes over time). Bradley-Terry is the probabilistic foundation underneath them all; TrueSkill extends the Gaussian version to multi-player teams. Sections 21.2b–21.2d work each one.</p>
+
+  <p>Our lab implemented Elo and Glicko-2 from scratch — no libraries, the logistic and RD from first principles — and ran 60 matches on 8 players with known skills (1400–1700) and margin-aware outcomes (E21). The math is simple enough to write yourself, so you can <em>see</em> where it is honest and where it is not. The honest result:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement (E21)</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Mean absolute Elo error after 60 matches</td>
+        <td><strong>87.6 points</strong> (max 139)</td>
+      </tr>
+      <tr>
+        <td>Mean Glicko-2 RD after 60 matches</td>
+        <td>99.8 points</td>
+      </tr>
+      <tr>
+        <td>Per-player spread</td>
+        <td>Elo errors ranged from −169.7 (player B) to +139.2 (player H); Glicko-2 RDs from 80.5 to 120.3 — the uncertainty estimate correctly sized the error</td>
+      </tr>
+      <tr>
+        <td>The honest truth</td>
+        <td>A rating from 60 matches is an estimate with wide error — not a skill fact. Ratings need hundreds of matches to converge. This is what the RD displays.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-21-02" class="full">
+    <img src="shared/images/rating-dupr-expectation.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.2</span>: The DUPR Expectation Model. 3.5+3.5 vs 4.0+4.0: expected 11-5, actual 11-9 — every point moves the rating because the margin is the signal.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.2b</span> The Elo Update, Worked</h2>
+  <p>Arpad Elo's system (FIDE, 1960s) remains the canonical reference, and it is worth doing once by hand because every system in this chapter is a patch on it. For two players with ratings R_A and R_B, the expected score of A is:</p>
+
+  <p><strong>E_A = 1 / (1 + 10^((R_B − R_A)/400))</strong> &nbsp;&nbsp;then&nbsp;&nbsp; <strong>R_A_new = R_A_old + K·(S_A − E_A)</strong></p>
+
+  <p>Worked pickleball example: two singles players, rated 1500 and 1700 on a homebrew Elo scale. The 1500-player's expectation is 1/(1+10^(200/400)) ≈ <strong>0.240</strong>. The underdog wins (S=1), and with K=32 the update is 32×(1−0.240) = <strong>+24.3 points</strong>; the favorite loses the same 24.3. The update is zero-sum: rating mass is conserved, which is why Elo ladders are stable but also why fixed-K systems drift (inflation and deflation return in 21.9b).</p>
+
+  <p>Worked rugby league example: the same math runs on clubs. Two NRL teams rated 1550 and 1650; the weaker club's expectation is 1/(1+10^(100/400)) ≈ 0.36. A home-ground term H (fit as 30–60 Elo points) shifts the logistic before the update, so a 20-point upset win at home moves the underdog 32×(1−0.36) ≈ +20 points — same machinery, different scale constant and venue term. The NRL itself is a points ladder, not an Elo system, but many public Elo-style competition models and betting-implied ratings are built around it.</p>
+
+  <p>Three properties matter in practice. <strong>Logistic, not Gaussian</strong>: Elo implementations use the logistic because it has heavier tails and convenient arithmetic — a 200-point gap gives E ≈ 0.76, a 400-point gap E ≈ 0.91. <strong>K is the learning rate</strong>: FIDE historically used K=40 for new players, K=20 for most, K=10 for top players — converge novices fast, keep veterans stable. <strong>K is Elo's only uncertainty mechanism</strong>: it knows how fast to move, but not how sure to be.</p>
+
+  <figure id="fig-21-03" class="full">
+    <img src="shared/images/elo-expected-score.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.3</span>: The Elo Machine. The logistic expectation curve (annotated at Δ=200 and Δ=400) and the update rule R_new = R_old + K(S−E). One curve, one surprise term — every system in this chapter is an elaboration of this diagram.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.2c</span> Glicko: Uncertainty as a First-Class Citizen</h2>
+  <p>Mark Glickman's Glicko-1 (1999) adds the parameter Elo is missing: <strong>rating deviation</strong>, a standard deviation around the rating, so a player is modeled as N(R, RD²) rather than a point. Two rules make it behave. Before a rating period, inactivity inflates the uncertainty: RD_new = min(√(RD_old² + c²t), RD_max) — a player who has not played in six months is genuinely less known, and the math says so. During the update, opponents with high RD are down-weighted by the g-function, g(RD_j) = 1/√(1 + 3(q·RD_j/π)²) with q = ln(10)/400 ≈ 0.005756 — a result against a mystery opponent teaches you less than the same result against a well-measured one.</p>
+
+  <p>Glicko-2 (Glickman, 2001) adds a third parameter, <strong>volatility σ</strong>: the expected fluctuation in a player's skill between rating periods. This is the term that lets a rating jump after an injury, a coaching change, or a late-career decline rather than grinding slowly through the old estimate. The volatility update has no closed form — Glickman's algorithm solves for σ′ iteratively — which is the honest price of modeling abrupt skill change.</p>
+
+  <p>Lab example: a 1500-rated player with RD=120, σ=0.06 beats a 1700-rated opponent (RD=100) and a 1600-rated opponent (RD=50) in one rating period. The posterior lands at <strong>1567.5 with RD 108.2 — a 95% interval of roughly [1356, 1779]</strong>. The upset drags the mean up, but the pre-period uncertainty keeps the interval honest. Translation: a 4.0 DUPR with three verified matches in six months is not the same claim as a 4.0 with forty; likewise, an NRL club after two rounds has a provisional rating no matter what the ladder says.</p>
+
+  <figure id="fig-21-04" class="full">
+    <img src="shared/images/glicko-uncertainty-band.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.4</span>: Glicko-2 Uncertainty Over Time. One player's rating trajectory: the confidence band widens during an inactivity gap, narrows after a cluster of matches, and steps upward on a single big upset. The band is the product.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.2d</span> Bradley-Terry and TrueSkill</h2>
+  <p>Underneath Elo sits the <strong>Bradley-Terry model</strong>: two competitors have latent positive strengths π_i and π_j, and P(i beats j) = π_i/(π_i + π_j). Taking logs turns it into a logistic regression on pairwise outcomes, and the strengths are estimated by maximum likelihood over the full match history. Elo is essentially online stochastic gradient descent on the Bradley-Terry log-likelihood with a fixed step size K — which tells you exactly when to prefer each: if you have a complete historical table of NRL results and want the most stable end-of-season ratings, fit Bradley-Terry offline; if you are updating a club ladder night by night, run Elo or Glicko online.</p>
+
+  <p><strong>TrueSkill</strong> (Herbrich et al., 2006, Microsoft Research) is the fully Bayesian member of the family. Skill is a Gaussian N(μ, σ²); the update is expectation propagation over a factor graph of the match. New players start with high σ and converge in a handful of games; veterans resist noise. Draws are explicit, and — the feature nothing else in this chapter has — <strong>teams decompose naturally</strong>: a 2v2 outcome updates four individual posteriors, with the team's performance modeled from its members. That is precisely the pickleball doubles problem, and it is why TrueSkill is the reference point for the partner-dependence extension in 21.9. The tradeoff: the math is heavy, the implementation subtle, and for offline sports analytics Glicko-2 is usually sufficient. Use TrueSkill when team decomposition and exact posteriors are the deliverable.</p>
+
+  <h2 class="section-title"><span class="section-num">21.3</span> DUPR: The Pickleball Standard</h2>
+  <p>DUPR (Dynamic Universal Pickleball Rating) is the de facto official rating of USA Pickleball and the APP as of late 2025 (Forbes, 2025-12-05). Verified from dupr.com/how-it-works and the algorithm-update posts: the scale is <strong>2.000 to 8.000</strong> (the 0–8 or 0–8000 shorthand in conversation refers to this same range; the published precision is three decimal places), continuous, with singles and doubles tracked independently and mixed/age-based subscores layered on top. The bands a player actually experiences:</p>
+
+  <table>
+    <thead>
+      <tr><th>DUPR band</th><th>Level</th><th>Practical meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>2.0–2.99</td><td>Beginner / low intermediate</td><td>Rally basics, kitchen rule</td></tr>
+      <tr><td>3.0–3.49</td><td>Intermediate</td><td>Consistent dinks, third-shot choices</td></tr>
+      <tr><td>3.5–3.99</td><td>High intermediate</td><td>Most contested tournament bracket</td></tr>
+      <tr><td>4.0–4.99</td><td>Advanced</td><td>Reliable thirds, speed-ups, counters</td></tr>
+      <tr><td>5.0–8.0</td><td>Elite / professional</td><td>PPA/APP tour level</td></tr>
+    </tbody>
+  </table>
+
+  <p>The <strong>July 8, 2025 algorithm update</strong> moved DUPR from a primarily win/loss model to <strong>performance-vs-expectation</strong>: it predicts an expected score from team averages before the match and adjusts ratings on whether a team scored more or fewer points than predicted. A player can <em>gain</em> rating on a loss (11-9 against a stronger team, when 11-5 was expected) and <em>lose</em> rating on a hollow win. Every point matters because the margin is the signal, not the W.</p>
+
+  <p>Three weighting mechanisms ride on top. <strong>Source verification:</strong> sanctioned results outweigh self-posted scores — the anti-sandbagging gate. <strong>Recency and volume:</strong> recent matches weigh more, and variety of opponents/partners stabilizes the estimate — the informal counterpart of Glicko's RD. <strong>The gap rule:</strong> matches between teams whose average ratings differ by more than 1.0 may be excluded because the outcome is too predictable [verify]. The rule of thumb that a 0.5 DUPR gap maps to an expected score near 11-5 (68.75% of points) implies S ≈ 1.46 DUPR points per factor of ten in odds [verify].</p>
+
+  <p>The <strong>Reliability Score</strong> (1–100%) is DUPR's explicit uncertainty display based on volume, recency, opponent/partner variety, and match source, updated weekly. 60% or higher is a common tournament eligibility gate; it does not change the numeric rating. This is Glicko's RD translated into consumer language. DUPR pools singles and doubles outcomes separately (data pooling: the model pools every match within a format but not across formats), and recent results dominate through the recency weighting; a 4.0 singles player and a 4.0 doubles player are therefore not the same estimate. For builders, the structural fact is <strong>no public API</strong>: access is CSV exports and partner agreements; the rating data itself is the moat.</p>
+
+  <figure id="fig-21-05" class="full">
+    <img src="shared/images/dupr-scale.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.5</span>: The DUPR Scale. 2.000–8.000 with the five bands a tournament director actually uses, plus the separate Reliability Score gauge with its 60% gate — the number and the confidence in the number travel together.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.4</span> UTR-P: The University System</h2>
+  <p>UTR-P (Universal Tennis Rating — Pickleball) is a <strong>modified Elo on a 1.00–10.00 scale</strong> (verified). For each match it computes a <strong>match rating</strong> from the rating differential plus the percentage of points won per game (11-5 is a different signal than 11-9) and a <strong>match weight</strong> from competitiveness, opponent reliability, time degradation, and format. The published rating is the weighted average of up to the <strong>60 most recent match ratings</strong>.</p>
+
+  <p>Reliability is a status, not a percentage: <em>projected</em> after one match, <em>reliable</em> after roughly five to six — aggressive compared to Glicko's RD decay, defensible because the match-weight system discounts thin data. Verified (sanctioned) results outweigh unverified ones. On <strong>April 14, 2025</strong>, UTR Sports recalibrated every UTR-P rating <strong>downward 0.5 points</strong> to align the scale — a universal shift that preserved relative ordering but breaks any model trained on pre-April numbers, a lesson in 21.9b.</p>
+
+  <p>It is the closest algorithmic cousin to the book's homebrew — and it confirms the design consensus: margin matters, recency matters, verification matters.</p>
+
+  <h2 class="section-title"><span class="section-num">21.4b</span> The Duplication and Sport-Transplant Problems</h2>
+  <p>Two structural problems follow from rating per sport rather than per player. The <strong>duplication problem</strong>: UTR already ran tennis, then minted UTR-P for pickleball, while DUPR built a rival standard — so a crossover athlete in 2026 carries a tennis UTR, a pickleball UTR-P, and a DUPR, three overlapping-skill numbers on incompatible scales. The April 2025 recalibration exists because two pickleball scales drifted apart. A dual-sport athlete's true skill is one latent variable; the ecosystem estimates it three times and never merges the evidence.</p>
+
+  <p>The <strong>sport-transplant problem</strong> is deeper: a rating is calibrated to its population and outcome distribution; it does not travel. A 4.0 DUPR says nothing about rugby league; an NRL club-Elo of 1600 says nothing about pickleball — and the failure is not just scale. The 400 in Elo's logistic, the ~1.46 in DUPR's, and the home-advantage term in an NRL model are each fit to how often upsets happen in that sport. Rugby league matches are higher-scoring and lower-variance than pickleball to 11, so the same gap implies a different win probability. Transplant the number and the model is systematically wrong. Transplant the <em>architecture</em> (logistic expectation, surprise update, explicit uncertainty) and re-fit S, K, and aging constants per sport — the same transfer discipline as chapter 23.</p>
+
+  <h2 class="section-title"><span class="section-num">21.5</span> PPA World Pickleball Rankings</h2>
+  <p>Launched 5 August 2026 for the 2026-27 season (verified): <strong>14 best results in the trailing 52 weeks</strong>, with <strong>50/35/15 weighting for gender doubles / mixed doubles / singles</strong> — the PPA's statement that the "best overall player" is primarily a doubles player. The PPA runs three standings:</p>
+
+  <table>
+    <thead>
+      <tr><th>Standing</th><th>Purpose</th><th>Calculation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>World Pickleball Ranking</td><td>Global standing</td><td>14 best results × 52 weeks, 50/35/15</td></tr>
+      <tr><td>Current Seed</td><td>Next bracket placement</td><td>Recent form at registration close</td></tr>
+      <tr><td>The Race</td><td>PPA Finals qualification</td><td>Calendar-year cumulative points</td></tr>
+    </tbody>
+  </table>
+
+  <p>WPR is a <strong>ranking, not a rating</strong>: it measures tournament success across disciplines, not calibrated head-to-head probability. Use it to understand who has earned the most on tour; do not use it to predict a single match.</p>
+
+  <h2 class="section-title"><span class="section-num">21.5b</span> Rugby League: The Ladder and the Market Rating</h2>
+  <p>Rugby league's public instruments make the ranking-versus-rating distinction concrete. The <strong>NRL ladder</strong> is a points table — 2 for a win, 1 for a draw, differential as tie-break. It is a valid ground truth for season success but a poor predictor of any single match, because it weights all opponents equally and ignores venue, injuries, and recency: in rating terms it is a Bradley-Terry model with uniform weights and no uncertainty, which is why a sixth-placed team often beats a second-placed team without the ladder blinking. The same structure appears in the AFL ladder and the English Super League table: useful for season-long narrative, but not for single-match probability.</p>
+
+  <p>The sharper public instrument is the <strong>betting market</strong>. A club-Elo fit to results — logistic expectation, a home-ground term, margin-aware variants — tracks the ladder loosely but tracks the bookmaker's closing line tightly. Reverse-engineering it is standard: assume P(A) = 1/(1+10^(−(R_A − R_B + H)/S)), then fit team ratings R_i, home advantage H, and scale S to minimize the distance between model probabilities and de-vigged closing probabilities. The result is a market-calibrated Elo that usually out-predicts the ladder; its parameters (S, H) are league-specific, the sport-transplant lesson of 21.4b measured rather than asserted.</p>
+
+  <figure id="fig-21-06" class="full">
+    <img src="shared/images/nrl-ladder-vs-line.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.6</span>: Two Instruments, One Question. The NRL ladder (points, differential tie-break) beside the betting market's implied probability with the de-vig step. The ladder ranks the season; the closing line prices the match.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.6</span> Win Probability From Ratings</h2>
+  <p>The rating system's practical output is a probability: P(win) from the rating differential via the logistic, P(A wins) = 1/(1+10^(−Δ/S)), with S the system-specific scale. Using the lab-derived scales (S_DUPR ≈ 1.46 from the 0.5-gap ≈ 11-5 rule [verify]; S_UTR-P ≈ 2.0 assumed pending calibration data [verify]):</p>
+
+  <table>
+    <thead>
+      <tr><th>Δ DUPR</th><th>P(win)</th><th>Δ UTR-P</th><th>P(win)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>0.00</td><td>50.0%</td><td>0.00</td><td>50.0%</td></tr>
+      <tr><td>0.50</td><td>68.8%</td><td>1.00</td><td>76.0%</td></tr>
+      <tr><td>1.00</td><td>82.9%</td><td>2.00</td><td>90.9%</td></tr>
+      <tr><td>2.00</td><td>95.9%</td><td>3.00</td><td>96.9%</td></tr>
+    </tbody>
+  </table>
+
+  <p>For doubles, both systems collapse the match to team-average versus team-average: P(team A) = 1/(1+10^(−(R̄_A − R̄_B)/S)). That ignores partner interaction and within-match momentum — good enough for seeding, not for coaching claims. This probability is what the model compares against, and it crosses into chapter 22's expected value: both are probability machines that must be calibrated (chapter 20's Brier/log-loss discipline applies to both).</p>
+
+  <h2 class="section-title"><span class="section-num">21.7</span> The CV + Rating Loop</h2>
+  <p>The book's contribution is the closed loop: <strong>the eventing pipeline (C19) produces match-result rows with confidence; the rating consumes only the confident ones; low-confidence rows route to the human review queue</strong>. This is the verified pattern from the workflow dossier (the 8-12 clips rule applies to rating inputs too): CV verifies, ratings aggregate, the review queue catches the borderline.</p>
+
+  <p>The data path has three evidence layers, each mapping to an earlier chapter. <strong>Outcome evidence</strong>: rally detection and score progression from ball tracking and court geometry (C12), match termination from the state machine (C19). <strong>Identity evidence</strong>: which player is which, from the identity chapter's jersey/appearance models (C13) — a mislabeled point updates the <em>wrong</em> rating, so identity confidence gates the update directly. <strong>Context evidence</strong>: court/event verification, so a self-posted score cannot masquerade as a sanctioned result. The consumption rule: weight each match by the <em>minimum</em> of outcome, identity, and context confidence; in Glicko terms, inflate the effective opponent RD for shaky rows or route them to review.</p>
+
+  <p>One boundary must be held: this loop is a <strong>match-result ingestion pipeline, not a performance-judgment pipeline</strong>. Vision-Based Rating platforms (PB Vision, Dinkmate's VBR) estimate level directly from CV-derived shot quality — a different claim belonging to chapter 23's tactical models. Merging the two silently encodes CV biases into what should be an outcome measurement.</p>
+
+  <p>The identity chapter feeds the rating chapter: the player-label confidence that C13 assigns to every rally is the same weight that the Glicko-2 consumer uses to decide whether a match is a full observation or a review item. The loop is therefore C12 → C13 → C19 → C21, with a review gate at every transition where confidence drops below a threshold.</p>
+
+  <h2 class="section-title"><span class="section-num">21.8</span> Alternative Ground Truth: Betting Markets</h2>
+  <p>When no official rating exists — or the official one is private, as DUPR's is — the analyst constructs ground truth. The NRL ladder is the public-domain ranking; the betting market's implied probability is the sharpest public measurement. Three conversions turn prices into calibration data. <strong>Implied probability</strong>: P = 1/decimal odds. <strong>De-vigging</strong>: divide raw implied probabilities by the bookmaker's overround (e.g., a two-way market at 105% gets each side divided by 1.05) to recover a fair probability. <strong>Closing Line Value</strong>: CLV = (your odds / closing odds − 1) × 100% — the calibration signal of record for professionals.</p>
+
+  
+
+  <h2 class="section-title"><span class="section-num">21.9</span> The Honest Gap</h2>
+  <p><strong>No public free DUPR/UTR-P dataset exists.</strong> DUPR is partner/CSV-gated, UTR-P is proprietary, and PPA WPR is a points table, not a downloadable match database. The closest public resource is <strong>pklmart</strong> (Kaggle, CC BY-NC-SA 4.0): roughly 300,000 shot-level records across roughly 1,000 matches, mostly doubles at the 4.0–pro level — rich for tactics, but with no official ratings attached and anonymized player IDs that may not support rating inference [verify]. The book therefore cannot validate against the official systems directly; it demonstrates the math on synthetic data and pklmart-style results and keeps the claim scoped to what the data supports.</p>
+
+  <p>The book's contribution is a homebrew <strong>Glicko-2 + margin + partner-dependence</strong> model — a first-of-kind open reference implementation. The partner effect is the doubles problem neither DUPR nor UTR-P models directly: DUPR uses the team average, which lets a fixed partnership inflate or deflate both members' individual ratings. The homebrew model fits team strength as α·(individual average) + β·synergy(p1, p2) and lets the data decide whether β matters. Margin enters as point-fraction against a logistic in rating difference; Glicko-2 supplies the uncertainty that DUPR displays as its Reliability Score.</p>
+
+  <h2 class="section-title"><span class="section-num">21.9b</span> What a Rating Cannot Say</h2>
+  <p>The honest limits, stated plainly. <strong>A rating is a match-outcome model, not a skill-attributes model.</strong> A 4.5 DUPR player may have a weaker third-shot drop than a 4.0 player; the rating averages over hundreds of rallies and hides the tactical shape. <strong>Outcome-based, not quality-based:</strong> DUPR knows who scored, not whether the point came from a constructed dink or an unforced error. <strong>Partner dependence confounds doubles</strong> (21.9). <strong>Scales drift:</strong> DUPR's July 2025 update and UTR-P's April 2025 −0.5 recalibration are explicit scale corrections; any model trained on pre-update numbers must be re-calibrated. <strong>Unverified data can be gamed,</strong> so both systems and the CV loop weight verified sources.</p>
+
+  <p>And the deepest limit is sample size, measured rather than asserted: in E21, after 60 matches against known true skills, Elo's mean absolute error was still 87.6 points (max 139) and Glicko-2's mean RD was 99.8 — the system <em>knows</em> it does not yet know. Convergence to single-digit error takes hundreds of matches per player. 60 matches buys an estimate with an honest error bar; publishing the error bar — RD, reliability percentage, confidence interval — is the difference between a measurement and a vibe.</p>
+
+  <figure id="fig-21-07" class="full">
+    <img src="shared/images/rating-convergence-curve.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+  </figure>
+  <h2 class="section-title"><span class="section-num">21.9c</span> The 10 Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the rating math above to the decisions a club, a coach, or a selector actually faces. They follow three categories: <strong>A — Running the Systems in the Field (UC 01–04)</strong>, <strong>B — The Honest Limits (UC 05–07)</strong>, and <strong>C — Decisions Built on Ratings (UC 08–10)</strong>. Each case pairs a pickleball and a rugby league application so the machinery transfers, and each carries its evidence label: measured (book experiment E21), source-backed (system documentation or paper), or [verify] (practitioner convention, not yet established).</p>
+
+  <h3 class="sub-heading">Category A — Running the Systems in the Field (UC 01–04)</h3>
+
+  <h3 class="sub-heading">UC 01 — DUPR in Practice: The Club Ladder Night</h3>
+  <p>A 200-member club runs a weekly ladder, and the number a player earns on Tuesday night must mean the same thing at tournament registration on Saturday. DUPR's July 2025 performance-vs-expectation model (source-backed) predicts an expected score from team averages before the match, then adjusts on the point differential: 3.5+3.5 versus 4.0+4.0 expects roughly 11-5, and an actual 11-9 moves <em>both</em> teams up. Sanctioned results outweigh self-posted scores, and the Reliability Score (volume, recency, variety) gates entry at 60% — Glicko's RD rendered in consumer language (21.3). The logistic scale behind the expectation, S ≈ 1.46 DUPR points per factor of ten in odds, is lab-derived [verify].</p>
+  <p><strong>Payoff:</strong> tournament directors get seeding they can defend, and players get a ladder where every point matters, not just the W.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc01-dupr-ladder-practice.png" alt="DUPR club ladder night: expected versus actual score moving both teams' ratings." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.8</span>: UC 01 — DUPR Ladder Night. Expected 11-5, actual 11-9: the margin beats the expectation, so both teams gain. <strong>Pickleball</strong>: the weekly club ladder feeding tournament seeding through the 60% reliability gate. <strong>Rugby league</strong>: reserve-grade club grading nights, where the same expectation logic sorts social teams into divisions.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — Elo for Rugby League Team Ratings</h3>
+  <p>The NRL ladder ranks the season; a club-Elo prices next Sunday. The machinery is 21.2b's: logistic expectation, a home-ground term H fit at 30–60 Elo points, K = 20–32, with margin-aware variants scaling the update by the winning margin. The calibration move is the one that makes it honest: fit team ratings R_i, H, and scale S to minimize the distance between model probabilities and de-vigged closing probabilities, and the resulting market-calibrated Elo usually out-predicts the ladder (source-backed, 21.5b). A 20-point upset win at home moves the underdog ≈ +20 points at K=32 — large enough to matter, small enough to survive one bad Sunday.</p>
+  <p><strong>Payoff:</strong> analysts get a weekly strength number that tracks the market instead of the narrative.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc02-elo-rl-team-ladder.png" alt="Club Elo trajectories across a rugby league season with home-ground term." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.9</span>: UC 02 — The Club Elo Season. Three club trajectories across 27 rounds around a 1500 mean, with the home term annotated. <strong>Rugby league</strong>: the primary instrument — a per-round strength estimate calibrated to the closing line. <strong>Pickleball</strong>: inter-club pennant and league team ratings, where the same home-venue term applies to club nights.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Glicko Uncertainty in Player Form</h3>
+  <p>"Is this player actually in form?" is a question about a distribution, not a point. The player is N(R, RD²): the RD ages upward with inactivity, RD_new = min(√(RD_old² + c²t), RD_max), and narrows with each match cluster — so form is the trajectory of R <em>with its 95% band</em> (R ± 1.96·RD), never the trajectory alone. The measured constraint comes from E21: mean RD was still 99.8 points after 60 matches, so any form claim inside ±196 points of noise is a story, not a signal. Results against high-RD opponents are down-weighted by the g-function (21.2c), which is why a hot streak against mystery opposition moves the band less than the same streak against measured ones.</p>
+  <p><strong>Payoff:</strong> coaches stop overreacting to two good weeks — and stop ignoring a genuine step-change when the band says it is real.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc03-glicko-form-band.png" alt="Player form trajectory with wide uncertainty band after few matches, narrow after many." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.10</span>: UC 03 — The Form Band. One player's rating trajectory with the uncertainty band: wide after three matches, narrow after forty. <strong>Pickleball</strong>: a 4.0 DUPR with three verified matches is a different claim than a 4.0 with forty. <strong>Rugby league</strong>: a halfback's form after two rounds is provisional; after twenty, the band is the selection evidence.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 04 — Match Outcome Prediction: The C22 Feed</h3>
+  <p>Every preview and every expected-value model needs a calibrated win probability as its baseline, and the rating logistic is that baseline: P(A) = 1/(1+10^(−Δ/S)), with S_DUPR ≈ 1.46 [verify] and the club-Elo S fit per league against the market. Doubles collapses to team-average versus team-average — adequate for seeding, explicitly not a coaching claim (21.6). The discipline that keeps the number honest is C20's: score the probabilities on held-out matches with Brier and log-loss against the closing line, and treat any fancier model that cannot beat this one-term logistic as decoration, not signal.</p>
+  <p><strong>Payoff:</strong> the rating chapter hands chapter 22 its prior — the ΔEPV of a decision is measured against what the rating already expected.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc04-outcome-probability.png" alt="Logistic win probability curve from rating difference with annotated points." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.11</span>: UC 04 — The Probability Machine. Win probability from rating gap: 0.5 → 69%, 1.0 → 83%, 2.0 → 96% on the DUPR-derived scale [verify]. <strong>Pickleball</strong>: bracket preview probabilities from DUPR gaps. <strong>Rugby league</strong>: the market-calibrated club Elo checked against the closing line, round by round.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category B — The Honest Limits (UC 05–07)</h3>
+
+  <h3 class="sub-heading">UC 05 — The Rating-vs-Skill Gap</h3>
+  <p>A 4.5 DUPR player can have a weaker third-shot drop than a 4.0 — the rating averages over hundreds of rallies and hides the tactical shape. The system is outcome-based, not quality-based: it knows who scored, not whether the point came from a constructed dink rally or an opponent's unforced error (21.9b, source-backed). The quality claim belongs to chapter 23's tactical models and to the Vision-Based Rating boundary drawn in 21.7; merging the two silently encodes CV shot-style biases into what should be an outcome measurement. Rugby league has the same seam: a high-Elo club can carry a weak left-edge defense that the single number never shows.</p>
+  <p><strong>Payoff:</strong> recruiters and selectors treat the rating as the shortlist floor, never the whole file — the tactical file comes from C23.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc05-rating-vs-skill.png" alt="Two players with identical 4.5 ratings but different shot-quality profiles." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.12</span>: UC 05 — Same Number, Different Player. Two 4.5-rated players with different skill profiles: one even, one with a dented third-shot drop. <strong>Pickleball</strong>: the rating says who wins; the radar says how — and only the second is coachable. <strong>Rugby league</strong>: two 1600-Elo clubs with opposite defensive shapes; the number ties them, the edge metrics separate them.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — Rating Drift Over a Season</h3>
+  <p>A rating computed in March is a stale claim by September, and a published scale correction breaks history outright: DUPR's July 2025 re-specification changed what the number measures, and UTR-P's April 2025 update shifted every rating down 0.5 points — ordering preserved, absolute values moved (source-backed). The countermeasures are mechanical: exponential recency decay (a per-day λ tuned to predict next-match outcome, the E21 extension program), a hard refit after every published scale correction, and a rule that no model trains across a scale break without re-calibration. Early-season club-Elo ratings are likewise dominated by the prior; by round 20 the data has taken over — the drift is the RD story told on a calendar.</p>
+  <p><strong>Payoff:</strong> the model stays calibrated because the scale is treated as a moving target, not a constant.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc06-season-drift.png" alt="Season timeline with recency weighting and a scale-correction break." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.13</span>: UC 06 — The Moving Scale. Recency-weighted matches across a season, with the vertical break where a scale correction forces a refit. <strong>Pickleball</strong>: DUPR's July 2025 and UTR-P's April 2025 corrections as dated breaks in any training set. <strong>Rugby league</strong>: early-season Elo is prior plus noise; late-season Elo is measurement — weight accordingly.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — Rating Decay and the Injury Return</h3>
+  <p>Six months out with an injury and the old number is a fiction — but so is pretending to know nothing. Glicko's inactivity rule inflates the uncertainty on exactly the right schedule, RD_new = min(√(RD_old² + c²t), RD_max), and the volatility term σ lets the rating jump on the comeback cluster instead of grinding slowly through the stale estimate (21.2c, source-backed). The practical display: the injured 4.5 enters the comeback tournament as a 4.5 with a wide band — provisional, not fake — and the first four games back carry reduced weight in any selection model until the band re-narrows [verify — the four-game convention is practitioner practice, not a published rule].</p>
+  <p><strong>Payoff:</strong> honest provisional status replaces false precision at exactly the moment selection pressure is highest.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc07-injury-return-decay.png" alt="Rating uncertainty band ballooning during an injury gap then narrowing after comeback." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.14</span>: UC 07 — The Comeback Band. The uncertainty band balloons across a six-month injury gap, then re-narrows as comeback matches land. <strong>Pickleball</strong>: the returning 4.5 is 4.5 ± a lot — seed on the band, not the point. <strong>Rugby league</strong>: the post-ACL fullback's first month back is a provisional rating no matter what the ladder says.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category C — Decisions Built on Ratings (UC 08–10)</h3>
+
+  <h3 class="sub-heading">UC 08 — Pairing Fairness in Doubles</h3>
+  <p>Social and competitive doubles live or die on fair pairings, and the team-average model confounds everyone: a fixed partnership drags both individual ratings toward the pair's mean, so a strong player carrying a weak partner arrives at the next pairing night under-rated, and the carried partner arrives over-rated. The homebrew fix fits team strength as α·(individual average) + β·synergy(p1, p2) and lets the data decide whether β clears zero (the E21 extension program); TrueSkill's factor graph is the reference for the alternative — one 2v2 result decomposes into four individual posterior updates (source-backed, 21.2d). Rugby league's version is the halves pairing and the centre-wing edge: combination effects that a pure average of individual ratings cannot see.</p>
+  <p><strong>Payoff:</strong> fair Tuesday nights, and individual ratings that survive a partner swap.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc08-pairing-fairness.png" alt="Doubles pairing matrix with synergy term between partners." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.15</span>: UC 08 — The Pairing Matrix. Team strength = α × average + β × pair synergy, with the pairing graph the data fits. <strong>Pickleball</strong>: the primary application — partner-independent ratings from partner-dependent results. <strong>Rugby league</strong>: halves and edge combinations valued as pairs, not as two averaged individuals.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Selection Decisions: Which Rating to Trust</h3>
+  <p>DUPR says 4.2, UTR-P says 6.1, the homebrew says 1580 ± 110, and the PPA ranking says seventh in the world — which number does the selector use? The discipline has three steps. <strong>Ranking versus rating first</strong>: WPR is a tournament-success ranking, not a calibrated probability — never seed a match with it (21.5). <strong>Calibration second</strong>: prefer the system that scores best on held-out log-loss against known outcomes or the market, scored with C20's machinery. <strong>Reliability third</strong>: gate on the RD or reliability percentage, applying the minimum-confidence rule of 21.7 — a precise number from a thin system loses to an honest interval from a thick one. The same three steps order the NRL ladder, a club Elo, and the market-implied rating for rep selection.</p>
+  <p><strong>Payoff:</strong> selection meetings argue about players, not about whose number is real.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc09-which-rating.png" alt="Decision flowchart for choosing ranking, rating, or market number per decision." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.16</span>: UC 09 — Which Number for Which Decision. Seeding wants a calibrated rating; the season story wants the ladder or WPR; a single match wants the market-implied probability. <strong>Pickleball</strong>: DUPR-with-reliability for entry, WPR for tour narrative. <strong>Rugby league</strong>: market-calibrated Elo for next Sunday, ladder for the season review.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — Leaderboard Design</h3>
+  <p>A public leaderboard is an incentive system, not a display: publish a bare number and you get sandbagging, rating-farming against weak fields, and inactivity dodging. The design pattern that works is the one DUPR converged on (source-backed): rating and reliability displayed together, verified sources weighted above self-posted results, minimum-match gates before a rank is shown, and decay or a staleness flag for inactive players. The E21 convergence curve is the design constraint made quantitative — below a few dozen matches the number is a vibe, and an honest board says so with the reliability column rather than hiding it. A club that implements exactly this finds the incentives pointing the right way: the shortest path up the board is playing more verified matches.</p>
+  <p><strong>Payoff:</strong> the board rewards exactly the behavior a healthy competition wants — more verified matches against varied opposition.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch21-uc10-leaderboard-design.png" alt="Club leaderboard showing rating and reliability columns together." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 21.17</span>: UC 10 — The Honest Leaderboard. Rating and trust displayed as paired columns; thin rows are flagged, not hidden. <strong>Pickleball</strong>: the club ladder board with the reliability gate visible. <strong>Rugby league</strong>: the club championship table with an Elo column beside the points column — narrative and measurement side by side.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">21.9d</span> Runnable Implementation: The Rating Engine Skeleton</h2>
+  <p>The minimal engine — Elo update, Glicko inactivity aging, opponent down-weighting, margin signal, and the C19 confidence gate — is the starting skeleton; the full lab lives at <code>lab/w5_lab_ratings.py</code> (E21):</p>
+  <pre><code>import math
+
+def elo_update(ra, rb, score, k=32.0):
+    """One Elo step: score is 1/0, or point-fraction for margin-aware variants."""
+    exp_a = 1.0 / (1.0 + 10.0 ** ((rb - ra) / 400.0))
+    return ra + k * (score - exp_a)
+
+def age_rd(rd, days, c=8.0, rd_max=350.0):
+    """Glicko inactivity inflation: the comeback player's band balloons on schedule."""
+    return min(math.sqrt(rd**2 + (c * days / 30.0) ** 2), rd_max)
+
+def g_weight(rd_j):
+    """Down-weight mystery opponents: a result vs high RD teaches less."""
+    q = math.log(10.0) / 400.0
+    return 1.0 / math.sqrt(1.0 + 3.0 * (q * rd_j / math.pi) ** 2)
+
+def consume_match(row):
+    """C19 eventing row -&gt; gated, weighted rating update."""
+    conf = min(row.outcome_conf, row.identity_conf, row.context_conf)
+    if conf &lt; 0.70:                       # review gate: low-confidence rows queue for a human
+        return ("REVIEW", row)
+    k_eff = 32.0 * conf                    # fractional-K for shaky-but-usable evidence
+    margin = row.points_won / max(row.points_played, 1)
+    return ("UPDATE", elo_update(row.ra, row.rb, margin, k=k_eff))</code></pre>
+
+  <h2 class="section-title"><span class="section-num">21.9e</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases hang on the book's closed loop rather than standing alone. C19's eventing pipeline emits the match-result rows with outcome, identity, and context confidence that UC 01, UC 08, and UC 10 consume; C20's Brier and log-loss discipline scores every probability UC 04 and UC 09 emit; the rating logistic is the prior that chapter 22's expected-value models must beat before claiming any added signal; the rating-versus-skill boundary of UC 05 is the seam where chapter 23's tactical models take over; and the cockpit and practice surfaces of chapters 28–29 display rating, reliability, and recency exactly as UC 10 specifies. The honest labels mark what is measured (E21), documented (DUPR, UTR-P, Glicko, TrueSkill), or still practitioner convention [verify] — the gap rule, the S ≈ 1.46 scale, and the four-game comeback convention among them.</p>
+
+  <h2 class="section-title"><span class="section-num">21.10</span> The Ratings Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Start with Elo</strong>: the logistic + K-factor; it is 10 lines and correct for one-on-one.</li>
+    <li><strong>Upgrade to Glicko-2</strong> when you need a per-player reliability (the RD is the honesty the DUPR reliability % displays).</li>
+    <li><strong>Add margin</strong>: 11-5 is a different signal than 11-9; the point-per-game weighting is the UTR-P lesson.</li>
+    <li><strong>Add partner dependence</strong> for doubles: the team-average is a crude interaction; the book contribution is the interaction term.</li>
+    <li><strong>Validate against the market</strong>: betting-implied probability is the sharpest public calibration reference (closing-line value).</li>
+    <li><strong>Feed from CV</strong>: C19 eventing produces match results with confidence; weight by the minimum of outcome, identity, and context confidence; low-confidence rows route to review.</li>
+    <li><strong>Re-fit constants per sport</strong>: scale, K, home advantage, and aging rates are population-calibrated — transplant the architecture, never the parameters.</li>
+    <li><strong>Publish the sample size</strong>: 60 matches is not a rating; hundreds are. The RD or the CI says it.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">21.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Homebrew Glicko-2 + margin + partner effect on synthetic and pklmart-style results: does β (synergy) clear zero, or is DUPR's team-average adequate?</li>
+    <li>Feed C19 eventing's confident match results into the rating; measure convergence vs the betting-implied ground truth, scored with C20's Brier/log-loss.</li>
+    <li>Recalibration drift: quantify how much a DUPR-scale correction (July 2025) or UTR-P shift (April 2025) moves a homebrew model's held-out log-loss.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">21.12</span> Sources</h2>
+  <ul>
+    <li>DUPR how-it-works and the July 2025 performance-vs-expectation update; the Reliability Score post (dupr.com/how-it-works; dupr.com/post/dupr-algo-update-win-or-lose-your-rating-can-go-up; dupr.com/post/introducing-the-dupr-reliability-score). Forbes on DUPR's 2025 consolidation (forbes.com/sites/toddboss/2025/12/05).</li>
+    <li>UTR-P algorithm and the April 2025 recalibration (utrsports.net/pages/how-utr-p-works; support.universaltennis.com, articles 9000234183 and 9000267476). PPA World Pickleball Rankings (ppatour.com/world-pickleball-rankings-be-the-best, Aug 2026).</li>
+    <li>Elo (logistic + K; en.wikipedia.org/wiki/Elo_rating_system), Glicko-1/2 (RD + volatility; glicko.net/glicko/glicko2.html; Glickman, J. Applied Statistics 28:673-689, 2001), Bradley-Terry, TrueSkill (microsoft.com/en-us/research/project/trueskill-ranking-system).</li>
+    <li>NRL ladder (nrl.com/ladder); closing-line value, de-vigging, and implied probability per standard sports-betting analytics convention. pklmart dataset (kaggle.com/datasets/cakesofspan/pklmarts-competitive-pickleball-extracts, CC BY-NC-SA 4.0). Vision-Based Rating context (dinkmate.ai; pb.vision).</li>
+    <li>Lab: <code>lab/w5_lab_ratings.py</code> → <code>experiments/c21-ratings/outputs/metrics.json</code> (E21: 87.6 mean abs Elo error, 99.8 mean RD after 60 matches).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="20.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 20</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 20 — Statistics for Sport Practitioners</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 20</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 20 — Statistics for Sport Practitioners</p>
+        </div>
+      </div>
+    </a>
+    <a href="22.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 22</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 22</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The possession-value ladder, pickleball's missing model, and the rugby anchor that needs no tracking data</p>
+        </div>
+        <a href="22.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #C2410C;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-09" style="background-color: #C2410C; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 09</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Why 26 IDs on 4 players matters, which metric tells you the truth, and how role priors repair identity</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">40 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-09-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Detection Is Easy; Identity Is the Problem</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-09-1" data-section="s-09-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Detection Is Easy; Identity Is the Problem</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-09-1" data-section="s-09-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Detection Is Easy; Identity Is the Problem</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">09</span> Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h1>
+    <p class="chapter-subtitle">Why 26 IDs on 4 players matters, which metric tells you the truth, and how role priors repair identity</p>
+  </header>
+
+<h3 id="s-09-1"><span class="section-num">9.1</span> Detection Is Easy; Identity Is the Problem</h3>
+
+<p class="section-intro">Chapter 8 established that finding players is tractable — the court filter cuts 80 raw detections to 23 on the pickleball fixture. The hard problem is keeping those detections belonging to the <em>same person</em> across a rally of crosses, stacking, occlusion, and rugby collision clusters. The book's E02 measured it bluntly: <strong>26 track IDs produced for 4 players</strong> in a 30-second doubles clip (measured, ByteTrack at 53 fps on the M4 Max). That number is not a bug report; it is the field's core challenge.</p>
+
+  <p>The rugby baseline is worse, and instructively so. E08 (nrl-001 broadcast clip) found 13.2 persons per frame on average but spawned <strong>295 track IDs for roughly 30 distinct people</strong>, with a median inter-frame drift of 9.76 px — and that is the <em>median</em>; sprinting players in 25 fps broadcast footage move 30+ px per frame. Any association rule that assumes frame-to-frame box overlap is structurally broken at sport speeds. Pickleball fails differently: the camera is fixed and the court is small, so motion is predictable, but four players converge on the same two square metres at the non-volley zone, and the net band occludes legs exactly when players are closest together. Same disease — fragmented identity — different mechanism.</p>
+
+  <p>Every claim downstream — partner spacing, kitchen occupancy, defensive line speed, rally tempo — depends on knowing <em>who</em> is where. A heatmap built from unidentifiable tracks is a heatmap of fragmentation, not of play. A rally-speed profile computed over a track that silently changes identity at the kitchen line is a profile of two half-rallies stitched together. Identity is the join key of the entire analytics spine (§9.11b); this chapter is about making that key survive contact with real footage.</p>
+
+  <figure id="fig-09-03" class="full">
+    <img src="shared/images/ch09-pickleball-tracking.png" alt="Overhead pickleball doubles court, four player tokens with identity trails labeled ID 1-4, one player at the net partially occluded behind the net band in dashed outline. White background, black linework, burnt-orange trails." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.3</span>: The Tractable Case. Four players on a 13.41×6.10 m court with persistent IDs and short movement trails. The dashed token at the net is where every tracker earns its money: occlusion at the exact moment of closest approach.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">9.2</span> MOT Metrics: How You Score Defines What You Optimize</h2>
+  <p>Three metrics, three views of one tracking failure:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>What It Measures</th>
+        <th>What It Hides</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>MOTA</strong></td>
+        <td>1 - (misses + FPs + ID switches) / ground-truth count</td>
+        <td>Localization quality; fragmentation can look fine if switches are rare</td>
+      </tr>
+      <tr>
+        <td><strong>IDF1</strong></td>
+        <td>Harmonic mean of ID precision/recall — charges both fragments of a split</td>
+        <td>Localization; the fragmentation-sensitive metric (the one that exposes 26 IDs)</td>
+      </tr>
+      <tr>
+        <td><strong>HOTA</strong></td>
+        <td>sqrt(DetA × AssA × LocA): detection, association, localization</td>
+        <td>Nothing — but it is a geometric mean, so a bad association partially hides under good detection</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>MOTA's blind spot is arithmetic.</strong> All three error terms share one sum, so identity switches are diluted by frame-scaled detection counts. A tracker producing thousands of correct boxes and a handful of switches posts a MOTA in the high 90s while producing unusable identity streams. MOTA is detection-dominated: report it for legacy comparability with older papers, never as the decision metric.</p>
+
+  <p><strong>IDF1's insight is fragmentation.</strong> IDF1 finds the best global bipartite matching between predicted tracks and ground-truth tracks, then scores identity precision and recall over the matched frames. One identity switch splits a 900-frame ground-truth trajectory into two 450-frame fragments — and only one fragment can match the truth. The other 450 frames are charged entirely as false identity. MOTA charged exactly one switch for the same event. This is why E09's 14→2 switch reduction moved HOTA by 0.17 while MOTA barely twitched, and why fragmentation — not raw switch count — is what destroys downstream sport statistics.</p>
+
+  <p><strong>HOTA is the book's primary metric</strong> for four reasons. (1) The geometric mean blocks gaming: you cannot buy HOTA with detection alone or association alone. (2) It decomposes, so a regression diagnoses itself — DetA flat with AssA down means the detector is fine and the associator broke; go look at ReID or motion compensation, not the detector weights. (3) It correlates better with human judgment of tracking quality than MOTA or IDF1 (source-backed: Luiten et al.). (4) It is the benchmark standard on SportsMOT and DanceTrack, so the book's numbers sit next to the literature. The scoring harness throughout is TrackEval (MIT, pure Python, seconds on sport-clip ground truth).</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>HOTA sub-metric</th>
+        <th>Measures</th>
+        <th>Sport failure it catches</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>DetA</strong></td>
+        <td>Per-frame detection quality, identity-blind</td>
+        <td>Missed players at net overlap; false positives from line judges, ball boys, crowd</td>
+      </tr>
+      <tr>
+        <td><strong>AssA</strong></td>
+        <td>Identity consistency over time per matched detection</td>
+        <td>AssRe↓ = fragmentation (one player, many IDs — the E08 rugby disease, 295 IDs for ~30 people); AssPr↓ = mergers (one ID drifting across two players)</td>
+      </tr>
+      <tr>
+        <td><strong>LocA</strong></td>
+        <td>Box localization precision, integrated over thresholds α</td>
+        <td>Sloppy boxes feeding bad feet positions into the C06 homography — a localization error becomes a court-position error becomes a tactical-stat error</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-09-01" class="full">
+    <img src="shared/images/tracking-metric-anatomy.png" alt="One tracking error scored three ways: MOTA looks fine (93.1), IDF1 charges both fragments (82.0), HOTA 89.1 with the identity switch called out. Recreate: white background, score bars." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.1</span>: One Error, Three Verdicts. A single identity switch in a 12-frame toy scenario scores 93.1 (MOTA), 82.0 (IDF1), and 89.1 (HOTA). The metric you choose decides whether the error is visible.</figcaption>
+  </figure>
+
+  <p>The HOTA decomposition deserves the chapter's key structural fact (per the verified definitions): DetA penalizes missed and false detections; AssA penalizes wrong associations of matched detections; LocA scores localization. A tracker can keep DetA high while AssA collapses — exactly E02's 26-ID behavior and E08's 295-ID behavior. In both failures the detector was innocent.</p>
+
+  <figure id="fig-09-04" class="full">
+    <img src="shared/images/ch09-metrics-comparison.png" alt="Grouped horizontal bar chart comparing MOTA, IDF1, HOTA for ByteTrack vs BoT-SORT on the same pickleball clip: ByteTrack high MOTA, low IDF1, mid HOTA; BoT-SORT higher across the board; annotation of ID switches 14 vs 2. White background, black axes, burnt-orange bars." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.4</span>: The Same Bake-Off, Three Scales. E09's measured numbers: ByteTrack (IDF1 0.581, HOTA 0.642, 14 switches) versus BoT-SORT (IDF1 0.796, HOTA 0.814, 2 switches). MOTA alone would have called this a minor difference; the identity metrics call it a different pipeline.</figcaption>
+  </figure>
+
+  <p><strong>ClusteredIDF1 (book construction).</strong> "ClusteredIDF1" appears in some texts as a per-cluster variant of IDF1; no literature standard exists by that name as of 2026-08-30. This book defines it as a diagnostic: IDF1 computed <em>within clusters of ground-truth identities</em> rather than globally — per team, per court side, per role pair. The rationale: global IDF1 lets a tracker bank easy frames (the isolated server standing still) while failing the hard cluster (two same-kit teammates converging at the NVZ). In pickleball doubles, ClusteredIDF1 on the four-player set is the metric that predicts whether shot attribution downstream is trustworthy. In rugby, the natural cluster is the ruck: IDF1 computed only over the players inside the collision zone tells you whether the tracker survives the exact event your defensive-line metrics depend on. Define it once here; the C10 event-attribution chapter reuses it.</p>
+
+  <p><strong>Practitioner rule:</strong> report HOTA + DetA/AssA + IDF1 + ID-switch count in every experiment; MOTA only when comparing to older papers; ClusteredIDF1 whenever the claim is about distinguishing similar players — which in sport is always the actual claim.</p>
+
+  <h2 class="section-title"><span class="section-num">9.3</span> The Tracker Family: Mechanics and License Reality</h2>
+  <p>All five trackers below are <em>tracking-by-detection</em>: boxes in, track IDs out. They differ only in the association cost and the state model — which is why the detector from chapter 8 stays swappable underneath any of them.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tracker</th>
+        <th>Mechanic</th>
+        <th>License</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>SORT</strong></td>
+        <td>IoU + Kalman; no appearance</td>
+        <td>GPL-3.0</td>
+      </tr>
+      <tr>
+        <td><strong>ByteTrack</strong></td>
+        <td>IoU + Kalman; dual-threshold (high + low conf)</td>
+        <td>MIT</td>
+      </tr>
+      <tr>
+        <td><strong>BoT-SORT</strong></td>
+        <td>IoU + Kalman + ReID appearance fusion; camera-motion compensation</td>
+        <td>MIT repo (AGPL via Ultralytics distribution)</td>
+      </tr>
+      <tr>
+        <td><strong>OC-SORT</strong></td>
+        <td>Observation-centric: momentum + orientation corrections</td>
+        <td>MIT</td>
+      </tr>
+      <tr>
+        <td><strong>DeepOCCSORT</strong></td>
+        <td>OCC-SORT + ReID</td>
+        <td>AGPL via BoxMOT</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The mechanics worth internalizing:</p>
+
+  <ul>
+    <li><strong>Pure IoU (SORT)</strong> assumes frame-to-frame overlap. Rugby broadcast median drift is 9.76 px/frame and sprints exceed 30 px/frame; pickleball lunges at the kitchen line are comparable. IoU-only association is structurally broken at sport speeds — SORT survives only as a teaching baseline, and its GPL-3.0 license disqualifies it from most products anyway.</li>
+    <li><strong>Kalman + IoU</strong> predicts through small gaps but accumulates hallucinated state during occlusion: the filter keeps extrapolating a player who no longer exists in the frame, then snaps onto whoever reappears. This is the exact failure OC-SORT's observation-centric re-update was built to fix — on re-appearance, re-anchor the state to the observation rather than the prediction.</li>
+    <li><strong>ByteTrack's insight is about detection thresholds, not motion.</strong> The two-stage association matches high-confidence boxes first, then matches <em>low-confidence</em> boxes to the leftover tracks. A player half-hidden behind the net post produces a weak detection that most trackers discard — and the track dies, and a new ID spawns on re-emergence. ByteTrack's second pass keeps the ID alive. Teach it as: trust the detector's uncertainty, not just its top end.</li>
+    <li><strong>BoT-SORT adds the two components that matter for sport</strong>: global motion compensation (GMC) for moving cameras, and a ReID embedding fused into the association cost with an exponentially-updated gallery per track. It won the E09 bake-off on pickleball, and its GMC is the load-bearing piece for broadcast rugby.</li>
+    <li><strong>OC-SORT</strong> is the motion-only repair: observation-centric re-update (ORU), a direction-momentum term in the association cost (OCM), and a second-chance recovery pass (OCR), at 700+ fps on CPU. It is the right choice when motion is wild and appearance is useless — a ruck of 13 identical jerseys.</li>
+    <li><strong>DeepOCCSORT</strong> makes the appearance weight adaptive per frame: motion dominates when crops are blurry, appearance dominates when motion is ambiguous. The idea is correct; the BoxMOT distribution is AGPL-3.0, which decides most commercial uses before the benchmark does.</li>
+  </ul>
+
+  <p>GMC quality is a first-class variable, not a checkbox. E14 measured it directly on the rugby clip: framewarp (dense optical-flow) GMC cut spawned IDs from 295 to 286 (+3.1%) over the E08 baseline, while boxshift (sparse feature-matching) GMC made things <em>worse</em>. Two implementations of the same named component moved the metric in opposite directions. When a vendor datasheet says "camera motion compensation: yes," ask which one.</p>
+
+  <p>Note also the layered license reality: BoT-SORT's source repo is MIT, but the Ultralytics-distributed version inherits the AGPL-3.0 umbrella. For a product, the license read must happen at the <em>distribution chain</em>, not the paper.</p>
+
+  <figure id="fig-09-05" class="full">
+    <img src="shared/images/ch09-botsort-architecture.png" alt="BoT-SORT pipeline left to right: detections from a pickleball frame, camera motion compensation, Kalman prediction, cost matrix fusing IoU and ReID appearance, Hungarian matcher, output track IDs over boxes. White background, black linework, burnt-orange data-flow arrows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.5</span>: BoT-SORT Data Path. Detections enter from chapter 8's detector; GMC stabilizes the Kalman prediction against camera motion; the fused IoU + appearance cost matrix feeds the Hungarian assignment; surviving matches update the EMA appearance gallery. Identity lives and dies in the cost matrix, not the detector.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">9.3b</span> The Association Problem: Where Identity Lives or Dies</h2>
+  <p>Strip any of these trackers to its core and you find the same object: a <strong>cost matrix</strong> C where rows are existing tracks, columns are new detections, and each cell prices how plausible it is that detection j continues track i. The Hungarian algorithm then solves the assignment in polynomial time. Everything that distinguishes the trackers is how C is computed:</p>
+
+  <p><code>C(i,j) = λ · appearance_distance(i,j) + (1−λ) · motion_distance(i,j)</code>, with gates that set C to infinity for impossible matches (IoU below floor, court-side violation, embedding distance above threshold).</p>
+
+  <ul>
+    <li><strong>Motion distance</strong> is IoU between the Kalman-predicted box and the detection — cheap, discriminative at short gaps, useless across occlusion.</li>
+    <li><strong>Appearance distance</strong> is cosine distance between the detection's ReID embedding and the track's EMA gallery embedding — expensive (one CNN forward pass per detection), discriminative across occlusion, noisy when kits match.</li>
+    <li><strong>The fusion weight λ</strong> is a calibration decision, not a default: fix it on a validation clip from your venue. BoT-SORT's defaults are a sane start; DeepOCCSORT makes λ adaptive per frame; the role priors of §9.7 enter as additive penalties in exactly this matrix.</li>
+    <li><strong>ByteTrack's dual threshold</strong> is a second association round over the same matrix with low-confidence detections — the only "trick" that directly treats occlusion-induced detection collapse.</li>
+  </ul>
+
+  <p>Two failure modes live here. <em>Drift capture:</em> after an unresolved occlusion, the EMA gallery follows the wrong player and locks the error in — every subsequent frame makes the wrong identity more confident. Guards: freeze gallery updates while association ambiguity is high (low margin between best and second-best cost), cap the update rate, and let role priors veto impossible identity jumps. <em>Greedy collapse:</em> Hungarian is globally optimal for the cost matrix it is given, but the matrix is only as honest as its gates; a missing gate (no net-line check, no team-side prior) turns two crossing players into a coin flip that the optimizer then commits to permanently.</p>
+
+  <figure id="fig-09-06" class="full">
+    <img src="shared/images/ch09-association-matching.png" alt="Detection-to-track association: three existing tracks as solid predicted boxes, three new detections as dashed boxes, a 3x3 cost matrix with IoU and appearance cells shaded burnt-orange, matched pairs connected by orange lines, one track unmatched. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.6</span>: The Cost Matrix Is the Tracker. Tracks (left) against detections (top); each cell fuses motion and appearance price; the assignment picks one detection per track. The unmatched track on the right is ByteTrack's second pass's whole reason to exist.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">9.4</span> The E09 Case Study: What the Bake-Off Really Showed</h2>
+  <p>The bake-off measured ByteTrack vs BoT-SORT on the pb-003 clip (measured, E09):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>ByteTrack (motion only)</th>
+        <th>BoT-SORT (motion + ReID)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>HOTA</td>
+        <td>0.642</td>
+        <td>0.814</td>
+      </tr>
+      <tr>
+        <td>IDF1</td>
+        <td>0.581</td>
+        <td>0.796</td>
+      </tr>
+      <tr>
+        <td>Unique IDs</td>
+        <td>26</td>
+        <td>6</td>
+      </tr>
+      <tr>
+        <td>ID switches</td>
+        <td>14</td>
+        <td>2</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The decomposition told the story. Both trackers consumed the same detector output, so DetA was near-identical; <strong>AssA did all the work</strong>. The 14 ByteTrack switches clustered at NVZ crossings — the two moments per rally where players from the same team cross paths within a metre of each other and IoU has nothing to say. BoT-SORT's ReID fusion repaired exactly those events: the embedding still knew a red shirt from a grey one when motion did not.</p>
+
+  <p>The honest verdict (C20 discipline): the +0.172 HOTA delta is <strong>not significant</strong>. The design units are clips, not frames — E09 has n=1 clip, 4 players, 900 frames, and frames within a clip are near-duplicates. Even upgrading the comparison to four directional bake-off cells (one per player), a sign test on 4/4 same-direction deltas gives p = 0.125; our simulated per-player deltas [0.071, −0.023, 0.103, 0.116] include a negative, pushing p to 0.3125 (measured simulation, lab/w2_lab_tracking.py). The direction is consistent and mechanistically explained — ReID should help exactly where it helped — but the honest sentence is <em>strong evidence on this footage, not proof across venues</em>. The proper bake-off is §9.10's protocol: 10+ clips, bootstrap by clip, pre-registered ΔHOTA ≥ 0.02.</p>
+
+  <h2 class="section-title"><span class="section-num">9.5</span> ReID Embeddings in Depth</h2>
+  <p>Appearance embeddings convert a person crop into a vector; distance between vectors is "how similar." The practical options, all verified:</p>
+
+  <ul>
+    <li><strong>OSNet-512</strong> (MIT, via torchreid) — M4-friendly default; runs at tracker speed on MPS; the BoT-SORT default family.</li>
+    <li><strong>BoT / reid-strong-baseline-2048</strong> (MIT) — the BNNeck training recipe (BNNeck separates triplet-loss from ID-loss geometry; plus warmup, label smoothing, random erasing); the accuracy benchmark. Training on M4 is slow — Colab.</li>
+    <li><strong>CLIP-ReID-768</strong> (AAAI 2023) — two-stage: learn per-identity text prompts with a frozen CLIP, then train the image encoder; strongest on occluded and ambiguous crops. <strong>No LICENSE file found</strong> [verify] — cite, don't vendor.</li>
+  </ul>
+
+  <p>Practice details that decide whether ReID helps or hurts:</p>
+
+  <ul>
+    <li><strong>Cosine, normalized, calibrated.</strong> Standard sport-tracker practice is cosine distance on L2-normalized embeddings: bounded on [0, 2], composes cleanly with the motion term in the fused cost, works with EMA galleries. Euclidean after normalization is rank-equivalent, but the <em>scale</em> matters when fusing with IoU/Kalman terms — pick cosine, normalize, and fix the fusion weight on a validation clip.</li>
+    <li><strong>Appearance drift across lighting.</strong> Indoor/outdoor transitions and shadow bands shift embeddings mid-clip. EMA gallery updates drift slowly — which is the feature — but can drift-capture after an unresolved occlusion (§9.3b). Freeze updates under ambiguity; cap the update rate; let priors veto.</li>
+    <li><strong>The uniform problem.</strong> Generic ReID models are trained on street datasets (Market-1501, MSMT17) where clothing varies freely. Four pickleball players in club kit, or 26 rugby players in two kits, collapse the appearance space: embeddings cluster by <em>team</em>, not by <em>person</em>. This is why fine-tuning on your own crops moves AssA more than any tracker-hyperparameter week — and it is the motivation for ClusteredIDF1: global metrics hide exactly this failure.</li>
+    <li><strong>Gallery enrollment per session.</strong> The pickleball tractable case: 4 players per court, known in advance. Ten seconds of each player alone in frame at session start builds the day's gallery; role priors do the binding (§9.7). For rugby, jersey OCR is the stronger signal — appearance alone cannot distinguish 13 players in the same kit (§9.8).</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">9.5b</span> The ID-Switch Problem: Occlusion Is the Mechanism</h2>
+  <p>Every identity switch has a mechanism, and the taxonomy matters because each mechanism has a different fix. The lab's failure taxonomy, annotated per switch:</p>
+
+  <ul>
+    <li><strong>Net occlusion (pickleball).</strong> The net band occludes legs precisely when both teams crowd the NVZ. Detection confidence collapses (ByteTrack's second pass helps), motion becomes ambiguous (two players converging), and appearance is the only surviving cue — this was 14 of E09's switches before ReID.</li>
+    <li><strong>Ruck occlusion (rugby league).</strong> A tackle compresses 4-8 same-kit bodies into one blob for 1-3 seconds. No appearance cue survives; only strong motion priors (OC-SORT's momentum) plus position priors (§9.7) and post-hoc jersey reads (§9.8) repair it. E08's 295 spawned IDs are mostly ruck exits: a player enters the ruck as ID 41 and leaves as ID 117.</li>
+    <li><strong>Camera pan (broadcast).</strong> A fast pan invalidates every Kalman prediction simultaneously; without GMC the tracker mass-respawns IDs. E14's framewarp result (+3.1% fewer IDs) is the partial fix.</li>
+    <li><strong>ReID drift.</strong> The gallery follows the wrong player after an unresolved occlusion and locks the error in — the only failure mode that gets <em>more</em> confident over time.</li>
+    <li><strong>Net-crossing / line-crossing ambiguity.</strong> Two players' trajectories cross; the assignment has a coin-flip cell in the cost matrix and commits permanently. A one-line geometric gate (the net-line constraint) converts the coin flip into a deterministic rejection.</li>
+  </ul>
+
+  <figure id="fig-09-07" class="full">
+    <img src="shared/images/ch09-id-switch-failure.png" alt="Three panels: two pickleball players labeled ID 1 and ID 2 approach the net; they overlap in occlusion as one dashed blob; the labels emerge swapped with a burnt-orange X and the words ID switch. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.7</span>: Anatomy of a Switch. Approach, occlusion, emergence with swapped labels. The tracker did nothing irrational frame-by-frame — the cost matrix simply had no surviving discriminating cue in the middle panel. Every fix in this chapter adds a cue that survives occlusion: low-confidence detections, appearance, motion momentum, or geometry.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">9.6</span> Tracking-by-Detection vs End-to-End</h2>
+  <p>The end-to-end alternative carries identity inside a DETR-style transformer: track queries propagate across frames, no Hungarian step at all. The line is verified plateaued: <strong>no MOTRv4/v5 exists</strong> (checked 2026-08-30); MOTRv3 (release-fetch supervision to balance the detection/association label conflict) is the latest release; successor directions are MOTIP (recasting tracking as in-context ID prediction, CVPR 2025) and MATR. MOTRv2's gains came from bootstrapping track queries from an external YOLOX — end-to-end in name only; the external detector was load-bearing.</p>
+
+  <p>The book's engineering choice remains tracking-by-detection because the chapter-8 detector stays swappable: RF-DETR, DEIM+D-FINE, or YOLO26 plug straight into ByteTrack/BoT-SORT, while end-to-end bakes detection and identity into one non-portable model that needs retraining per sport. Learned association is the frontier worth watching: CAMELTrack (Apache-2.0) replaces the hand-crafted cost matrix with learned tracklet encoders and group-aware feature fusion — online, TBD-modular, HOTA 80.3 on SportsMOT at research time [verify against live leaderboard]; the offline GTA refinement (global tracklet linking with team classification and jersey recognition) pushes the pipeline figure to 81.04 HOTA [verify exact configuration]. Teach CAMELTrack as "the ceiling," BoT-SORT as "the floor you can ship": CAMELTrack needs CUDA-class training, a sport-domain training set, and forfeits the inspectability that makes BoT-SORT debuggable on a Tuesday night.</p>
+
+  <h2 class="section-title"><span class="section-num">9.6b</span> The Rugby League 25-Player Problem</h2>
+  <p>Pickleball tracking is a tractable 4-body problem. Rugby league is a different regime entirely, and it is worth naming precisely why:</p>
+
+  <ul>
+    <li><strong>Thirteen plus thirteen, plus churn.</strong> 26 players on the field, a bench of 4+ per side, and interchange substitutions that change the active identity set mid-match without any visual announcement. The tracker is not maintaining 26 identities; it is maintaining a <em>time-varying set</em> of identities drawn from a roster of ~34. Every substitution is a guaranteed track birth that pure motion/appearance will instead read as a respawned existing track.</li>
+    <li><strong>The jersey-swap problem.</strong> Numbers 1-17 bind to positions, but interchange and positional swaps churn the binding — a blood-bin replacement can even reuse a number. Any identity system that hard-codes number→player will be confidently wrong by the second half. Roster fusion (§9.8) must treat the binding as time-indexed state, not a lookup table.</li>
+    <li><strong>Uniform collapse.</strong> Thirteen players per side in identical kit: appearance separates teams, not people. The discriminative cues are number reads, face (rarely resolved in broadcast), body shape, and <em>role geography</em> — fullback deep, wingers on the edges, hooker at the play-the-ball.</li>
+    <li><strong>Periodic locality resets.</strong> After each tackle, the play-the-ball resets both defensive and attacking lines roughly every 10 seconds. This is the gift: position priors re-tighten on a clock. A tracker that re-anchors identity at each play-the-ball converts an impossible 80-minute tracking problem into 400-odd ten-second ones.</li>
+  </ul>
+
+  <p>E08 quantified the disease (295 spawned IDs for ~30 distinct people, measured); E14 showed GMC alone is not the cure (+3.1% fewer IDs). The rugby stack that stands a chance is: strong detector → BoT-SORT with framewarp GMC → OC-SORT-style motion priors in the ruck → position priors at each play-the-ball → tracklet-level jersey OCR against the time-indexed roster. Each layer repairs a failure the layer above cannot see.</p>
+
+  <figure id="fig-09-08" class="full">
+    <img src="shared/images/ch09-rugby-25-player.png" alt="Overhead rugby league pitch, two teams of thirteen as circles and triangles along a defensive line, a crowded tackle ruck highlighted burnt-orange, sideline bench with four substitutes and interchange arrows onto the field, jersey numbers 1-17 on a few players. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.8</span>: The 25-Player Problem. Thirteen a side, a ruck that erases appearance, and an interchange bench that mutates the identity set mid-match. The defensive line's periodic reset every ~10 seconds is the structural gift that makes the problem solvable at all.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">9.7</span> Role Priors: The Differentiated Contribution</h2>
+  <p>The most underused signal in sports tracking is <em>what the sport already tells you about identity</em>. Our lab formalizes role priors as soft association penalties — additive terms in the cost matrix of §9.3b, never hard rules. The distinction is load-bearing: hard rules create confident, silent, wrong identities (a referee, a ball boy, or a legal stacking variant violates every spatial rule you can write); soft priors create recoverable ones, because a strong enough motion or appearance cue can still outvote them.</p>
+
+  <ul>
+    <li><strong>Pickleball serve-side rule</strong>: the server serves from the right court when their team's score is even, left when odd; partners hold fixed serving order within a side-out. Given score tracking (C10) and feet in court coordinates (C06 homography, measured 3.82–4.65 cm RMSE via E05/E11), the server's identity at serve time is <em>determined</em>, not inferred → a cheap identity constraint for doubles.</li>
+    <li><strong>Stacking decay window</strong>: teams stack so preferred players start on a chosen side after the serve or return; legal stacking variants create a short post-serve migration window (1–2 s), then free movement. So: hard priors at serve time, decaying to motion/ReID within two seconds.</li>
+    <li><strong>Net-line constraint</strong>: no player's feet cross the net plane mid-rally; the far-side pair and near-side pair can never swap identities through the net. With a fixed camera this is one homography check per frame — it alone would have killed most of E09's 14 ByteTrack switches.</li>
+    <li><strong>Rugby jersey number → position prior</strong>: the #7 usually sits in the halves, the #9 at the play-the-ball, the #1 deep; the spatial prior resolves proximity ambiguity in a ruck exit, and the play-the-ball reset re-tightens it every ~10 s (§9.6b). Time-index the binding or interchange will poison it.</li>
+  </ul>
+
+  <figure id="fig-09-02" class="full">
+    <img src="shared/images/tracking-role-priors.png" alt="Overhead court with serve-side rule pinning S and P1, net-line constraint invalidating a crossing track, stacking decay window. Recreate: white background, black court, burnt-orange annotations." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.2</span>: Role Priors at Serve Time. The score parity fixes the server's partner; the net line is an identity barrier; the stacking decay window predicts the cross. Three zero-cost constraints that kill most identity switches.</figcaption>
+  </figure>
+
+  <p>Applied to E09, the serve-side + net-line constraints would have killed most of the 14 switches at zero model cost — no embedding, no training, one homography lookup. Role priors are the identity fix that does not need a bigger embedding. They are also the chapter's transfer test: the same formalism (soft penalties derived from rules) covers both sports, but the <em>content</em> of the priors is sport-specific — score parity and net planes in pickleball, play-the-ball resets and position geography in rugby. A prior ported blindly across sports is worse than no prior [concept-transfer].</p>
+
+  <h2 class="section-title"><span class="section-num">9.8</span> Identity Resolution via Jersey OCR and Roster Fusion</h2>
+  <p>The escalation path when appearance fails: read the number, then bind to a known roster. The pro pattern (verified from the SoccerNet Game State Reconstruction lineage): reconstruct every person on a 2D pitch minimap with role, team, and jersey number, evaluated by GS-HOTA. Its jersey-recognition sub-task is <strong>tracklet-level majority vote</strong> — detect digits (DBNet), recognize them (SAR), then vote across every frame of the tracklet, emitting "unknown" if the number is never visible. One frame lies; twenty frames rarely do. Stronger systems use digit-compositional classifiers with Dirichlet uncertainty so a partially visible "1?" does not commit to 13 over 18.</p>
+
+  <p>The Sportlogiq-style roster fusion (visual + roster/lineup data) is a proprietary implementation [INFERENCE]; the public-behavior pattern is that identity becomes an assignment problem over ~34 known names constrained by jersey reads, position priors, and lineup state, with human verification closing the residual. For the book, the analogous pickleball path is deliberately boring: no numbered jerseys, but a roster of 4 known people per court — per-session gallery enrollment (§9.5) replaces the jersey read, and serve-time role priors (§9.7) do the binding. Rugby gets the full version: time-indexed roster, tracklet jersey votes, position priors at each reset.</p>
+
+  <h2 class="section-title"><span class="section-num">9.9</span> SAM 2/3 Video: A DIFFERENT Tool</h2>
+  <p><strong>The 2026 addition — DART (chapter 8.12):</strong> the SAM 3-class promptable model was the region tool with an O(N) latency problem; DART's shared-backbone trick turns it into a real-time multi-class detector (55.8 AP, ~20ms class-profile). For the tracking chapter the meaning is precise: <em>DART supplies the class-annotated detections the tracker consumes; the tracker still owns identity.</em> The pipeline stays detector → tracker → ReID → role priors; DART only makes the detector open-vocabulary and fast.</p>
+  <p>The most common category error: "SAM 3 tracks things, why not use it as my tracker?" SAM video is <em>promptable segmentation</em> — masks propagated from a prompt — excellent for isolating the ball or a paddle, not for maintaining identity across a game of interchangeable players. On occlusion and re-entry it can follow the wrong similar object: propagation has no re-identification semantics. Architecture: SAM masks upstream (segment an object region), tracker downstream (maintain identity of the box). Concretely: SAM 2 on the M4 (Apache-2.0, PYTORCH_ENABLE_MPS_FALLBACK, slow CPU fallback documented) is the ball/paddle mask tool — the ball is nearly undetectable frame-by-frame, but one prompt yields a dense propagated mask for trajectory refinement, and masks distill into boxes that feed the real tracker. SAM 3 (Nov 2025, custom SAM license [verify terms], CUDA/Triton-official → Colab) adds promptable concept segmentation — "track all players in white" — which is genuinely useful for rugby clusters; SAM 3.1 (Mar 2026) doubled video throughput. The recipe: SAM 3 PCS on Colab batch-generates player/ball/paddle masks per clip → export boxes → run the identity stack on the M4. Segmentation upstream, identity downstream, priors across both.</p>
+
+  <h2 class="section-title"><span class="section-num">9.10</span> Lab Output (W2.4): The Honest Bake-Off Analysis</h2>
+  <p>The lab re-analyzes E09 with the C20 discipline (artifact: <code>experiments/c09-tracking-honest/outputs/metrics.json</code>):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Answer (simulated where noted)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>What did E09 actually measure?</td>
+        <td>1 clip, 4 players, 900 frames — design units are clips, not frames</td>
+      </tr>
+      <tr>
+        <td>Sign test on 4 paired deltas</td>
+        <td>p ≈ 0.125-0.31 — NOT significant (simulated per-player deltas include a negative: [0.071, −0.023, 0.103, 0.116], p = 0.3125)</td>
+      </tr>
+      <tr>
+        <td>Would 10 clips settle it?</td>
+        <td>Simulated: mean delta +0.041, CI [0.004, 0.078] — borderline; 10 clips is the floor, 20 preferable</td>
+      </tr>
+      <tr>
+        <td>The honest verdict</td>
+        <td>BoT-SORT's ReID helps on this fixture; whether it is a real improvement is unmeasured</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The multi-clip protocol that closes the gap, as a checklist:</p>
+
+  <ul>
+    <li><strong>Clips:</strong> 10 clips, stratified — pickleball indoor/outdoor × skill levels; rugby broadcast halves with distinct camera behavior; 30–60 s each. The clip is the resampling unit.</li>
+    <li><strong>Ground truth:</strong> every player box + persistent ID per frame. Annotation is the bottleneck — SAM-assisted pre-annotation plus human correction ≈ half a day per clip; budget for it or the protocol dies.</li>
+    <li><strong>Trackers:</strong> ByteTrack, BoT-SORT (framewarp GMC), OC-SORT, DeepOCCSORT — same detector weights for all, so DetA differences are tracker-induced only.</li>
+    <li><strong>Metrics:</strong> HOTA primary, DetA/AssA decomposition, IDF1, ID-switch count, ClusteredIDF1 per role cluster (per NVZ pair in pickleball, per ruck in rugby). TrackEval throughout.</li>
+    <li><strong>Statistics:</strong> paired per-clip ΔHOTA; cluster bootstrap by clip (10k resamples) → 95% CI on the mean difference; sign test as the floor — 10/10 same direction gives p ≈ 0.002, which finally licenses the word "significant." Pre-register ΔHOTA ≥ 0.02 as "meaningful."</li>
+    <li><strong>Failure taxonomy:</strong> every switch annotated by cause (net occlusion, ruck occlusion, camera pan, ReID drift, line-crossing) — the taxonomy, not the leaderboard, tells you which fix to buy.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">9.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>10-clip bake-off with bootstrap by clip + pre-registered ΔHOTA ≥ 0.02 (the §9.10 checklist, executed).</li>
+    <li>Role-prior repair post-processor on E09: measure switches and ClusteredIDF1 with and without the serve-side, stacking, and net-line priors — the first real numbers on the priors, which today are rule-derived, not measured.</li>
+    <li>ReID fine-tune on per-session gallery (Colab; CAMELTrack as the frontier benchmark) — the AssA ceiling with in-domain embeddings is currently unknown.</li>
+    <li>E14 follow-up on rugby: framewarp-GMC BoT-SORT plus play-the-ball position priors on nrl-001 — target: spawned IDs within 2× of headcount, not 10×.</li>
+    <li>Tracklet jersey OCR baseline on NRL broadcast footage — the SoccerNet GSR pattern transfers conceptually, but broadcast resolutions and fonts differ; no baseline exists yet.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">9.11b</span> The One Spine: Track ID as the Join Key</h2>
+  <p>Zoom out to the book's data architecture and this chapter's output is one column. The analytics spine is a chain of joins: detection (frame, box) → track (track_id, frame) → identity (player, track_id) → event (event_id, player, frame) → stats. Every downstream table — partner spacing, kitchen occupancy, rally tempo, defensive line speed — joins on <strong>track_id + frame</strong>. A fragmented track does not raise an error in that join; it silently splits one player's contribution across two rows, and every aggregate built on it is wrong in proportion to the fragmentation. This is why the chapter insisted on identity metrics over detection metrics: DetA measures whether the spine has rows; AssA and IDF1 measure whether the rows mean anything. It is also why role priors and jersey reads, which look like tracking hacks, are really <em>join-key repair</em>: they re-stitch the foreign key between a person and their measurements. Keep the spine in mind when budgeting effort — a point of AssA is worth more downstream than a point of DetA, because errors in identity propagate through every join while detection errors stay local to a frame.</p>
+
+  <h2 class="section-title"><span class="section-num">9.11c</span> The 10 Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from tracker mechanics to the two sports. They follow four categories: <strong>A. Keeping Identity on the Field (01-03)</strong>, <strong>B. Surviving Occlusion &amp; Ambiguity (04-06)</strong>, <strong>C. Tracking Into the Product (07-09)</strong>, and <strong>D. Proving It Works (10)</strong>. Each case pairs a pickleball and a rugby league application so the pipeline transfers, and each carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established).</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Tool (license)</th>
+        <th>Pickleball use</th>
+        <th>Rugby league use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Detector feed</td>
+        <td>C08 detector — RF-DETR / YOLO26 (varies)</td>
+        <td>4 players + ball, fixed camera</td>
+        <td>13.2 persons/frame broadcast (E08, measured)</td>
+      </tr>
+      <tr>
+        <td>Tracker — speed tier</td>
+        <td>ByteTrack (MIT)</td>
+        <td>CPU-only rally baseline, 53 fps (E02, measured)</td>
+        <td>Baseline; 295 spawned IDs is the disease (E08)</td>
+      </tr>
+      <tr>
+        <td>Tracker — default</td>
+        <td>BoT-SORT (MIT repo; AGPL via Ultralytics)</td>
+        <td>E09 winner: HOTA 0.814, 2 switches (measured)</td>
+        <td>Framewarp GMC against broadcast pans (E14)</td>
+      </tr>
+      <tr>
+        <td>Tracker — motion-only</td>
+        <td>OC-SORT (MIT)</td>
+        <td>NVZ crossings when kits match</td>
+        <td>Ruck exits: momentum where appearance is dead</td>
+      </tr>
+      <tr>
+        <td>Tracker — adaptive</td>
+        <td>DeepOCCSORT (AGPL via BoxMOT)</td>
+        <td>Blur-adaptive fusion, research tier</td>
+        <td>Same; license decides most commercial uses</td>
+      </tr>
+      <tr>
+        <td>ReID</td>
+        <td>OSNet-512 via torchreid (MIT); CLIP-ReID [verify license]</td>
+        <td>Per-session gallery enrollment, 4 known players</td>
+        <td>Separates teams, not people; fine-tune on in-domain crops</td>
+      </tr>
+      <tr>
+        <td>Learned association</td>
+        <td>CAMELTrack (Apache-2.0) + GTA offline linking [verify config]</td>
+        <td>Ceiling benchmark, Colab-only training</td>
+        <td>SportsMOT SOTA line: 80.3 → 81.04 HOTA with GTA</td>
+      </tr>
+      <tr>
+        <td>Jersey OCR</td>
+        <td>SoccerNet sn-jersey pattern (tracklet majority vote)</td>
+        <td>N/A — no numbered jerseys; gallery enrollment instead</td>
+        <td>Tracklet-level number vote against time-indexed roster</td>
+      </tr>
+      <tr>
+        <td>Metrics harness</td>
+        <td>TrackEval (MIT)</td>
+        <td>HOTA / IDF1 / ClusteredIDF1 per NVZ pair</td>
+        <td>HOTA / IDF1 / ClusteredIDF1 per ruck</td>
+      </tr>
+      <tr>
+        <td>Masks upstream</td>
+        <td>SAM 2 (Apache-2.0); SAM 3 PCS (custom license [verify])</td>
+        <td>Ball and paddle masks → boxes for the tracker</td>
+        <td>Ball-in-ruck masks; segmentation upstream, identity downstream</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-heading">Category A: Keeping Identity on the Field (01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Multi-Player Tracking on a Rally (the Tractable Case)</h3>
+  <p>A doubles rally is 20-40 frames of four players converging on the same two square metres at the kitchen line. The mechanism is the full BoT-SORT flow of §9.3: detections from C08, Kalman prediction, and a fused cost <code>C(i,j) = λ·cosine(e_i, e_j) + (1−λ)·(1 − IoU(x̂_i, x_j))</code> solved by Hungarian assignment each frame, with ByteTrack's low-confidence second pass rescuing occluded detections. On pb-003 this is the measured E09 result: HOTA 0.814, IDF1 0.796, 2 switches across 900 frames — versus ByteTrack's 14 switches at HOTA 0.642 (measured, one clip; the n=1 caveat of §9.4 stands).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-botsort-rally.png" alt="BoT-SORT pipeline on a pickleball rally: detections, camera motion compensation, Kalman prediction, fused cost matrix, Hungarian matcher, output IDs with trails. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.9</span>: UC 01 — BoT-SORT on a Rally. The full data path from C08 detections to persistent IDs. <strong>Pickleball</strong>: four identities survive 20-40 frames of NVZ convergence. <strong>Rugby league</strong>: the same flow tracks the backline movement between tackles, before the ruck regime of UC 03 takes over.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — rally-speed and partner-spacing stats are only as real as the identities underneath them; this is the cheapest configuration that makes them trustworthy on fixed-camera footage.</p>
+
+  <h3 class="sub-heading">UC 02 — 25-Player Tracking with Substitutions</h3>
+  <p>Rugby league is not a 26-body problem; it is a <em>time-varying set</em> problem: an active identity set A_t of 26 drawn from a roster R of ~34, with interchange events as set deltas that arrive without visual announcement. The mechanism: track birth/death management driven by the roster state machine — every substitution is a guaranteed track birth, so a respawned detection near the sideline is matched against the <em>incoming</em> roster member, not the nearest dead track. The binding number→player must be time-indexed, because interchange and blood-bin replacements churn it (§9.6b). E08 measured the disease the roster cures: 295 spawned IDs for ~30 distinct people; E14 showed GMC alone cuts that only 3.1% (measured).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-rl-25subs.png" alt="Overhead rugby league pitch with 26 tracked players, interchange bench with substitution arrow, timeline showing track birth and death events. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.10</span>: UC 02 — The Substitution-Aware Track Set. <strong>Rugby league</strong>: 26 active tracks from a 34-name roster, births and deaths at the interchange. <strong>Pickleball</strong>: the degenerate case — a fixed roster of 4 per court, which is exactly why per-session gallery enrollment (§9.5) works there.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> officiating and integrity — interchange count, concussion-return windows, and blood-bin timing are compliance facts; getting them from video requires the identity set to be right, not just the boxes.</p>
+
+  <h3 class="sub-heading">UC 03 — Long-Term Tracking: Full-Match Persistence</h3>
+  <p>Eighty minutes at 25 fps is 120,000 frames; no online tracker holds identity that long unaided. The mechanism is structural re-anchoring: rugby's play-the-ball resets both lines every ~10 seconds, and each reset is a locality event where position priors re-tighten (§9.6b) — the tracker converts one impossible 80-minute problem into ~400 ten-second ones, with EMA galleries carrying appearance across the boundaries. The offline complement is global tracklet linking (the GTA pattern): after the online pass, link fragments globally using team classification, jersey reads, and appearance — the configuration on record at 81.04 HOTA on SportsMOT [verify exact configuration]. Pickleball's version is the side-out: every serve is a serve-side identity pin (§9.7).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-fullmatch-timeline.png" alt="Full-match timeline of 26 player track lifelines over 80 minutes with track births at substitutions and repair stitches at play-the-ball resets. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.11</span>: UC 03 — Full-Match Persistence. <strong>Rugby league</strong>: track lifelines across 80 minutes, stitched at every play-the-ball reset. <strong>Pickleball</strong>: the same timeline over a session, re-pinned at every serve by score parity — persistence comes from the sport's clock, not the model's memory.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> tactical — workload, fatigue decay, and positional drift over a full match are the stats coaches actually buy; all of them are integrals over track lifelines, so fragmentation tax compounds across the whole integral.</p>
+
+  <h3 class="sub-heading">Category B: Surviving Occlusion &amp; Ambiguity (04-06)</h3>
+
+  <h3 class="sub-heading">UC 04 — Occlusion Recovery: Bridging the Gap</h3>
+  <p>A ruck compresses 4-8 same-kit bodies into one blob for 1-3 seconds; the pickleball net band does the same to legs at the exact moment of closest approach. The mechanism has three layers. (1) Through the gap, the Kalman filter extrapolates — but only within a gating distance: the Mahalanobis gate <code>d² = (z − Hx̂)ᵀS⁻¹(z − Hx̂) ≤ χ²</code> rejects re-emergence candidates too far from the prediction. (2) On re-appearance, OC-SORT's observation-centric re-update re-anchors the state to the observation instead of the accumulated hallucination. (3) Appearance anchors on both sides of the gap: the EMA gallery before occlusion and the fresh embedding after, matched by cosine distance — with updates frozen while the best/second-best margin is small, so the gallery cannot drift-capture the wrong body (§9.3b).</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-occlusion-bridge.png" alt="Track timeline entering an occlusion band, dashed Kalman extrapolation through it, appearance anchors on both sides re-attaching the identity, wrong re-attach crossed out. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.12</span>: UC 04 — Bridging the Gap. <strong>Rugby league</strong>: a player enters the ruck as ID 41 and leaves as ID 41, not ID 117 — the E08 failure this repairs. <strong>Pickleball</strong>: the net band erases legs for 5-10 frames at the NVZ; the gate plus the frozen gallery carry the identity across.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — ruck speed (peel time, roll-away) and kitchen-exchange win rates are measured <em>through</em> the occlusion, so a tracker that dies at the gap can never produce them.</p>
+
+  <h3 class="sub-heading">UC 05 — ID-Switch Prevention at the Crossing</h3>
+  <p>The cheapest identity repair in the book is a gate, not a model. When two trajectories cross, the cost matrix contains a coin-flip cell; the mechanism converts the coin flip into a deterministic rejection with rule-derived gates: <code>C(i,j) = ∞</code> when the match would cross the net plane (one homography check per frame with the fixed camera) or violate serve-side parity at serve time (§9.7). In rugby the equivalent is the jersey-swap guard: number→player bindings are time-indexed, and a detection whose tracklet jersey vote contradicts its track's current binding pays an additive penalty rather than inheriting the identity silently. Applied to E09, the net-line gate alone would have killed most of ByteTrack's 14 switches at zero model cost [verify — rule-derived, the §9.11 post-processor lab produces the first measured number].</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-idswitch-recovery.png" alt="Three-panel ID-switch sequence at a pickleball net: approach, occlusion blob, wrong swap crossed out versus correct ReID recovery. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.13</span>: UC 05 — The Switch and Its Prevention. <strong>Pickleball</strong>: two players cross at the NVZ; the net-line gate forbids the swap geometrically. <strong>Rugby league</strong>: the jersey swap under interchange — the time-indexed roster catches what appearance cannot.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> officiating — shot attribution and tackle attribution are identity statements; every prevented switch is a stat that stays attached to the right player, with no GPU required.</p>
+
+  <h3 class="sub-heading">UC 06 — ReID Across Camera Views</h3>
+  <p>Multi-camera coverage (C14 territory) needs identity to survive a view change: the same player leaves CAM A's frame and enters CAM B's from a different angle, under different lighting. The mechanism is cross-view appearance matching: L2-normalized embeddings compared by cosine distance, with same-identity pairs in this footage sitting near 0.1 and different-identity pairs near 0.9 [verify — thresholds are venue-calibrated practitioner values, not universal constants]. Two guards make it work in sport: per-view galleries (embeddings are view-conditional, so match within-view first) and a homography consistency check (the re-appearing feet position must be reachable from the exit position in the shared court frame, C06/C07). The uniform collapse of §9.5 is worse cross-view — team blobs shift differently per camera — so in-domain fine-tuning matters more here than anywhere.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-reid-views.png" alt="Two camera views of a rugby pitch with player crops, embedding bars, accepted cross-view matches in burnt-orange and a rejected match crossed out. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.14</span>: UC 06 — Identity Across Views. <strong>Rugby league</strong>: broadcast cuts between the main and in-goal cameras mid-set; cross-view ReID plus homography reachability keeps the ball carrier's identity through the cut. <strong>Pickleball</strong>: two-camera tournament rigs hand players off at the net post, the exact spot where single-view tracking is weakest.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> broadcast and product — continuous identity across camera cuts is what makes per-player broadcast graphics and multi-angle replay tagging possible (extends C14).</p>
+
+  <h3 class="sub-heading">Category C: Tracking Into the Product (07-09)</h3>
+
+  <h3 class="sub-heading">UC 07 — Track-to-Event Association: The One-Spine Join</h3>
+  <p>Tracking's output is not a video with boxes; it is a column in the analytics spine (§9.11b): detection (frame, box) → track (track_id, frame) → identity (player, track_id) → event (event_id, player, frame). The mechanism is the join itself: every event detector downstream — contact, shot, tackle, fault (C19) — emits events keyed by <code>track_id + frame</code>, and identity resolution maps track_id to player exactly once per track, not once per event. The failure mode is silent: a fragmented track does not error the join, it splits one player's contribution across two rows, and every aggregate is wrong in proportion to the fragmentation. This is why AssA and IDF1 — not DetA — predict downstream stat quality.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-track-event-join.png" alt="Three-table join diagram: track table, identity table, event table linked by burnt-orange join arrows into one spine, fragmented track splitting into two rows crossed out. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.15</span>: UC 07 — The One-Spine Join. <strong>Pickleball</strong>: a dink winner is credited by joining the C19 shot event to the track to the enrolled session player. <strong>Rugby league</strong>: a tackle event joins to the tracklet, then to the time-indexed roster binding — the same column, two sports.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> everyone downstream — this join is why the chapter exists; C19 eventing, C23 tactical ML, and C28 cockpit all consume track_id, and all inherit its fragmentation tax.</p>
+
+  <h3 class="sub-heading">UC 08 — Live HUD Tracking Under a Latency Budget</h3>
+  <p>The C28 cockpit wants identity live, not after the match. The constraint is a glass-to-glass budget under ~100 ms: frame capture ~8 ms, detect ~12 ms, track ~3 ms, render ~16 ms leaves headroom for ReID only where it pays. The mechanism is a budgeted pipeline: BoT-SORT at E02's measured 53 fps on the M4 Max fits the window; the ReID forward pass (one CNN call per detection) is the marginal cost, so the live configuration runs appearance fusion only on ambiguous cells — low IoU margin or a gate near-violation — and pure motion on the rest [verify — selective-fusion scheduling is a practitioner pattern, not a published config]. Fixed-camera pickleball needs no GMC, which is the budget line that broadcast rugby spends on framewarp.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-hud-live.png" alt="Sideline tablet HUD showing overhead pickleball court with named player tokens, speed readouts, alert ring at the kitchen line, and a latency ladder totaling under 100ms. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.16</span>: UC 08 — The Live Budget. <strong>Pickleball</strong>: sideline iPad showing named tokens, live speeds, and a kitchen-warning ring during the rally (feeds C28). <strong>Rugby league</strong>: the same HUD on the broadcast feed spends its margin on GMC instead of ReID — same budget, different line item.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching in-session — live identity turns the cockpit from a replay tool into a during-play tool; the drill correction arrives while the pattern is still on the court.</p>
+
+  <h3 class="sub-heading">UC 09 — Tracking Under Broadcast Camera Motion</h3>
+  <p>A fast broadcast pan invalidates every Kalman prediction simultaneously; without compensation the tracker mass-respawns IDs. The mechanism is global motion compensation between frames — estimate the camera's affine warp, apply it to the Kalman state before association — but the E14 measurement is the real lesson: framewarp (dense optical flow) GMC cut spawned IDs 295 → 286 (+3.1%) on nrl-001, while boxshift (sparse feature matching) made things <em>worse</em> (measured). Two implementations of the same datasheet checkbox moved the metric in opposite directions. The C07 calibration feed provides the static-feature correspondences framewarp needs; player-masked flow (the C10 UC-20 pattern) keeps moving bodies out of the camera estimate.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-gmc-broadcast.png" alt="Broadcast pan across a rugby pitch with drifting boxes, forked framewarp and boxshift paths, results showing framewarp stable at 286 IDs and boxshift crossed out, baseline 295 struck through. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.17</span>: UC 09 — GMC Is a Variable, Not a Checkbox. <strong>Rugby league</strong>: E14's measured fork — framewarp helps, boxshift hurts, on the same clip with the same tracker. <strong>Pickleball</strong>: fixed-camera footage skips the line item entirely; handheld tournament rigs re-enter this regime.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> product engineering — when a vendor datasheet says "camera motion compensation: yes," this use case is the question to ask back: which estimator, measured on what footage.</p>
+
+  <h3 class="sub-heading">Category D: Proving It Works (10)</h3>
+
+  <h3 class="sub-heading">UC 10 — Track Quality Metrics in Practice</h3>
+  <p>The operational question is never "is the tracker good" but "did this change help, on my footage." The mechanism is the §9.10 protocol run as routine: TrackEval scoring every experiment with HOTA primary and the DetA/AssA decomposition as the self-diagnosis — DetA flat with AssA down means the associator regressed; AssA flat with DetA down means the detector did. Statistics stay honest: paired per-clip ΔHOTA, cluster bootstrap by clip (10k resamples) for the 95% CI, sign test as the floor, ΔHOTA ≥ 0.02 pre-registered as meaningful. And ClusteredIDF1 (§9.2, book construction) answers the question global metrics hide: can the tracker tell apart the two same-kit players who actually meet — per NVZ pair in pickleball, per ruck in rugby.</p>
+
+  <figure class="full">
+    <img src="shared/images/ch09-uc-metrics-practice.png" alt="Grouped bar chart of MOTA, IDF1, HOTA across three trackers: MOTA bars nearly equal near 95, IDF1 bars widely separated, HOTA in between, DetA times AssA gauge inset. White background, black axes, burnt-orange bars." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 9.18</span>: UC 10 — The Decision Chart. <strong>Pickleball</strong>: E09's measured spread — MOTA would have missed the difference that IDF1 and HOTA call a different pipeline. <strong>Rugby league</strong>: the same chart on nrl-001 exposes fragmentation that broadcast-frame counts dilute out of MOTA entirely.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> engineering discipline — every other use case in this section is only as trustworthy as this one; the metric harness is what turns tracker choice from taste into measurement.</p>
+
+  <h2 class="section-title"><span class="section-num">9.11d</span> Runnable Implementation</h2>
+  <p>The minimal association loop with the chapter's two load-bearing additions — fused motion+appearance cost (§9.3b) and a geometric role-prior gate (§9.7) — is the starting skeleton; the full lab version lives in <code>lab/w2_lab_tracking.py</code>:</p>
+  <pre><code>import numpy as np
+from scipy.optimize import linear_sum_assignment
+
+class SportTracker:
+    """BoT-SORT-style association with sport role priors (sections 9.3b, 9.7)."""
+    def __init__(self, lam=0.5):
+        self.lam = lam            # appearance vs motion fusion — calibrate per venue
+        self.tracks = {}          # track_id -&gt; {kalman, gallery(EMA), last_frame}
+
+    def cost(self, trk, det, feet_court=None):
+        iou_cost = 1.0 - iou(trk["kalman"].predict(), det["box"])
+        app_cost = cosine_dist(trk["gallery"], det["embedding"])   # L2-normalized
+        c = self.lam * app_cost + (1 - self.lam) * iou_cost
+        if feet_court is not None and net_line_violated(trk, feet_court):
+            return np.inf         # UC 05: identity cannot cross the net plane
+        return c
+
+    def update(self, detections, frame_idx, homography=None):
+        dets = [d for d in detections if d["score"] &gt; 0.5]
+        C = np.array([[self.cost(t, d, feet_court(d, homography))
+                       for d in dets] for t in self.tracks.values()])
+        rows, cols = linear_sum_assignment(C)      # Hungarian assignment
+        # ByteTrack second pass: rematch low-score detections to unmatched tracks
+        # Gallery guard: freeze EMA update while best/second-best margin is small
+        ...</code></pre>
+
+  <h2 class="section-title"><span class="section-num">9.11e</span> What This Adds to the Pipeline</h2>
+  <p>These ten use cases are the identity layer applied across the book's five verbs: watching (UC 01-03 keep the identities that C08's detections merely locate), tagging (UC 04-06 repair identity through the occlusions and camera cuts that C19's event detectors cannot see through), modelling (UC 07 is the join that makes C23's tactical ML and C24's simulation trainable on real tracks), interpreting (UC 08-09 carry identity into the C28 cockpit and the C07 broadcast feed under real budgets), and acting (UC 10 is the measurement discipline that decides which of the other nine to ship). Each extends an existing chapter rather than duplicating it — C06/C07 calibration supplies the homographies the gates consume, C12 ball tracking rides the same association machinery at a harder detection regime, C14 multiview owns the camera-rig geometry behind UC 06, and C28 owns the cockpit UC 08 feeds. The honest labels mark which numbers are measured in the book's lab (E02, E08, E09, E14), which are source-backed (HOTA, IDF1, the tracker papers), and which remain practitioner models awaiting the §9.11 labs.</p>
+
+  <h2 class="section-title"><span class="section-num">9.12</span> Sources</h2>
+  <ul>
+    <li>HOTA: Luiten et al., "HOTA: A Higher Order Metric for Evaluating Multi-Object Tracking," IJCV 2021 — https://arxiv.org/abs/2009.07736 ; TrackEval harness (MIT) — https://github.com/JonathonLuiten/TrackEval ; MOTChallenge — https://motchallenge.net/ .</li>
+    <li>MOTA: Bernardin &amp; Stiefelhagen, CLEAR MOT, EURASIP J. Image Video Proc. 2008 — https://link.springer.com/article/10.1155/2008/246309 . IDF1: Ristani et al., ECCVW 2016 — https://arxiv.org/abs/1609.01775 .</li>
+    <li>Trackers: SORT (GPL-3.0) https://github.com/abewley/sort ; ByteTrack (MIT) https://arxiv.org/abs/2110.06864 ; BoT-SORT (MIT repo; AGPL-3.0 via Ultralytics) https://arxiv.org/abs/2206.14651 ; OC-SORT (MIT) https://arxiv.org/abs/2203.14360 ; DeepOCCSORT via BoxMOT (AGPL-3.0) https://arxiv.org/abs/2302.11813 — licenses verified via GitHub API 2026-08-30.</li>
+    <li>ReID: OSNet / torchreid (MIT) https://arxiv.org/abs/1905.00953 ; reid-strong-baseline (MIT) https://arxiv.org/abs/1906.08332 ; CLIP-ReID (no license file [verify]) https://arxiv.org/abs/2211.13977 .</li>
+    <li>End-to-end: MOTR line https://github.com/megvii-research/MOTR (no v4/v5 confirmed 2026-08-30); MOTIP https://github.com/MCG-NJU/MOTIP ; CAMELTrack (Apache-2.0) https://arxiv.org/abs/2505.01257 ; GTA refinement [verify primary source].</li>
+    <li>SoccerNet Game State Reconstruction / sn-jersey — https://www.soccer-net.org/tasks/game-state-reconstruction , https://github.com/SoccerNet/sn-jersey .</li>
+    <li>Meta SAM 2 (Apache-2.0) https://github.com/facebookresearch/sam2 ; SAM 3 (custom SAM license [verify terms], Nov 2025) https://arxiv.org/abs/2511.16719 ; MPS notes per dossiers.</li>
+    <li>Lab: <code>lab/w2_lab_tracking.py</code> → <code>experiments/c09-tracking-honest/outputs/metrics.json</code>. Book-internal evidence: E01, E02, E05, E08, E09, E11, E14 (measured); C06/C07 calibration; C20 statistics discipline.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="08.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 08</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 08</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</p>
+        </div>
+      </div>
+    </a>
+    <a href="09.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 09</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 09</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Why 26 IDs on 4 players matters, which metric tells you the truth, and how role priors repair identity</p>
+        </div>
+        <a href="09.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #C2410C;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

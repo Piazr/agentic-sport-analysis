@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 05 — Data Engineering for Sport Video - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #9A5A2E;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-05" style="background-color: #9A5A2E; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 05</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 05 — Data Engineering for Sport Video</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Ingest, provenance, the one-spine schema, DuckDB querying, and the golden-fixture regression harness</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">30 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-05-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Pipeline That Produces Your Numbers</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-05-1" data-section="s-05-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Pipeline That Produces Your Numbers</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-05-1" data-section="s-05-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Pipeline That Produces Your Numbers</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">05</span> Chapter 05 — Data Engineering for Sport Video</h1>
+    <p class="chapter-subtitle">Ingest, provenance, the one-spine schema, DuckDB querying, and the golden-fixture regression harness</p>
+  </header>
+
+<h3 id="s-05-1"><span class="section-num">5.1</span> The Pipeline That Produces Your Numbers</h3>
+
+<p class="section-intro">Vision models get the attention; the data pipeline is what makes their output usable, reproducible, and citable. In a professional team, the analyst's day is mostly this pipeline: ingest footage, slice it, extract frames, run models, join rows, and answer a coach's question before the next session. This chapter is the engineering layer under every other chapter.</p>
+
+  <p>The core idea is <strong>one data spine</strong>: a single canonical coordinate + event schema that every downstream analysis consumes. Second Spectrum's documented differentiator is exactly this — one capture pipeline feeding broadcast, coaching, and data feeds, so there is nothing to reconcile. For an open, replicable version of that architecture, the spine is: <em>kloppy/EPTS-style tracking rows + event rows in a queryable store</em>. The spine is a contract, not a file format. Every downstream table — tracks, events, frame metadata, model outputs — shares the same join key: <code>(clip_id, frame_idx, pts_s)</code>.</p>
+
+  <p>Everything in this chapter is <strong>measured</strong> on our own fixture: the probe output, the 6-frame golden extraction (hashes in <code>manifest.json</code>), and the DuckDB query results (<code>experiments/c05-ingest/outputs/</code>). The methodology itself is <strong>source-backed</strong> — it mirrors the documented single-source-of-truth architecture across pro providers (Second Spectrum, SkillCorner, Stats Perform/Opta Vision) and the open standards those providers align to (kloppy, SPADL, FIFA EPTS, MOTChallenge).</p>
+
+  <figure id="fig-05-01" class="full">
+    <img src="shared/images/ingest-pipeline.png" alt="Ingest pipeline flow: RAW VIDEO to SLICE to FRAMES to DETECT to TRACK to CALIBRATE to EVENT to DUCKDB SPINE with burnt-orange connectors." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.1</span>: The Ingest Pipeline. Every stage emits a manifest-linked artifact; nothing downstream is trusted unless the stage above it is.</figcaption>
+  </figure>
+
+    <figure id="fig-05-02" class="full">
+    <img src="shared/images/spine-one-data-model.png" alt="One data spine central column with video frames tracking rows and event rows flowing in, coach reports and model training flowing out." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.2</span>: The One Spine. Tracks and events in one schema, consumed by coaching, training, and replay — the single-source-of-truth pattern used by pro providers.</figcaption>
+  </figure>
+
+<p>The pipeline has four coarse responsibilities, not ten independent tools. First, <strong>media ingest</strong> turns the camera master into a frame-exact analysis clip and a frame-index map. Second, <strong>perception</strong> detects, tracks, and calibrates the scene into court-metre coordinates. Third, <strong>eventing</strong> spots contacts, serves, tackles, and play-the-ball restarts. Fourth, <strong>spine assembly</strong> joins the rows and runs the regression harness that makes the whole thing reproducible. If any stage changes the join key or the coordinate space, every downstream number is suspect.</p>
+
+  <h2 class="section-title"><span class="section-num">5.2</span> Ingest: FFmpeg and the Derivatives</h2>
+  <p>Raw match footage is large, full of dead time, and encoded for delivery. The first derivative is the <em>analysis clip</em>: the window of play you actually analyze. Our fixture pb-003 is a 30-second doubles rally window cut from a PPA broadcast. The probe tells the truth about what you are actually working with:</p>
+
+<pre><code class="language-text">clip: av1 1920x1080 @30.00fps 30.0s 1786kbps
+golden frames extracted: 6 (hashed)
+track rows loaded: 8862
+on-court rows: 3416 of 8862
+peak on-court players per frame: 6 (doubles = 4; &gt;4 or &lt;4 -> fragmentation)</code></pre>
+
+  <p>Three facts from this one run that every practitioner should internalize:</p>
+
+  <ol>
+    <li><strong>The codec matters.</strong> AV1 at 1,786kbps is a YouTube transcode, not a capture. It compresses fine for humans and poorly for machine vision — when you control the capture, use H.264/HEVC 4:2:2 10-bit at 50Mbps+ for 4K60.</li>
+    <li><strong>Frame rate reality differs from assumptions.</strong> The clip is 30fps and 900 frames, not 25fps. Every pipeline assumption must be re-derived from the probe, never from memory.</li>
+    <li><strong>Fragmentation is measurable in the data spine.</strong> 8,862 track rows but only 3,416 on-court; peak 6 on-court players in a 4-player doubles match. The spine exposes tracker quality before you ever claim anything from it.</li>
+  </ol>
+
+  <p><strong>FFmpeg discipline (measured 2026-08-30 on this machine):</strong> the seek-vs-copy folklore has a hard answer. Using an 89-frame slice of our own fixture, <em>input seek + re-encode</em> and <em>output seek</em> both produce <strong>89 frames</strong> (frame-accurate); <code>-c copy</code> snaps to the nearest keyframe and produces <strong>109 frames</strong> — the worst option for analysis, because your timestamps no longer match the clip metadata. Rule of thumb: input-seek + re-encode for anything that feeds a model; <code>-c copy</code> only when you must avoid a re-encode and can tolerate keyframe granularity. Slug every derived asset with deterministic names; never edit a raw master in place.</p>
+
+  <p>Decode hardware: <code>-hwaccel videotoolbox</code> works for decode, but on 1080p-short clips software decode is actually faster (verified ~33× realtime vs ~5.4× for hwaccel) — hwaccel earns its keep on 4K/long files and for CPU offload. Note there are no <code>*_videotoolbox</code> <em>decoder</em> names; those are encoders (h264/hevc/prores_videotoolbox). Reading frames in-process: <code>decord</code> is dead (last release June 2021; FFmpeg 7+ breakage; memory leak issues unmerged) — use <strong>PyAV 18.1.0</strong> (BSD-3; check the GPL build caveat on the wheel) or <strong>TorchCodec 0.16.0</strong> (stable ABI since 0.12; macOS decode is CPU-only — no VideoToolbox offload; CUDA on Colab).</p>
+
+  <p>The ingest recipe has four internal products that are easy to skip and expensive to reconstruct later: a <strong>transcoded clip</strong> with frame-accurate boundaries, a <strong>metadata probe</strong> (<code>ffprobe</code>) with codec / fps / bitrate, a <strong>frame map</strong> that maps frame index to presentation timestamp, and an <strong>event log skeleton</strong> that is populated in later chapters. Treat them as first-class artifacts; each gets its own SHA-256 and its own entry in the manifest.</p>
+
+  <h2 class="section-title"><span class="section-num">5.2b</span> The Frame-Index Problem: Which Frame Is the Rally Start?</h2>
+  <p>The most common silent failure in sport video pipelines is not a bad model; it is a <strong>frame index that does not mean what you think it means</strong>. A coach asks, "Show me frame 150 of the rally." The detector's frame 150 is the 150th decoded frame of the clip. The source broadcast's frame 150 is 150 frames after the match start. The FFmpeg <code>frame=150</code> from <code>select=eq(n\,150)</code> is 0-based in the clip. The MOTChallenge export must be 1-based. If these are not aligned, a ball-contact event attributed to frame 150 is actually somewhere else.</p>
+
+  <p>The fix is a <strong>frame index map</strong> emitted at ingest, not inferred later. The frame map is a CSV with three columns: <code>frame_idx</code> (0-based in the clip), <code>pts_s</code> (presentation timestamp in seconds), and <code> pict_type</code> (I/P/B). Every downstream artifact — extracted PNG, track row, event row — carries <code>clip_id + frame_idx + pts_s</code>. When you re-encode the clip for a model, the frame map is recomputed; the old and new maps are both kept.</p>
+
+  <p>For the rally-start problem specifically, the frame map is not enough. A clip boundary is a <em>human decision</em>: serve toss, ball contact, first tackle, play-the-ball. The spine therefore stores a <code>rally_window</code> (or <code>set_of_six_window</code>) table with columns <code>clip_id, start_frame_idx, start_pts_s, end_frame_idx, end_pts_s, annotated_by, evidence_refs</code>. When a downstream query joins tracks to a rally, it joins on the window, not on a filename convention.</p>
+
+  <figure id="fig-05-03" class="full">
+    <img src="shared/images/c05-frame-index-event-log.png" alt="Frame index map timeline with rally windows and event log chips anchored to specific frames." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.3</span>: The Frame Index and Event Log. Rally windows are human annotations on top of the frame map; every event chip is anchored to a frame index and a presentation timestamp.</figcaption>
+  </figure>
+
+  <p>In the rugby arm, the same issue appears as <strong>set-of-six alignment</strong>. A broadcast replay might start in the middle of a tackle; the clip metadata says "frame 0" but the statistical event is the fifth tackle of a set that began 20 seconds earlier. The NRL-set rows therefore carry <code>set_start_frame_idx</code> and <code>tackle_in_set</code> so that the downstream EPV model knows the field position at the start of the set, not just the moment of contact.</p>
+
+  <h2 class="section-title"><span class="section-num">5.3</span> Provenance: SHA-256 and Manifest</h2>
+  <p>Every derived asset carries a hash and a manifest link back to its source. Our lab computes SHA-256 on the source clip, each extracted golden frame, and the tracks CSV; the manifest is the audit chain.</p>
+
+  <p>The distinction that matters: <em>path hash</em> vs <em>content hash</em>. A path hash proves the file is where you think it is; a content hash proves it is what you think it is. For evidence, use content hashes — a re-encode of the same footage is a different artifact, and your metrics.json must say which one it claims to describe.</p>
+
+<pre><code class="language-python">def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 &lt;&lt; 20), b""):
+            h.update(chunk)
+    return h.hexdigest()</code></pre>
+
+  <p>The manifest is a JSON file per clip. It records the source clip hash, the derived clip hash, the slice boundaries, the FFmpeg version, the frame map path, and the produced timestamp. It is immutable: if you re-slice or re-encode, you mint a new manifest with a <code>supersedes</code> pointer to the parent. This is the row-level provenance discipline that makes the rest of the chapter trustworthy.</p>
+
+  <figure id="fig-05-04" class="full">
+    <img src="shared/images/c05-data-quality-fields.png" alt="A data row exploded into six metadata cells: source, model, confidence, evidence, review, with burnt-orange accent." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.4</span>: Row-Level Metadata. Every track and event row carries source, model, confidence, evidence, and review flags before it is allowed into the spine.</figcaption>
+  </figure>
+
+  <p>Provenance breaks in predictable ways: re-encoding without updating the hash, a metadata-only rewrite that relocates the moov atom, non-deterministic detector outputs, and sidecar drift where the manifest says 900 frames but the directory has 898. The regression harness in §5.6 catches the last one; the manifest catches the rest.</p>
+
+  <h2 class="section-title"><span class="section-num">5.4</span> The One Spine: Coordinates, Events, and the Row Contract</h2>
+  <p>Two tables, one philosophy:</p>
+
+  <ul>
+    <li><strong>Tracks</strong> (continuous): <code>frame, track_id, x_px, y_px, x_court_m, y_court_m, velocity, on_court</code>. Pixel space is evidence; court metres are canonical.</li>
+    <li><strong>Events</strong> (discrete): <code>frame, t_s, event_type, actor, confidence, evidence_ref</code>. Events reference the rows they were derived from (the claims-register idea at row level).</li>
+  </ul>
+
+  <p>The join key is the whole point: <code>(clip_id, frame_idx, pts_s)</code>. It appears in every track row, every event row, and every frame file. This is what lets DuckDB ASOF-join a million track rows to a few hundred event rows, and what makes the golden-fixture harness possible. The PBN event dictionary in this repo adds 31 columns including <code>evidence_level</code>, <code>evidence_refs</code>, <code>confidence</code>, <code>human_correction</code>, <code>review_required</code>, and <code>coaching_note</code>. Those are not decoration; they are the filter that keeps the query layer honest.</p>
+
+  <figure id="fig-05-05" class="full">
+    <img src="shared/images/c05-one-spine-schema.png" alt="Two tables joined by a central burnt-orange key bar: tracks with a pickleball court sketch and events with a rugby pitch sketch." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.5</span>: The One Spine. The same join key links pickleball tracks and rugby events to a single queryable schema.</figcaption>
+  </figure>
+
+  <p>Coordinate hierarchy (in decreasing trust): <em>metric court metres</em> (from calibration, ch. 6) → <em>feet</em> (our court model, ch. 3) → <em>pixels</em> (raw detection). Never mix: every table declares its coordinate space in its schema. The open standards to align with are <strong>kloppy</strong> (PySport ingestion/representation), <strong>SPADL</strong> (event model, the direct ancestor of our PBN schema), <strong>FIFA EPTS</strong> (tracking I/O contract so club tools can ingest your output directly), and <strong>MOTChallenge CSV</strong> (for benchmark-compatible track exports). MOTChallenge uses 1-based frames and 10 exact columns; the spine is 0-based, but the MOT export is a projection, not a different truth.</p>
+
+  <h2 class="section-title"><span class="section-num">5.4b</span> Parquet vs JSON: The Storage Trade-off</h2>
+  <p>The spine is stored in two physical layers: <strong>JSON manifests</strong> for human-readable provenance, and <strong>Parquet</strong> for the row data. The trade-off is not performance alone; it is <em>what each format promises</em>.</p>
+
+  <p>JSON is the right format for the manifest because it is small, human-readable, and versioned by git. It is the wrong format for 8,862 track rows because it is row-oriented, uncompressed, and slow to query. Parquet is columnar, typed, and predicate-pushdown friendly. DuckDB can read a Parquet lake of millions of rows without loading anything into memory. The rule: <strong>JSON for contracts and metadata, Parquet for rows, filesystem for bytes, Zarr for dense arrays</strong> such as court-occupancy heatmaps.</p>
+
+  <figure id="fig-05-06" class="full">
+    <img src="shared/images/c05-storage-stack.png" alt="Four-layer storage stack: video files, Parquet tables, Zarr arrays, DuckDB SQL engine on top." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.6</span>: Storage Stack. Video bytes stay on the filesystem; rows live in Parquet; dense arrays go to Zarr; DuckDB queries across all of them.</figcaption>
+  </figure>
+
+  <p>For version control, the manifest is the boundary: <code>git-lfs</code> or <code>DVC</code> handle footage and large derived clips, but the manifest itself is small enough for plain git. The golden-fixture PNGs (a few MB) are also git-safe; the 900-frame source clip is not. DVC removes the GitHub bandwidth tax by moving bytes through your own bucket, while the manifest keeps the audit chain in git.</p>
+
+  <h2 class="section-title"><span class="section-num">5.5</span> Querying the Spine: DuckDB (W1.3 Lab)</h2>
+  <p>Parquet + DuckDB is the default storage for track rows: columnar, queryable in-process, no server. Our lab loads the tracks CSV into DuckDB and proves the SQL-level analytics:</p>
+
+<pre><code class="language-python">import duckdb
+con = duckdb.connect("spine.duckdb")
+con.execute("""CREATE OR REPLACE TABLE tracks AS
+    SELECT * FROM read_csv_auto(?)""", [tracks_csv])
+con.execute("""CREATE OR REPLACE VIEW frame_summary AS
+    SELECT frame,
+           COUNT(*) FILTER (WHERE on_court = 1) AS on_court_count,
+           COUNT(*) AS total_count
+    FROM tracks GROUP BY frame ORDER BY frame""")
+peak = con.execute("SELECT MAX(on_court_count) FROM frame_summary").fetchone()[0]</code></pre>
+
+  <p>Queries that matter, in the order teams actually ask them:</p>
+  <ol>
+    <li>"How many on-court players per frame, and where does the tracker break?" — <code>frame_summary</code> above; the 4-player doubles expectation is the regression test.</li>
+    <li>"All rallies where a serve was followed by a third-shot drop into the kitchen." — join tracks → events on frame; filter on event_type + court zone.</li>
+    <li>"Spacing between partners during kitchen exchanges, by frame window." — window function over track rows by court coordinates.</li>
+  </ol>
+
+  <p>DuckDB 1.5.5 handles 1M-row tables trivially and scales to billions via out-of-core spill. The query primitive that makes the spine powerful is <code>ASOF JOIN</code>: for every track row, find the nearest event at or before it, without a slow lateral join. For rugby, the same pattern finds the most recent tackle event for every player position sample, which is the input to an EPV surface.</p>
+
+<pre><code class="language-sql">SELECT t.clip_id, t.frame_idx, t.x_m, t.y_m, e.event_id, e.shot_type, e.contact_state
+FROM tracks t
+ASOF JOIN events e
+  ON t.clip_id = e.clip_id AND t.pts_s >= e.pts_s
+WHERE t.class = 'ball';</code></pre>
+
+  <h2 class="section-title"><span class="section-num">5.6</span> Golden Fixtures and the Regression Harness</h2>
+  <p>The golden fixture is the version-control trick for vision: a small, hand-reviewed set of frames where the truth is known and the answer is checked after every pipeline change. Our 6-frame fixture (pb-003-frame-01..06) covers serve → return → third shot → kitchen transition → dinking exchange → rally termination. The harness rule:</p>
+
+  <blockquote>
+    <p>After any model or pipeline change, re-run the fixture. If the outputs change in a way that is not understood, the change is not allowed.</p>
+  </blockquote>
+
+  <p>This is how a lab survives an LLM-assisted workflow: the fixture is the unit test for perception. Each golden frame has an expected-output JSON (boxes, counts, confidence bands) and a tolerance (<code>bbox IoU ≥ 0.5</code>, count equality, class equality). The fixture manifest pins the detector version, weights hash, FFmpeg version, and the Python package commit. CI runs the suite; any metric drop fails the build loud. Golden outputs are re-blessed deliberately with a commit message naming the model change — never silently regenerated.</p>
+
+  <p>It is also the seed of the public contribution in <code>dataset/pb003/</code> — the same frames, versioned, with keypoint/ball/event labels, that anyone can evaluate against (see the dataset README and schema). The fixture is small enough to ship in git; the full source clip is not.</p>
+
+  <h2 class="section-title"><span class="section-num">5.7</span> The Full Ingest Recipe (Copy This)</h2>
+  <pre><code>1. probe      : ffprobe raw.mp4 -> codec, fps, duration, bitrate (know your input)
+2. slice      : ffmpeg -ss START -to END -i raw.mp4 -c:v libx264 -crf 18 -an clip.mp4
+                (input seek + re-encode; never -c copy for analysis clips)
+3. frame map  : ffprobe -show_entries frame=best_effort_timestamp_time,pict_type
+                -of csv clip.mp4 -> clip.frame_map.csv
+4. frames     : ffmpeg -i clip.mp4 -vsync 0 frames/f_%06d.png
+5. manifest   : SHA-256 every derived asset; write manifest.json
+6. detect     : YOLO/RF-DETR -> detections (px space) -> report writes rows
+7. track      : ByteTrack/BoT-SORT -> track_id on detections -> tracks.parquet
+8. calibrate  : court homography -> x_court_m, y_court_m per row (ch. 6)
+9. event      : state machine (ch. 3/19) -> events.parquet
+10. spine      : DuckDB views join tracks+events; golden-fixture regression check
+11. query     : answer the coach's question in SQL</code></pre>
+
+  <h2 class="section-title"><span class="section-num">5.8</span> Transfer Note: Rugby League Data Spine</h2>
+  <p>Everything above transfers to rugby with one substitution: <strong>the coordinate model is the pitch, not the court</strong>. NRL tracking data is proprietary (verified: Stats Perform/Opta is the official pipe; no public NRL tracking corpus exists — only the request-gated CEA R7 Sevens set), so the spine's track table for rugby is either (a) self-extracted from broadcast clips like our E08/E14 runs, or (b) built from event data via <code>nrlR</code> (CRAN) + UselessNRLStats cleaned CSVs, with Rugby League Project IDs as the entity-resolution key. The <em>pitch model</em> is standard: 100m × 68m, coordinates relative to the try line, tackle state as an event-table column. DuckDB queries are identical except the court-zone join becomes a pitch-zone join.</p>
+
+  <p>The rugby event row also inherits the PBN evidence discipline. Every tackle, play-the-ball, and kick must carry <code>source</code>, <code>model</code>, <code>confidence</code>, and <code>evidence_refs</code>, because the public data is scraped and the CV data is self-extracted. The entity-resolution key is the Rugby League Project match ID, not the team name string.</p>
+
+  <h2 class="section-title"><span class="section-num">5.8b</span> The pb-003 Dataset: 900 Frames, Six Golden Frames, and a 596-Frame Target</h2>
+  <p>The pb-003 dataset is the book's public contribution. It currently exists as a schema, a source clip, and a small golden seed. The source clip is a 30-second, 900-frame, 30fps doubles rally from a PPA broadcast. The detector/tracker baseline run (E02) produced 8,862 track rows and 3,416 on-court rows across those 900 frames, with 26 unique ByteTrack IDs for four actual players — a measurable fragmentation signal that the dataset is designed to help fix.</p>
+
+  <p>The golden seed is six frames: pb-003-frame-01..06, with content hashes in the manifest, and 12 event review rows from the PBN Data Dictionary. Those six frames are the regression harness for the perception pipeline. The README calls for a Tier-1 annotation pass: ball positions on every frame where the ball is visible, court keypoints every 50 frames, and player boxes on all 900 frames (or a 300-frame active-learning spread plus interpolation). The "596-frame annotated corpus" is the planned next milestone: a contiguous, contact-labeled block of frames that is large enough to train a first shot-type classifier and a ball-tracker head. It is not on disk today. The honest current state is a 900-frame source clip with a six-frame golden seed and a 12-row event review.</p>
+
+  <figure id="fig-05-07" class="full">
+    <img src="shared/images/c05-pb003-dataset.png" alt="pb-003 dataset tree: root clip, 900 frames, six golden frames, 8,862 track rows, 12 event rows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.7</span>: The pb-003 Dataset Skeleton. A 900-frame source clip, six golden frames, 8,862 track rows, and 12 event review rows. The 596-frame annotated corpus is the next target, not the current state.</figcaption>
+  </figure>
+
+  <p>The dataset's license decision is also honest: the labels can be CC-BY-4.0, but the frames cannot be redistributed because they are PPA broadcast footage. The recommended distribution is labels + frame indices + derived-clip SHA-256, with the reader supplying their own licensed copy of the broadcast. A separate amateur camera fixture is the long-term solution for freely redistributable frames.</p>
+
+  <h2 class="section-title"><span class="section-num">5.8c</span> The NRL-Set Row: Rugby League Event Schema</h2>
+  <p>There is no public NRL tackle-by-tackle event corpus, so the book proposes an NRLSheet row schema that makes the spine complete for rugby league. The schema is designed to feed a Kempton-style EPV model and to be joinable to the Rugby League Project entity graph. A proposed row looks like this:</p>
+
+<pre><code class="language-text">match_id, set_id, tackle_in_set, ptb_x_m, ptb_y_m, possession_team,
+  ball_carrier_rlp_id, tackle_rlp_ids[], outcome, source, evidence_level,
+  evidence_refs, confidence, review_required</code></pre>
+
+  <p>Every field is either measured from CV (play-the-ball location from the homography), scraped from nrlR (match/set/outcome), or hand-coded by an analyst (review_required). The <code>source</code> column is not a footnote; it is a join key to the evidence manifest. An EPV query can therefore be written as a single SQL statement: average next-score value grouped by <code>(ptb_x_m, ptb_y_m, tackle_in_set)</code>, filtered to rows where <code>evidence_level</code> is not <code>simulated</code>.</p>
+
+  <figure id="fig-05-08" class="full">
+    <img src="shared/images/c05-nrl-event-structure.png" alt="NRL event row table with column headers, a small rugby pitch glyph, and an arrow from nrlR/Useless NRL Stats." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.8</span>: NRL-Set Row Structure. A proposed event-row schema for rugby league, with play-the-ball coordinates, Rugby League Project IDs, and the same evidence metadata as PBN.</figcaption>
+  </figure>
+
+  <p>This is a design target, not a measured output. The book has not yet produced a full NRL-set row file; the schema is ready so that the first manually coded set-of-six can be stored in the same spine as the pickleball rows.</p>
+
+  <h2 class="section-title"><span class="section-num">5.8d</span> Honest Limits: 60fps vs 25fps and the 2 FPS VLM Sampling Problem</h2>
+  <p>Frame rate is an assumption that every downstream number inherits. Broadcast sport is usually 25fps (PAL) or 30fps (NTSC/PPA web); high-end capture is 60fps or 120fps. The difference between 60fps and 25fps is 14ms per frame, which is small for tactical analysis but large for ball-contact physics. A pickleball serve contact lasts roughly 4ms; at 60fps the ball is on the paddle for less than one frame. At 25fps the contact frame is a blur, and the exact contact frame is ambiguous by ±20ms. The honest response is to not claim sub-frame timing from 25fps video.</p>
+
+  <p>The 2fps VLM sampling problem is worse. A vision-language model that ingests one frame every half-second is cheap, but it will almost always miss the actual contact frame. A serve, a dink, a tackle, or a play-the-ball occurs between the sampled frames. The model then hallucinates the event timing from context. The right use of a VLM is not to spot contacts; it is to narrate a rally after the event rows have been anchored by a high-frame-rate detector or a temporal-difference state machine. If a VLM is the only source, the event row must carry a low confidence and a large review flag.</p>
+
+  <figure id="fig-05-09" class="full">
+    <img src="shared/images/c05-fps-sampling-problem.png" alt="Three timelines: 60fps dense ticks, 25fps sparser ticks, 2fps large dots missing the contact between them." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.9</span>: Frame-Rate Honesty. A 2fps VLM sample almost always misses a contact event; the event row must be anchored to a higher-frame-rate signal or flagged for review.</figcaption>
+  </figure>
+
+  <p>The rugby broadcast arm is typically 25fps. The EPV model does not need millisecond timing; it needs field position at the start and end of a set of six. The 25fps limit is therefore acceptable for coarse value modelling, but it is not acceptable for tackle-impact biomechanics or for play-the-ball speed measured from video. Those claims need 60fps+ capture or sensor data.</p>
+
+  <h2 class="section-title"><span class="section-num">5.8e</span> The Ten Use Cases: Data Engineering in Production</h2>
+  <p>The use cases below are the applied bridge from the pipeline mechanics above to the two sports. They follow three categories: <strong>Category I — The Spine in Production (01-03)</strong>, <strong>Category II — Identity, Integrity &amp; Storage (04-06)</strong>, and <strong>Category III — Feeding the Downstream Consumers (07-10)</strong>. Each case pairs a pickleball and a rugby league application, carries its storage math, and carries its evidence label: measured where the book lab ran it, proposed where the schema is a design target, [verify] where the number is a practitioner estimate.</p>
+
+  <h3 class="sub-heading">Category I: The Spine in Production (01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — The One Spine in Production: One Question, One SQL Query</h3>
+  <p>The practical problem: a coach asks "show every rally where the far-left player was inside the non-volley zone at contact," and the analyst's answer must be a query, not a week of scripting. The mechanism is the join key <code>(clip_id, frame_idx, pts_s)</code> carried by every track row and event row, with the coordinate chain pixel → court feet → court metres (homography from ch. 6; ×0.3048 to metres, canonical). The storage math is why this scales: a track row is ~80 bytes in Parquet (pruned columns, Snappy compression), so 1M rows ≈ 80 MB; a 90-minute NRL broadcast at 25fps is 135,000 frames × ~16 tracked entities ≈ 2.2M rows ≈ 175 MB [verify — practitioner estimate; pb-003 measured 8,862 rows / 900 frames ≈ 9.8 rows per frame]. An entire season fits in laptop RAM; DuckDB's ASOF JOIN resolves each track row to its governing event without a lateral join.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc01-spine-production.png" alt="One spine column with join key badge, pickleball court feeding track rows and rugby pitch feeding event rows, outputs to coach, model, replay." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.10</span>: UC 01 — The One Spine in Production. One join key links both sports' rows to one queryable schema. <strong>Pickleball</strong>: kitchen-line SQL over PBN event rows. <strong>Rugby league</strong>: EPV grouping by (ptb_x_m, tackle_in_set) over NRL-set rows.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the analyst answers the coach between sessions, in SQL, with evidence refs attached — the single-source-of-truth pattern the pro providers sell, rebuilt in the open.</p>
+
+  <h3 class="sub-heading">UC 02 — The pb-003 Pipeline: 900 Frames, 6 Golden Frames, 8,862 Rows</h3>
+  <p>The practical problem: without a frozen, measured fixture, every pipeline change is an opinion. The mechanism is the measured pb-003 run (measured, E02): a 30-second, 900-frame, 30fps AV1 doubles clip; 8,862 track rows; 3,416 on-court rows; 26 unique ByteTrack IDs for four actual players; 6 golden frames with SHA-256 hashes in the manifest. The math is diagnostic: tracker ID inflation = 26/4 = 6.5× the true player count, and on-court yield = 3,416/8,862 = 38.5% of rows survive the on-court filter — two numbers the spine exposes before anyone claims anything from it. Storage cost of the whole fixture: six PNGs plus expected-output JSON, a few MB, git-safe.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc02-pb003-pipeline.png" alt="pb-003 pipeline: raw clip 900 frames to slice to frames to detect 8862 rows to track to six golden badge to parquet spine." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.11</span>: UC 02 — The pb-003 Pipeline (measured). A 900-frame clip reduced to 8,862 rows and six hashed golden frames. <strong>Pickleball</strong>: the regression harness for every perception change. <strong>Rugby league</strong>: the same fixture pattern mirrored on the nrl-001 broadcast clip.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> "did we fix it?" becomes a test with a pass bar, not a debate — the harness runs in seconds on every change and fails loud.</p>
+
+  <h3 class="sub-heading">UC 03 — NRL Event Rows: The Proposed Set-of-Six Schema</h3>
+  <p>The practical problem: there is no public NRL tackle-by-tackle event corpus (verified: Stats Perform/Opta is the proprietary pipe), so an open EPV model is impossible until the rows exist. The mechanism is the proposed NRL-set row (proposed — design target, not yet a produced file): <code>match_id, set_id, tackle_in_set, ptb_x_m, ptb_y_m, possession_team, ball_carrier_rlp_id, tackle_rlp_ids[], outcome, source, evidence_level, evidence_refs, confidence, review_required</code>, with Rugby League Project IDs as the entity-resolution key and <code>source</code> as a join key to the evidence manifest. The storage math inverts intuition: at ~300 play-the-balls per match and ~200 matches a season, a full NRL season is ~60k rows — a few MB. The scarce resource is annotation labour, not storage; the schema exists so the first manually coded set-of-six lands in the same spine as the pickleball rows.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc03-nrl-event-rows.png" alt="NRL event row exploded into labeled cells with rugby pitch glyph and RLP_ID key bar." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.12</span>: UC 03 — NRL Event Rows (proposed). Play-the-ball coordinates, Rugby League Project IDs, and PBN-grade evidence metadata in one row. <strong>Rugby league</strong>: EPV as a single GROUP BY over (ptb_x_m, ptb_y_m, tackle_in_set). <strong>Pickleball</strong>: the PBN 31-field event row is the working ancestor this schema copies.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the first open, evidence-carrying rugby league event table — the feedstock for the EPV chapter (ch. 22) and the ratings chapter (ch. 21).</p>
+
+  <h3 class="sub-heading">Category II: Identity, Integrity &amp; Storage (04-06)</h3>
+
+  <h3 class="sub-heading">UC 04 — Frame-Index Alignment: One Instant, Three Numberings</h3>
+  <p>The practical problem: the detector's frame 150, the broadcast's frame 150, and the MOT export's frame 151 are the same physical instant — or silently not. The mechanism is the ingest-time frame map (frame_idx 0-based, pts_s, pict_type from ffprobe), with the MOT export as a 1-based projection and the rally window as a human annotation on top. The math is the measured seek result (measured 2026-08-30, M4 Max): on a GOP-30 clip, input-seek + re-encode and output seek both yield 89 frames for a 1.5 s window; <code>-c copy</code> yields 109 — it snapped back to the 4.0 s keyframe, injecting 20 extra frames (~0.67 s at 30fps) before the moment asked for. Every downstream frame_idx is then wrong by up to a GOP [verify per-encode GOP size; 30 measured on our fixture].</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc04-frame-alignment.png" alt="Three timelines broadcast, clip, MOT export with one vertical contact alignment line and pickleball ball glyph." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.13</span>: UC 04 — Frame-Index Alignment. One contact instant, three numberings, one frame map. <strong>Pickleball</strong>: rally-start anchored to serve contact, not a filename. <strong>Rugby league</strong>: set_start_frame_idx so EPV knows field position at the set's start, not just at contact.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the evidence clip a coach watches starts where the event actually is — proven by the frame map, not assumed from the filename.</p>
+
+  <h3 class="sub-heading">UC 05 — Parquet vs JSON: The Storage Trade-off</h3>
+  <p>The practical problem: 8,862 track rows as JSON is a row-oriented, untyped, full-scan blob; as a manifest it is exactly right. The mechanism is the four-layer rule: JSON for contracts and metadata (small, human-readable, git-versioned), Parquet for rows (columnar, typed, predicate pushdown, row-group stats), the filesystem for video bytes (content-hashed, manifest-tracked), Zarr for dense arrays (heatmaps, gridded occupancy). The math: a track row costs ~150-250 bytes as JSON text vs ~30-60 bytes compressed in Parquet — 4-8× smaller, and column pruning means a query reading <code>x_m, y_m</code> never touches the bbox bytes [verify exact ratios on your corpus — practitioner estimate; direction is architectural]. DuckDB reads the lake in-process, zero-copy, no server.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc05-parquet-vs-json.png" alt="JSON full scan versus Parquet pruned column scan comparison with pickleball ball glyph." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.14</span>: UC 05 — Parquet vs JSON. Row-oriented full scans vs columnar pruning. <strong>Pickleball</strong>: 8,862 rows queried by zone in milliseconds. <strong>Rugby league</strong>: a season of play-the-ball rows on a laptop, partitioned by clip_id.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> season-scale analytics on the analyst's own machine — no cluster, no server, no ETL job between the question and the answer.</p>
+
+  <h3 class="sub-heading">UC 06 — Data Quality Metadata: The Row That Admits Its Own Doubts</h3>
+  <p>The practical problem: the corpus mixes measured CV rows, scraped rows, and hand-coded rows; without quality columns every number looks equally true. The mechanism is the PBN evidence discipline at row level: <code>evidence_level, evidence_refs, confidence, human_correction, review_required</code>, enforced by a spine gate that refuses rows without evidence refs that resolve. The math is the filter economics: a <code>WHERE evidence_level != 'simulated'</code> predicate costs nothing under column pruning — the expensive side is populating the column (seconds of analyst attention per row), which is why the schema makes the gate structural rather than aspirational. This is the claims-register idea (ch. 2) pushed down to the row.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc06-quality-metadata.png" alt="Data row exploded into six metadata chips with a spine gate rejecting a row missing evidence." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.15</span>: UC 06 — Quality Metadata. Source, model, confidence, evidence, review, hash — or the row does not enter the spine. <strong>Pickleball</strong>: PBN rows carry evidence_level from the Data Dictionary verbatim. <strong>Rugby league</strong>: scraped nrlR rows and CV-derived rows distinguished by source, never blended silently.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> every downstream query can exclude simulated and unreviewed rows by default — honesty becomes a schema property, not a writing style.</p>
+
+  <h3 class="sub-heading">Category III: Feeding the Downstream Consumers (07-10)</h3>
+
+  <h3 class="sub-heading">UC 07 — The 2 FPS Sampling Problem (the VLM Feed, ch. 25)</h3>
+  <p>The practical problem: a vision-language model fed one frame every half-second is cheap, and it will almost always miss the contact it is asked to time. The mechanism is sampling arithmetic, not model quality: a serve contact lasts ~4 ms, so at 2fps the probability a sample lands on the contact frame is ≈ 4/500 = 0.8% [verify — practitioner model of contact duration]; the model then hallucinates timing from context. Nyquist framing: resolving a 4 ms event needs ≥250fps for two samples per event — broadcast gives 25-30, so the honest contract is that the VLM narrates events anchored by a higher-rate signal (detector, temporal-difference state machine), never detects them. Any VLM-sourced event row carries low confidence and a review flag.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc07-2fps-sampling.png" alt="30fps dense timeline with contact tick versus 2fps sparse dots missing the contact in the gap." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.16</span>: UC 07 — The 2 FPS Sampling Problem. The contact falls between samples; the gap is the error zone. <strong>Pickleball</strong>: serve and dink contacts anchored at 30fps, narrated by the VLM after. <strong>Rugby league</strong>: play-the-ball boundaries from the eventer; the VLM narrates the set, not the tackle instant.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the VLM (ch. 25) becomes a narrator on top of evidence instead of a hallucinating detector — the single highest-leverage honesty rule in the agentic stack.</p>
+
+  <h3 class="sub-heading">UC 08 — Event Store Design (the Auto-Eventing Feed, ch. 19)</h3>
+  <p>The practical problem: the auto-eventing state machine (ch. 19) needs an event log it can trust, replay, and re-process when the rules change. The mechanism is an append-only, immutable store of event chips ordered by <code>pts_s</code>, consumed by three independent readers — the state machine, the EPV model (ch. 22), and the live cockpit (ch. 28) — with re-processing defined as replay from raw, never as editing history. The math: event volume is small — a pickleball match yields ~500-1,500 events, an NRL match ~2-4k play-the-ball and tackle rows; a season is well under 1M rows [verify — practitioner estimate]. The design constraint is therefore ordering and replayability, not scale: idempotent consumers, monotonic timestamps, and no destructive updates.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc08-event-store.png" alt="Append-only strip of event chips ordered by pts_s feeding state machine, EPV model, and cockpit." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.17</span>: UC 08 — Event Store Design. Immutable chips, three consumers, replay instead of re-annotation. <strong>Pickleball</strong>: serve-dink-speed-up chips reprocessed when the rally grammar changes. <strong>Rugby league</strong>: tackle and play-the-ball chips replayed when the set-of-six rules formalism (ch. 3) is revised.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> a rule change costs a replay, not a re-annotation season — the event history is an asset that appreciates instead of expiring.</p>
+
+  <h3 class="sub-heading">UC 09 — Data Lineage: The Provenance DAG (the ch. 2 Evidence Feed)</h3>
+  <p>The practical problem: a number in a report must be traceable to the exact bytes it came from, or it is not evidence. The mechanism is the content-hash DAG: raw → clip → frames → tracks → events → report, each node carrying a SHA-256 badge, each edge a <code>derived_from</code> relation, with re-encodes minting child manifests that point at the parent via <code>supersedes</code>. The math: hashing is cheap and one-time — SHA-256 streams at hundreds of MB/s on Apple Silicon, so a 4 GB match master costs seconds to fingerprint [verify exact throughput on your hardware]; lineage metadata is &lt;1 KB per artifact. The expensive failure is the one the DAG prevents: a re-encode that silently invalidates every hash downstream.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc09-lineage.png" alt="Provenance DAG from raw to clip to frames to tracks to events to report with hash badges and a supersedes edge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.18</span>: UC 09 — Data Lineage. Every artifact hashed, every derivation an edge, every re-encode a child. <strong>Pickleball</strong>: golden-frame hashes pin the regression harness to exact bytes. <strong>Rugby league</strong>: broadcast clip provenance separates licensed footage from derived, redistributable rows.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the critic agent (ch. 27) can audit any claim back to bytes — lineage is what makes the evidence contract (ch. 2) executable instead of rhetorical.</p>
+
+  <h3 class="sub-heading">UC 10 — The Reproducibility Contract (the Lab Feed, ch. 32)</h3>
+  <p>The practical problem: a claim in this book must be re-runnable by a stranger, or it is marketing. The mechanism is the contract card: pinned inputs (random seed, weights SHA-256, ffmpeg version, fixture IDs) on one side, outputs (metrics.json, golden-fixture results) on the other, with CI re-running the fixture suite on every change and golden outputs re-blessed only deliberately, with a commit message naming the model change. The math: the fixture suite costs seconds per run — six frames through the detector at interactive rates — so the contract is cheap enough to run on every commit; a full-lab re-run is minutes. The claims register audit (<code>lab/claims_register.py</code>, ch. 32) holds the bar: 24 claims, 0 problems.</p>
+
+  <figure class="full">
+    <img src="shared/images/c05-uc10-repro-contract.png" alt="Reproducibility contract card with pinned inputs, outputs, equals sign, and CI pass badge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 5.19</span>: UC 10 — The Reproducibility Contract. Pinned inputs, declared outputs, CI as the referee. <strong>Pickleball</strong>: the six-frame pb-003 fixture is the perception unit test. <strong>Rugby league</strong>: the nrl-001 fixture mirrors it so broadcast-lane claims carry the same bar.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> "it works on my machine" becomes "it passes the contract" — the difference between a demo and a lab, and the foundation the whole book's claim audit stands on.</p>
+
+  <h3 class="sub-heading">What These Add to the Pipeline</h3>
+  <p>The ten cases are the chapter's deliverables to the rest of the book: the spine and event store (UC 01, 08) feed the auto-eventing state machine (ch. 19) and the EPV surface (ch. 22); the sampling contract (UC 07) bounds what the VLM chapter (ch. 25) may claim; the lineage DAG (UC 09) makes the evidence contract (ch. 2) and the critic (ch. 27) executable; the reproducibility contract (UC 10) is the lab discipline the claims register (ch. 32) audits. The NRL-set rows (UC 03) are the rugby league data contribution; the pb-003 fixture (UC 02) is the pickleball one.</p>
+
+  <h2 class="section-title"><span class="section-num">5.9</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Cross-check TorchCodec vs PyAV frame counts on the 900-frame clip (both should match the ffmpeg frame map; the ABI and API differences are the only expected variance).</li>
+    <li>DuckDB query plan over 1M+ synthetic track rows to size the spine for a full season.</li>
+    <li>Build the 596-frame pb-003 annotation block and measure inter-annotator agreement on ball visibility and contact frames.</li>
+    <li>Produce the first NRL-set rows for one manually coded set-of-six from the nrl-001 clip, with Rugby League Project IDs and CV-derived play-the-ball coordinates.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">5.10</span> Sources</h2>
+  <ul>
+    <li>kloppy (PySport) — BSD-3; SPADL schema; FIFA EPTS standard; MOTChallenge CSV.</li>
+    <li>Verified finding: <code>decord</code> unmaintained; PyAV / TorchCodec recommended (2026-08-30).</li>
+    <li>Lab: <code>lab/w1_lab_data_engineering.py</code> → <code>experiments/c05-ingest/outputs/{manifest.json, spine.duckdb, checks.txt}</code>.</li>
+    <li>Dataset contribution: <code>dataset/pb003/pb003.schema.json</code> + <code>README.md</code>.</li>
+    <li>Rugby data: nrlR (CRAN) <code>https://cran.r-project.org/package=nrlR</code>; UselessNRLStats <code>https://github.com/uselessnrlstats/uselessnrlstats</code>; Rugby League Project <code>https://www.rugbyleagueproject.org</code>.</li>
+    <li>FFmpeg official documentation: <code>https://ffmpeg.org/ffmpeg.html</code> (seek semantics, <code>-accurate_seek</code> default).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="04.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 04</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 04</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</p>
+        </div>
+      </div>
+    </a>
+    <a href="05.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 05</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 05 — Data Engineering for Sport Video</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 05</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 05 — Data Engineering for Sport Video</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 05 — Data Engineering for Sport Video</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Ingest, provenance, the one-spine schema, DuckDB querying, and the golden-fixture regression harness</p>
+        </div>
+        <a href="05.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #9A5A2E;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

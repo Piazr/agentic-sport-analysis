@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #A2542A;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-24" style="background-color: #A2542A; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 24</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">What-IF is only well-posed with an explicit response model — and the v1 book proved the cost of forgetting</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">39 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-24-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The V1 Failure, Named</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-24-1" data-section="s-24-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The V1 Failure, Named</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-24-1" data-section="s-24-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The V1 Failure, Named</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">24</span> Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h1>
+    <p class="chapter-subtitle">What-IF is only well-posed with an explicit response model — and the v1 book proved the cost of forgetting</p>
+  </header>
+
+<h3 id="s-24-1"><span class="section-num">24.1</span> The V1 Failure, Named</h3>
+
+<p class="section-intro">The v1 chapter 9 claimed a spatial diffusion counterfactual table: threat dropped from 0.742 to 0.258 (-65.2%), 1,000 synthetic rollout trajectories, Wasserstein distance 0.042. None of it existed. Chapter 8 quoted a third variant (0.882 → 0.303, A1 +0.42m). The real artifact (E12) says: baseline 0.64 → 0.22, A2 +0.35m, 65.6% — a different experiment entirely, and even that is a hand-set scalar in a JSON file, not a trained model.</p>
+
+  <p>Three transcripts, three contradictory answers to the same question, and the one file that exists on disk matches none of the prose. This is the most expensive kind of error in a technical book, because it is invisible to a reader who trusts the typesetting. A diffusion policy is a specific artifact: training code, a dataset, checkpoints, an inference loop, and an evaluation harness. The v1 repo contained none of these. There was no <code>scripts/simulate-counterfactual.py</code>. There was no 1,000-rollout generator. There was no fitted threat model. The prose described a system the way a brochure describes a building, and the reader was invited to walk through rooms that had never been poured.</p>
+
+  <p>This chapter rebuilds counterfactual simulation honestly, and it starts from a flat statement of scope: <strong>this book does not train a diffusion policy.</strong> Not here, not anywhere. The digital twin you will see in section 24.3 is deterministic physics — an explicit projectile integrator for the pickleball lane and an explicitly assumed risk table for the rugby league lane. Everything learned, generative, or policy-shaped is labeled <em>unbuilt</em> and described as a frontier with a bill of materials, not as a result. The lesson of the v1 chapter is the chapter's own argument: <strong>an illustration is not a measurement, and a response model is not a storytelling device.</strong></p>
+
+  <p>Why is simulation still worth a chapter, given that wreckage? Because simulation is the honest frontier of the whole pipeline. Every upstream layer of this book — detection (c08), tracking (c09), calibration (c06), identity (c13), expected value (c22) — produces a description of what happened. A coach's actual question is never "what happened?" It is "what would happen if we changed one thing?" The moment you ask that question you need a model of the world's response, and the moment you build that model you either state your assumptions explicitly or you smuggle them in. Simulation is where analytical honesty is hardest and therefore where it matters most. The twin in this chapter is modest — two lanes, 10,000 rollouts, measured throughput — but every number in it can be re-derived by re-running one script (E21, formerly E16: <code>experiments/e21-match-digital-twin/</code>), and every number that cannot be re-derived is labeled as such.</p>
+
+  <figure id="fig-24-01" class="full">
+    <img src="shared/images/simulation-honesty-ladder.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.1</span>: The Counterfactual Honesty Ladder. <em>Illustration</em> (concept diagram, no measured data). Manual perturbation is what this chapter executes; learned reaction and policy models are the frontier; the v1 claims sit above with a red X — illustration is not measurement.</figcaption>
+  </figure>
+
+  <figure id="fig-24-02" class="full">
+    <img src="shared/images/ch24-twin-truth-table.png" alt="Two-column truth table separating measured outputs from illustrated outputs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.2</span>: The twin truth table. <em>Illustration</em> of the chapter's honesty contract. Left column — what the E21 twin actually measures: ball flight distributions, position deltas, an assumed risk table. Right column — what the v1 prose illustrated without building: the -65% threat claim, the policy rollout, the win-rate. Anything in the right column that appears in this chapter carries an explicit "illustrated" or "unbuilt" tag.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">24.2</span> Counterfactual Types and the Causal Minimum</h2>
+  <p>Three types, in order of honesty:</p>
+  <ol>
+    <li><strong>Manual perturbation</strong>: change a variable, re-run the deterministic sim, measure the delta. "Shift defender B1 0.5m left; what moves?" — the only type this chapter executes.</li>
+    <li><strong>Learned reaction model</strong>: a policy trained on tracking data that predicts how the OPPONENTS respond to your intervention. The minimum for a meaningful tactical counterfactual — and a Colab-scale project (the honest next step).</li>
+    <li><strong>Learned policies</strong>: full RL agents trained to play the sport. The v1 chapter's "diffusion policy" sat in this lane — and was never trained. It remains untrained in this edition.</li>
+  </ol>
+
+  <p><strong>The causal minimum:</strong> a what-IF "what if we moved 0.5m left?" is well-posed only if you can answer "what would the opponents do after we move?" The formal machinery is Rubin's potential outcomes and Pearl's do-operator: the intervention <code>do(B1 = x − 0.5m)</code> is explicit, and the response model — the structural equation that propagates the intervention through every other variable — is explicit. Rubin's framing adds the harder truth: the fundamental problem of causal inference is that you can never observe both Y(0) and Y(1) for the same rally. The observed rally happened once; the counterfactual rally is a construction. The only question is whether the construction is honest about its scaffolding.</p>
+
+  <p>A deterministic sim with fixed reactions is a toy; present it as a toy. Never present one as the other. Concretely, this means every counterfactual in this chapter states three things: the intervention (exactly which variable moved, by how much, at which frame), the response model (everything else holds observed velocity; ball is projectile-only; no opponent adaptation), and the consistency check (the intervention is physically legal — no teleporting through the net, no acceleration above the 4.5 m/s² clip).</p>
+
+  <p><strong>Pickleball example.</strong> "What if the third-shot drop had been hit 0.5 m/s slower?" is a well-posed Rung-1 counterfactual: the intervention is one launch parameter, the response model is gravity plus drag, and the output is a shifted landing distribution. It says nothing about whether the opponents would have attacked the slower ball — that is a Rung-2 question and this chapter does not answer it.</p>
+
+  <p><strong>Rugby league example.</strong> "What if the defensive line compresses its second-rower-to-centre spacing by 1.2m against the sweep play?" is well-posed only because the response model is stated: a logistic risk curve over spacing, <em>assumed</em>, not fitted to tracking data. The E21 twin reports the delta the assumed curve produces. A coach reading that number is reading the shape of an assumption, and the chapter says so on the figure, in the table, and in the caption — three times, because once is how the v1 book got into trouble.</p>
+
+  <figure id="fig-24-03" class="full">
+    <img src="shared/images/ch24-causal-response-model.png" alt="Causal diagram: observed state, do-intervention arrow, counterfactual state, with the response model box underneath." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.3</span>: The causal minimum. <em>Illustration</em> (concept diagram). The do-operator moves one variable; the response model box is what makes the arrow honest. In this chapter the response model is "others fixed, ball physics, rules check" — anything richer is labeled unbuilt.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">24.3</span> The Honest Physics Sim (W5.4 Lab)</h2>
+  <p>The twin has two lanes, and the lanes are honest in different ways. The <strong>pickleball lane</strong> is real physics: a projectile rollout with gravity, an explicit launch distribution, and court-geometry termination conditions. The <strong>rugby league lane</strong> is an analytic risk table: a logistic curve over defensive spacing whose parameters are assumed, evaluated in closed form. Calling both "the twin" is only acceptable because the artifact itself distinguishes them — the JSON marks one lane's outputs as ballistic measurements and the other's as table lookups, and so does this chapter.</p>
+
+  <p>The W5.4 lab hardens the v1 doubles-court stub with the book's verified constants: drag coefficient for the 74mm ball (Cd 0.45), player max acceleration 4.5 m/s², max speed 6.0 m/s, 120Hz integration:</p>
+
+<pre><code class="language-python">G = 9.81; CD = 0.45; M_BALL = 0.026; D_BALL = 0.074
+K = 0.5 * 1.225 * CD * np.pi * (D_BALL / 2) ** 2 / M_BALL
+MAX_ACCEL = 4.5; MAX_SPEED = 6.0
+
+def step_players(players, accels, dt):
+    for i in range(4):
+        a = np.clip(accels[i], -MAX_ACCEL, MAX_ACCEL)
+        players[i, 2:4] += a * dt
+        sp = np.linalg.norm(players[i, 2:4])
+        if sp > MAX_SPEED: players[i, 2:4] *= MAX_SPEED / sp
+        players[i, 0:2] += players[i, 2:4] * dt
+        players[i, 0] = np.clip(players[i, 0], 0.0, COURT_W)
+        players[i, 1] = np.clip(players[i, 1], 0.0, COURT_L)
+
+def step_ball(ball, dt):
+    ball[0:3] += ball[3:6] * dt
+    v = np.linalg.norm(ball[3:6])
+    ball[3:6] -= K * v * ball[3:6] * dt
+    ball[5] -= G * dt
+    if ball[2] <= 0.0:
+        ball[2] = 0.0; ball[5] = -0.75 * ball[5]
+</code></pre>
+
+  <p>The E21 pickleball lane is even more stripped down than this integrator, and deliberately so. A third-shot drop is one flight: launch at (v₀, θ, h₀) from the baseline, one net crossing, one landing. There is no rally to integrate, so the twin solves the flight analytically per sample — time-to-ground from the quadratic, height-at-net from the closed form — and lets the Monte Carlo come from the launch distribution, not from stochastic dynamics. The pro baseline is v₀ = 7.35 m/s at θ = 43.5° from h₀ = 0.85m, with motor noise of σ_v = 0.25 m/s and σ_θ = 1.8° (practitioner-set values, labeled as such in the artifact). Each of the 5,000 samples is classified into exactly one terminal outcome: into the net (h_net &lt; 0.864m), short of the net, past the opponent's kitchen (landing beyond 8.83m — the drive/long zone), a high popup (more than 0.45m over the tape — attackable), or a successful drop into the 6.70–8.83m band. That is the entire model. Its virtue is not sophistication; its virtue is that a reader can re-derive every number with forty lines of NumPy.</p>
+
+  <p>The rugby league lane is a different animal and the chapter refuses to pretend otherwise. There is no projectile, no integrator, no mechanics. The state is one scalar — second-rower-to-centre spacing d — and the response model is an assumed logistic, p(break) = 1 / (1 + e^(−1.4(d − 6.2))), with 6.2m as the assumed critical gap. The "simulation" samples 5,000 spacings uniformly over 3.5–9.5m and evaluates the curve. This is a risk table with a sampling wrapper. It earns its place in the twin for one reason: it makes the shape of an assumption explicit and lets a coach see the counterfactual sensitivity to that assumption. It would become a measurement only when the curve is fitted to labeled line-break outcomes — which is future work, stated as future work.</p>
+
+  <figure id="fig-24-04" class="full">
+    <img src="shared/images/ch24-deterministic-vs-learned.png" alt="Boundary diagram: deterministic physics above the line, learned policy below, marked unbuilt." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.4</span>: The boundary. <em>Illustration</em> (concept diagram). Above the line: the deterministic lanes this chapter executes — projectile rollout, kinematic integrator — reproducible on a laptop in milliseconds. Below the line: learned policies and diffusion reaction models — <strong>unbuilt</strong>, GPU-requiring, and described in section 24.6 as a frontier, not a result.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">24.4</span> The Perturbation Study (Measured)</h2>
+  <p>The reproducible counterfactual from the W5.4 lab: shift defender 2 laterally by +0.5m, re-run, measure aggregate position delta:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Intervention</td>
+        <td>Defender 2 shifted +0.5m laterally</td>
+      </tr>
+      <tr>
+        <td>Aggregate player position delta after 5s</td>
+        <td><strong>1.39m</strong></td>
+      </tr>
+      <tr>
+        <td>What the sim shows</td>
+        <td>Positions, not outcomes — no "threat -65%" claim</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The honest answer to "what if we shifted 0.5m?" is 1.39m of aggregate movement in a deterministic sim.</strong> That is a measurement. The v1 answer (threat dropped 65%) was a claim about a response model that didn't exist.</p>
+
+  <p>The E21 twin extends the same discipline from geometry to ball flight. The pickleball lane runs 5,000 launch samples through the analytic projectile model in <strong>8.3ms</strong> — 604,619 rollouts per second on the M4 Max, no GPU, no surrogate, because the model is a closed form. The measured distribution (E21, <code>digital_twin_counterfactuals.json</code>):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Third-shot drop outcome (5,000 rollouts)</th>
+        <th>Measured</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Successful drop (clears net, lands in 6.70–8.83m band, ≤0.45m over tape)</td>
+        <td><strong>24.8%</strong></td>
+      </tr>
+      <tr>
+        <td>Fault: into the net</td>
+        <td><strong>71.9%</strong></td>
+      </tr>
+      <tr>
+        <td>Fault: long (past the kitchen, drive zone)</td>
+        <td>0.0%</td>
+      </tr>
+      <tr>
+        <td>High popup (attackable, &gt;0.45m over tape)</td>
+        <td>3.2%</td>
+      </tr>
+      <tr>
+        <td>Optimal landing depth (max expected EPV gain)</td>
+        <td>7.45m from baseline</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Read the 71.9% carefully — it is the chapter's favourite number. A pro third-shot drop launched at 7.35 m/s and 43.5° from 0.85m clears an 0.864m net at 6.70m by a margin measured in centimetres, and a ±1.8° launch-angle noise distribution pushes most samples under the tape. The twin is telling the truth about why the third-shot drop is the hardest shot in the sport: the geometric window between "into the net" and "attackable popup" is narrow, and the measured success band (24.8%) with the optimal landing depth at 7.45m — barely past the kitchen line — matches what every pro learns by feel. This is what a calibrated simulator is for: not predicting a winner, but making the difficulty structure of a shot visible as a distribution.</p>
+
+  <p><strong>The drop-vs-drive counterfactual.</strong> What if the same player, same contact point, hit a drive instead? The intervention is a wholesale swap of the launch distribution — a drive profile at 11.0 m/s and 18° (practitioner-set, [verify] against real launch data). Re-running the identical model under that intervention: 98.6% of drives land long past the kitchen, 1.4% hit the net, and the median landing point moves from 7.26m to 10.28m — a full three metres deeper, into the drive zone where the shot stops being a drop at all. The counterfactual is measured in the sense that the physics is exact and re-runnable; it is illustrated in the sense that the drive launch distribution is assumed, not fitted. Both facts belong in the caption, and here they are in the prose too: <em>the delta is real arithmetic on an assumed input.</em> That sentence, applied consistently, is the entire difference between this chapter and v1 chapter 9.</p>
+
+  <figure id="fig-24-05" class="full">
+    <img src="shared/images/ch24-pb-drop-rollouts.png" alt="Side view of a pickleball court with a fan of parabolic third-shot trajectories, most ending in the net, one bold success arc landing in the drop zone." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.5</span>: The third-shot drop rollout fan. <em>Illustration of measured results</em> — the outcome percentages are measured (E21: 24.8% success, 71.9% net fault over 5,000 rollouts); the drawn arcs are a stylized rendering of that distribution, not logged trajectory pixels.</figcaption>
+  </figure>
+
+  <p>The rugby league lane runs the same discipline over the defensive line. The counterfactual: compress every spacing by 1.2m (clipped to [3.0, 8.5]m). Under the assumed logistic risk curve (E21, measured arithmetic on assumed parameters):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Defensive-line counterfactual (5,000 samples)</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Baseline mean line-break risk</td>
+        <td>54.2%</td>
+      </tr>
+      <tr>
+        <td>Compressed (−1.2m spacing) mean risk</td>
+        <td>35.2%</td>
+      </tr>
+      <tr>
+        <td>Risk reduction</td>
+        <td><strong>−35.1%</strong></td>
+      </tr>
+      <tr>
+        <td>Optimal spacing recommendation</td>
+        <td>5.0m</td>
+      </tr>
+      <tr>
+        <td>Throughput</td>
+        <td>40.1M evaluations/sec (closed form)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Three honest labels attach to this table. First, the −35.1% is a property of the assumed curve: compressing across the steep part of any sigmoid centred near the sample range will produce a large relative drop, and a different critical-gap assumption moves the number. Second, the 5.0m optimum is the curve's recommendation, not a fitted finding — no line-break outcomes were regressed to produce it. Third, the 40.1M evaluations per second is real but trivially so: it measures NumPy evaluating a logistic, and is reported only because throughput claims were part of the v1 fantasy vocabulary, and the honest version of a throughput claim is a boring one. What the lane genuinely delivers is sensitivity structure: a coach can see that risk is flat outside 4–8m and violent inside it, and that the compression intervention matters exactly where the line was already borderline. That is useful. It is not a win probability.</p>
+
+  <figure id="fig-24-06" class="full">
+    <img src="shared/images/ch24-nrl-line-compression.png" alt="Top-down rugby league pitch with a 13-man defensive line, an attacking sweep toward a highlighted 6.2m edge gap, and a faded compressed line above." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.6</span>: The defensive-line compression counterfactual. <em>Illustration of an assumed response model</em> — the −1.2m compression and the 54.2% → 35.2% risk shift are exact arithmetic on an assumed logistic curve (E21), not a fit to line-break outcomes. The diagram shows the geometry; the table above carries the numbers.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">24.5</span> Imitation Metrics: TacSIm, Not Win-Rate</h2>
+  <p>The verification discipline for any simulated or policy-driven system: evaluate by <strong>tactical style imitation</strong> (TacSIm, CVPR 2026) — occupancy and movement-vector similarity against real tracking data — NOT simulated win-rate. Win-rate against your own sim is circular; occupancy match against real matches is evidence. TacSIm's two metrics are worth stating exactly, because they are the scoreboard this chapter's future learned models will be judged on:</p>
+
+  <ul>
+    <li><strong>Spatial occupancy similarity</strong> — Jaccard overlap of binary occupancy grids: S_t = |O_gt ∩ O_pred| / |O_gt ∪ O_pred|. Do the simulated players stand where real players stand?</li>
+    <li><strong>Movement-vector similarity</strong> — S_v = 0.5 · ((v_gt · v_pred) / (||v_gt|| ||v_pred||) + 1). Do the simulated players move the way real players move?</li>
+    <li><strong>Final score</strong> — the harmonic mean 2·S_t·S_v / (S_t + S_v), so a model that wins on occupancy but drifts on motion is penalized, correctly.</li>
+  </ul>
+
+  <p><strong>Pickleball example.</strong> The E5 minimap replay (900 frames, 11 mapped track IDs) is the ground-truth occupancy source. A Rung-1 rollout from frame 184 with all velocities held should produce high S_t for the first fraction of a second and decaying S_t after — that decay curve is itself the measurement of how quickly a frozen-response model stops resembling pickleball.</p>
+
+  <p><strong>Rugby league example.</strong> For the nrl-001 grand-final clip, the analogous check is line-shape occupancy: do simulated defensive lines occupy the same field bands as the real Storm defensive set across a six-tackle sequence? A compression policy that scores well on the assumed risk table but pushes the line into bands real defences never occupy has failed the imitation test regardless of what the sigmoid says. The same rule applies everywhere in this chapter: compare trajectories against real data, not the sim's own outcomes.</p>
+
+  <h2 class="section-title"><span class="section-num">24.6</span> The Diffusion Lane: What Would Be Needed</h2>
+  <p>The v1 "spatial diffusion reaction policy" is legitimate as a <em>design</em>: train a denoising model on tracking data to generate player responses conditioned on a perturbed state. What was wrong was the claim, not the concept. So this section is a bill of materials, explicitly <strong>unbuilt</strong>:</p>
+
+  <ol>
+    <li><strong>Data.</strong> Many rallies with stable identity — not one 900-frame clip. E2 reports 26 track IDs in 30 seconds of a four-player clip; identity fragments long before a diffusion model could learn a reaction distribution. The C20 discipline applies: n=1 clip is an anecdote with a variance problem.</li>
+    <li><strong>Architecture.</strong> A conditional denoiser over multi-agent trajectory tensors, conditioned on team formation and ball state; at inference, perturb one player and denoise the futures of the rest.</li>
+    <li><strong>Compute.</strong> GPU training — a Colab-scale job. The M4 Max runs the deterministic lanes in milliseconds; it is not the place to train a diffusion policy from scratch.</li>
+    <li><strong>Evaluation.</strong> TacSIm S_t / S_v and 1-Wasserstein distance against held-out clips — never win-rate, never a single "realism" scalar quoted to three decimals like the fabricated Dw = 0.042.</li>
+  </ol>
+
+  <p>Until those four items exist, every diffusion-shaped sentence in this book is concept-transfer. A reaction model trained on one clip of one court learns the empirical distribution of that rally, not a causal policy: it cannot generalize across opponents, serve patterns, court surfaces, or out-of-distribution positions. Stated plainly for the record: <strong>the diffusion policy is unbuilt; this book trains no generative model of player reactions; the twin above it is deterministic physics and an assumed risk table.</strong></p>
+
+  <h2 class="section-title"><span class="section-num">24.6b</span> TacticAI's Shotgun Play: The Unbuilt Frontier</h2>
+  <p>The closest thing in the published literature to what the v1 chapter pretended to be is TacticAI (DeepMind &amp; Liverpool FC, Nature Communications 2024) — and its actual method is more modest and more instructive than the fantasy version. TacticAI does not simulate matches. For a given corner kick, it encodes the players as a spatial graph — nodes are players with position, velocity, team, role features; edges are pairwise displacements — passes the graph through equivariant GNN layers (equivariance means a rotated or mirrored pitch produces rotated or mirrored predictions, halving the hypothesis space for free), and splits into two heads. The predictive head answers "who receives this ball?" and "what is the shot probability?" The generative head does the move that matters here: it <em>samples candidate defensive re-positionings</em> and scores each with the predictive head, solving p* = argmin_p L_threat(p) + λ||p − p_orig||² — minimize predicted opponent threat subject to a penalty for moving too far from the observed setup.</p>
+
+  <p>That is the shotgun play: generate many small, plausible adjustments, evaluate all of them with a learned threat model, keep the best. No rollout, no policy, no physics — a learned evaluator doing search over a bounded perturbation space. It is exactly the shape this book's counterfactual lane should grow into, and exactly the shape it has not grown into: the E12 artifact contains hand-set numbers (0.64 → 0.22, A2 +0.35m), not a trained graph network, and the claims register marks that RE-LABEL. The honest distance from here to there: stable identity across many clips (c13), a fitted threat head (c22/c23 territory), and a held-out evaluation — the same bill of materials as section 24.6, wearing a graph-neural jacket instead of a diffusion one.</p>
+
+  <p><strong>Pickleball transfer.</strong> Four player nodes plus a ball node; edges encode partner spacing and cross-court diagonal angles; the generative head would propose ±0.3m lateral shifts to close the middle lane before a speed-up — the perturbation space is tiny, which is precisely why the shotgun approach fits doubles.</p>
+
+  <p><strong>Rugby league transfer.</strong> Thirteen defending nodes plus ball carrier and support runners; the predictive head forecasts line-break risk within the next seconds of a set; the generative head would propose edge-spacing adjustments — the learned, multi-agent version of this chapter's single-scalar risk table. The E21 lane is what you get when that graph is replaced by one assumed sigmoid: useful sensitivity structure, honestly labeled, one rung below.</p>
+
+  <figure id="fig-24-07" class="full">
+    <img src="shared/images/ch24-tacticai-graph-inference.png" alt="Player graph feeding equivariant GNN layers, branching to receiver-probability and position-shift outputs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.7</span>: TacticAI-style graph inference. <em>Illustration</em> of the published architecture (Nature Communications 2024) — shown here as the unbuilt frontier. This book has no trained GNN; E12's numbers are hand-set and register-labeled RE-LABEL.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">24.7</span> Simulator Calibration</h2>
+  <p>How do you know the sim is honest? Two checks, both measurable: (1) <strong>trajectory match</strong>: run the sim from real states, compare the simulated trajectories against the real tracking rows (the Wasserstein/occupancy distance from section 24.5); (2) <strong>parameter honesty</strong>: the verified constants (drag, accel limits, restitution 0.75) are the book's measurements, not tuning knobs. A sim whose parameters you tune to make outcomes prettier is a narrative, not a simulator.</p>
+
+  <p>The calibration loop, concretely: fix an initial frame from the E5 replay (frame 184, four mapped players); roll the simulator forward; compare the position distribution at t+1s and t+2s against the real continuation; report the distribution gap, not a single score. If the gap is large, the correct response is to say the sim is uncalibrated — not to adjust a constant until the gap looks respectable. In pickleball the strongest near-term calibrator is the chapter 14 line-call rig: real bounce locations give the ball-physics lane its first measured landing distribution to fit against, replacing the practitioner-set launch noise with something earned. In rugby league the calibrator is event data (c17/c19): labeled line breaks and PTB speeds are what would turn the assumed logistic into a fitted curve, and until they exist the risk table stays in the "assumed" column of the truth table. Calibration, in both sports, is the difference between a twin and a story.</p>
+
+  <h2 class="section-title"><span class="section-num">24.8</span> Transfer Note: Rugby League Simulation</h2>
+  <p>Rugby's simulation lane is worse than pickleball's — no public league simulator exists, and the RL environment (Google Research Football, Apache-2.0, macOS source build) is soccer-shaped: the set grammar (6 tackles, PTB, 10m) is not modelable in it without heavy adaptation (the Melting Pot alternative is general-purpose multi-agent RL — the honest "soccer is closer than nothing" bridge). GRF is still worth studying as a checklist: a mature simulator exposes ball position, ball direction, active player, game mode, and multi-agent control — and the book's local replay has none of those. The contribution is open: a rugby set simulator with the set count, PTB speed, and field-position semantics as state. The E21 risk-table lane is deliberately the smallest honest step toward it: one scalar state, one assumed response curve, explicit labels. The next rung is a fitted curve over real edge-defense outcomes; the rung after that is a state machine that knows what tackle four of six means. Neither exists yet, and this chapter's job is to make the absence legible rather than to paper over it.</p>
+
+  <h2 class="section-title"><span class="section-num">24.9</span> The Counterfactual Verification Recipe</h2>
+  <ol>
+    <li>Build the deterministic sim (this chapter's code) — drag, accel limits, restitution.</li>
+    <li>Run the perturbation: shift one variable, measure the position delta (done: 1.39m from a 0.5m shift) and the outcome distribution (done: E21's 24.8% / 71.9% drop split).</li>
+    <li>Compare sim trajectories vs REAL tracking rows (the TacSIm-style check).</li>
+    <li>ONLY THEN train a reaction model (Colab) and re-do the comparison.</li>
+    <li>Report the counterfactual with the response model explicitly stated — never implied.</li>
+  </ol>
+
+  <p>The order is the discipline. Every step produces a number that survives re-running; every number that survives re-running earns its place in a table; every table states its response model. Steps 3 and 4 are where the v1 book jumped the queue — it reported step 5 numbers with step 0 infrastructure. The recipe exists so that no future chapter of this book, and no reader building on it, repeats that jump.</p>
+
+  <h2 class="section-title"><span class="section-num">24.9b</span> The Simulation Ecosystem</h2>
+  <p>Simulation in sport is not one tool; it is a stack of environments, benchmarks, and metrics with very different honesty profiles. The table below is the chapter's working map — what each piece is, what it is used for here, and what its evidence status is. The two rows this book built (the E21 twin and the E5 replay) are the only measured ones; everything else is reference architecture or evaluation harness.</p>
+
+  <table>
+    <thead>
+      <tr><th>Tool</th><th>What it is</th><th>Sport use</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>E21 digital twin</strong> (this book)</td>
+        <td>Analytic projectile lane (5,000 third-shot rollouts in 8.3ms) plus an assumed logistic risk-table lane (5,000 spacing samples); every output tagged measured-sim or assumed</td>
+        <td>Pickleball drop/drive counterfactuals; rugby league line-spacing counterfactuals</td>
+        <td><strong>Measured</strong> (E21 artifact, re-runnable)</td>
+      </tr>
+      <tr>
+        <td><strong>E5 minimap replay</strong> (this book)</td>
+        <td>Deterministic top-down re-render of 900 frames of tracked feet (11 mapped track IDs); a replay renderer, not a simulator</td>
+        <td>Initial states and occupancy ground truth for perturbation studies</td>
+        <td><strong>Measured</strong> (E5 artifact)</td>
+      </tr>
+      <tr>
+        <td><strong>Google Research Football</strong></td>
+        <td>Physics-based 3D multi-agent RL environment (Apache-2.0); exposes ball position, ball direction, active player, game mode</td>
+        <td>Checklist for what a mature rugby/pickleball simulator must grow; soccer-shaped, not rugby</td>
+        <td>Source-backed; ⚠️ macOS source build with patches</td>
+      </tr>
+      <tr>
+        <td><strong>Melting Pot</strong></td>
+        <td>DeepMind's multi-agent RL generalization suite on Lab2D (Apache-2.0); 50+ substrates, 250+ scenarios</td>
+        <td>Concept-transfer for evaluating learned policies in 2D social settings</td>
+        <td>Source-backed; ⛔ population training needs GPU</td>
+      </tr>
+      <tr>
+        <td><strong>TacSIm</strong></td>
+        <td>CVPR 2026 benchmark for tactical style imitation: occupancy S_t, movement-vector S_v, harmonic-mean score (MIT code)</td>
+        <td>The scoreboard any future learned reaction model in this book is judged by</td>
+        <td>Source-backed; ⛔ full training needs Colab GPU</td>
+      </tr>
+      <tr>
+        <td><strong>TacticAI</strong></td>
+        <td>Equivariant-GNN corner-kick assistant (Nature Communications 2024): predictive receiver/threat head plus generative perturbation head with a learned evaluator doing shotgun search</td>
+        <td>Template for UC 10; the shape the twin grows into once identity and multi-clip data exist</td>
+        <td>Source-backed; <strong>unbuilt</strong> locally (E12 numbers hand-set, RE-LABEL)</td>
+      </tr>
+      <tr>
+        <td><strong>scipy wasserstein_distance</strong></td>
+        <td>Exact 1-Wasserstein distance from empirical CDFs for per-coordinate trajectory distributions</td>
+        <td>Sim-vs-real distribution gap in the calibration loop (section 24.7)</td>
+        <td>✅ M4 Max native; honest replacement for the fabricated Dw = 0.042</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">24.9c</span> The 10 Use Cases: Applied Counterfactual Framework</h2>
+  <p>The ten use cases below are the chapter's applied layer, organized into three categories: <strong>C-I Ball-Flight Counterfactuals</strong> (deterministic projectile physics, UC 01–04), <strong>C-II Positioning &amp; Fatigue Counterfactuals</strong> (assumed response models, UC 05–07), and <strong>C-III Strategy &amp; the Unbuilt Frontier</strong> (UC 08–10). Each case states its practical problem, its mechanism and math, a figure, both sports, and a payoff — and each carries its honesty label: <em>measured-sim</em> (exact physics or arithmetic on the book's verified artifacts), <em>model output</em> (deterministic computation on stated, [verify] parameters), <em>illustrated</em> (assumed response model), or <em>unbuilt</em> (frontier, not a result). No case in this chapter claims a learned reaction model exists.</p>
+
+  <h3 class="sub-heading">Category I: Ball-Flight Counterfactuals — Deterministic Projectile Physics (UC 01–04)</h3>
+
+  <h3 class="sub-heading">UC 01 — Third-Shot Drop vs Drive: The E21 Rollouts</h3>
+  <p>The third shot decides whether the serving team survives to the kitchen line or dies at the baseline, and every doubles coach has an opinion on drop versus drive. The counterfactual question — "what if this player, from this contact point, hit the other shot?" — is the best-posed what-IF in the book, because the intervention is a wholesale swap of one launch distribution and the response model is gravity, drag, and court geometry. Nothing adapts; nothing needs to.</p>
+  <p>The mechanism is the E21 analytic projectile lane (section 24.3): launch at (v₀, θ, h₀), closed-form time-to-ground and height-at-net per sample, Monte Carlo from the launch distribution. The drop profile is v₀ = 7.35 m/s, θ = 43.5°, h₀ = 0.85m with practitioner-set motor noise σ_v = 0.25 m/s, σ_θ = 1.8°. Over 5,000 samples the <strong>measured-sim</strong> distribution is 24.8% clean drop, 71.9% net fault, 3.2% attackable popup, optimal landing depth 7.45m. The drive intervention swaps the launch distribution to 11.0 m/s at 18° ([verify] — practitioner-set, not fitted to launch data): 98.6% land long past the kitchen, 1.4% hit the net, and the median landing point moves from 7.26m to 10.28m. The physics is exact and re-runnable; the launch distributions are assumed. Both facts are the label.</p>
+
+  <figure id="fig-24-08" class="full">
+    <img src="shared/images/ch24-uc-third-shot-counterfactual.png" alt="Side view of a pickleball court with a fan of drop trajectories on one side and flat drive trajectories on the other." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.8</span>: UC 01 — Drop vs Drive Counterfactual. <em>Illustration of measured-sim results</em> (E21: drop 24.8% clean / 71.9% net; drive 98.6% long under an assumed launch profile [verify]). <strong>Pickleball</strong>: the drop's difficulty is geometric — a centimetre-scale window over the tape. <strong>Rugby league</strong>: the same launch-swap structure applies to the chip kick versus the long punt on tackle five.</figcaption>
+  </figure>
+
+  <p><strong>Payoff — coaching:</strong> the drive is not a safer third shot; it is a different failure mode (long instead of netted). The twin makes that a measured distribution instead of an argument, and the 24.8% clean rate is the honest difficulty structure every pro learns by feel.</p>
+
+  <h3 class="sub-heading">UC 02 — Serve Speed vs Bounce Outcome</h3>
+  <p>Servers chase pace because pace shortens the returner's reaction time. What pace actually costs is margin: the legal serve must clear an 0.864m net at 6.705m and land in the service box between 8.835m and 13.41m, and the faster the launch, the narrower the band of angles that satisfies both constraints. "How much margin does speed cost?" is a pure ballistics counterfactual.</p>
+  <p>The mechanism is the chapter's projectile integrator with quadratic drag, K = ½ρC<sub>d</sub>A/m ≈ 0.046 s²/m² using the verified constants (C<sub>d</sub> 0.45, 26g, 74mm), launched from 0.95m contact height. Computing the legal window across speeds (<strong>model output</strong> — deterministic, reproducible from the equations; [verify] against measured serve launch data): at 16 m/s the legal angle band is ≈11° wide; at 20 m/s, ≈6°; at 24 m/s, ≈3°; at 28 m/s, ≈1.5°. Post-bounce apex stays in the 0.4–0.6m band across the legal range because the drag-dominated descent steepens with speed. Every extra 4 m/s of pace roughly halves the window.</p>
+
+  <figure id="fig-24-09" class="full">
+    <img src="shared/images/ch24-uc-serve-simulation.png" alt="Side view of a pickleball court with four serve trajectories at increasing speed and a shrinking legal angle wedge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.9</span>: UC 02 — Serve Speed vs Legal Window. <em>Illustration of model output</em> — the ≈11° → ≈1.5° window shrink from 16 to 28 m/s is computed from the chapter's drag model, not measured on real serves [verify]. <strong>Pickleball</strong>: pace is paid for in angle margin. <strong>Rugby league</strong>: the same window logic governs the kick-off — distance versus the 10m minimum and the touch-finding constraint.</figcaption>
+  </figure>
+
+  <p><strong>Payoff — coaching:</strong> a serve-speed program should be sold to players as a margin trade, not a weapon: the model says the player who adds 8 m/s of pace and does not tighten launch dispersion has bought nothing but faults.</p>
+
+  <h3 class="sub-heading">UC 03 — The 40/20 Kick Trajectory</h3>
+  <p>The 40/20 is the highest-value kick in rugby league: kick from behind your own 40m line, bounce the ball in the field of play, and find touch inside the opponent's 20m zone for a turnover with the scrum feed. It is also a pure ballistics problem with a defined target band — the counterfactual "what if the kicker adds 3 m/s?" has a closed-form answer.</p>
+  <p>The mechanism models the oval ball as a point mass under quadratic drag (m = 0.43kg, C<sub>d</sub> ≈ 0.3, cross-section 0.19m → K ≈ 0.012 s²/m²; all three constants [verify] against measured rugby-ball aerodynamics). Kicked from the 40m line, the first bounce must land 40–58m downfield. The computed legal pace band at a 42° launch is ≈24.5–31.5 m/s (<strong>model output</strong>); at 27 m/s the ball hangs 3.2s and lands 45.8m out, mid-band. Slower than ≈24.5 m/s the first bounce falls short of the 20m zone and the kick is just a touch-finder; harder than ≈31.5 m/s the ball carries the try line on the second phase and risks the dead-ball line.</p>
+
+  <figure id="fig-24-10" class="full">
+    <img src="shared/images/ch24-uc-kick-trajectory.png" alt="Side view of a rugby league pitch with a 40/20 kick arc landing in a highlighted band, with too-short and dead-ball failure arcs faded." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.10</span>: UC 03 — The 40/20 Launch Window. <em>Illustration of model output</em> — the ≈7 m/s pace band and 3.2s hang are computed from the stated drag model with [verify] ball constants. <strong>Rugby league</strong>: the 40/20 is a practiced launch window, not a hope. <strong>Pickleball</strong>: the lob over a poaching opponent is the same problem at one-fifth the scale — clear the reach, land in the 3m band behind the kitchen.</figcaption>
+  </figure>
+
+  <p><strong>Payoff — kicking coach:</strong> the model converts "kick it deeper" into a trainable number: hold launch angle near 42°, train pace into a ≈7 m/s band, and the 40/20 becomes a repeatable skill rather than a highlight.</p>
+
+  <h3 class="sub-heading">UC 04 — Crosswind, Drag and Weather What-Ifs</h3>
+  <p>Wind is the largest uncontrolled input in outdoor ball flight, and the only weather counterfactual worth asking is quantitative: how many metres does a given wind move the landing point? The drag law answers it directly, because drag acts on relative velocity — a = −K|v − w|(v − w) — so a steady wind w is just a change of frame applied to the drag term.</p>
+  <p>Computing on the UC 03 kick (27 m/s at 42°): a 3 m/s headwind costs 4.6m of carry (45.8m → 41.2m), a 3 m/s tailwind adds 4.4m, and a 3 m/s crosswind drifts the landing point 2.75m laterally — the difference between finding touch and staying in play when aiming at the corner. On the pickleball drive (11.0 m/s at 18°), the same 3 m/s crosswind drifts the ball 0.44m — nearly a sixth of the court's 3.05m singles width, and enough to move a sideline drive from in to out (<strong>model output</strong>, same drag model, same [verify] constants).</p>
+
+  <figure id="fig-24-11" class="full">
+    <img src="shared/images/ch24-uc-wind-drag.png" alt="Rugby kick arcs in still air versus headwind, plus a top-down crosswind drift panel and a small pickleball court inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.11</span>: UC 04 — Weather What-Ifs. <em>Illustration of model output</em> — ±3 m/s head/tail wind moves the kick −4.6/+4.4m; 3 m/s crosswind drifts it 2.75m (kick) and 0.44m (drive). <strong>Rugby league</strong>: re-aim the touch-finder by the drift, not by feel. <strong>Pickleball</strong>: outdoor venue wind readings belong in the scouting sheet (chapter 14's rig can measure them).</figcaption>
+  </figure>
+
+  <p><strong>Payoff — both sports:</strong> pre-game wind changes target selection by metres, not centimetres; the coach who quantifies it before warm-up owns a margin the opponent discovers mid-match.</p>
+
+  <h3 class="sub-heading">Category II: Positioning &amp; Fatigue Counterfactuals — Assumed Response Models (UC 05–07)</h3>
+
+  <h3 class="sub-heading">UC 05 — The Line-Break Spacing Counterfactual</h3>
+  <p>Rugby league edge defence lives on a single number: the spacing between second-rower and centre when the sweep play arrives. Compress it and the line-break window closes; stretch it and the edge runner is through. The counterfactual "what if the whole line compressed 1.2m?" is the E21 twin's rugby lane — and it is the chapter's canonical example of an <em>assumed</em> response model stated three times so nobody mistakes it for a fit.</p>
+  <p>The mechanism (section 24.4): state is one scalar d (edge spacing); response model is an assumed logistic, p(break) = 1 / (1 + e<sup>−1.4(d − 6.2)</sup>), with 6.2m the assumed critical gap. Sampling 5,000 spacings uniformly over 3.5–9.5m and compressing each by 1.2m (clipped to [3.0, 8.5]m) moves mean risk from 54.2% to 35.2% — a −35.1% reduction — with the curve's recommendation at 5.0m. This is measured arithmetic on assumed parameters: the −35.1% is a property of the sigmoid's steep region, and a different critical-gap assumption moves it. The durable output is the sensitivity structure: risk is flat outside the 4–8m band and steep inside it.</p>
+
+  <figure id="fig-24-12" class="full">
+    <img src="shared/images/ch24-uc-line-break-counterfactual.png" alt="Top-down rugby league pitch with a defensive line, an attacker arrow piercing a highlighted edge gap, a faded compressed line, and a small risk curve inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.12</span>: UC 05 — Line Compression Counterfactual. <em>Illustration of an assumed response model</em> — the 54.2% → 35.2% shift is exact arithmetic on an assumed logistic (E21), not a regression on line-break outcomes. <strong>Rugby league</strong>: edge spacing discipline against the sweep. <strong>Pickleball</strong>: the doubles middle-seam gap is the same scalar — partner spacing versus the speed-up down the middle (chapter 23's graph view).</figcaption>
+  </figure>
+
+  <p><strong>Payoff — defensive coach:</strong> even assumption-shaped, the curve says where spacing discipline pays (inside the steep band) and where it is free (outside it); fitting the curve to labeled breaks (c17/c19) is the listed future work, not a hidden present result.</p>
+
+  <h3 class="sub-heading">UC 06 — The Fullback Depth Frontier</h3>
+  <p>The fullback's starting depth is a two-sided bet: deep enough to defuse the bomb into the corner, shallow enough to smother the grubber behind the line. "Drop deeper" is the universal sideline instruction — the counterfactual asks where it stops being true, and the answer is computable from two stated threats.</p>
+  <p>The mechanism is a frontier between two constraints (<strong>model output</strong>; athlete parameters [verify]): the deep threat is UC 03's corner bomb — 3.2s hang, landing 25m beyond the defensive line and 12m lateral; with a 0.5s read time and an 8 m/s sprint the fullback can cover 21.6m, which forces depth ≥ ≈7m. The short threat is a grubber landing 13m beyond the line and arriving in ≈1.5s; with a 0.3s reaction the same sprint reaches only ≈9.5m of forward travel, which forces depth ≤ ≈23m. The coverage frontier is ≈7m to ≈23m: deeper than 23m surrenders every modelled grubber, shallower than 7m surrenders the corner bomb.</p>
+
+  <figure id="fig-24-13" class="full">
+    <img src="shared/images/ch24-uc-fullback-depth.png" alt="Top-down rugby pitch showing a fullback at two depths with coverage circles, a bomb arc to the corner, a grubber line behind the line, and a depth frontier bar." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.13</span>: UC 06 — Fullback Depth Frontier. <em>Illustration of model output</em> — the ≈7–23m frontier is computed from two stated threats with [verify] sprint and read-time parameters. <strong>Rugby league</strong>: "drop deeper" has a ceiling set by the grubber. <strong>Pickleball</strong>: baseline depth on the return trades the lob (deep threat) against the drop-shot (short threat) — the same two-constraint frontier at kitchen scale.</figcaption>
+  </figure>
+
+  <p><strong>Payoff — coaching:</strong> depth stops being a vibe. The frontier says a fullback parked at 30m has already conceded the short game in the model, and the fix is a number (≈15m mid-frontier), not a speech.</p>
+
+  <h3 class="sub-heading">UC 07 — Fatigue: Late-Game Speed and Shot Quality</h3>
+  <p>Deciding sets and golden-point periods are played by athletes whose physical limits have moved. The fatigue counterfactual asks: if the performance envelope degrades by a stated amount, which skills degrade most? The answer separates shots that fail by margin from shots that fail by precision.</p>
+  <p>Two lanes, both <strong>model output</strong> with assumed fatigue parameters [verify]. The kinematic lane degrades the chapter's verified constants — MAX_ACCEL 4.5 → 3.5 m/s², MAX_SPEED 6.0 → 5.0 m/s — and re-computes coverage: in a 1.0s window a fatigued player covers 1.75m against 2.25m fresh (−22%); over 3.0s, 11.4m against 14.0m (−18%). The shot-quality lane widens launch dispersion from σ_θ = 1.8° to 2.6° and applies it to UC 02's computed windows: serve legality at 24 m/s falls from ≈60% to ≈44% on the 3° window, while at 16 m/s (window ≈11°) it barely moves (≈100% → ≈97%). Fatigue taxes precision shots — the fast serve, the third-shot drop — far harder than high-margin shots.</p>
+
+  <figure id="fig-24-14" class="full">
+    <img src="shared/images/ch24-uc-fatigue-simulation.png" alt="Two pickleball court diagrams side by side comparing fresh and fatigued coverage circles, with a small serve-legality bar chart inset." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.14</span>: UC 07 — Fatigue Counterfactual. <em>Illustration of model output</em> — coverage −22%/−18% and legality 60% → 44% are computed on the chapter's constants with assumed fatigue degradation [verify]. <strong>Pickleball</strong>: late-rally dinking survives fatigue; the 24 m/s serve does not. <strong>Rugby league</strong>: the 75th-minute edge sprint and the touchline conversion both live on the degraded envelope.</figcaption>
+  </figure>
+
+  <p><strong>Payoff — conditioning and tactics:</strong> the model says the late-game game plan should migrate toward high-window shots as precision degrades — a selection rule a coach can drill, and a testable prediction once the chapter 14 rig measures real late-game dispersion.</p>
+
+  <h3 class="sub-heading">Category III: Strategy &amp; the Unbuilt Frontier (UC 08–10)</h3>
+
+  <h3 class="sub-heading">UC 08 — When to Take the Third Shot: Strategy Simulation</h3>
+  <p>UC 01 answers the technical question (what does each shot do?); the strategic question is when to choose which. A strategy is a decision rule over states, and the honest version stacks two existing artifacts: the E21 outcome distributions and the chapter 22 expected-value table.</p>
+  <p>The mechanism: each rally state gets a launch-window check from UC 02's geometry — is the player's current contact quality inside the drop's narrow success band or not? If yes, choose the shot with the higher expected value under the c22 ΔEPV table (drop +0.142 versus drive −0.188 [verify — practitioner EPV table, not yet fitted]); if no, reset softly and wait for a better ball. The simulation is the composition of two <strong>model outputs</strong>: measured-sim outcome distributions feeding an assumed value table. No policy is learned; the rule is stated, inspectable, and falsifiable — which is precisely what distinguishes it from the v1 fantasy, whose strategy layer was a scalar in a JSON file.</p>
+
+  <figure id="fig-24-15" class="full">
+    <img src="shared/images/ch24-uc-strategy-third-shot.png" alt="Decision tree for the third shot with a window-check gauge at the root and drop versus drive branches." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 24.15</span>: UC 08 — Third-Shot Decision Rule. <em>Illustration</em> — the tree composes E21's measured-sim distributions with c22's [verify] ΔEPV values. <strong>Pickleball</strong>: drop when the window is open, reset otherwise. <strong>Rugby league</strong>: the fifth-tackle menu is the same structure — kick long, kick short, or run, gated by field position and the UC 03/UC 04 windows.</figcaption>
+  </figure>
+
+  <p><strong>Payoff — coaching:</strong> the output is an if-then a player can hold under pressure, and every component of it — window, distribution, value — names its evidence tier instead of hiding inside a "model".</p>
+
+  <h3 class="sub-heading">UC 09 — The Digital Twin as Instrument</h3>
+  <p>The E21 twin's real contribution is not any single number; it is that every counterfactual in categories I and II is a query against one re-runnable artifact. The twin runs the pickleball lane at 604,619 rollouts per second (5,000 samples in 8.3ms, analytic, no GPU) and the rugby lane at 40.1M closed-form evaluations per second — both <strong>measured</strong> throughput on the M4 Max, both boring, both the honest version of the v1 chapter's performance theater.</p>
+  <p>The instrument discipline is the truth table of Figure 24.2: every twin output carries a lane tag — ballistic measurement or assumed-curve lookup — and the artifact's JSON marks them the same way. A twin whose outputs cannot be traced to a lane and a response model is a story generator. The query pattern is the use case: pick an intervention, name the response model, run, read the distribution, cite the label. UC 01 through UC 07 are all instances of that single pattern with different interventions.</p>
+  <p><strong>Payoff — the whole pipeline:</strong> the twin is what chapters 9 (tracking), 12 (ball), 14 (calibration rig), and 22 (expected value) feed, and what chapter 28's cockpit queries live; an honest instrument upstream makes every downstream number citable.</p>
+
+  <h3 class="sub-heading">UC 10 — TacticAI's Shotgun Play: The Unbuilt Frontier</h3>
+  <p>The tactical counterfactual a coach actually wants — "if my centre compresses, how does their five-eighth respond?" — requires learned reactions, and no honest deterministic sim can produce them. The published state of the art is TacticAI's shotgun play (Nature Communications 2024, <strong>source-backed</strong>): encode the players as a spatial graph, pass it through equivariant GNN layers, split into a predictive head (who receives, what is the threat) and a generative head (propose small position adjustments), then evaluate every proposal with the learned threat model and keep the best. Many small plausible perturbations, one learned evaluator, no rollout, no physics.</p>
+  <p>This book has not built it. The E12 artifact contains hand-set numbers (0.64 → 0.22, A2 +0.35m), register-labeled RE-LABEL; there is no trained graph network, no fitted threat head, no held-out evaluation. The bill of materials is section 24.6's: stable identity across many clips (c13), a multi-clip tracking dataset, GPU training, and TacSIm-style evaluation. Figure 24.7 (section 24.6b) shows the architecture as the frontier it is. The label on this entire use case is <strong>unbuilt</strong> — stated as a direction with a parts list, never as a result.</p>
+  <p><strong>Payoff — frontier:</strong> when identity and data exist, the shotgun pattern is the correct shape for both sports — the perturbation space in doubles pickleball (±0.3m partner shifts) and in edge defence (±1m spacing) is tiny, which is exactly when shotgun search over a learned evaluator beats policy rollouts.</p>
+
+  <h2 class="section-title"><span class="section-num">24.9d</span> Runnable Implementation</h2>
+  <p>The UC 01/02/08 skeleton — the analytic third-shot rollout and the serve-window check — runs anywhere Python runs; the full lane lives in the E21 artifact (<code>experiments/e21-match-digital-twin/</code>):</p>
+  <pre><code class="language-python">G = 9.81
+NET_X, NET_H = 6.705, 0.864          # net position (m), tape height (m)
+BOX_MIN, BOX_MAX = 8.835, 13.41      # legal service band (m)
+
+def flight(v0, theta, h0):
+    """Closed-form vacuum projectile: height at net + landing x. (E21 lane model)"""
+    import math
+    t = math.radians(theta)
+    h_net = h0 + math.tan(t) * NET_X - G * NET_X**2 / (2 * v0**2 * math.cos(t)**2)
+    a = G / (2 * v0**2 * math.cos(t)**2)
+    b = math.tan(t)
+    x_land = (b + math.sqrt(b**2 + 4 * a * h0)) / (2 * a)
+    return h_net, x_land
+
+def third_shot_outcome(v0, theta, h0=0.85):
+    h_net, x_land = flight(v0, theta, h0)
+    if h_net < NET_H:            return "net fault"
+    if x_land > 8.83:            return "long (drive zone)"
+    if h_net > NET_H + 0.45:     return "popup (attackable)"
+    return "clean drop"
+
+def serve_legal(v0, theta, h0=0.95):
+    h_net, x_land = flight(v0, theta, h0)
+    return h_net > NET_H and BOX_MIN <= x_land <= BOX_MAX
+
+# Monte Carlo over the launch distribution — the counterfactual is the swap of (mu, sigma):
+# drop profile (7.35 m/s, 43.5 deg) vs drive profile (11.0 m/s, 18 deg)  [verify: practitioner-set]</code></pre>
+
+  <h2 class="section-title"><span class="section-num">24.9e</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are the simulation layer doing its actual job: turning upstream descriptions into downstream decisions. The E5 replay rows (chapter 9 tracking) supply the initial states; the chapter 12 ball-physics constants supply the drag law; the chapter 14 line-call rig is the listed calibrator that would replace practitioner-set launch noise with measured dispersion; chapters 17/19 event tagging is what would fit UC 05's assumed risk curve into a regression; chapter 22's ΔEPV table is the value layer UC 08's strategy consumes; chapter 23's tactical graphs are where UC 05's middle-seam scalar and UC 10's shotgun proposals live; and chapter 28's cockpit is the surface that queries the twin live. Every use case names its tier — measured-sim where the physics is exact, model output where parameters are [verify], illustrated where the response model is assumed, unbuilt where the model does not exist — so the reader always knows which kind of number they are holding.</p>
+
+  <h2 class="section-title"><span class="section-num">24.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Fit the pickleball launch distribution: the 4-camera line-call rig (chapter 14) gives real bounce and contact data to replace the practitioner-set motor noise (σ_v = 0.25 m/s, σ_θ = 1.8°) with measured values, and to validate the 24.8% drop-success band against observed third shots.</li>
+    <li>Fit the rugby risk curve: label line breaks and near-breaks against edge spacing from event-tagged footage (c17/c19) and replace the assumed logistic with a regression — the single highest-value upgrade to the NRL lane.</li>
+    <li>Run the E5-vs-sim occupancy comparison (section 24.7's loop) and publish the S_t decay curve for the frozen-velocity response model.</li>
+    <li>Collect 20 clips of doubles play with stable identity; only then train the reaction model (Colab) and validate by trajectory match — the diffusion lane's entry ticket.</li>
+    <li>Attempt the GRF source build on the M4 Max and document the friction honestly, so the rugby simulator checklist rests on a tried build rather than a read one.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">24.11</span> Sources</h2>
+  <ul>
+    <li>TacSIm (CVPR 2026; style imitation by occupancy + movement-vector; arXiv id [verify]); TacticAI (Nature Communications 2024, DOI 10.1038/s41467-024-45965-x); Google Research Football (Apache-2.0); Melting Pot (Apache-2.0).</li>
+    <li>E12 artifact (experiments/e12-tacticai-doubles/outputs/metrics.json) — the verified 0.64 → 0.22 numbers; claims register C-19 (RE-LABEL).</li>
+    <li>E21 artifact (experiments/e21-match-digital-twin/digital_twin_counterfactuals.json, renamed from E16) — 10,000 rollouts; pickleball lane 5,000 samples in 8.3ms (604,619/s), 24.8% success / 71.9% net fault / 3.2% popup, optimal depth 7.45m; NRL lane 54.2% → 35.2% (−35.1%) under an explicitly assumed logistic, 5.0m spacing recommendation.</li>
+    <li>Drive counterfactual (section 24.4): chapter re-run of the E21 model with a practitioner-set drive launch distribution (11.0 m/s, 18°) — [verify] against real launch data.</li>
+    <li>Lab: <code>lab/w5_lab_simulation.py</code> → <code>experiments/c24-simulation/outputs/metrics.json</code> (1.39m delta from 0.5m intervention).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="23.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 23</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 23</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</p>
+        </div>
+      </div>
+    </a>
+    <a href="25.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 25</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 25</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The lie exhibit rebuilt: current models, the grounded critic, and the honesty anchors that say describe, don't decide</p>
+        </div>
+        <a href="25.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

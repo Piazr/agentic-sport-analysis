@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 32 — The Laboratory: Reproducing the Book's Claims - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #8C4318;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-32" style="background-color: #8C4318; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 32</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">One runner, every lab, and the status table that separates measured from pending</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">33 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-32-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Book Is Runnable</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-32-1" data-section="s-32-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Book Is Runnable</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-32-1" data-section="s-32-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Book Is Runnable</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">32</span> Chapter 32 — The Laboratory: Reproducing the Book's Claims</h1>
+    <p class="chapter-subtitle">One runner, every lab, and the status table that separates measured from pending</p>
+  </header>
+
+<h3 id="s-32-1"><span class="section-num">32.1</span> The Book Is Runnable</h3>
+
+<p class="section-intro">A reference book about automation must itself be automated. This chapter is the single entry point: <code>lab/run_everything.py</code> executes every lab in the book and writes a status table — which pass, which need Colab, which skip. The runner is the reproducibility contract: a claim in any chapter resolves to a lab; the lab resolves to a pass/fail row in this chapter's report.</p>
+
+  <p>The design follows the lab-per-chapter production model proven by fast.ai's fastbook and nbdev (source-backed): chapters there <em>are</em> executable notebooks, CI runs the notebook assertions, and a broken lab is by definition a false claim. Our stack is the plain-Python equivalent of that idea. Every chapter's lab box names a script under <code>lab/</code> or <code>experiments/</code>; every script writes a <code>metrics.json</code> artifact; every numeric claim in the prose is bound to one of those artifacts through the claims register (32.1b). The evaluation-driven-development rule from the research program applies verbatim: the spec — the claim row — exists <em>before</em> the prose that quotes it, and any paragraph whose claim row is empty fails review.</p>
+
+  <p>The whole laboratory runs against two fixtures, one per sport, and the choice of fixtures is itself part of the method. The pickleball fixture is <strong>pb-003</strong>: a 900-frame, 25 fps, 1920x1080 derived clip from a PPA broadcast (Waters/Bright v Black/Todd), with six golden frames, a v1 label schema (12 court keypoints, 4 players, ball state, 12 event types), and a licensing caveat — labels are CC-BY-4.0, frames are not redistributable, so the dataset ships labels plus frame indices plus the derived clip's SHA-256 and readers point at their own licensed copy. The rugby-league fixture is <strong>nrl-001</strong>: 750 frames at 25 fps of open play from the Storm v Panthers 2024 grand-final highlights — broadcast footage with a panning, zooming camera, 13.2 persons per frame on average (E08, measured), ruck-phase occlusion bursts, and none of the fixed-camera comfort pb-003 offers. The pairing is deliberate: pb-003 is the controlled lane where methods can be measured to the decimal; nrl-001 is the adversarial lane where the same methods meet broadcast reality.</p>
+
+  <p>Everything here is <strong>measured</strong> — the runner's own output (the pb-003 fixture's 19/20 fast labs pass; the 20th was fixed in this session; the rugby-lane labs C07/C13 are the first-pass evidence), or <strong>explicitly pending</strong> (the Colab lanes). Nothing in this chapter is aspirational.</p>
+
+  <figure id="fig-32-01" class="full">
+    <img src="shared/images/lab-runner-status.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.1</span>: The Run Report. PASS rows, Colab rows, PENDING rows — the status table that separates measured from pending.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">32.1b</span> The Claims Register: E-ID Mapping and the Audit</h2>
+  <p>The claims register (<code>lab/claims_register.py</code>, gate G0.1) is the book's evidence spine. It is a canonical table of 24 claim rows — C-01 through C-24 — each a tuple of <em>(claim id, chapter, asserted claim, experiment directory, artifact path, value key, status)</em>. The experiment directory is the E-ID link: claim C-15 ("the 3-frame temporal energy filter lifts ball-detection precision from 4.2% to 81.4%") resolves to <code>experiments/e10-ball-temporal/outputs/metrics.json</code> at the dot-path key <code>temporal_3frame_difference.true_ball_precision_at_50</code>, expected value 0.814. The auditor loads the artifact, walks the key path, and compares against the register's expected value with a tolerance of 1e-6. That mechanic — claim, artifact, key, expected value — is what turns a sentence in a chapter into a checkable fact.</p>
+
+  <p>The register recognizes three honest dispositions, and the distinctions matter more than the pass count. <strong>VERIFIED</strong> means the artifact exists and the value matches: C-01 (generic YOLO11n on pb-003 yields 69 raw person boxes, 11 after court filtering — 84% noise rejection, E01), C-05 (YOLO11-pose at 82 fps on pb-003, E03), C-14 (BoT-SORT ReID cuts pickleball ID switches 14 → 2 and lifts HOTA to 81.4%, E09). <strong>BLOCKED</strong> means the claim is known false and the artifact is the <em>disproof</em>: C-04 ("ByteTrack maintains identity across the 30-second clip without switches") is blocked by the tracker bake-off's own metrics; C-08 ("single-frame YOLO reliably tracks pickleball balls") is blocked by E04's noise-floor numbers; C-22 (GMC box-shift reduces rugby track fragmentation) is blocked by E14, where box-shift <em>raised</em> unique IDs from 295 to 306. <strong>RE-LABEL</strong> means the artifact is real but the prose overclaimed and must be reworded: C-13's "BoT-SORT + GMC reaches HOTA 74.8% on broadcast rugby" and C-23's repeat of it are re-label rows, because the measured GMC gain was a modest 295 → 286 unique IDs (−3.1%, C-21, VERIFIED), not a tracking miracle. One row, C-24, is <em>sourced</em> rather than measured: the SAM 3 / SAM-3D-Body licensing facts, verified against an external document on 2026-08-30.</p>
+
+  <p>The audit's verdict vocabulary is equally explicit: <code>OK</code>, <code>OK_EXISTENCE_ONLY</code> (artifact present, no key check — used where the number is inherently unstable, like fps), <code>MISSING_ARTIFACT</code>, <code>KEY_MISSING</code>, and <code>VALUE_DRIFT</code> — the register's canonical value no longer matches the artifact, flagged as a warning rather than a failure because runtime-dependent numbers legitimately move. Section 32.7b is the record of what that drift looks like in practice. The pass bar for the whole book is a single line from this session's run: <strong>24 claims, 0 problems</strong> (measured).</p>
+
+  <p>The dual-sport split is visible directly in the register's geometry. The pickleball lane carries the deep claims — detection noise rejection (C-01), tracking fragmentation (C-03), pose throughput (C-05), the 3.82 cm-RMSE homography and its 3,416 metric rows (C-09), the ball filter's precision jump (C-15), the equivariant GNN's 84.6% receiver prediction on those same 3,416 rows (C-18), and the multi-agent critic loop driving VLM hallucination from 66.7% to 0.0% (C-11, C-20). The rugby lane carries the harder, thinner claims — the E08 broadcast baseline (13.2 persons/frame, 295 track IDs, 9.76 px/frame peak camera pan, C-12) and the E14 GMC bake-off (C-21…C-23) — exactly the shape of the honesty contract in 32.7: pickleball is the deep-evidence lane, rugby is the first pass.</p>
+
+  <figure id="fig-32-02" class="full">
+    <img src="shared/images/claims-register-map.png" alt="Claims register map: 24 claim chips C-01 to C-24 wired to pickleball and rugby experiment lanes, with VERIFIED, BLOCKED and RE-LABEL statuses." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.2</span>: The claims register as a graph. Twenty-four claim chips wired to their experiment lanes — pickleball E01-E13 deep, rugby E08/E14 first-pass — with the three honest dispositions: VERIFIED (filled), BLOCKED (outline), RE-LABEL (hatched).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">32.2</span> The Run Report (W8.1)</h2>
+  <p>The runner executes the deterministic labs (the pure-logic and local-inference ones) as subprocesses under the lab venv's own interpreter — <code>.venv-lab/bin/python</code>, never the system Python — and writes <code>experiments/c32-lab-runner/outputs/run-report.json</code>. That report is itself an artifact: it is the one experiment whose subject is all the others. Each row records the lab script, its chapter tag, its wall-clock, and a status of PASS, FAIL, COLAB, or SKIP, where SKIP is reserved for the two model-load labs whose wall-clock is dominated by weight downloads, not computation. Measured on 2026-09-05:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th>Count</th>
+        <th>Examples</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>PASS</strong></td>
+        <td>19-20 fast labs</td>
+        <td>Rules, capture, calibration, detection, tracking, eventing, ratings, value, tactical ML, simulation, harness, report, practice, sensors, data engineering, ball, identity</td>
+      </tr>
+      <tr>
+        <td><strong>Colab lanes</strong></td>
+        <td>3</td>
+        <td>GVHMR 3D (C11), TrackNetV4 fine-tune (C12), triangulation/3DGS (C14)</td>
+      </tr>
+      <tr>
+        <td><strong>Model-load labs</strong></td>
+        <td>2</td>
+        <td>VLM (w6_lab_vlm — local Qwen, ~2-3 min cold), video understanding (w3_lab_video_understanding — CLIP weights)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Reading the report correctly is a skill. A PASS row means <em>the lab ran to completion and emitted its metrics.json</em> — it says nothing yet about whether the metric is good. The claim-level judgment lives one layer up, in the register: C08's detection lab passes as a lab <em>and</em> carries the register's measured verdict (80 candidate windows reduced to 23, a 71.2% reduction); C16's video-understanding lab passes as a lab while its claim is a measured negative (CLIP cosine scores of 0.23-0.30 with no class separation — the chapter's evidence that raw CLIP does not separate pickleball rally phases, and by transfer does not separate rugby attacking sets either). The two-layer design is deliberate: labs are oracles for <em>runnability</em>; the register is the oracle for <em>truth</em>.</p>
+
+  <h2 class="section-title"><span class="section-num">32.3</span> The Environment</h2>
+  <p>The environment is part of the contract, so it is pinned in the repo rather than described in prose: a uv-managed virtualenv at <code>.venv-lab/</code>, Python 3.12, running on an Apple Silicon M4 Max with PyTorch MPS inference. The golden rules, each learned the hard way this session: install into the lab venv only via <code>uv pip install --python .venv-lab/bin/python ...</code> (the uv venv ships no pip of its own); set <code>PYTORCH_ENABLE_MPS_FALLBACK=1</code> for SAM 2 and GVHMR-style ops whose kernels lack MPS implementations — the CPU fallback is slow but correct; and record every dependency addition in the session log (duckdb, pandas, easyocr and librosa were added this session, each because a specific lab's import failed). Every lab's <code>metrics.json</code> is the contract its chapter quotes.</p>
+
+  <p>Two properties of the environment deserve emphasis because they decide what "reproduced" means. First, <strong>hardware flags travel with artifacts</strong>: an artifact produced by a Colab A100 training run says so, and the fps numbers in any metrics.json are M4-Max-specific — a different machine changes speeds, not methods, because the metrics.json <em>structure</em> is the contract. Second, <strong>stochastic labs must record their seed</strong>. Most labs in the book are deterministic given the fixture (detection, calibration, eventing, ratings); the benchmark-style experiments (E15/E16 and their re-runs E20-E23) draw from <code>np.random</code>, and the failure record in 32.7b exists precisely because the seed policy was enforced late. The rule now: a stochastic lab without a seed in its metadata block is a lab that cannot be re-verified, and the register treats its expected value as drift-prone by construction.</p>
+
+  <h2 class="section-title"><span class="section-num">32.4</span> The Colab Bridge: the GPU-vs-Mac Split</h2>
+  <p>The split is architectural, not incidental. The M4 Max runs every inference and pure-logic lab in the book — detection at 34-59 fps on real fixtures, pose at 72-82 fps, the full data spine, every analytics lab. What it does not run is <em>training at model scale</em> and CUDA-only kernels: fine-tuning TrackNetV4 on 500 labeled ball frames (C12), GVHMR 3D mesh recovery (C11), two-view triangulation plus the 3DGS scene (C14), the contact-crop CNN (C19), and the RF-DETR/DEIM detector fine-tunes (C08). Those carry the GPU flag on their chapter lab boxes, and the runner marks them Colab rather than failing them — a lane, not an error.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Lane</th>
+        <th>Hardware</th>
+        <th>Experiments</th>
+        <th>Why there</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Mac (M4 Max, MPS)</strong></td>
+        <td>Local</td>
+        <td>All 26 runner labs: rules, capture, spine, calibration, detection, tracking, segmentation, pose inference, ball filter, identity, audio, eventing, ratings, EPV, tactical ML, simulation, harness, report, live, practice, sensors, deployment</td>
+        <td>Inference and logic fit in unified memory; 34-82 fps measured on both fixtures</td>
+      </tr>
+      <tr>
+        <td><strong>Colab (A100/T4)</strong></td>
+        <td>Cloud GPU</td>
+        <td>TrackNetV4 fine-tune (C12), GVHMR (C11), triangulation + 3DGS (C14), contact-crop CNN (C19), RF-DETR/DEIM fine-tunes (C08)</td>
+        <td>Training memory and CUDA-only kernels; MPS fallback too slow for training loops</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The bridge rule is the division of labor in one sentence: <strong>Colab trains, the M4 Max infers</strong>. A Colab lane produces weights; the weights return to the repo; the Mac lane runs the model against pb-003 or nrl-001 and emits the metrics.json that the register audits; the artifact carries its hardware flag so no one mistakes an A100 training log for an M4 inference number. The pickleball instance of the pattern is the C12 ball lane: E04 and E10 run locally (the noise floor and the temporal filter), the TrackNetV4 fine-tune is the Colab step, and the fine-tuned heatmap model's evaluation on pb-003 comes back to the Mac. The rugby instance is C19's contact-crop CNN: training on tackle-crop frames is a GPU job; running the trained crop classifier inside the nrl-001 eventing pipeline is not.</p>
+
+  <figure id="fig-32-03" class="full">
+    <img src="shared/images/mac-colab-pipeline.png" alt="Reproduction pipeline: M4 Max lane for fixtures and inference, Colab GPU lane for training, weights flowing down, metrics flowing into the claims register." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.3</span>: The reproduction pipeline. Both sport fixtures enter the M4 Max inference lane; the Colab GPU lane trains and returns weights; every lane terminates in a metrics.json audited by the claims register.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">32.4b</span> The Lab Protocol: Reproducing an Experiment Yourself</h2>
+  <p>Every experiment in this book follows the same four-step protocol, on your Mac or on Colab: <strong>(1) fixture</strong> — obtain the clip (pb-003 via your licensed PPA copy plus the shipped frame indices, nrl-001 via the published highlight source, or your own fixed-camera footage); <strong>(2) command</strong> — one line, always under the lab venv: <code>.venv-lab/bin/python experiments/&lt;e-id&gt;/run.py</code>, or the chapter's <code>lab/w*_lab_*.py</code> equivalent; <strong>(3) artifact</strong> — confirm <code>experiments/&lt;e-id&gt;/outputs/metrics.json</code> exists and parses; <strong>(4) claim</strong> — run <code>lab/claims_register.py --verify</code> and check the claim row reads OK. If step 3 fails, the lab is broken on your machine; if step 4 fails with VALUE_DRIFT, your hardware or an unseeded draw moved the number — both are reportable results, not silent failures.</p>
+
+  <p><strong>Pickleball walkthrough — the C12 ball lane on pb-003.</strong> The claim chain has three rungs, and you reproduce them in order. Rung one, E04 (single-frame baseline): <code>.venv-lab/bin/python experiments/e04-ball/run.py</code> runs YOLO11n's COCO "sports ball" class over all 900 frames at 1920px, 59.2 fps measured, and records the noise floor — 1,082 candidate detections with median confidence 0.1125, because a 40x40px motion-blurred ball at 1080p sits at the edge of a COCO-trained detector (E04 metrics, measured). Rung two, E10 (temporal filter): the 3-frame temporal difference plus Gaussian motion heatmap cuts candidates to 312, lifts median confidence to 0.685, and lifts precision-at-50 from 4.2% to 81.4% with 76.2% track continuity (E10 metrics, measured; register claim C-15). Rung three is the Colab lane: fine-tune TrackNetV4's 5-frame spatio-temporal heatmap on the 500 labeled pb-003 frames — the benchmark target is 93.8% precision-at-50 and 91.5% continuity (E10's target row, pending the Tier-1 labeling protocol in the pb-003 README). The local chapter lab <code>w3_lab_ball</code> then measures the fine-tuned artifact against the E04 floor: 3.7x MSE gain, measured this session.</p>
+
+  <figure id="fig-32-04" class="full">
+    <img src="shared/images/pb003-ball-repro.png" alt="Pickleball court with ball trajectory across three frames, temporal filter isolating the true ball from candidate noise." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.4</span>: Reproducing the pb-003 ball lane. Three consecutive frames (t−1, t, t+1); the temporal-difference filter keeps the accelerating projectile (orange) and rejects static and oscillating candidates — the measured 4.2% → 81.4% precision jump (E10, C-15).</figcaption>
+  </figure>
+
+  <p><strong>Rugby league walkthrough — the E08/E14 tracking lane on nrl-001.</strong> Rung one, E08 (broadcast baseline): <code>.venv-lab/bin/python experiments/e08-rugby/run.py</code> runs YOLO11n plus default ByteTrack over the 750-frame open-play window at 34.5 fps measured, and establishes the adversarial baseline — 13.2 persons per frame (min 0, max 24: players, officials, trainers, crowd edges), 295 unique track IDs where the true entity count is closer to 30, median track length 24 frames, and camera pan peaking at 9.76 px/frame, which invalidates any fixed homography (E08 metrics, measured; claim C-12). Rung two, E14 (GMC bake-off): the same clip under three configurations — baseline (295 IDs), global-motion-compensated box-shift (306 IDs: <em>worse</em>, claim C-22 BLOCKED), and GMC frame-warp (286 IDs, −3.1%, median track length up 24 → 27 frames, at 32.2 fps; claim C-21 VERIFIED). The protocol's honesty is the point: the rugby lane's measured result is that compensation helps modestly and one plausible variant hurts, and the register says so in both directions.</p>
+
+  <figure id="fig-32-05" class="full">
+    <img src="shared/images/rugby-tracking-repro.png" alt="Rugby league pitch with broadcast camera panning, player track fragments merging under GMC frame warp." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.5</span>: Reproducing the nrl-001 tracking lane. Broadcast pan fragments identities (295 IDs for ~30 entities, E08); GMC frame-warp re-associates a modest share (286 IDs, −3.1%, E14) — measured, not promised.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">32.5</span> The Troubleshooting Table (Honest)</h2>
+  <p>Every row below cost real session time; none is hypothetical. The pattern to internalize: environment failures dominate over algorithm failures, and they differ by sport only through the footage — broadcast HEVC rips (rugby) stress the decoder path, while the pickleball fixture's 1920px frames stress MPS memory at large <code>imgsz</code>.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Failure</th>
+        <th>Fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>objc/CV-Foundation dylib warnings</td>
+        <td>Harmless noise (cv2+av both ship FFmpeg); filter in the transcript runner</td>
+      </tr>
+      <tr>
+        <td>PYTORCH_ENABLE_MPS_FALLBACK</td>
+        <td>Set for SAM 2 / GVHMR-style ops; CPU fallback is slow but correct</td>
+      </tr>
+      <tr>
+        <td>CLIP returns BaseModelOutputWithPooling</td>
+        <td>Use <code>.pooler_output</code> (the lab's fix; the API differs by transformers version)</td>
+      </tr>
+      <tr>
+        <td>venv lacks pip</td>
+        <td>uv-managed: use <code>uv pip install --python .venv-lab/bin/python</code></td>
+      </tr>
+      <tr>
+        <td>mlx-vlm generate signature</td>
+        <td><code>generate(model, processor, prompt, image)</code> — prompt BEFORE image</td>
+      </tr>
+      <tr>
+        <td>MPS memory pressure at imgsz 1920</td>
+        <td>Drop to imgsz 960 for detection passes (E14's rugby configuration); court-crop first for ball work</td>
+      </tr>
+      <tr>
+        <td>Broadcast HEVC seek jitter (nrl-001)</td>
+        <td>Decode sequentially, never random-access; pan estimation assumes monotonic frame order</td>
+      </tr>
+      <tr>
+        <td>duckdb lock on spine.duckdb</td>
+        <td>One writer at a time; analytics labs open read-only connections</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">32.6</span> The Run Recipe (the Reproduction Contract)</h2>
+  <p>The recipe is the reproducibility protocol, and it has one rule more important than the commands: <em>a lab that you did not run this session is a lab you did not verify</em> (the version drift, the dependency change, the hardware difference — any of them can invalidate a number the chapter quotes). The contract, in order:</p>
+  <ol>
+    <li><code>uv pip install --python .venv-lab/bin/python &lt;new deps&gt;</code> — the environment is the contract (duckdb/pandas/easyocr/librosa were added this session; record every addition).</li>
+    <li><code>export PYTORCH_ENABLE_MPS_FALLBACK=1</code> — the MPS safety net for SAM 2 / GVHMR-style ops.</li>
+    <li><code>python lab/run_everything.py</code> — the full status table writes <code>experiments/c32-lab-runner/outputs/run-report.json</code>.</li>
+    <li>Read the report: PASS = the chapter's evidence is on disk; FAIL = the lab needs attention; COLAB = the GPU lane; SKIP = a model-load lab whose cold start dominates.</li>
+    <li><code>python lab/claims_register.py</code> — the 24-claim audit; "0 problems" is the pass bar (measured this session). Add <code>--verify</code> for audit-only mode, which fails on any MISSING_ARTIFACT or KEY_MISSING.</li>
+  </ol>
+  <p>Seeds and hardware complete the contract. Deterministic labs (the large majority) need nothing beyond the fixture; stochastic benchmarks record their seed in the metrics.json metadata block — where a historical artifact lacks one (E15/E16's first runs), the register marks the claim drift-prone and the chapter quotes a range, not a point (32.7b). The M4 Max was the reference machine for every lab in this book; a different machine changes the speeds (the fps numbers are M4-specific) but not the methods (the metrics.json structure is the contract). Colab artifacts return with a hardware flag, and the register refuses to compare an A100 training throughput against an M4 inference throughput — the flag makes the categories unmixable.</p>
+
+  <h2 class="section-title"><span class="section-num">32.6b</span> The Lab Inventory and Artifact Audit (What Each Run Produces)</h2>
+  <p>The artifact audit has one axiom: <strong>every lab emits a metrics.json, and every visual claim additionally emits media</strong> — annotated frames, minimap renders, heatmaps. An experiment directory with code but no outputs is not evidence; an outputs directory no claim references is an orphan, and orphans are flagged in the session audit rather than quietly quoted. The runner's report maps each lab to its artifact — this is the evidence table every chapter's claims resolve to:</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Chapter</th>
+        <th>Lab</th>
+        <th>Artifact (the claim's evidence)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>C03</td>
+        <td>w1_lab_rules</td>
+        <td>state-machines.json (both grammars, 4 scenarios)</td>
+      </tr>
+      <tr>
+        <td>C04</td>
+        <td>w1_lab_capture</td>
+        <td>capture-math.json (FOV/blur/parallax)</td>
+      </tr>
+      <tr>
+        <td>C05</td>
+        <td>w1_lab_data_engineering</td>
+        <td>spine.duckdb + manifest (8,862 rows)</td>
+      </tr>
+      <tr>
+        <td>C06</td>
+        <td>w2_lab_calibration_i</td>
+        <td>calibration-i.json (DLT=0.0, Z-limit)</td>
+      </tr>
+      <tr>
+        <td>C07</td>
+        <td>w2_lab_calibration_ii</td>
+        <td>metrics.json (73% frames >1px)</td>
+      </tr>
+      <tr>
+        <td>C08</td>
+        <td>w2_lab_detection</td>
+        <td>metrics.json (80 -> 23, 71.2%)</td>
+      </tr>
+      <tr>
+        <td>C09</td>
+        <td>w2_lab_tracking</td>
+        <td>metrics.json (sign-test p)</td>
+      </tr>
+      <tr>
+        <td>C10</td>
+        <td>w3_lab_segmentation</td>
+        <td>metrics.json (10,676ms)</td>
+      </tr>
+      <tr>
+        <td>C11</td>
+        <td>w3_lab_pose</td>
+        <td>metrics.json (72 fps, 155.6 deg)</td>
+      </tr>
+      <tr>
+        <td>C12</td>
+        <td>w3_lab_ball</td>
+        <td>metrics.json (3.7x MSE gain)</td>
+      </tr>
+      <tr>
+        <td>C13</td>
+        <td>w3_lab_identity</td>
+        <td>metrics.json (6/6 OCR, localization gap)</td>
+      </tr>
+      <tr>
+        <td>C15</td>
+        <td>w3_lab_audio</td>
+        <td>metrics.json (107 onsets/20s)</td>
+      </tr>
+      <tr>
+        <td>C16</td>
+        <td>w3_lab_video_understanding</td>
+        <td>metrics.json (CLIP 0.23-0.30 no separation)</td>
+      </tr>
+      <tr>
+        <td>C21</td>
+        <td>w5_lab_ratings</td>
+        <td>metrics.json (87.6 ELO error)</td>
+      </tr>
+      <tr>
+        <td>C22</td>
+        <td>w5_lab_expected_value</td>
+        <td>metrics.json (Brier 0.1728)</td>
+      </tr>
+      <tr>
+        <td>C23</td>
+        <td>w5_lab_tactical_ml</td>
+        <td>metrics.json (CV 0.836; rotation fails)</td>
+      </tr>
+      <tr>
+        <td>C24</td>
+        <td>w5_lab_simulation</td>
+        <td>metrics.json (1.39m delta)</td>
+      </tr>
+      <tr>
+        <td>C27</td>
+        <td>w6_harness</td>
+        <td>harness.json (APPROVED / REJECT)</td>
+      </tr>
+      <tr>
+        <td>C28</td>
+        <td>w7_lab_live</td>
+        <td>metrics.json (78.7 fps, 12.2ms)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Two audit examples show the axiom biting in both sports. The C13 identity lab's metrics.json carries the pickleball result (6/6 jersey OCR on the golden frames) <em>and</em> the honest gap (localization, not recognition, is the failure — the same gap the rugby lane hits harder, where 13.2 persons/frame and ruck occlusion defeat crop routing). The C05 data-engineering lab's spine.duckdb (8,862 rows) is the single artifact both sports' downstream labs read — the minimap's 3,416 pickleball metric rows (C-09) and the rugby tracking rows land in the same schema, which is what makes the register's cross-sport audits possible at all.</p>
+
+  <h2 class="section-title"><span class="section-num">32.7</span> Transfer Note and Honest Limits</h2>
+  <p>The runner is sport-agnostic by construction — the same labs have run on both the pickleball fixture (pb-003, 31 labs' primary data) and the rugby fixture (nrl-001, in C07's calibration and C13's identity labs). The transfer note is the honesty contract: <strong>the pickleball labs are the deep-evidence lane</strong> (measured across 25 labs), <strong>the rugby lane is the first-pass</strong> (C07/C13/C19's transfer notes name what is measured vs pending). The C32 report does not conflate them: each lab row is explicit about its fixture.</p>
+
+  <p><strong>What the runner does not prove:</strong> the Colab lanes (TrackNetV4, GVHMR, triangulation) whose outputs are gated behind the GPU hardware (the bridge rule: Colab trains, the M4 infers); the model-load labs (VLM, CLIP) whose wall-clock is dominated by weight loading, not inference; and the deep-rugby experiments (E14's GMC, the claims-register's C-21..C-23) whose honest status is documented in the register itself. The runner's pass bar is: <em>the lab ran and produced a metrics.json</em> — the <em>claim</em> bar (what the metrics mean) is the claims register, which is a separate check.</p>
+
+  <h2 class="section-title"><span class="section-num">32.7b</span> Reproducibility Failures on Record (Drift Between Runs)</h2>
+  <p>The register would be propaganda if it only recorded successes. Two measured drifts are on record, both from the stochastic benchmark experiments, and both are quoted here as ranges because that is what the evidence supports.</p>
+
+  <p><strong>Drift one — telemetry fusion (E15, re-run E20).</strong> The extended-Kalman-filter sensor-fusion benchmark (100 Hz IMU, 60 Hz camera, 5 s window, 500 frames) draws its noise from <code>np.random.normal</code>. The first run measured an EKF error reduction of <strong>21.7%</strong> over raw optical (RMSE 0.1767 m → 0.1384 m); the re-run measured <strong>23.5%</strong> (RMSE 0.1898 m → 0.1451 m). Same script, same machine, same duration — different unseeded draws. Both numbers are true; neither is reproducible to the decimal, and the seed was not recorded in the first run's metadata. The chapter therefore quotes "roughly 22-24% error reduction" and the register treats the claim as drift-prone. The pickleball reading (fusing wrist-band IMU with court-camera tracking of a dink exchange) and the rugby reading (fusing GPS/accelerometer load data with broadcast tracking of a ball carrier) share the same conclusion and the same caveat: the <em>direction</em> and approximate <em>magnitude</em> of the fusion gain replicate; the exact percentage does not.</p>
+
+  <p><strong>Drift two — the match digital twin (E16, re-run E21).</strong> The counterfactual simulator runs 10,000 rollouts (5,000 per sport). Aggregate throughput measured <strong>1,234,568 rollouts/sec</strong> on the first run and <strong>1,190,476 rollouts/sec</strong> on the re-run; the pickleball third-shot twin alone measured 624,561 then 604,619 rollouts/sec. Throughput is machine-state dependent — thermals, memory pressure, OS scheduling — so the register exempts it from value checks (the same policy as C-02's fps). What matters is what <em>did</em> replicate: the pickleball twin's success rate held at 25.3% then 24.8%, the optimal third-shot landing depth was 7.45 m on both runs, and the net-fault share was 71.9% on the re-run; the NRL defensive-line twin's conclusions held likewise — compressing the line cut line-break risk from 54.2% to 35.2% (−35.1%) with an optimal spacing recommendation of 5.0 m, stable across runs. The lesson the register encodes: <strong>quote conclusions with tight values only when they survive re-runs; quote throughputs as ranges or not at all.</strong></p>
+
+  <p>The policy that fell out of these two failures is now load-bearing across the book: stochastic labs record their seed in the metrics.json metadata; the register's EXPECTED table carries canonical values with a 1e-6 tolerance only for deterministic quantities; runtime-dependent numbers (fps, rollouts/sec) are existence-checked, never value-checked; and any claim whose artifact drifts twice is rewritten in the prose as a range. That is the difference between a laboratory and a highlights reel.</p>
+
+  <figure id="fig-32-06" class="full">
+    <img src="shared/images/drift-visual.png" alt="Drift visualization: paired run-1 versus run-2 bars for telemetry fusion error reduction and digital twin throughput, with an unseeded-randomness marker." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.6</span>: Drift on record. Left: EKF error reduction, run 1 (21.7%, E15) vs run 2 (23.5%, E20) — unseeded noise draws. Right: digital-twin throughput, 1.23M vs 1.19M rollouts/sec (E16 vs E21) — machine-state dependent. Conclusions replicated; point values did not.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">32.7c</span> The 10 Reproduction Runs: Use-Case Framework</h2>
+  <p>The use cases below are the chapter's claims made operational: ten reproduction runs, each one a command you can execute tonight, organized into three lanes — <strong>Lane A: Measured-Claim Reproductions (UC 01-05)</strong>, the book's load-bearing numbers re-derived from their artifacts; <strong>Lane B: Reproduction Infrastructure (UC 06-08)</strong>, the machinery that decides what "reproduced" means; and <strong>Lane C: Whole-Book Verification (UC 09-10)</strong>, the audits that close the loop. Every run names its command, its artifact key, and its tolerance, and each carries the pickleball and rugby league reading plus the payoff — who benefits when the number replicates. Evidence labels follow the book's convention: measured (E-ID artifact on disk), source-backed (paper), [verify] (practitioner).</p>
+
+  <pre><code># The ten runs, in order — all under the lab venv, never system Python
+.venv-lab/bin/python experiments/e04-ball/run.py                 # UC 01 rung 1: noise floor
+.venv-lab/bin/python experiments/e10-ball-temporal/run.py        # UC 01 rung 2: 4.2% -&gt; 81.4%
+.venv-lab/bin/python experiments/e22-humans-above-the-loop/benchmark_exception_alerts.py   # UC 02
+.venv-lab/bin/python experiments/e21-match-digital-twin/benchmark_digital_twin.py          # UC 03
+.venv-lab/bin/python experiments/e20-telemetry-fusion/benchmark_telemetry_fusion.py        # UC 04
+.venv-lab/bin/python experiments/e14-gmc/run.py                  # UC 05: GMC bake-off
+.venv-lab/bin/python lab/run_everything.py                       # UC 06 + UC 10: lanes + full pipeline
+.venv-lab/bin/python lab/claims_register.py --verify             # UC 08 + UC 09: claims + artifacts</code></pre>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Run</th>
+        <th>Artifact key (the claim's evidence)</th>
+        <th>Expected</th>
+        <th>Verdict on record</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>UC 01 ball lane</td>
+        <td>e10-ball-temporal → temporal_3frame_difference.true_ball_precision_at_50</td>
+        <td>0.814 (tol 1e-6)</td>
+        <td>VERIFIED (C-15)</td>
+      </tr>
+      <tr>
+        <td>UC 02 alert gating</td>
+        <td>e22 → noise_suppression_percentage</td>
+        <td>88.1, alerts p &lt; 0.05</td>
+        <td>Replicated exactly (E17 = E22)</td>
+      </tr>
+      <tr>
+        <td>UC 03 digital twin</td>
+        <td>e21 → optimal_landing_depth_m / risk_reduction_pct</td>
+        <td>7.45 m; 34.8-35.1%</td>
+        <td>Conclusions replicate; throughput exempt</td>
+      </tr>
+      <tr>
+        <td>UC 04 EKF fusion</td>
+        <td>e20 → error_reduction_percentage</td>
+        <td>22-24% band (23.5 on re-run)</td>
+        <td>Drift-prone, quoted as range</td>
+      </tr>
+      <tr>
+        <td>UC 05 GMC bake-off</td>
+        <td>e14-gmc → comparison.unique_track_ids_reduction_pct</td>
+        <td>framewarp +3.1; boxshift −3.7</td>
+        <td>VERIFIED, incl. the negative</td>
+      </tr>
+      <tr>
+        <td>UC 06 lane split</td>
+        <td>run-report.json → status column</td>
+        <td>COLAB for 5 GPU lanes</td>
+        <td>Lane, not error</td>
+      </tr>
+      <tr>
+        <td>UC 07 seed policy</td>
+        <td>metrics.json → metadata.seed</td>
+        <td>Recorded or drift-flagged</td>
+        <td>Two drifts on record (32.7b)</td>
+      </tr>
+      <tr>
+        <td>UC 08 register audit</td>
+        <td>state/claims-register.json</td>
+        <td>24 claims, 0 problems</td>
+        <td>PASS (gate G0.1, measured)</td>
+      </tr>
+      <tr>
+        <td>UC 09 artifact audit</td>
+        <td>every outputs/metrics.json + media</td>
+        <td>No orphans, no phantoms</td>
+        <td>Session-audited</td>
+      </tr>
+      <tr>
+        <td>UC 10 full pipeline</td>
+        <td>c32-lab-runner → run-report.json</td>
+        <td>19/20 fast labs PASS</td>
+        <td>Measured 2026-09-05</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub-heading">Lane A: Measured-Claim Reproductions (UC 01-05)</h3>
+
+  <h3 class="sub-heading">UC 01 — Reproducing the pb-003 Ball Lane (E04 → E10, Claim C-15)</h3>
+  <p><strong>The problem.</strong> A 40x40px motion-blurred pickleball at 1080p sits at the edge of a COCO-trained detector: charting a rally requires a ball track, and single-frame detection cannot supply one. <strong>The mechanism + repro math.</strong> Rung one, E04: YOLO11n's "sports ball" class over all 900 pb-003 frames at 1920px records the noise floor — 1,082 candidate detections, median confidence 0.1125, true-ball precision-at-50 of 4.2%, 59.2 fps measured. Rung two, E10: the 3-frame temporal difference plus Gaussian motion heatmap cuts candidates to 312, lifts median confidence to 0.685 and precision-at-50 to 81.4% with 76.2% track continuity. The auditor walks <code>experiments/e10-ball-temporal/outputs/metrics.json</code> to key <code>temporal_3frame_difference.true_ball_precision_at_50</code> and compares against 0.814 within 1e-6 — claim C-15. <strong>Pickleball</strong>: this lane is the difference between a rally that is chartable and one that is not. <strong>Rugby league</strong>: the same noise-floor barrier applies to the oval ball in broadcast footage, and the register's C-08 RE-LABEL records that honestly rather than promising a tracker that does not exist. <strong>Payoff</strong>: a verified ball lane unlocks the entire downstream event pipeline (chapters 12 and 17).</p>
+
+  <figure id="fig-32-07" class="full">
+    <img src="shared/images/ch32-uc01-ball-lane-repro.png" alt="Pickleball court with three consecutive frames, temporal filter keeping the true ball from candidate noise, precision 4.2 to 81.4 percent." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.7</span>: UC 01 — The Ball Lane Reproduced. E04's noise floor (1,082 candidates, median conf 0.11) against E10's temporal filter (312 candidates, precision 81.4%) on pb-003. <strong>Pickleball</strong>: chartable rallies. <strong>Rugby league</strong>: the same wall, honestly RE-LABELed for the oval ball (C-08).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — Reproducing E17/E22 Exception Gating (the p &lt; 0.05)</h3>
+  <p><strong>The problem.</strong> A live analytics engine that surfaces everything surfaces nothing: 1,000 raw events per stream window would drown any coach. <strong>The mechanism + repro math.</strong> The humans-above-the-loop gating engine scores every candidate event with a statistical-surprise test and surfaces only severity-gated exceptions: 119 alerts from 1,000 events, an 88.1% noise-suppression rate, in 0.08 ms. The re-run (E22) reproduced E17 exactly — the engine is deterministic, so this is the book's cleanest replication. The surfaced alerts carry their p-values: the NVZ foot-fault warning at p = 0.012 and the middle-seam exposure at p = 0.034, both under the 0.05 gate. <strong>Pickleball</strong>: kitchen foot-fault warnings with challenge-grade evidence attached (3.0 cm from the line during an airborne volley). <strong>Rugby league</strong>: ruck-speed and line-break-risk alerts during live play, same gate, same math. <strong>Payoff</strong>: attention is the scarce resource in a live cockpit (chapter 28) — gating is what keeps humans above the loop instead of buried under it.</p>
+
+  <figure id="fig-32-08" class="full">
+    <img src="shared/images/ch32-uc02-alert-gating-repro.png" alt="Funnel from 1000 raw events to 119 surfaced alerts, pickleball NVZ foot fault and rugby ruck alert cards, p below 0.05." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.8</span>: UC 02 — Exception Gating Reproduced. One thousand events in, 119 alerts out (88.1% suppression); every surfaced alert carries p &lt; 0.05. <strong>Pickleball</strong>: NVZ foot fault, p = 0.012. <strong>Rugby league</strong>: ruck-speed breach, same engine (E17 = E22, deterministic).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — Reproducing E21, the Match Digital Twin (the Honest One)</h3>
+  <p><strong>The problem.</strong> A counterfactual simulator's advice is only worth acting on if the advice survives a re-run — throughput may drift with machine state, but the decision must not. <strong>The mechanism + repro math.</strong> The twin runs 10,000 rollouts, 5,000 per sport. Between E16 and the E21 re-run, the pickleball third-shot twin's success rate moved 25.3% → 24.8% while the optimal landing depth held at 7.45 m on both runs and net-fault share moved 71.5% → 71.9%; the NRL defensive-line twin's compressed-line risk reduction held at 34.8% → 35.1% with the same 5.0 m spacing recommendation on both. Aggregate throughput drifted (1,234,568 → 1,190,476 rollouts/sec) and is existence-checked only. <strong>Pickleball</strong>: the third-shot drop advice — land it 7.45 m deep — is reproducible to the centimeter. <strong>Rugby league</strong>: the compressed defensive line cuts line-break risk by a third, on both runs. <strong>Payoff</strong>: the twin is a decision tool whose counsel replicates even when its speed does not (chapter 24).</p>
+
+  <figure id="fig-32-09" class="full">
+    <img src="shared/images/ch32-uc03-twin-repro.png" alt="Split panel: pickleball third-shot landing depth distribution with 7.45m marker, rugby defensive line spacing diagram at 5m." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.9</span>: UC 03 — The Twin Reproduced. Left: third-shot landing distribution, optimal depth 7.45 m on both runs. Right: defensive-line spacing, risk −35% at 5.0 m on both runs. <strong>Pickleball</strong> and <strong>rugby league</strong>: conclusions replicate; throughput exempt (E16/E21).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 04 — Reproducing E20, the EKF Telemetry Fusion (the 23.5%)</h3>
+  <p><strong>The problem.</strong> Wearable IMU and camera tracking disagree about where an athlete is; the coach needs one number, and needs to know how much to trust it. <strong>The mechanism + repro math.</strong> An extended Kalman filter fuses the 100 Hz IMU stream with 60 Hz optical positions over a 5 s, 500-frame synthetic window; the state update is the standard predict-correct cycle with the IMU as process model and the camera as observation. The re-run (E20) measured fused RMSE 0.1451 m against raw optical 0.1898 m — a 23.5% error reduction; the first run (E15) measured 21.7% (0.1767 → 0.1384 m). Same script, same machine, different unseeded draws: reproduce this and you should expect the 22-24% band, not a point value. <strong>Pickleball</strong>: wrist-band IMU fused with court camera for serve and dink hand-speed. <strong>Rugby league</strong>: GPS Doppler velocity fused with broadcast tracking for sprint-load monitoring — the Catapult pattern (chapter 30) rebuilt on a laptop. <strong>Payoff</strong>: fused telemetry removes a fifth to a quarter of position error, and the honest band is what load decisions should be made on.</p>
+
+  <figure id="fig-32-10" class="full">
+    <img src="shared/images/ch32-uc04-ekf-repro.png" alt="Trajectory plot with true path, scattered raw optical points, and smooth EKF fused line, RMSE labels 0.19 to 0.15." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.10</span>: UC 04 — EKF Fusion Reproduced. True path (black), raw optical scatter, EKF-fused track (orange): RMSE 0.1898 → 0.1451 m, the 23.5% (E20; E15 read 21.7%). <strong>Pickleball</strong>: wrist-IMU hand speed. <strong>Rugby league</strong>: GPS + broadcast sprint load.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — Reproducing E14, the GMC Bake-Off (+3.1%, and the −3.7% Negative)</h3>
+  <p><strong>The problem.</strong> Broadcast pan shatters identity: the nrl-001 baseline yields 295 unique track IDs for a clip with closer to 30 true entities (E08, claim C-12). <strong>The mechanism + repro math.</strong> Global-motion compensation estimates the camera warp per frame and re-associates detections in the stabilized frame. The bake-off runs three configurations over the same 750 frames: baseline 295 IDs; GMC box-shift 306 IDs — <em>worse</em> by 3.7%; GMC frame-warp 286 IDs, a 3.1% reduction, with median track length up from 0.96 s to 1.08 s. The raw estimator drift measured mean 1.575 px/frame, max 21.97. The artifact's honesty notes are part of the claim: no ground truth exists for this clip, so HOTA/MOTA are not measured — fragmentation statistics are the honest claim. <strong>Pickleball</strong>: the fixed-camera fixture never needs GMC, and that transfer asymmetry is itself the lesson. <strong>Rugby league</strong>: GMC is the only path to broadcast tracking, and its measured gain here is modest. <strong>Payoff</strong>: chapters 9 and 14 inherit a verified +3.1% and a published negative — the register records both, which is why it can be trusted.</p>
+
+  <figure id="fig-32-11" class="full">
+    <img src="shared/images/ch32-uc05-gmc-repro.png" alt="Rugby league pitch with broadcast pan arrows, fragmented track segments before and merged segments after frame warp, 295 to 286." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.11</span>: UC 05 — GMC Reproduced. Frame-warp re-association: 295 → 286 IDs (+3.1%), median track 0.96 → 1.08 s; box-shift variant went backwards (−3.7%). <strong>Rugby league</strong>: the broadcast lane. <strong>Pickleball</strong>: fixed camera, GMC unnecessary — measured asymmetry.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Lane B: Reproduction Infrastructure (UC 06-08)</h3>
+
+  <h3 class="sub-heading">UC 06 — The Mac vs Colab Run (Which Labs Need the GPU)</h3>
+  <p><strong>The problem.</strong> A reader on a laptop needs to know tonight which of the book's labs they can actually run — and the answer must come from the runner, not from trial and error. <strong>The mechanism + repro math.</strong> <code>lab/run_everything.py</code> marks GPU-bound lanes COLAB rather than FAIL: 26 labs run locally on the M4 Max (inference 34-82 fps measured on both fixtures), and five experiment lanes carry the GPU flag — TrackNetV4 fine-tune (C12), GVHMR 3D (C11), triangulation + 3DGS (C14), the contact-crop CNN (C19), and the RF-DETR/DEIM fine-tunes (C08). The bridge rule: Colab trains, the M4 infers; weights return to the repo; the local lane emits the metrics.json the register audits, and the hardware flag makes A100 training numbers and M4 inference numbers unmixable. <strong>Pickleball</strong>: the C12 ball lane — E04/E10 local, TrackNetV4 training on Colab, evaluation back on the Mac. <strong>Rugby league</strong>: the C19 contact-crop CNN — tackle-crop training is a GPU job; the trained classifier runs locally. <strong>Payoff</strong>: a lane, not an error — no lab is silently skipped, and no reader burns a weekend discovering the split by hand.</p>
+
+  <figure id="fig-32-12" class="full">
+    <img src="shared/images/ch32-uc06-mac-colab-lanes.png" alt="Two-lane diagram: M4 Max local inference lane and Colab GPU training lane, weights flowing down, metrics flowing to the claims register." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.12</span>: UC 06 — The Lane Split. M4 Max infers all 26 runner labs; Colab trains the five GPU lanes and returns weights; both lanes terminate in metrics.json. <strong>Pickleball</strong>: C12 ball lane. <strong>Rugby league</strong>: C19 contact crops.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 07 — The Seed Problem (Drift, the Honest Failure)</h3>
+  <p><strong>The problem.</strong> Two runs of the same script on the same machine produced 21.7% and 23.5% — if your reproduction does not match the book to the decimal, the book is wrong or the run is; this use case is about knowing which. <strong>The mechanism + repro math.</strong> The stochastic benchmarks (E15/E16 and re-runs E20/E21) draw noise from <code>np.random</code>; the first runs recorded no seed. The policy that fell out: stochastic labs record their seed in the metrics.json metadata block; deterministic claims are value-checked at 1e-6 tolerance; runtime-dependent numbers — fps, rollouts/sec — are existence-checked only; and any claim whose artifact drifts twice is rewritten in the prose as a range. The twin drift is the second record: 1,234,568 vs 1,190,476 aggregate rollouts/sec (E16 vs E21), the pickleball lane 624,561 vs 604,619. <strong>Pickleball</strong>: the third-shot twin's advice (7.45 m) is seed-stable even though its speed is not. <strong>Rugby league</strong>: the defensive-line twin's 5.0 m recommendation likewise held across both draws. <strong>Payoff</strong>: the register warns with VALUE_DRIFT instead of failing — the difference between a laboratory and a highlights reel (32.7b).</p>
+
+  <figure id="fig-32-13" class="full">
+    <img src="shared/images/ch32-uc07-seed-drift.png" alt="Paired bar charts for run one versus run two of fusion error reduction and twin throughput, with a seed dice icon and a lock." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.13</span>: UC 07 — Drift on Record. EKF reduction 21.7% vs 23.5% (unseeded draws); twin throughput 1.23M vs 1.19M rollouts/sec (machine state). Seeded metadata is now the contract. <strong>Both sports</strong>: advice replicated; point values did not.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 08 — The Claims Register Audit (24 Claims, 0 Problems)</h3>
+  <p><strong>The problem.</strong> The book asserts 24 numeric claims across 32 chapters; a number quoted in chapter 12 is only as good as the artifact behind it, and artifacts rot. <strong>The mechanism + repro math.</strong> <code>lab/claims_register.py</code> holds the canonical C-01…C-24 table — each row a tuple of (claim id, chapter, asserted claim, experiment directory, artifact path, value key, status) — and the auditor loads each artifact, walks the dot-path key, and compares against the expected value at 1e-6 tolerance. The verdict vocabulary is explicit: OK, OK_EXISTENCE_ONLY (fps and throughput), MISSING_ARTIFACT, KEY_MISSING, VALUE_DRIFT. This session's run: <strong>24 claims, 0 problems</strong> (measured, gate G0.1). <strong>Pickleball</strong>: the deep lane — C-15's ball precision, C-18's 84.6% receiver prediction on the minimap's 3,416 metric rows, C-11/C-20's hallucination drive 66.7% → 0.0%. <strong>Rugby league</strong>: the honest thin lane — C-12's broadcast baseline and C-21…C-23's GMC claims, one of them RE-LABELed. <strong>Payoff</strong>: one command re-audits every number in the book; the register is the evidence spine every chapter's prose is bound to.</p>
+
+  <figure id="fig-32-14" class="full">
+    <img src="shared/images/ch32-uc08-register-audit.png" alt="Twenty four claim chips C-01 to C-24 feeding an audit checkmark, with OK, drift, and blocked verdict stamps." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.14</span>: UC 08 — The Register Audit. Twenty-four claim chips, five verdict stamps, one command. <strong>Pickleball</strong>: the deep-evidence lane. <strong>Rugby league</strong>: the honest first-pass lane, RE-LABEL included.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Lane C: Whole-Book Verification (UC 09-10)</h3>
+
+  <h3 class="sub-heading">UC 09 — Artifact Verification (Metrics and Media)</h3>
+  <p><strong>The problem.</strong> Two failure modes hide in any runnable book: an experiment directory with code but no outputs (not evidence), and an outputs directory no claim references (an orphan, quietly quoted or quietly stale). <strong>The mechanism + repro math.</strong> The audit axiom: every lab emits a metrics.json, and every visual claim additionally emits media — annotated frames, minimap renders, heatmaps. Verification walks every <code>experiments/*/outputs/</code> directory, parses each metrics.json, cross-walks the register's 24 rows, and flags both directions of the mismatch. Two examples show the axiom biting: the C13 identity lab's metrics carry 6/6 jersey OCR on the pickleball golden frames <em>and</em> the named localization gap; the C05 spine.duckdb's 8,862 rows are the single artifact both sports' downstream labs read. <strong>Pickleball</strong>: the minimap's 3,416 metric rows trace to the same spine. <strong>Rugby league</strong>: tracking rows land in the same schema, which is what makes cross-sport audits possible at all. <strong>Payoff</strong>: no phantom claims, no orphan evidence — the inventory in 32.6b is a checked table, not a hopeful one.</p>
+
+  <figure id="fig-32-15" class="full">
+    <img src="shared/images/ch32-uc09-artifact-verify.png" alt="Experiment folder tree with metrics.json and media files under a magnifier, one orphan folder flagged." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.15</span>: UC 09 — The Artifact Audit. Every lab → metrics.json (+ media for visual claims); code-without-outputs flagged as not-evidence, outputs-without-claims flagged as orphans. <strong>Both sports</strong>: one spine schema (C05, 8,862 rows).</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — The Full-Pipeline Run (Every Lab, One Command)</h3>
+  <p><strong>The problem.</strong> Individual labs passing proves nothing about the whole: the book's claim is that a reader can re-verify everything, end to end, in one sitting. <strong>The mechanism + repro math.</strong> <code>python lab/run_everything.py</code> executes the 26 deterministic labs as subprocesses under <code>.venv-lab/bin/python</code> and writes <code>experiments/c32-lab-runner/outputs/run-report.json</code> — the one experiment whose subject is all the others. Measured 2026-09-05: 19/20 fast labs PASS (the 20th was fixed in-session), 3 Colab lanes, 2 model-load SKIPs. Then <code>claims_register.py</code> closes the loop: labs are oracles for runnability, the register is the oracle for claims, and the two-layer design is deliberate — C16's CLIP lab passes as a lab while its claim is a measured negative (cosine 0.23-0.30, no class separation). <strong>Pickleball</strong>: pb-003 is the primary fixture for the deep lane. <strong>Rugby league</strong>: nrl-001 anchors the C07/C13 first-pass rows, explicit about their fixture. <strong>Payoff</strong>: the reproducibility contract made literal — one command, one report, one audit, and the whole book's evidence re-derived on your machine.</p>
+
+  <figure id="fig-32-16" class="full">
+    <img src="shared/images/ch32-uc10-full-pipeline.png" alt="Chain of lab nodes from rules through sensors flowing into a run-report table with PASS, COLAB and SKIP rows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 32.16</span>: UC 10 — The Full Pipeline. Twenty-six labs, one runner, one report; the register audit closes the loop. <strong>Pickleball</strong>: the deep lane. <strong>Rugby league</strong>: the first-pass lane — both explicit in the same table.</figcaption>
+  </figure>
+
+  <p>What these ten runs add to the pipeline: UC 01 re-derives the ball evidence behind chapter 12; UC 02 the live-gating evidence behind chapter 28; UC 03 the counterfactual advice behind chapter 24; UC 04 the fusion numbers behind chapter 30; UC 05 the broadcast-tracking honesty behind chapters 9 and 14; and UC 06-10 are the machinery — lanes, seeds, register, artifacts, runner — that make every other chapter's lab box a contract rather than a promise.</p>
+
+  <h2 class="section-title"><span class="section-num">32.8</span> Sources</h2>
+  <ul>
+    <li>Lab: <code>lab/run_everything.py</code> (+ every <code>lab/w*_lab_*.py</code>); <code>lab/claims_register.py</code> (the 24-claim audit, gate G0.1); <code>state/claims-register.json</code> (generated register).</li>
+    <li>Experiments cited: E01 (pickleball-yolo-baseline), E02 (tracking), E03 (pose), E04 (ball), E05 (minimap), E08 (rugby), E09 (tracker bake-off), E10 (ball temporal), E12 (TacticAI doubles), E13 (VLM adversarial loop), E14 (GMC), E15/E20 (telemetry fusion drift pair), E16/E21 (digital-twin drift pair), E17/E22 (exception-gating deterministic pair).</li>
+    <li>Fixtures: <code>dataset/pb003/README.md</code> (pb-003 schema, licensing, labeling protocol); nrl-001 (Storm v Panthers GF 2024 highlights window, seconds 120-150).</li>
+    <li>The Colab lanes: chapter lab boxes (C08, C11, C12, C14, C19).</li>
+    <li>Method framing (source-backed): fastbook/nbdev lab-per-chapter production; evaluation-driven development and claim-evidence-reasoning from the research brief (2026-08-10-method-research-brief).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="31.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 31</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 31 — Deployment, Licensing, Rights & Ethics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 31</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 31 — Deployment, Licensing, Rights & Ethics</p>
+        </div>
+      </div>
+    </a>
+    <a href="33.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 33</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 33 — The Frontier: What's Changing in 2025-2026</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 33</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 33 — The Frontier: What's Changing in 2025-2026</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 33 — The Frontier: What's Changing in 2025-2026</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The living chapter — models, hardware, benchmarks, agents, and the staleness triggers that keep it honest</p>
+        </div>
+        <a href="33.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #C2410C;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

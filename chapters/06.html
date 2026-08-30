@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 06 — Calibration I: Homography, Intrinsics, Distortion - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #A2542A;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-06" style="background-color: #A2542A; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 06</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Why pixels lie, how the camera model works, and the Z-limit that forces multi-view</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">33 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-06-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Order of Operations: Calibrate Before You Detect</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-06-1" data-section="s-06-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Order of Operations: Calibrate Before You Detect</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-06-1" data-section="s-06-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Order of Operations: Calibrate Before You Detect</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">06</span> Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h1>
+    <p class="chapter-subtitle">Why pixels lie, how the camera model works, and the Z-limit that forces multi-view</p>
+  </header>
+
+<h3 id="s-06-1"><span class="section-num">6.1</span> The Order of Operations: Calibrate Before You Detect</h3>
+
+<p class="section-intro">Every metric in this book — spacing, line speed, kitchen proximity, defensive retreat — is measured in physical units. None of them exist in the raw frame. The pixel is a witness, not the verdict: it lies about distance (perspective), lies about position (lens distortion), and lies about height (it has no Z). Calibration is the machinery that recovers truth from pixels, and it must happen <em>before</em> any downstream claim.</p>
+
+  <p>The book's own evidence shows why the order matters. Our E05 homography reports 3.82cm reprojection error on the pb-003 fixture; the original claim presented it as a single number. The honest reading: with exactly four clicked points, a DLT homography maps those four points <em>exactly</em> — the 3.82cm is the click-noise and click-placement error, not a general validation number. Extrapolating it to any court or any lens is the calibration fallacy this chapter names.</p>
+
+  <p>The two sports make the ordering non-negotiable in different ways. On the pickleball rig (pb-003, a fixed elevated camera over a 13.41 × 6.10m court) you calibrate <em>once</em>, before the first frame is analyzed, and every detection afterwards inherits that map. On the rugby league broadcast feed (nrl-001, a PTZ camera over a 100 × 68m field) the map expires every time the camera pans or zooms — E08 measured 9.76 px/frame of camera drift on that clip — so calibration is not a preprocessing step but a per-frame process running <em>inside</em> the pipeline. Either way the rule is identical: nothing measured in metres may be computed from pixels that have not passed through a calibrated map first.</p>
+
+  <h2 class="section-title"><span class="section-num">6.2</span> The Camera Model: From 3D World to Pixel</h2>
+  <p>The full projection chain is the pinhole model with extrinsics:</p>
+
+  <p>$$s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix} = \mathbf{K} \begin{bmatrix} \mathbf{R} | \mathbf{t} \end{bmatrix} \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix}$$</p>
+
+  <p>where $\mathbf{K}$ is the intrinsics (focal fx/fy, principal point cx/cy = 4 parameters), $\mathbf{R}|\mathbf{t}$ the extrinsics (6 parameters), and the total is 10 degrees of freedom. A planar homography $\mathbf{H}$ is the 8-parameter special case when every world point lies on one plane ($Z=0$): it is <em>not</em> a camera model, it is a plane-to-plane map. That distinction is everything: homography answers "where on the floor", never "where in the room".</p>
+
+  <figure id="fig-06-04" class="full">
+    <img src="shared/images/c06-pinhole-model.png" alt="Pinhole camera model: a 3D scene point projects through the pinhole aperture onto the image plane, inverted; the focal length arrow connects pinhole to image plane. White background, black engineering linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.4</span>: The Pinhole Model. Every pixel is the intersection of a light ray with the image plane; the model has no notion of how far along the ray the scene point sat. That missing depth is the root of every limitation in this chapter.</figcaption>
+  </figure>
+
+  <p>The pinhole model deserves its name literally: the ideal camera is a box with an infinitesimal hole, and each scene point casts exactly one ray through the hole onto the sensor plane, inverted. Real cameras replace the hole with a lens (which is why §6.3 exists), but the geometry survives: a pixel coordinate $(u, v)$ identifies a <em>ray</em>, not a point. Depth along that ray — the $s$ in the equation — is unrecoverable from a single view. Everything downstream in this book lives with that fact.</p>
+
+  <p>The chain decomposes into two stages with very different provenance. The <strong>intrinsics</strong> $\mathbf{K}$ describe the camera itself: $f_x, f_y$ are the focal length expressed in <em>pixels</em> (physical focal divided by pixel pitch), and $(c_x, c_y)$ is the principal point — near the image center, never exactly on it; skew is zero for any modern sensor. The <strong>extrinsics</strong> $[\mathbf{R}|\mathbf{t}]$ describe placement: three rotation parameters and three translation parameters locating the world frame relative to the camera. Intrinsics survive until you change lens, zoom, or crop; extrinsics survive until the camera moves. The degrees of freedom stack as follows:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Parameters</th>
+        <th>DoF</th>
+        <th>Comes from</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Intrinsics $\mathbf{K}$</td>
+        <td>$f_x, f_y, c_x, c_y$</td>
+        <td>4</td>
+        <td>Chessboard calibration (§6.5)</td>
+      </tr>
+      <tr>
+        <td>Lens distortion</td>
+        <td>$k_1, k_2, p_1, p_2$ (+$k_3$)</td>
+        <td>4–5</td>
+        <td>Chessboard calibration (§6.5)</td>
+      </tr>
+      <tr>
+        <td>Extrinsics $\mathbf{R}|\mathbf{t}$</td>
+        <td>3 rotation + 3 translation</td>
+        <td>6</td>
+        <td>Plane pose, implied by the homography</td>
+      </tr>
+      <tr>
+        <td><strong>Planar homography $\mathbf{H}$</strong></td>
+        <td>3×3 up to scale</td>
+        <td><strong>8</strong></td>
+        <td>4+ point pairs (§6.4)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>A homography <em>is</em> the intrinsics-and-extrinsics chain restricted to $Z=0$: setting the world Z column of $[\mathbf{R}|\mathbf{t}]$ aside, $\mathbf{H} = \mathbf{K}[\mathbf{r}_1\ \mathbf{r}_2\ \mathbf{t}]$ — 3×3, defined up to scale, 8 degrees of freedom. For the fixed pickleball rig we never solve $\mathbf{K}$, $\mathbf{R}$, $\mathbf{t}$ separately; we solve $\mathbf{H}$ directly and, when Chapter 14 needs it, decompose it back.</p>
+
+  <figure id="fig-06-05" class="full">
+    <img src="shared/images/c06-projection-chain.png" alt="Block diagram: world point flows through extrinsics R|t (6 dof) then intrinsics K (4 dof) to pixel; a burnt-orange shortcut arrow from court plane Z=0 goes directly to pixel labeled H, 8 dof. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.5</span>: The Projection Chain and Its Shortcut. The full camera model (top path) needs 10 parameters and still cannot recover depth. Restricting the world to the court plane (bottom path) collapses the chain into the 8-parameter homography — which is solvable from four visible corners.</figcaption>
+  </figure>
+
+  <p><strong>Worked example — pb-003 intrinsics without a chessboard.</strong> From the Chapter 4 rig: phone main camera, 3840×2160, 24mm-equivalent field of view. The horizontal FOV of 73.7° gives a pixel focal directly:</p>
+
+  <p>$$f_x = \frac{W}{2\tan(\text{FOV}_h/2)} = \frac{3840}{2\tan(36.85°)} \approx 2564\ \text{px}$$</p>
+
+  <p>with $c_x = 1920$, $c_y = 1080$, and $f_y \approx f_x$ for square pixels. The rig's 2× telephoto crop doubles that to ≈5128 px. This guess is good to a few percent — adequate for back-of-envelope projection, <em>not</em> for measurement, because it assumes zero distortion and an exact crop. The chessboard workflow (§6.5) replaces it with measured values.</p>
+
+  <p><strong>Rugby league is the opposite regime.</strong> A broadcast PTZ camera's intrinsics are not fixed: focal length is a free parameter per frame because the operator zooms to follow play. Nothing about $\mathbf{K}$ can be calibrated once on the sideline; each frame of nrl-001 needs its own focal estimate, which is precisely why the broadcast-calibration literature (TVCalib, PnLCalib, and the 2026 unified-registration line) treats calibration as per-frame optimization rather than one-shot fitting. Chapter 7 takes that problem up in full; this chapter's job is to make the fixed-camera case exact and to name its limits honestly.</p>
+
+  <p>One discipline note the lab learned the hard way: <strong>units</strong>. $\mathbf{K}$ is in pixels, $\mathbf{t}$ in metres, the court model in metres. Every historical lab bug that mixed pixel-focals with metre-focals produced silent 1000× errors; assert units at every interface. And never hand-roll the 4×4 matrix chain — project with <code>cv2.projectPoints</code>, back-project image→court with $\mathbf{H}^{-1}$, and let OpenCV own the arithmetic.</p>
+
+  <h2 class="section-title"><span class="section-num">6.3</span> Lens Distortion: The 26cm Error Nobody Measures</h2>
+  <p>Real lenses bend light. The Brown-Conrady model has five coefficients (radial $k_1, k_2, k_3$ and tangential $p_1, p_2$) and the displacement grows <strong>cubically</strong> with the distance from the image center. The consequence is not academic: on the C04 rig (4.5m pole, 13.41m court) a modest $k_1 = -0.3$ produces roughly <strong>26cm</strong> of projected error at the court scale — an order of magnitude larger than E05's 3.82cm.</p>
+
+  <p>The model acts on the normalized image coordinates $(x_n, y_n) = ((u-c_x)/f_x,\ (v-c_y)/f_y)$ before the pinhole projection. With $r^2 = x_n^2 + y_n^2$:</p>
+
+  <p>$$x_d = x_n(1 + k_1 r^2 + k_2 r^4 + k_3 r^6) + \big[2p_1 x_n y_n + p_2(r^2 + 2x_n^2)\big]$$
+  $$y_d = y_n(1 + k_1 r^2 + k_2 r^4 + k_3 r^6) + \big[p_1(r^2 + 2y_n^2) + 2p_2 x_n y_n\big]$$</p>
+
+  <p>The radial terms ($k_1 < 0$ = barrel, typical of wide lenses; $k_1 > 0$ = pincushion, typical of tele) are symmetric about the principal point; the tangential terms come from lens elements not perfectly parallel to the sensor and usually run 5–10× smaller — drop them only if your chessboard RMS says so. Because the displacement scales as $k_1 r^3$, it is a <em>field-position</em> error: negligible at the center, brutal at the edges. Representative lens classes make the growth concrete:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>$k_1$ class</th>
+        <th>$r = 0.25$</th>
+        <th>$r = 0.5$</th>
+        <th>$r = 0.75$</th>
+        <th>$r = 1.0$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>−0.05 (phone main class)</td>
+        <td>−0.08%</td>
+        <td>−0.63%</td>
+        <td>−2.1%</td>
+        <td>−5%</td>
+      </tr>
+      <tr>
+        <td>−0.15 (mild wide)</td>
+        <td>−0.23%</td>
+        <td>−1.9%</td>
+        <td>−6.4%</td>
+        <td>−15%</td>
+      </tr>
+      <tr>
+        <td>−0.30 (action-cam wide class)</td>
+        <td>−0.47%</td>
+        <td>−3.75%</td>
+        <td>−12.8%</td>
+        <td>−30%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Convert to court error on the C04 rig (6.4 mm/px at the far baseline, ~2200 px half-diagonal): at $r=0.5$ a $k_1=-0.30$ lens shifts a pixel by ~41 px ≈ <strong>26 cm at court scale</strong>. Against that, E05's 3.82 cm homography RMSE is noise — and E05's 3.82cm was measured at the court <em>center</em>, where distortion displacement is smallest. A foot-fault call at the far corner lives at the edge, exactly where the uncorrected lens is worst.</p>
+
+  <figure id="fig-06-03" class="full">
+    <img src="shared/images/calibration-distortion.png" alt="Barrel distortion plan view of the pickleball court with true grid vs bowed grid, displacement arrows, k1xr3 callout, -12.8% at edge. Recreate: white background, black true grid, burnt-orange distorted grid." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.3</span>: Distortion on the Court. The true grid (black) vs the lens-warped grid (burnt-orange): the kitchen line moves by 12.8% of the half-width at the frame edge — far beyond any 5cm calibration tolerance.</figcaption>
+  </figure>
+
+  <p>The field's verdict is now settled: the CVSports@CVPR-2026 Best Paper ("Unified Sports Field Registration with Lens Distortion Modeling", Theiner et al.) performs joint registration <em>with</em> distortion estimation, keypoint-free and sport-agnostic. When the flagship 2026 award goes to distortion modeling, treating it as optional polish is no longer defensible.</p>
+
+  <p>Our lab quantifies it. With a typical compact-camera barrel distortion ($k_1 = -0.15$), the frame corners move <strong>130px</strong> under undistortion. A homography fitted with 3.82cm error at the center can misproject the court edges by that margin — exactly where the kitchen line is.</p>
+
+  <figure id="fig-06-06" class="full">
+    <img src="shared/images/c06-distortion-before-after.png" alt="Two-panel distortion correction: left 'before' shows the pickleball court grid bowed outward with barrel distortion and burnt-orange edge displacement arrows; right 'after' shows the same grid corrected to straight lines. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.6</span>: Undistortion, Before and After. The same pickleball court grid through a $k_1=-0.15$ lens (left) and after correction (right). The straightening is invisible at the center and dramatic at the mid-edges — which is where the lines you care about are.</figcaption>
+  </figure>
+
+  <p><strong>Pipeline placement is a one-way door: undistort first, homography second.</strong> Correct the reference points with <code>cv2.undistortPoints</code> (cheaper than resampling whole frames, and microseconds on the lab machine) and only then run DLT. Fit $\mathbf{H}$ on distorted pixels and you bake a cubic, field-dependent error into the map that no number of reference points can absorb. For broadcast rugby the feed is usually produced — lens-corrected at the truck — before it reaches you [verify for nrl-001]; for phone and action-cam pickleball rigs it never is.</p>
+
+  <p>Rugby adds a second twist: broadcast zoom lenses at long focal lengths drift toward pincushion, and the distortion changes <em>with zoom</em>. A distortion estimate made at one zoom stop does not transfer to another — one more reason the per-frame joint-estimation methods exist. The honest budget for both sports is the same shape: correct what the chessboard measured, then let the homography absorb only what remains.</p>
+
+  <figure id="fig-06-01" class="full">
+    <img src="shared/images/cam-fov-placement.png" alt="Camera FOV and placement geometry side elevation with 4.5m pole and 13.41m court length. Recreate in book style: white background, black engineering lines, burnt-orange frustum." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.1</span>: Placement Geometry (from Chapter 4). The calibration rig is also the distortion question: the lens that covers the court is the lens you must undistort.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">6.4</span> Direct Linear Transform and the Reprojection Error Discipline</h2>
+  <p>The DLT solves for $\mathbf{H}$ from ≥4 non-collinear correspondences. Planar court points $\mathbf{X}_i = (X_i, Y_i, 1)^\top$ and their pixel observations $\mathbf{x}_i = (u_i, v_i, 1)^\top$ satisfy $\mathbf{x}_i \sim \mathbf{H}\mathbf{X}_i$; eliminating the scale via the cross product gives two independent equations per point pair:</p>
+
+  <p>$$\begin{bmatrix} \mathbf{0}^\top & -\mathbf{X}_i^\top & v_i \mathbf{X}_i^\top \\ \mathbf{X}_i^\top & \mathbf{0}^\top & -u_i \mathbf{X}_i^\top \end{bmatrix} \mathbf{h} = 0$$</p>
+
+  <p>Stacking $N \ge 4$ pairs yields $A\mathbf{h} = 0$ with $A$ of shape $2N \times 9$; the solution is the right singular vector of $A$ with the smallest singular value, reshaped to 3×3. With exactly 4 points the system is determined and the fit is <em>exact</em>; with more, SVD gives the least-squares solution and RANSAC rejects the outliers.</p>
+
+  <figure id="fig-06-07" class="full">
+    <img src="shared/images/c06-dlt-pickleball.png" alt="4-point DLT for the pickleball court: plan view of the 13.4 by 6.1 metre court with four burnt-orange corner dots on the left, the skewed perspective quadrilateral video view with matching corner dots on the right, correspondence arrows between them. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.7</span>: The 4-Point Fit on pb-003. Four rulebook corners — (0,0), (13.41,0), (13.41,6.10), (0,6.10) metres — clicked in the frame give 8 equations for the homography's 8 unknowns. Exact, and exactly as fragile as the clicking.</figcaption>
+  </figure>
+
+  <p>Two steps practitioners skip and shouldn't. <strong>First, Hartley normalization:</strong> translate each point set to centroid zero and scale so the mean distance to the origin is $\sqrt{2}$, <em>before</em> the SVD, then denormalize after. Unnormalized DLT on 4K-pixel coordinates conditions $A$ to roughly $10^6$ and silently costs about a decimal digit of accuracy (Hartley &amp; Zisserman, §4.4). <strong>Second, nonlinear refinement:</strong> DLT minimizes an algebraic error, not geometric reprojection error; refine with Levenberg–Marquardt on $\sum_i d(\mathbf{x}_i, \mathbf{H}\mathbf{X}_i)^2$ starting from the DLT solution (<code>cv2.findHomography</code> with method=0 does this when given &gt;4 points [verify the LM default per OpenCV version — behavior differs across 4.x releases]).</p>
+
+  <p><strong>Worked: E05 on pb-003.</strong> Four hand-clicked corners on an undistorted frame, 3.82cm RMSE at court center. Put the number in units readers feel: 3.82cm is 0.285% of court length and 0.63% of court width; at 6.4 mm/px (far baseline) the residual is ~6 px, consistent with hand-clicking precision of ±a few pixels per corner. <em>The manual fit is click-noise-limited, not model-limited.</em> With only four points there is zero redundancy: a 3-px misclick on one corner redistributes across the whole map and leaves no residual signal to detect it. That is why E11's automated pipeline — 12.4 keypoints per frame, 24.8 equations for 8 unknowns, 3× redundancy, RANSAC-visible mistakes — reports 4.65cm: a slightly <em>worse</em> headline number than E05's best case, and a more honest one, with 98.4% valid frames at 11.2 ms/frame.</p>
+
+  <p><strong>The sanity check every reader should run:</strong> project the four fitted corners back to court coordinates with $\mathbf{H}^{-1}$. If they do not land within a few centimetres of (0,0), (13.41,0), (13.41,6.10), (0,6.10), the fit is wrong no matter what the global RMSE says.</p>
+
+  <p><strong>RANSAC's iteration count is computed, not chosen.</strong> For a 4-point minimal sample at 99% success probability, $N = \ln(1-p)/\ln(1-w^4)$ where $w$ is the inlier fraction:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Inlier fraction $w$</th>
+        <th>Iterations $N$ (p = 0.99)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>0.9</td><td>8</td></tr>
+      <tr><td>0.7</td><td>34</td></tr>
+      <tr><td>0.5</td><td><strong>72</strong></td></tr>
+      <tr><td>0.3</td><td>561</td></tr>
+    </tbody>
+  </table>
+
+  <p>So "a few hundred iterations" is the computed cost of surviving a 50–70%-outlier keypoint detector — a foot on the kitchen line classified as a corner, a shadow edge as a junction. Set <code>ransacReprojThreshold</code> in <em>pixels</em> from your measured click or detector noise (~3 px for the 4K end-cam), not from vibes.</p>
+
+  <figure id="fig-06-08" class="full">
+    <img src="shared/images/c06-reprojection-error.png" alt="Reprojection error: true court corner as a black cross, reprojected corner as a burnt-orange circle slightly offset, double-headed error arrow between them, and a scale annotation converting pixels to metres. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.8</span>: The Reprojection Error. Project the court point through $\mathbf{H}$, measure the pixel distance to the observation, convert to metres with the local mm/px scale. The number is only meaningful together with <em>where</em> on the court it was measured.</figcaption>
+  </figure>
+
+  <p><strong>Global RMSE lies by averaging.</strong> A fit can post 3cm global while the far-left corner is off 12cm and the center off 1cm — and the corner error is what loses a foot-fault call. Outside the convex hull of the calibration points, error grows roughly linearly with distance: a 4-corner pickleball fit understates error for a player a metre behind the baseline, and a rugby fit anchored on two visible transverse lines extrapolates across 30+ metres of field and degrades accordingly. Squared loss skews too: one 20cm outlier contributes as much to RMSE as twenty-seven 3.8cm inliers. The reporting discipline this book enforces everywhere:</p>
+
+  <ol>
+    <li><strong>Per-corner error table</strong>, not just global RMSE (our lab emits exactly that).</li>
+    <li><strong>Median and 95th percentile</strong> alongside RMSE.</li>
+    <li><strong>Named evaluation region</strong> (center vs edges — the kitchen is at the edge).</li>
+    <li><strong>The validation split</strong>: if points 1-4 fit H, points 5-8 must validate it. A fitting residual is not validation error.</li>
+    <li><strong>Version pinning</strong>: OpenCV 5.0's findHomography behavior differs from 4.x; record it.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">6.5</span> The Chessboard Workflow</h2>
+  <p>The ground-truth generator for intrinsics: print a chessboard, photograph it at capture distance in the capture conditions (zoom, crop, lighting), run cv2.calibrateCamera. One afternoon per camera, and the highest accuracy-per-dollar step in this book. The recipe that survives contact with the field:</p>
+
+  <ol>
+    <li><strong>Print</strong> a 9×6 inner-corner board on A3, matte, on rigid backing — a warped board injects fake distortion into the fit. Use the ChArUco variant if corners will ever be partially occluded (outdoor glare).</li>
+    <li><strong>Capture 15–25 stills</strong> covering the whole field of view: all four edges <em>especially</em>, the center, tilted ±30–45° on each axis. Edge coverage is what constrains $k_1$ — a center-only dataset returns $k_1 \approx 0$ and lies confidently.</li>
+    <li><strong>Detect and refine</strong>: <code>findChessboardCorners</code> → <code>cornerSubPix</code> to ~0.1 px.</li>
+    <li><strong>Calibrate</strong> with five coefficients $(k_1, k_2, p_1, p_2, k_3)$.</li>
+    <li><strong>Acceptance</strong>: RMS reprojection error <strong>&lt; 0.5 px</strong> for phone/lab lenses (good runs land 0.1–0.3 px). Above 1 px, re-shoot — the board moved or focus drifted. Report the RMS, not "it worked".</li>
+    <li><strong>Freeze per rig, per mode.</strong> The phone's 1× and 2× crop are different $\mathbf{K}$; an action cam's Wide and Linear modes differ (Linear is already software-undistorted — do not double-correct [verify residual $k_1$ on your unit]). Store as YAML per (device, mode) in the capture manifest.</li>
+    <li><strong>Use</strong>: <code>undistortPoints</code> on reference points before DLT (§6.3), or <code>getOptimalNewCameraMatrix</code> + <code>undistort</code> for whole frames going to human viewers.</li>
+  </ol>
+
+  <p>The lab recipe in code:</p>
+
+<pre><code class="language-python">import cv2
+import numpy as np
+
+def calibrate_from_chessboard(pattern_size, square_size_m, images):
+    """images: list of paths with a chessboard photographed in capture conditions."""
+    objp = np.zeros((pattern_size[0] * pattern_size[1], 3), np.float32)
+    objp[:, :2] = np.mgrid[0:pattern_size[0], 0:pattern_size[1]].T.reshape(-1, 2)
+    objp *= square_size_m
+    obj_points, img_points = [], []
+    for path in images:
+        img = cv2.imread(path)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        ret, corners = cv2.findChessboardCorners(gray, pattern_size, None)
+        if ret:
+            obj_points.append(objp)
+            img_points.append(corners)
+    ret, K, dist, rvecs, tvecs = cv2.calibrateCamera(
+        obj_points, img_points, gray.shape[::-1], None, None)
+    return K, dist  # K = intrinsics; dist = [k1, k2, p1, p2, k3]
+</code></pre>
+
+  <p>Then: undistort the frames BEFORE homography, and re-measure. The 130px corner motion from our distortion demo becomes part of the calibration budget. The same workflow serves both sports' capture rigs — the sideline phone filming pickleball practice and any fixed camera you control near a rugby ground. What it cannot reach is the broadcast feed itself: nobody hands you a chessboard session with the host broadcaster's lens, which is why rugby broadcast calibration falls back to the field markings as the reference geometry (§6.7).</p>
+
+  <h2 class="section-title"><span class="section-num">6.6</span> Automated Court Keypoints: The Detector Option</h2>
+  <p>Manual clicking works for one fixture; an automated keypoint model is the production path. Three layers should never be conflated. <strong>OpenCV</strong> (Apache-2.0) is the <em>solver</em> layer — DLT, RANSAC, LM refinement, chessboard calibration, undistortion — no learned content, never obsolete. <strong>MediaPipe</strong> finds <em>person</em> landmarks, not line junctions; practitioners routinely reach for it first and discover it answers a different question. The <strong>deep court/field keypoint models</strong> are the <em>detector</em> layer that finds the reference points DLT consumes — E11's 12.4 keypoints/frame comes from this layer. The verified landscape (licenses read from the repos on 2026-08-30):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>License</th>
+        <th>M4 Max</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>TVCalib</strong> (WACV 2023)</td>
+        <td>MIT</td>
+        <td>⚠️</td>
+        <td>Differentiable segment correspondence; the book's E11 baseline (12.4 kps/frame, 4.65cm RMSE, 11.2ms/frame); optimization-loop solvers are CUDA-tuned, so throughput runs go to Colab</td>
+      </tr>
+      <tr>
+        <td><strong>PnLCalib</strong> (CVIU 2026, Gutierrez-Perez & Agudo)</td>
+        <td>GPL-2.0</td>
+        <td>⛔ eval-only</td>
+        <td>Points+lines optimization; copyleft — evaluation-only for a commercial repo</td>
+      </tr>
+      <tr>
+        <td><strong>roboflow/sports</strong></td>
+        <td>MIT</td>
+        <td>✅</td>
+        <td>Pitch/court keypoint models; the transferable pattern</td>
+      </tr>
+      <tr>
+        <td><strong>sn-calibration</strong> (SoccerNet)</td>
+        <td><strong>NO LICENSE FILE</strong></td>
+        <td>⚠️</td>
+        <td>Cite, don't vendor — the absence is itself a decision</td>
+      </tr>
+      <tr>
+        <td><strong>Theiner 2026</strong> (CVSports best paper)</td>
+        <td>code [verify]</td>
+        <td>⚠️</td>
+        <td>Joint registration + distortion; the field's trajectory</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The SoccerNet lineage matters beyond soccer: it defined the task framing (registration to a fixed field model), the metrics (JaC@5 = reprojection Jaccard within 5 px), and the leaderboards the newer methods compete on. Rugby broadcast calibration inherits that framing directly — a PTZ feed over a 100 × 68m field is exactly the SoccerNet problem with different markings, which is why the rugby side of this book speaks the same solver vocabulary even though no rugby-specific calibration benchmark exists [verify]. License discipline is part of model selection in this book: MIT (TVCalib, roboflow/sports) is forkable; GPL-2.0 (PnLCalib) is read-and-quote only; no license file (sn-calibration) means cite and link, never redistribute.</p>
+
+  <h2 class="section-title"><span class="section-num">6.7</span> Pickleball vs Rugby: Reference Availability</h2>
+  <p>The homography is only as good as the visible reference geometry, and the two sports are opposites. The availability of calibration references is the structural difference:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Pickleball (pb-003)</th>
+        <th>Rugby League (nrl-001)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Anchors per frame</strong></td>
+        <td>10+ coplanar intersections (court lines, T-junctions)</td>
+        <td>2-3 line segments (broadcast framing)</td>
+      </tr>
+      <tr>
+        <td><strong>Geometry type</strong></td>
+        <td>Point correspondences → DLT</td>
+        <td>Line correspondences → PnL/segment methods</td>
+      </tr>
+      <tr>
+        <td><strong>Camera</strong></td>
+        <td>Fixed → single H once</td>
+        <td>Per-frame H_t (focal changes with zoom)</td>
+      </tr>
+      <tr>
+        <td><strong>Lens distortion</strong></td>
+        <td>Small (fixed wide lens)</td>
+        <td>Large on zoom lenses at long focal</td>
+      </tr>
+      <tr>
+        <td><strong>Error profile</strong></td>
+        <td>Interpolation inside the hull; detector-noise-limited</td>
+        <td>Extrapolation outside the hull; anchor-scarcity-limited</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Pickleball, fixed camera.</strong> The entire court is in frame, always: 4 corners, 4 kitchen-line/sideline junctions, 2 center-service-line ends, net-post bases — 10+ coplanar anchors, never all occluded at once, known to the millimetre from the USAP rulebook (13.41 × 6.10m, NVZ at 2.13m). Redundancy is free, and E11 exploits it: 12.4 detected keypoints per frame feed an over-determined fit every frame. The pickleball calibration problem is <em>detector quality and distortion</em>, not availability.</p>
+
+  <p><strong>Rugby league, broadcast PTZ.</strong> The camera pans, tilts, and zooms to follow play, so the visible slice of the field changes every frame. A typical tight-play frame shows 2–3 transverse lines, one touch line, and zero clean junctions — not enough <em>points</em> for DLT at all. The 20m/40m uprights and crossbar are visible but non-coplanar: useless for a ground-plane $\mathbf{H}$. Four consequences follow:</p>
+
+  <ol>
+    <li><strong>Homography must be per-frame</strong> — zoom kills any static $\mathbf{H}$, and focal length becomes a free parameter per frame. Hence calibration-as-optimization (TVCalib, Theiner 2026) rather than one-shot DLT.</li>
+    <li><strong>Lines, not points, are the reliable primitives</strong> — exactly why PnLCalib's points-and-lines formulation exists. A line correspondence contributes constraints without any junction being visible.</li>
+    <li><strong>Error is extrapolation-dominated</strong> (§6.4): anchors cluster near the ball while evaluated positions sit outside the hull. Rugby RMSE numbers must name their region or they are marketing.</li>
+    <li><strong>GMC is the cheap stand-in.</strong> E14's global-motion compensation (295→286 IDs, +3.1% IDF1-class gain) stabilizes the tracking stage without solving registration at all. The honest ladder is GMC &lt; per-frame homography &lt; full joint calibration, and this book shows where each rung stops paying.</li>
+  </ol>
+
+  <figure id="fig-06-09" class="full">
+    <img src="shared/images/c06-dlt-rugby.png" alt="Line-based homography for a rugby league pitch: plan view of the 100 by 68 metre field with transverse lines every 10 metres, two transverse segments and one touch line highlighted in burnt-orange, mapped by correspondence arrows to a skewed broadcast-camera quadrilateral showing only those lines. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.9</span>: Lines, Not Points, on the Rugby Pitch. Broadcast framing rarely shows four clean corners; it shows line segments. Segment-to-model correspondences still constrain the homography — that is the whole trick behind the points-and-lines and segment-annotation methods.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">6.8</span> The Z-Limit: Why Homography Cannot Call a Line</h2>
+  <p>This is the chapter's deep lesson, and the lab proves it numerically. A ball flying 0.9m above the court is <em>not</em> on the plane the homography maps. Project the ball's pixel through the ground-plane homography and you get the wrong court coordinate. The error grows with height: on the 4.5m rig, the mislocalization is <strong>1.0m at z=0.5m, 2.3m at z=1.0m, 7.6m at z=2.2m</strong> — and it diverges as the ball approaches camera height.</p>
+
+  <figure id="fig-06-02" class="full">
+    <img src="shared/images/calibration-z-limit.png" alt="The Z-limit: ball at 0.5m and 1.0m height projecting 1.0m and 2.3m away from true position from a 4.5m end-camera. Recreate: white background, black court line, burnt-orange rays." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.2</span>: The Z-Limit. A ball above the court projects through the ground-plane homography to a wrong ground point; the error grows with height. Line calls need Z — and Z needs multi-view (Chapter 14).</figcaption>
+  </figure>
+
+  <p>Equation: the true ground point of a ball at height z is displaced from the projected point by</p>
+
+  <p>$$D' = \frac{D \cdot H}{H - z}$$</p>
+
+  <p>where H is camera height, D the ball's distance. Worked on the book's rig ($H = 4.5$m end-cam, target at $D = 8$m): a bounce ($z=0$) is exact; a ball at 0.5m appears at 9.0m (1.0m wrong); at 1.0m, at 10.29m (2.29m wrong); at smash-contact height 2.2m, at 15.65m — <strong>7.65m of phantom court</strong>. At $z \to H$ the apparent position runs off to infinity: the ray never meets the ground, and above camera height the mapping reappears <em>behind</em> the camera. No amount of RMSE discipline, RANSAC, or distortion correction fixes this. It is a <strong>dimensional</strong> failure, not a statistical one: a planar homography answers "where on the court would this pixel be if it were on the ground", and for the ball the honest answer is "nowhere".</p>
+
+  <p>This is why bounce points, line calls, and any ball-vs-plane question <em>require</em> multiple views (chapter 14). The rule this book enforces: <strong>players get homography coordinates (feet on the plane); the ball gets pixels until Chapter 14.</strong> Feeding projected ball "positions" into speed or placement stats without this caveat is the single most common silent error in amateur pickleball analytics. Rugby pays the same toll on the high ball — a bomb hanging above the 20m line projects metres away from its true field position on any single broadcast view, and a kick that lands in touch will be reported in-field by a ground-plane map. A single calibrated camera calls court zones, not lines.</p>
+
+  <h2 class="section-title"><span class="section-num">6.8b</span> The 10 Use Cases: Applied Calibration Framework</h2>
+  <p>The use cases below are the applied bridge from the camera model above to the two sports. They follow four categories: <strong>A. Fitting the Map (UC 01-03)</strong>, <strong>B. The Lens and the Moving Camera (UC 04-05)</strong>, <strong>C. Measuring Honestly (UC 06-07)</strong>, and <strong>D. Automation and Beyond the Ground Plane (UC 08-10)</strong>. Each case pairs a pickleball and a rugby league application so the pipeline transfers, and each carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established in literature).</p>
+
+  <h3 class="sub-heading">Category A: Fitting the Map (UC 01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Four-Point DLT on the Pickleball Court (Fixed Rig)</h3>
+  <p>A fixed end-cam over a pickleball court must turn pixels into metres exactly once, before any analytics run — and the four-corner hand-clicked fit is the baseline every club can afford. The mechanism is §6.4 made concrete: click the four rulebook corners (0,0), (13.41,0), (13.41,6.10), (0,6.10) metres on an undistorted frame; Hartley-normalized DLT solves $A\mathbf{h}=0$ with 8 equations for the homography's 8 unknowns; the fit is exact by construction. E05 measured 3.82cm RMSE at court center — 0.285% of court length, ~6 px at the far baseline's 6.4 mm/px — which is click noise, not algorithm error (measured, E05). The fragility is the clicking, not the algebra: with zero redundancy, a 3-px misclick on one corner redistributes silently across the whole map.</p>
+
+  <figure id="fig-06-10" class="full">
+    <img src="shared/images/c06-uc01-dlt-pickleball-4pt.png" alt="Four-point DLT on the pickleball court: plan-view court model with four burnt-orange corner dots beside the skewed perspective video frame with matching dots, correspondence arrows between them. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.10</span>: UC 01 — The 4-Point Fit, Expanded. Four rulebook corners give an exact homography; the error budget is entirely in the ±few-pixel click precision. <strong>Pickleball</strong>: one-time setup for any fixed phone or pole rig; every spacing and kitchen metric in chapters 22-23 inherits this map. <strong>Rugby league</strong>: the identical recipe on a fixed training-ground camera — click four line junctions instead of court corners.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching-grade court coordinates in one afternoon, zero recurring cost — the cheapest correct step in the entire pipeline.</p>
+
+  <h3 class="sub-heading">UC 02 — Four-Point DLT on the Rugby League Pitch (Fixed Camera)</h3>
+  <p>Club and training footage comes from a fixed elevated camera — a grandstand rail or an anchored pole — over a 100 × 68m field, and it needs the same pixel-to-metre map at 7.5× the court's length. The DLT is identical; the anchors change: goal-line/touch-line junctions and transverse-line intersections from the NRL field model. The scale punishes minimality: at ~30 mm/px a 3-px misclick costs ~9cm, so the fixed-camera rugby fit should never run the minimal 4 points — use 6-8 junctions, let the $2N \times 9$ stack go over-determined, take the SVD least-squares solution, and finish with Levenberg-Marquardt refinement on geometric reprojection error (source-backed, Hartley &amp; Zisserman §4.4; OpenCV findHomography).</p>
+
+  <figure id="fig-06-11" class="full">
+    <img src="shared/images/c06-uc02-dlt-rugby-4pt.png" alt="Six-point DLT on a rugby league pitch: plan-view field model with transverse lines every ten metres and six burnt-orange junction dots beside the skewed elevated-camera view with matching dots and correspondence arrows. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.11</span>: UC 02 — Over-Determined DLT on the Pitch. Six junctions give 12 equations for 8 unknowns; the residual finally has signal to detect a bad click. <strong>Rugby league</strong>: fixed-camera training analysis with an honest per-point error table. <strong>Pickleball</strong>: the same over-determination is what E11 exploits — 12.4 keypoints per frame, 3× redundancy, RANSAC-visible mistakes (measured, E11).</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> redundant anchors turn a silent misclick into a visible residual — the fit tells you when it is lying.</p>
+
+  <h3 class="sub-heading">UC 03 — Line-Based Calibration When No Corner Is Visible</h3>
+  <p>Broadcast rugby framing shows 2-3 transverse lines, one touch line, and zero clean junctions — four-point DLT is impossible on most frames of nrl-001. The escape is a different primitive: lines transform under a homography as $\mathbf{l} \sim \mathbf{H}^{-\top}\mathbf{L}$, so every line correspondence constrains $\mathbf{H}$ without any junction being visible. Points-and-lines solvers mix both primitives (PnLCalib, CVIU 2026 — source-backed); the calibration-as-optimization line (TVCalib, WACV 2023; Theiner et al. 2026 joint registration + distortion — source-backed) fits pose and focal against a differentiable segment-reprojection loss. This is the standard broadcast case, not an exotic one.</p>
+
+  <figure id="fig-06-12" class="full">
+    <img src="shared/images/c06-uc03-line-calibration.png" alt="Line-based calibration: rugby pitch plan view with three burnt-orange transverse lines beside a skewed broadcast frame showing only those line segments and no corners, with correspondence arrows. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.12</span>: UC 03 — Lines, Not Points. Segment correspondences constrain the homography where junctions do not exist. <strong>Rugby league</strong>: per-frame line fitting keeps the nrl-001 feed calibrated through every pan. <strong>Pickleball</strong>: kitchen-line and sideline segments stabilize the fit on frames where players occlude the corners — lines survive partial occlusion that kills a corner detector.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> calibration survives the frames where no corner is visible — which, on broadcast, is most of them.</p>
+
+  <h3 class="sub-heading">Category B: The Lens and the Moving Camera (UC 04-05)</h3>
+
+  <h3 class="sub-heading">UC 04 — Lens Distortion Correction: Phone Class vs Action-Cam Class</h3>
+  <p>Uncorrected barrel distortion moves mid-edge pixels by centimetres at court scale — more than any homography fit error in this book — and the kitchen line lives at the edge. The mechanism is Brown-Conrady (§6.3): radial displacement grows cubically as $k_1 r^3$, so the phone-main class ($k_1 \approx -0.05$) costs ~2% at $r=0.75$ while the action-cam wide class ($k_1 \approx -0.30$) costs 12.8% — ~26cm at court scale on the C04 rig [verify — representative lens-class values, not yet measured on the lab's own units; §6.10 schedules the chessboard runs]. The fix is the §6.5 chessboard workflow: measure the real coefficients once, then <code>cv2.undistortPoints</code> on reference points before DLT — microseconds on the M4 Max, and a one-way door: undistort first, homography second.</p>
+
+  <figure id="fig-06-13" class="full">
+    <img src="shared/images/c06-uc04-distortion-classes.png" alt="Two-panel lens distortion comparison on a pickleball court grid: phone class with nearly straight lines versus action-cam class with strong barrel bow and outward displacement arrows at the mid-edges. White background, black linework, burnt-orange distorted lines." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.13</span>: UC 04 — Two Lens Classes, Two Error Budgets. The court grid through $k_1=-0.05$ (left) and $k_1=-0.30$ (right): the action cam's mid-edge displacement dwarfs E05's 3.82cm. <strong>Pickleball</strong>: foot-fault calls at the far corner sit at $r \approx 0.7$-$1.0$, exactly where the uncorrected lens is worst. <strong>Rugby league</strong>: broadcast zoom lenses drift pincushion at long focal and distortion changes with zoom — the truck usually pre-corrects [verify for nrl-001].</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the highest accuracy-per-dollar step in the book — one chessboard afternoon removes the largest single error source.</p>
+
+  <h3 class="sub-heading">UC 05 — Re-Calibration per Camera Move (Broadcast PTZ)</h3>
+  <p>The broadcast camera pans, tilts, and zooms every play; E08 measured 9.76 px/frame of drift on nrl-001 (measured), which means any static homography expires continuously. The mechanism is per-frame calibration: $\mathbf{H}_t$ with focal length as a free parameter per frame, solved as optimization against the field model rather than one-shot DLT — the TVCalib/Theiner formulation (source-backed). The honest ladder from chapter 7's territory: global-motion compensation (E14: 295→286 IDs, +3.1% IDF1-class gain — measured) stabilizes tracking without solving registration at all; per-frame homography solves the map; full joint calibration solves map and lens together. Buy the rung that pays for your metric.</p>
+
+  <figure id="fig-06-14" class="full">
+    <img src="shared/images/c06-uc05-ptz-recalibration.png" alt="Broadcast PTZ re-calibration timeline: four skewed rugby pitch quadrilaterals in a row as the camera pans and zooms, each topped with a burnt-orange homography icon, drift arrows between frames. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.14</span>: UC 05 — The Map That Expires. Every pan and zoom invalidates $\mathbf{H}$; the per-frame fit re-derives it from whatever lines are visible. <strong>Rugby league</strong>: the nrl-001 feed needs $\mathbf{H}_t$ per frame before any spacing metric is legal. <strong>Pickleball</strong>: the fixed rig's quieter version of the same problem — wind or a bumped pole invalidates the map, and the §6.4 sanity check (project the four corners back) catches it on revalidation.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> tracking and eventing (chapters 9, 19) stop inheriting phantom motion — drift is measured at the calibration layer instead of corrupting every downstream ID.</p>
+
+  <h3 class="sub-heading">Category C: Measuring Honestly (UC 06-07)</h3>
+
+  <h3 class="sub-heading">UC 06 — The Plane Approximation Error (The Honest Limit)</h3>
+  <p>A planar homography assumes the world is flat at $Z=0$. Players' feet qualify; the ball never does; and even the ground is only approximately planar (grass crown, court slope). The mechanism is the §6.8 ray geometry: $D' = D \cdot H/(H - z)$, which on the 4.5m end-cam rig mislocalizes by 1.0m at $z=0.5$m, 2.3m at $z=1.0$m, and 7.6m at smash-contact height 2.2m, diverging entirely as $z \to H$ (measured, lab W2.1). This is a dimensional failure, not a statistical one — no RMSE discipline, RANSAC, or distortion correction shrinks it, which is why it earns its own use case: the most expensive calibration errors are the ones no residual can see.</p>
+
+  <figure id="fig-06-15" class="full">
+    <img src="shared/images/c06-uc06-plane-error.png" alt="Side-elevation Z-limit diagram: camera at 4.5 metres, rays to a ball on the ground, a ball one metre up projecting 2.3 metres wrong, and a dashed ray to a lob near camera height diverging. White background, black linework, burnt-orange error markers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.15</span>: UC 06 — Where the Map Is Valid. Feet on the plane project true; anything above it projects wrong by a height-proportional margin. <strong>Pickleball</strong>: players get homography coordinates, the ball stays in pixels until chapter 14's multi-view. <strong>Rugby league</strong>: a bomb hanging above the 20m line projects metres from its true position, and a kick landing in touch reports in-field on a ground-plane map.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> knowing the map's validity boundary prevents the single most common silent error in amateur analytics — projected ball positions fed into speed and placement stats.</p>
+
+  <h3 class="sub-heading">UC 07 — Reprojection Error in Metres (The Metric That Matters)</h3>
+  <p>Papers quote pixels; pipelines quote a single global RMSE; the coach needs metres at a named court region. The mechanism is a conversion and a reporting discipline: per-point error $d_i = \lVert \mathbf{x}_i - \mathbf{H}\mathbf{X}_i \rVert$ in pixels multiplied by the local mm/px scale, then reported as a per-corner table with median and 95th percentile, a named evaluation region (center vs edge), and a held-out validation split — fit on points 1-4, validate on 5-8, because a fitting residual is not a validation error. Global RMSE lies by averaging, and squared loss skews: one 20cm outlier contributes as much as twenty-seven 3.8cm inliers (§6.4).</p>
+
+  <figure id="fig-06-16" class="full">
+    <img src="shared/images/c06-uc07-reprojection-metres.png" alt="Reprojection error in metres: true court corner as black cross, reprojected corner as burnt-orange circle, six-pixel offset arrow converting through 6.4 millimetres per pixel to 3.8 centimetres, with a small per-corner error table. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.16</span>: UC 07 — Pixels Become Metres, Then Become a Table. The only honest calibration number names its point, its region, and its split. <strong>Pickleball</strong>: 3.82cm is 0.285% of court length — and foot-fault tolerance demands the edge-region number, not the center one (measured, E05). <strong>Rugby league</strong>: error is extrapolation-dominated across 30+ metres outside the anchor hull — name the region or the number is marketing.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> a calibration figure a coach can act on — and a number the chapter's downstream claims (chapters 22-23) can safely inherit.</p>
+
+  <h3 class="sub-heading">Category D: Automation and Beyond the Ground Plane (UC 08-10)</h3>
+
+  <h3 class="sub-heading">UC 08 — Automating Point Correspondences (Court-Corner Detection)</h3>
+  <p>Hand-clicking four corners per fixture does not scale to a season of footage; correspondence automation is the production path. The mechanism stacks the detector layer of §6.6 on the solver layer of §6.4: a court-keypoint model (the E11 pipeline; roboflow/sports-class YOLO keypoint heads — MIT; DART-class detectors feeding corner proposals [verify — detector naming for court corners]) emits junction proposals per frame, and RANSAC-DLT with the computed iteration count — 72 iterations at a 50% inlier fraction, 561 at 30% — discards the foot-on-the-kitchen-line outliers. E11's numbers are the reference: 12.4 keypoints/frame, 24.8 equations for 8 unknowns, 4.65cm RMSE, 98.4% valid frames, 11.2 ms/frame (measured, E11).</p>
+
+  <figure id="fig-06-17" class="full">
+    <img src="shared/images/c06-uc08-corner-detection.png" alt="Automated court keypoint detection: perspective pickleball court frame with burnt-orange inlier dots at true junctions, black X marks at false detections, and a RANSAC funnel discarding outliers. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.17</span>: UC 08 — The Detector Feeds the Solver. Learned keypoints propose; RANSAC disposes. <strong>Pickleball</strong>: per-frame revalidation comes free — a bumped rig is caught the day it happens. <strong>Rugby league</strong>: junction scarcity pushes the fit to UC 03's line primitives, but the detector still supplies touch-line and goal-line junctions whenever they enter frame.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> calibration stops being manual preprocessing and becomes a monitored pipeline stage with a validity rate attached.</p>
+
+  <h3 class="sub-heading">UC 09 — The NRL Uprights: Calibrating the Vertical Plane</h3>
+  <p>Conversion quality and bomb apex are height questions, and the ground-plane map cannot answer them — but the goal posts define a second plane. The mechanism: the two uprights and the crossbar lie in a single vertical plane at the goal line, so a second homography $\mathbf{H}_v$ maps that plane from four known points (crossbar junctions, upright tips; 3.05m crossbar height [verify upright geometry against current NRL specs]); ball pixels near the goal line project through $\mathbf{H}_v$ into height above the crossbar. The honest limit: the construction is valid only in the goal-line plane — parallax corrupts kicks judged away from the line [verify — practitioner construction, no published sport benchmark].</p>
+
+  <figure id="fig-06-18" class="full">
+    <img src="shared/images/c06-uc09-uprights-vertical.png" alt="Rugby league goal posts with the uprights-and-crossbar vertical plane shaded faint burnt-orange, four calibration dots at crossbar junctions and upright tips, a kick arc over the crossbar with a height callout. White background, black linework." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.18</span>: UC 09 — A Homography Standing Up. Four known points on the posts calibrate the vertical plane the same way four corners calibrate the ground. <strong>Rugby league</strong>: conversion clearance margins and bomb apex near the posts. <strong>Pickleball</strong>: the net is the pickleball vertical plane — the same trick maps net-tape height (0.86m at center) for the clearance margins that chapter 10's net-margin use case needs.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> height questions near a known vertical structure get answered without waiting for multi-view.</p>
+
+  <h3 class="sub-heading">UC 10 — The Network Camera: Calibration for the Low-Cost Rig</h3>
+  <p>Clubs cannot afford broadcast infrastructure; the realistic deployment is a fixed PoE network camera (~US$100-300 class [verify pricing]) permanently mounted over the court. The mechanism amortizes everything in this chapter: calibrate once — chessboard for $\mathbf{K}$ and distortion, 4+ court points for $\mathbf{H}$ — store the result as YAML per (device, mode) in the capture manifest (chapter 4), and auto-revalidate each session by re-projecting the stored anchors; drift beyond threshold raises an alert and a re-click. The honest caveats: consumer network cameras add H.264 compression artifacts and rolling shutter that a chessboard cannot fix [verify per unit — measure on the actual hardware].</p>
+
+  <figure id="fig-06-19" class="full">
+    <img src="shared/images/c06-uc10-network-camera.png" alt="Low-cost network camera rig: a small bullet camera on a pole overlooking a pickleball court in perspective, with a dashed calibration flow below from chessboard to court corners to a stored config file. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 6.19</span>: UC 10 — Calibrate Once, Re-Check Forever. The fixed mount collapses this chapter's workflow into a one-time cost plus an automated revalidation. <strong>Pickleball</strong>: the permanent club rig feeding the chapter 28 cockpit nightly. <strong>Rugby league</strong>: fixed training-ground cameras — several cheap fixed cams beat one expensive movable one for coverage, precisely because none of them ever needs UC 05's per-frame fit.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> calibration amortized to near-zero per session — court-mapping analytics for the price of a court booking.</p>
+
+  <p><strong>What this adds to the pipeline.</strong> UC 01-04 hand chapter 7 a distortion-corrected, honestly-measured map to make per-frame; UC 05 is chapter 7's subject in miniature; UC 06 draws the boundary that chapter 14's multi-view exists to cross and keeps chapter 12's ball in pixels until then; UC 07's per-corner metre table is the input contract for the spacing and EPV metrics of chapters 22-23; UC 08-10 turn calibration from a ceremony into infrastructure the chapter 28 cockpit can monitor.</p>
+
+  <h2 class="section-title"><span class="section-num">6.9</span> Lab Output (W2.1)</h2>
+  <p>The lab re-measures the book's own homography and adds the honest decomposition:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Measurement</th>
+        <th>Value</th>
+        <th>Finding</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>DLT on the 4 clicked corners</td>
+        <td>0.0cm per corner</td>
+        <td>Exact by construction — 3.82cm is click noise, not algorithm error</td>
+      </tr>
+      <tr>
+        <td>Distortion demo (k1=-0.15)</td>
+        <td>130px corner motion</td>
+        <td>Edge misprojection exceeds the center RMSE by an order of magnitude</td>
+      </tr>
+      <tr>
+        <td>Z-limit (ball 0.9m, 9m from cam)</td>
+        <td>3.24m position bias</td>
+        <td>Single-camera line calls are mathematically wrong without Z</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The lab recipe, end to end: (1) print a chessboard, photograph it at capture distance → $\mathbf{K}$ + distortion via <code>cv2.calibrateCamera</code>; (2) undistort frames BEFORE homography; (3) fit $\mathbf{H}$ with ≥4 points, RANSAC when more are available; (4) report per-corner error, not just RMSE; (5) for ball, bounce, and line work, escalate to multi-view — Z is not recoverable from $\mathbf{H}$. The per-corner table above is the deliverable the whole chapter argues for: the single 3.82cm number survives nowhere in it.</p>
+
+  <h2 class="section-title"><span class="section-num">6.10</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Chessboard calibration on the actual capture rig, then re-measure pb-003 distortion-compensated — the per-corner <em>and</em> per-edge error table that E05 never published.</li>
+    <li>TVCalib on pb-003 via Colab and compare against the hand-clicked 4-point fit; the same notebook on SoccerNet broadcast frames as the rugby proxy.</li>
+    <li>Physical Z verification: ball at known height, measure the projected point, verify the 2.3m bias against the $D' = DH/(H-z)$ prediction.</li>
+    <li>Hartley-normalization ablation: DLT with and without normalization on 4K coordinates, to quantify the conditioning claim on real data.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">6.11</span> Sources</h2>
+  <ul>
+    <li>Hartley &amp; Zisserman, <em>Multiple View Geometry</em> — the camera model, DLT, and normalization (§4.4).</li>
+    <li>Theiner, Muller-Budack, Ewerth — "Unified Sports Field Registration with Lens Distortion Modeling", CVSports@CVPR 2026 Best Paper. https://openaccess.thecvf.com/content/CVPR2026W/CVsports/html/Theiner_Unified_Sports_Field_Registration_with_Lens_Distortion_Modeling_CVPRW_2026_paper.html</li>
+    <li>TVCalib (WACV 2023) — MIT, https://github.com/MM4SPA/tvcalib ; PnLCalib (CVIU 2026) — GPL-2.0, https://github.com/mguti97/PnLCalib ; roboflow/sports — MIT, https://github.com/roboflow/sports ; licenses read from repos 2026-08-30.</li>
+    <li>SoccerNet sn-calibration (no LICENSE file in repo [verify]) — https://github.com/SoccerNet/sn-calibration</li>
+    <li>OpenCV calibration docs (calibrateCamera, Brown–Conrady, findHomography) — https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html ; OpenCV ≥ 4.5 is Apache-2.0.</li>
+    <li>Fischler &amp; Bolles 1981 — RANSAC, canonical citation.</li>
+    <li>USAP Official Rulebook 2026 (court 13.41 × 6.10m, NVZ 2.13m) — https://usapickleball.org/docs/rules/USAP-Official-Rulebook.pdf</li>
+    <li>Lab: <code>lab/w2_lab_calibration_i.py</code> → <code>experiments/c06-calib-i/outputs/calibration-i.json</code>.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="05.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 05</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 05 — Data Engineering for Sport Video</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 05</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 05 — Data Engineering for Sport Video</p>
+        </div>
+      </div>
+    </a>
+    <a href="06.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 06</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 06</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Why pixels lie, how the camera model works, and the Z-limit that forces multi-view</p>
+        </div>
+        <a href="06.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #A2542A;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

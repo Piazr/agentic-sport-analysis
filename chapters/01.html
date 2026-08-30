@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-01" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 01</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">Watching, tagging, modelling, interpreting, acting — and why the field's arguments are really about which verb a tool performs</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">28 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-01-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Reader: You Already Live Here</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-01-1" data-section="s-01-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Reader: You Already Live Here</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-01-1" data-section="s-01-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Reader: You Already Live Here</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">01</span> Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h1>
+    <p class="chapter-subtitle">Watching, tagging, modelling, interpreting, acting — and why the field's arguments are really about which verb a tool performs</p>
+  </header>
+
+<h3 id="s-01-1"><span class="section-num">1.1</span> The Reader: You Already Live Here</h3>
+
+<p class="section-intro">You are the person in a professional team, a performance unit, or a federation who is responsible for AI and cutting-edge technology. You read research papers on a Tuesday, you tried a new vision model on Wednesday, and on Thursday you were asked why the report said what it said. This book is written for that job: a field manual for building a sport-analytics workflow that combines computer vision, LLMs, VLMs, sensors and agentic orchestration — and that can defend every number it produces.</p>
+
+  <p>The job has a specific shape. You sit between coaches who want answers in football language, executives who want to know whether the tooling bill is worth it, and a frontier that ships a new model every month. Your week alternates between maintenance, papers, experiments, and the hardest task of all: defending a number in front of a coach who cares about the decision, not the benchmark. This book treats that meeting as the real acceptance test.</p>
+
+  <p>You also inherit a fragmented stack [source-backed: method brief]: video in one tool, GPS load files in another, medical and wellness data somewhere else, and manual tagging in a spreadsheet. The data exists; the joins do not. A collision spike, a video frame, and a tactical error often live in three systems. That fragmentation is why the book works in both <strong>pickleball</strong> and <strong>Australian Rugby League</strong>: pickleball is the fast fixed-camera build; rugby league is the moving-camera stress test. A method that survives both will usually survive a third sport.</p>
+
+  <h2 class="section-title"><span class="section-num">1.2</span> The Five Verbs</h2>
+  <p>Sport analysis is not one job. It is five distinct jobs sharing the same footage, and most arguments about "AI in sport" are arguments about which verb a given tool performs:</p>
+
+  <figure id="fig-01-01" class="full">
+    <img src="shared/images/ch01-five-verbs.png" alt="The five verbs of sport analytics: Watching, Tagging, Modelling, Interpreting, Acting as a horizontal flow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.1</span>: The Five Verbs. The five jobs of sport analysis — and the pipeline this book builds, stage by stage.</figcaption>
+  </figure>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Verb</th>
+        <th>The Job</th>
+        <th>This Book's Chapters</th>
+        <th>The Common Category Error</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Watching</strong></td>
+        <td>Perception: register where bodies, limbs, and balls are in space and time</td>
+        <td>C04-C16 (capture through video understanding)</td>
+        <td>Believing a detector "sees" when it scores a box</td>
+      </tr>
+      <tr>
+        <td><strong>Tagging</strong></td>
+        <td>Eventing: convert continuous perception into discrete labeled events</td>
+        <td>C17-C19 (schema, annotation, automatic eventing)</td>
+        <td>Confusing a bounding box with a coaching insight</td>
+      </tr>
+      <tr>
+        <td><strong>Modelling</strong></td>
+        <td>Statistical physics: quantify space, value, and expected outcomes</td>
+        <td>C20-C24 (statistics, ratings, value, tactical ML, simulation)</td>
+        <td>Reporting an accuracy number without a confidence interval</td>
+      </tr>
+      <tr>
+        <td><strong>Interpreting</strong></td>
+        <td>Reasoning: extract tactical meaning and a diagnosis</td>
+        <td>C25-C27 (VLMs, narratives, the agent harness)</td>
+        <td>Letting a VLM decide what the semantics mean</td>
+      </tr>
+      <tr>
+        <td><strong>Acting</strong></td>
+        <td>Decision &amp; practice: the coaching call, the drill, the intervention</td>
+        <td>C28-C31 (live cockpit, practice design, hardware, rights)</td>
+        <td>Prescribing a drill from evidence that couldn't support it</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Each verb has a characteristic failure in each of our two sports, and the failures differ in instructive ways. <strong>Watching</strong> fails in pickleball at the ball: a 40-hole polymer ball at 60 km/h crosses a 960-pixel frame in a handful of pixels, and single-frame detection drowns in noise (the measured numbers are in section 1.3). Watching fails in rugby league at the camera: broadcast PTZ means the homography mapping pixels to pitch metres is re-estimated every pan, and twenty-six bodies in a ruck defeat naive trackers. <strong>Tagging</strong> fails in pickleball when "paddle contacted ball" is asserted during an occlusion; it fails in rugby league when a play-the-ball is tagged from a camera still panning to catch up with it. <strong>Modelling</strong> fails in both sports the same way: a precise number on an unverified input is a precise fiction. <strong>Interpreting</strong> fails when a vision-language model is asked what a clip "means" and obliges with fluent tactics for events that never occurred. <strong>Acting</strong> fails when a drill is prescribed off a metric whose error bars are wider than the effect it claims.</p>
+
+  <p><strong>The through-line:</strong> each verb consumes the one before it and cannot skip ahead. Tagging without watching is speculation; modelling without tagging is noise; interpreting without modelling is storytelling; acting without interpreting is guessing. The book's whole architecture is this dependency chain, and its evidence contract (section 1.3, formalized in chapter 2) exists because every arrow in Figure 1.1 is a place where error enters and compounds. A tracking jitter of half a metre becomes a mistagged event, becomes a biased model feature, becomes a confident wrong diagnosis, becomes a Thursday meeting you lose.</p>
+
+  <h2 class="section-title"><span class="section-num">1.2b</span> Case Study: The Five Verbs on a Pickleball Third Shot</h2>
+  <p>Make the chain concrete on the single most analysed shot in pickleball: the third-shot drop. The serving team has returned serve; the rules (the two-bounce rule, in the USA Pickleball rulebook) force them to let the return bounce, and the entire rally hinges on whether the third shot — usually a soft drop into the non-volley zone, the kitchen — lets the serving team reach the kitchen line without being attacked. Here is the same ball, five times:</p>
+
+  <figure id="fig-01-02" class="full">
+    <img src="shared/images/ch01-pickleball-third-shot-pipeline.png" alt="Five-stage pipeline applied to a pickleball third-shot drop: watch, tag, model, interpret, act." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.2</span>: One ball, five verbs. The third-shot drop carried through the full pipeline, from court-calibrated tracking to a drill prescription.</figcaption>
+  </figure>
+
+  <p><strong>Watching.</strong> A fixed camera behind the baseline is calibrated once against the known court geometry — the homography $H$ that maps every pixel to court coordinates, because the court's dimensions are known to the centimetre (chapter 6). Players are detected and tracked; the ball is the hard part. In this book's own ball experiments (C12-lab), single-frame detection of the ball produced a precision-at-50 of 0.042 — forty-eight of every fifty "ball" detections were noise — while a three-frame temporal-difference approach that looks for the accelerating projectile reached 0.814 with 76.2% track continuity [measured: experiments/c12-ball/outputs/metrics.json]. The verb "watching" for a third shot therefore means: court-metric player trajectories plus a ball track that only exists because the pipeline exploits motion, not appearance.</p>
+
+  <p><strong>Tagging.</strong> The continuous tracks become one discrete row in the book's Pickleball Notation (PBN) schema (chapter 17): serve, return, third-shot drop, with the ball's bounce point in court coordinates, the striker's position, and both opponents' kitchen-line positions at contact. The tag is only as honest as the watch: if the ball track dropped out mid-flight, the row says so rather than interpolating silently.</p>
+
+  <p><strong>Modelling.</strong> Accumulate hundreds of tagged third shots and the modelling verb can price the decision every doubles player faces: drop or drive. The model estimates the probability the drop lands attackable (above net height, short of the kitchen) given the return's depth and pace, and the rally-win probability conditional on each choice — with confidence intervals, because chapter 20's statistics discipline treats a bare percentage as an unfinished sentence.</p>
+
+  <p><strong>Interpreting.</strong> A VLM (chapter 25) is never asked "what happened?" — the tagged rows already know. It is asked to translate the model's finding into tactical language: "your drops from behind the baseline off deep returns are landing attackable 40&nbsp;cm high; your drops off short returns are not." The interpreter reasons over verified events; it does not invent them.</p>
+
+  <p><strong>Acting.</strong> The diagnosis becomes a practice intervention (chapter 29): a drill that feeds deep returns and scores the drop's apex height, with the live cockpit (chapter 28) flagging attackable drops in real time during practice. The loop closes where it started — on the court, with a ball.</p>
+  <figure id="fig-01-08" class="full">
+    <img src="shared/images/ch01-pb-third-shot-expanded.png" alt="Expanded pickleball third-shot pipeline: court-calibrated tracking, PBN event row, drop-versus-drive model, VLM translation, apex-scored drill, with chapter numbers on each stage." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.8</span>: The Third Shot, Expanded. The full walkthrough with the book's chapter map on each arrow — C06 calibration, C12 ball tracking, C17 PBN tagging, C20-C22 modelling, C25 interpretation, C28-C29 action — the case study this book re-runs as runnable labs.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">1.2c</span> Case Study: The Five Verbs on a Rugby League Line Break</h2>
+  <p>Now the same five verbs on the play NRL defensive coaches lose sleep over: the line break. An edge ball-carrier — say a centre sweeping behind a decoy runner — splits the defensive line between the opposing second-rower and centre, and forty metres of open field appear. Broadcast footage, moving camera, twenty-six bodies. The stress-test version of every verb:</p>
+
+  <figure id="fig-01-03" class="full">
+    <img src="shared/images/ch01-rugby-linebreak-pipeline.png" alt="Five-stage pipeline applied to a rugby league line break: watch, tag, model, interpret, act." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.3</span>: The same pipeline under broadcast conditions: a line break carried from PTZ tracking to an edge-defense drill.</figcaption>
+  </figure>
+
+  <p><strong>Watching.</strong> There is no fixed rig, so the homography is not calibrated once but re-estimated continuously as the broadcast camera pans and zooms — chapter 6's moving-camera problem, the same one Stats Perform solves with calibration plus semantic segmentation and Sportlogiq solves with a virtual rink template [source-backed: method brief]. Players are tracked through the ruck's occlusion clusters, and identity is resolved by fusing weak visual signals (jersey numbers when visible) with external priors (the roster, the formation, who was at marker) — the identity-by-context trick the pro vendors use, adapted for a laptop (chapter 13).</p>
+
+  <p><strong>Tagging.</strong> The tracks become a row in the NRLSheet set schema (chapter 17): tackle number, play-the-ball location in pitch metres, ruck speed, defensive line shape at the moment of the break, and the gap geometry — the measured distance between adjacent defenders when the ball-carrier crossed the gain line. A tag asserted while the camera was still panning is marked low-confidence rather than silently trusted.</p>
+
+  <p><strong>Modelling.</strong> Chapters 22–24 build the value layer: expected-point value of the field position before and after the break, and the counterfactual question — $\Delta\text{EPV}$ if the edge had held. One hypothesis this book's agent harness carries as a worked example: line breaks occur when edge compression between second-rower and centre drops below roughly three metres [proposed — a practitioner-model threshold to verify against the tagged dataset, not a measured constant]. The modelling verb's job is to turn that hypothesis into a number with error bars, or kill it.</p>
+
+  <p><strong>Interpreting.</strong> The interpreter agent reads the model output against the tactical picture: was the break caused by the defensive spacing, by a slow play-the-ball that let the attack set early, or by the decoy runner holding the inside defender? Three different diagnoses, three different drills — and the VLM is constrained to reason over the tagged rows, not to re-narrate the video from vibes.</p>
+
+  <p><strong>Acting.</strong> The output is an edge-defense drill for Tuesday's session (chapter 29): replicate the spacing failure at walking pace, then at speed, with the same tracking pipeline measuring whether the gap discipline actually improved. The intervention is only as legitimate as the chain underneath it — which is why the chain, not any single model, is the thing this book teaches you to build.</p>
+  <figure id="fig-01-09" class="full">
+    <img src="shared/images/ch01-rl-linebreak-expanded.png" alt="Expanded rugby league line-break pipeline: PTZ camera panning, homography re-estimation, NRLSheet event row, expected-point-value model, edge-defense drill, with chapter numbers on each stage." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.9</span>: The Line Break, Expanded. The broadcast-difficulty version of the same chain — C06 moving-camera calibration, C09/C13 tracking and identity, C17 NRLSheet tagging, C22 expected value, C27 adversarial audit, C29 the drill. Every arrow survives a panning camera or it does not ship.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">1.2d</span> Why the Pipeline Is the Product</h2>
+  <p>Here is the uncomfortable fact the vendor demos skip: the models are not the moat. Across Second Spectrum, SkillCorner, Stats Perform, Sportlogiq, Hudl, Veo, and Pixellot, the same core spine appears [source-backed: method brief]: <em>capture → calibrate → detect → track → resolve identity → detect events → derive metrics → one canonical data spine</em>. Second Spectrum's advantage is the single source of truth, not a magical detector. Catapult is the useful contrast: wearables measure load, not tactics — video says <em>why</em>, wearables say <em>how hard</em>.</p>
+
+  <p>The real moats are infrastructure access, annotation scale, identity resolution, and distribution. That is good news for a team analyst: you may not own the moat, but you can still build the spine. The 4-Rung Ladder names the destination. Most teams are stuck at <strong>Rung 2, the point-tool trap</strong>: disconnected subscriptions, CSV handoffs, and no closed loop. <strong>Rung 3</strong> is the book's target — the five verbs running as one pipeline under an agent harness. <strong>Rung 4</strong> is the honest frontier: a match digital twin and counterfactual simulator.</p>
+
+  <figure id="fig-01-04" class="full">
+    <img src="shared/images/ch01-four-rung-ladder.png" alt="The 4-Rung Sports Agentic Ladder: ad-hoc chat, point-tool trap, agent swarms, digital twin." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.4</span>: The 4-Rung Sports Agentic Ladder. Most programs are stuck at Rung 2; this book is the Rung 3 build manual.</figcaption>
+  </figure>
+
+  <p>The verb framing and the ladder framing are the same observation from two angles: tools are verbs, pipelines are grammar. A team that buys five Rung-2 tools owns five verbs with no sentence. The product this book teaches you to build is the sentence.</p>
+  <h2 class="section-title"><span class="section-num">1.2e</span> Case Study: Buy or Build — The Sensor Graveyard</h2>
+  <p>The question arrives as a purchase order. A pickleball program is offered a smart-paddle pre-order that promises power, speed, and spin over Bluetooth; an NRL club weighs a wearables renewal against building the vision stack in-house. It is the same decision in both sports, and it has the same failure mode available: buying a data stream that dies with someone else's server.</p>
+
+  <p>The consumer racquet-sensor market is the controlled experiment, and it is already finished. Zepp Tennis went dark around 2020; Babolat Play end-of-lifed on 2021-12-31; the Sony Smart Tennis Sensor followed on 2021-09-30; HEAD's connected racquets, Zepp-based under the hood, died with Zepp — four products, one architecture: a proprietary cloud between the sensor and the athlete, so a single business decision bricked every unit on the same day [source-backed: hardware brief; the full timeline is chapter 30]. The survivors tell the other half of the rule. The Catapult Vector vest persists in rugby league because the buyer is the club, the data lands in the athlete-management system over CSV/API export, and load monitoring is embedded in periodization — institution, exit, mandate. The smart ball survives only where a league holds the license (the Sportable Gilbert in rugby; Kinexon's 500 Hz IMU in the Adidas Trionda at the FIFA World Cup) [source-backed: hardware brief].</p>
+
+  <figure id="fig-01-10" class="full">
+    <img src="shared/images/ch01-buy-vs-build.png" alt="Buy-versus-build decision tree: server-dependent sensors (Zepp 2020, Babolat 2021, Sony 2021) bricked, while open-export wearables and camera vision survive." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.10</span>: The Buy-vs-Build Test. Two questions — who holds the contract, and where does the data land — separate the graveyard from the survivors. Chapter 30 carries the full inventory.</figcaption>
+  </figure>
+
+  <p>The pipeline path for the decision runs through four chapters. Chapter 5 sets the spine rule the survivors all obey: open formats, queryable on your own hardware. Chapter 4 prices the camera rig that makes vision the default build. Chapter 30 inventories every sensor tier against the export test, and chapter 31 prices the rights and deployment reality. The extracted rule: <strong>data exits matter more than data entry.</strong> Buy where no vision substitute exists — a camera cannot measure how hard a 105 kg prop accelerated into contact, so rugby league collision load is a buy. Build where vision already answers the question — shot speed, placement, spacing — because the camera the player already owns out-distributes the sensor they have to charge. For pickleball there is no credible smart paddle at all: the only attempt is a pre-order with no independent validation [verify], so the paddle question is a build-by-default.</p>
+
+  <p><strong>The payoff.</strong> A two-question procurement test — <em>who holds the contract? where does the data land?</em> — that would have kept four dead products out of the bag, and that converts the budget meeting from a vendor pitch into an architecture review.</p>
+
+  <h2 class="section-title"><span class="section-num">1.3</span> The Evidence Contract, Announced</h2>
+  <p>Chapter 2 formalizes it; every chapter enforces it. The short version: <strong>a claim is only as good as the artifact backing it.</strong> Every quantitative statement in this book carries one of five labels — <em>measured</em> (produced by the book's own labs, artifact on disk), <em>source-backed</em> (traceable to a named external source), <em>concept-transfer</em> (verified in an adjacent domain, pending here), <em>proposed</em> (a hypothesis or practitioner heuristic, not yet measured), or <em>unknown</em> (the honest answer). A paragraph with an unlabeled number fails review; that is the Claim-Evidence-Reasoning discipline applied to the book itself.</p>
+
+  <p>This book's own build is the proof the contract is necessary. During assembly it caught its predecessor quoting transcript values that contradicted the measured files: an E12 result quoted as 0.882 → 0.303 when the artifact says 0.64 → 0.22; an E03 pose speed of 39 fps when the measurement file says 82 fps [measured: experiments/e03-pose/outputs/metrics.json]; an aerodynamics statement that was dimensionally wrong. Those corrections are the method at work, and they are why the evidence contract is chapter 2, before any technique.</p>
+
+  <p>Three measured anchors make the contract concrete. On the reference pickleball clip (pb-003), generic YOLO11n person detection yields 69 raw boxes; court-filtering rejects 84% as noise, leaving 11 [measured, VERIFIED: claims register C-01]. Zero-prompt SAM segmentation returns 51 masks but costs 10.7 seconds per frame on the reference M4 Max [measured: experiments/c10-segmentation/outputs/metrics.json]. And the ball wall from section 1.2b — 0.042 precision single-frame versus 0.814 with temporal reasoning [measured: C12-lab] — shows why the failure belongs to the verb, not the detector brand.</p>
+
+  <figure id="fig-01-05" class="full">
+    <img src="shared/images/ch01-experiment-ladder.jpg" alt="The book's experiment ladder: measured claims E01 through E13 chained in dependency order." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.5</span>: The experiment ladder. Every claim in the book resolves to a runnable lab and an artifact on disk; chapter 32 is the runner.</figcaption>
+  </figure>
+
+  <p>The contract's enforcement machinery is deliberately boring: a claims register (claim → experiment → artifact path, with empty cells marked UNVERIFIED), labs that run in CI so a broken lab is a false claim (the nbdev discipline: prose, runnable code, and tests in one artifact), and adversarial review where a second pass tries to break each argument before publication. Section 1.4 explains who performs that review, because in this book it is not always a human.</p>
+  <h2 class="section-title"><span class="section-num">1.3b</span> Case Study: The Honest Failure — A Hallucination, Exhibit A</h2>
+  <p>Why does the contract exist at all? Because the shortcut is so tempting. VLMs are fluent, frames are cheap, and "just ask the model what happened" feels like a pipeline. Experiment E07 tried exactly that: six still frames from the reference pickleball clip (pb-003), one prompt — "describe only what is directly observable" — and a small local VLM (Qwen2.5-VL-3B) [measured: experiments/e07-vlm-narration/outputs/metrics.json]. No watching, no tagging, no modelling. Straight to interpreting.</p>
+
+  <p>The measured result is the exhibit. The adversarial audit (E13) found <strong>4 hallucinated events in 6 event claims — a 66.7% hallucination rate</strong>, status: UNSAFE FOR COACHING [measured: experiments/e13-vlm-adversarial-loop/outputs/metrics.json]. The raw narration is kept on disk as evidence, degeneration included: its "not safe to claim" list loops the same sentence dozens of times, which is what a model with no grounding does when asked to be careful. Then the same six frames went through the multi-agent generator–critic loop, this time with the PBN coordinate summary (chapter 17's tagged rows) attached. The critic cross-referenced every generated verb against the velocity and zone tables: <strong>4 claims falsified and stripped, 0 retained, 0.0% hallucination</strong>, status: VERIFIED &amp; PUBLICATION-SAFE [measured: same artifact]. Same model class, same frames — the only change was the loop.</p>
+
+  <table>
+    <thead>
+      <tr><th>Architecture</th><th>Input</th><th>Hallucinated Events</th><th>Rate</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Single-agent raw frames (E07)</td><td>6 stills only</td><td>4 of 6 claims</td><td>66.7%</td><td>UNSAFE FOR COACHING</td></tr>
+      <tr><td>Generator–critic loop (E13)</td><td>6 stills + PBN coordinate summary</td><td>0 retained (4 stripped)</td><td>0.0%</td><td>VERIFIED &amp; PUBLICATION-SAFE</td></tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-01-11" class="full">
+    <img src="shared/images/ch01-hallucination-exhibit.png" alt="Hallucination exhibit: left panel, a VLM speech bubble over pickleball frames with invented events crossed out and a 66.7 percent stamp; right panel, a critic agent checking claims against a coordinate table, 0.0 percent." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.11</span>: Exhibit A. Six frames, two architectures: raw VLM narration hallucinates two of every three events; the coordinate-grounded critic loop strips all four false claims. Measured in E07/E13 — the reason the contract is chapter 2.</figcaption>
+  </figure>
+
+  <p>The rugby league version is worse, not better. A broadcast clip mid-pan gives a VLM motion blur and twenty-six partially occluded bodies, and the model will still narrate fluently — inventing a strip, a knock-on, a defensive fold that never occurred. The broadcast variant of the critic therefore checks camera pan velocity and track-identity switches before any event claim is allowed through [proposed — the harness chapters carry the broadcast loop; measured to date only on pb-003]. The pipeline path is the point: chapter 17 supplies the rows, chapter 25 supplies the model, chapter 27 supplies the critic, and the failure lives exactly where section 1.2 said it would — interpreting without modelling is storytelling.</p>
+
+  <p><strong>The payoff.</strong> The gap between unsafe and publication-safe was not a bigger model; it was a loop with a coordinate table. A 3B-parameter model plus a critic beat the same model alone by 66.7 points of hallucination. That is the cheapest accuracy in the book, and it is why no narrative in these pages ships ungrounded.</p>
+
+  <h2 class="section-title"><span class="section-num">1.4</span> The Agent Harness, Announced</h2>
+  <p>This book is written for humans <strong>and</strong> agents, and the agent path is structural, not decorative. The reason is a trio of failure modes documented in the Teamwork research on multi-agent analysis loops [source-backed: Teamwork brief]: <strong>agreement bias</strong> (a single model accepts its own noisy detections as ground truth), <strong>hallucination cascades</strong> (a VLM invents an unobserved event and builds fluent tactical advice on the false premise), and <strong>premature convergence</strong> (the loop settles on generic coaching filler instead of a bounded insight). Every one of these is a pipeline verb failing silently — watching lying to tagging, interpreting lying about modelling — and the fix is the same as the fix for human analysis: separation of duties.</p>
+
+  <p>Chapter 27 defines the harness: eight roles — capture, perception, eventing, model, interpreter, critic, oracle, gatekeeper — each with scoped tools, arranged so that claims are generated by one agent, attacked by a second, and verified against artifacts by a third before a human gate. The Teamwork loop is the operating cycle: <em>hypothesis generation (divergence) → adversarial critique (falsification) → oracle execution (verification against ground truth) → synthesis (recombination)</em>. Figure 1.6 shows where the agents sit on the five-verb pipeline; figure 1.7 shows the loop itself.</p>
+
+  <figure id="fig-01-06" class="full">
+    <img src="shared/images/ch01-agent-in-pipeline.png" alt="Agent roles mapped onto the five-verb pipeline, with critic and oracle feedback loop and a human gate." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.6</span>: Agents in the pipeline. Perception, eventing, model, interpreter and coaching agents staff the verbs; the critic and oracle agents patrol every arrow; the human gatekeeper holds the final decision.</figcaption>
+  </figure>
+
+  <figure id="fig-01-07" class="full">
+    <img src="shared/images/ch01-teamwork-loop.png" alt="The Teamwork research loop: hypothesis, adversarial critique, oracle verification, synthesis, with a human gate at the center." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.7</span>: The Teamwork loop. Divergence, falsification, verification, synthesis — with the human as lead investigator, not spectator.</figcaption>
+  </figure>
+
+  <p>The dual-sport examples make the roles concrete. Pickleball: the model agent proposes that kitchen pressure is predictable from paddle angle and lateral spacing roughly a second before the speed-up; the critic agent attacks the premise — was the paddle angle occluded by the striker's body, was the ball actually in the kitchen; the oracle agent re-projects the tracked feet against the calibrated court plane and the known non-volley-zone line to confirm or kill the claim geometrically. Rugby league: the model agent proposes the sub-three-metre edge-compression threshold from section 1.2c; the critic checks broadcast-specific artifacts — camera pan velocity at the moment of the break, track-identity switches inside the ruck; the oracle re-estimates the homography across the zoom change to verify the pitch-metre scaling the threshold depends on [proposed worked example; the harness chapters carry it end to end]. In both sports the pattern is identical: the agent that generates never grades its own work.</p>
+
+  <p>The book-as-spec design follows from this: an agent can read the chapter 17 schema, run the chapter 32 labs, query the chapter 5 one-spine, and answer only through the chapter 27 critic. Chapters 27 and 34 define the harness and the two reading paths; the reason they exist is that the pipeline's consumers increasingly are not human, and a pipeline that cannot be audited by an agent cannot be trusted by one either.</p>
+  <h2 class="section-title"><span class="section-num">1.4a</span> Case Study: The Harness Carries One Claim End to End</h2>
+  <p>Section 1.4 announced the roles; here is one claim travelling through all of them. Take the rugby league hypothesis from section 1.2c: <em>line breaks occur when edge compression between second-rower and centre drops below roughly three metres</em> [proposed — practitioner threshold, unverified]. A single agent would check a few clips, find confirming examples, and hand a coach a number. Here is what the harness does instead.</p>
+
+  <p>The <strong>perception agent</strong> extracts the tracks (chapters 9 and 13) and discloses its uncertainty — identity switches inside the ruck, frames lost to the pan. The <strong>tactical modeler</strong> converts the tracks to pitch metres through chapter 6's re-estimated homography and computes the edge gap at every play-the-ball, tagging the moments it cannot measure rather than interpolating. The <strong>critic agent</strong> attacks the premise: is the apparent compression a camera artifact — pan velocity at the moment of the break inflating apparent spacing? Are the "breaks" a tagging selection effect? The <strong>oracle agent</strong> verifies the scaling the whole claim rests on, re-projecting known pitch markings across the zoom change. Only then does the <strong>coaching translator</strong> draft the drill, and the <strong>human gatekeeper</strong> signs or kills it. The pickleball parallel runs identically: the kitchen-pressure hypothesis — paddle angle plus lateral spacing roughly a second before the speed-up — with the oracle re-projecting tracked feet against the known non-volley-zone line to confirm positions geometrically [source-backed: Teamwork brief].</p>
+
+  <figure id="fig-01-12" class="full">
+    <img src="shared/images/ch01-agent-harness-case.png" alt="Agent harness carrying one claim: perception, modeler, critic, oracle, and coaching agents around the five-verb pipeline, with a human gatekeeper at the end and a claim card moving through." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.12</span>: One Claim Through the Harness. The edge-compression hypothesis carried by six roles — the generator never grades its own work, and the human gatekeeper holds the final decision. Chapters 27 and 34 make this runnable.</figcaption>
+  </figure>
+
+  <p>The promotion gate is the measurable part. A claim enters the book or the dashboard only with an artifact on disk, an explicit failure boundary, and a documented adversarial audit [source-backed: Teamwork brief]. The measured existence proof that the loop earns its keep is E13 from section 1.3b: every hallucinated claim stripped before publication, 66.7% → 0.0% [measured: experiments/e13-vlm-adversarial-loop/outputs/metrics.json]. Chapter 27 defines the eight roles and their scoped tools; chapter 34 carries the agent recipes so the loop above is a re-runnable procedure, not a paragraph.</p>
+
+  <p><strong>The payoff.</strong> The claim that survives the harness arrives with its scars visible — what was checked, what was stripped, what remains proposed. A coach can attack it, and the attack lands on evidence instead of on you.</p>
+
+  <h2 class="section-title"><span class="section-num">1.4b</span> What This Book Will Not Cover</h2>
+  <p>A field manual is defined by its exclusions. This book does not cover:</p>
+  <ul>
+    <li><strong>Vendor procurement or camera-rights deals.</strong> Those are business moats, not chapter topics.</li>
+    <li><strong>Training foundation models from scratch.</strong> The default here is fine-tune or prompt an existing model.</li>
+    <li><strong>Full sport-science physiology.</strong> Chapters 29–30 touch workload only where it joins the video pipeline.</li>
+    <li><strong>Officiating automation.</strong> The pipelines inform; they do not replace referees.</li>
+    <li><strong>Betting products.</strong> Expected-value models are used for coaching decisions, not wagering.</li>
+    <li><strong>A buyer's guide.</strong> Commercial tools appear as state-of-the-art references, not shopping advice.</li>
+  </ul>
+  <p>The rule behind every exclusion is simple: if a team's AI person cannot build, verify, and defend it with their own footage and hardware, this book will name the boundary instead of pretending otherwise.</p>
+
+  <h2 class="section-title"><span class="section-num">1.5</span> How to Read This Book</h2>
+  <p>Read in wave order if you are building the stack end to end: foundations (C01-C05), watching (C04-C16), tagging (C17-C19), modelling (C20-C24), interpreting (C25-C27), acting (C28-C31), systems (C32-C34). If you are role-based, chapter 34 gives three shorter paths: coach, analyst, engineer. Every chapter keeps the same spine: practitioner question, fundamentals, state of the art, pickleball lab, rugby transfer note, hardware flag, sources.</p>
+
+  <p>Two reading rules matter. Read the transfer note even if you only care about one sport; it is where hidden assumptions surface. And when a number matters, trace it back to the artifact before you repeat it.</p>
+
+  <h2 class="section-title"><span class="section-num">1.6</span> How to Use the Book as a Practitioner (The Front-Door Recipe)</h2>
+  <p>The recipe below is the shortest path from this chapter to a defended number. It assumes nothing but the footage you already have and the hardware you already own:</p>
+  <ol>
+    <li><strong>Start with chapter 2</strong> (the evidence contract) before any model — the discipline is the tool.</li>
+    <li><strong>Follow the path for your role</strong>: coach (one hour: C01, C03, C28, C29, C34), analyst (one weekend: C01-C05, C20, C26, C32), engineer (two weeks: the wave order).</li>
+    <li><strong>Run the labs</strong> — every chapter's evidence is a runnable script; the runner (C32) is the single entry point.</li>
+    <li><strong>Identify your Colab lanes</strong> — GPU-only tasks (TrackNetV4 fine-tune, GVHMR 3D, triangulation) are flagged per chapter.</li>
+    <li><strong>Check the hardware flag</strong> — M4 Max (the book's reference machine) vs Colab (the GPU lanes).</li>
+    <li><strong>Re-verify before citing the frontier</strong> — chapter 33's staleness rule: a fast-moving claim older than six months is a history claim.</li>
+    <li><strong>Contribute back</strong> — the dataset, the NRLSheet schema, the rugby simulator, the agent recipes (chapter 34).</li>
+  </ol>
+
+  <pre><code class="language-text">Front-door checklist (one page, pin it above the desk):
+  [ ] Which verb is this tool/model actually performing? (Figure 1.1)
+  [ ] Which rung is my program on today? (Figure 1.4)
+  [ ] What artifact backs the number I am about to quote? (claims register)
+  [ ] Verified in pickleball, rugby, or marked pending? (transfer note)
+  [ ] Who reviewed it adversarially — human, critic agent, or nobody? (C27)
+  Reference: experiments/*/outputs/metrics.json is the ground truth, always.</code></pre>
+  <h2 class="section-title"><span class="section-num">1.6b</span> Case Study: Earning Trust — The First Ninety Days</h2>
+  <p>The recipe above is mechanical. This case is the human one: how a new AI person inside a professional team turns the pipeline into trust. The setting is interchangeable — a performance-analytics hire at an NRL club, or the analyst at a high-performance pickleball program — because the starting condition is the same: zero credibility balance, and a head coach whose prior is every vendor demo that overclaimed. Trust is not granted with the job title; it accrues one defended number at a time.</p>
+
+  <p><strong>Weeks 1–2: show a receipt.</strong> Pick one number the coach already believes and re-derive it with an artifact — for example, person detection on practice footage: 69 raw boxes, 84% rejected by court-filtering, 11 real players remaining [measured, VERIFIED: claims register C-01]. The point is not the number; it is that the coach watches you produce the receipt. <strong>Weeks 3–6: the lab habit.</strong> Every claim in the weekly report carries its artifact path, and when a lab breaks you say so in the meeting — chapter 32's CI discipline (a broken lab is a false claim) applied to your own credibility. <strong>Months 2–3: the first intervention.</strong> One drill prescription with error bars and a stated failure boundary (chapter 29), measured again after a fortnight — and reported honestly even when the effect is smaller than hoped.</p>
+
+  <figure id="fig-01-13" class="full">
+    <img src="shared/images/ch01-trust-timeline.png" alt="Ninety-day trust timeline for a team AI analyst: week one receipt, weekly lab reports, first drill prescription with error bars, coach review meeting." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 1.13</span>: The Trust Ledger. Ninety days of defended numbers: receipt, lab habit, intervention with error bars. The coach ends up trusting the chain — which outlasts any individual analyst.</figcaption>
+  </figure>
+
+  <p>The two sports differ in tempo, not in mechanics. In pickleball the loop runs in days — fixed camera, a repeating opponent pool, a drill's effect visible inside a week — so the trust ledger fills fast. In rugby league the loop runs in weeks and the stakes are selection and welfare: a collision-load claim joins wearable and video data (chapter 30's three-stream fusion), and the same discipline — artifact, interval, failure boundary — is what lets it survive the meeting with the head coach and the physio [source-backed: hardware/fusion brief]. In both, the failure mode to avoid is the big early promise: one overclaimed number spends trust you have not earned yet.</p>
+
+  <p><strong>The payoff.</strong> Done right, the coach never ends up trusting <em>you</em> — they end up trusting the chain: the artifact, the interval, the audit. That is the only kind of trust that survives you changing jobs, and it is the reason this book teaches a pipeline instead of a personality.</p>
+
+  <h2 class="section-title"><span class="section-num">1.7</span> Key Takeaways</h2>
+  <ol>
+    <li><strong>Five verbs, one chain</strong>: watching → tagging → modelling → interpreting → acting; never skip a link, because every arrow is where error compounds.</li>
+    <li><strong>Pickleball is the fast path; Rugby League is the stress test</strong> — the third shot and the line break are the same pipeline at two difficulties, and the stack must survive both.</li>
+    <li><strong>The pipeline is the product</strong>: vendors share one spine (calibrate → detect → track → identify → events → metrics → one schema); the moats are infrastructure and distribution, not models, which means a team can build the spine itself.</li>
+    <li><strong>Evidence is the method</strong>: every claim resolves to a runnable lab and a measured artifact (chapter 2), labeled measured, source-backed, concept-transfer, proposed, or unknown.</li>
+    <li><strong>The book is a spec for agents too</strong> — the harness (chapter 27) makes it executable, and the Teamwork loop exists because single-agent analysis fails by agreement bias, hallucination cascade, and premature convergence.</li>
+    <li><strong>Know the exclusions</strong>: no procurement, no foundation-model training, no physiology, no officiating automation, no betting — the book builds what a team can defend.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">1.8</span> Sources</h2>
+  <ul>
+    <li>The workflow dossier (agentic-sport-analysis/book-research/Research Briefs, 2026-08-10 method brief) — the verified pro-pipeline facts (Second Spectrum, SkillCorner, Stats Perform, Sportlogiq, Hudl, Veo, Pixellot, Catapult; the calibrate→detect→track→identify→events→metrics→spine core) this chapter's five-verb structure draws on. Sources cited there include skillcorner.com, statsperform.com, geniussports.com, catapult.com, and github.com/roboflow/sports.</li>
+    <li>The research method brief (fast.ai/nbdev, Claim-Evidence-Reasoning, evaluation-driven development) — the anti-shallowness triad the book's labs implement; https://nbdev.fast.ai.</li>
+    <li>Teamwork: When AI Becomes a Research Partner (Google Antigravity Blog, 2026-08-27) — the multi-agent research loop, its failure-mode triad, and the six-role team structure adapted into chapter 27's harness; https://antigravity.google/blog/teamwork-when-ai-becomes-a-research-partner.</li>
+    <li>The 4-Rung Sports Agentic Ladder and Domain Architecture (Technology Dossiers) — the point-tool-trap analysis and the Rung 1–4 maturity framing in section 1.2d.</li>
+    <li>The claims register (agentic-sport-analysis/state/claims-register.json) — the measured claims the evidence contract audits, including C-01 (pickleball-yolo-baseline) cited in section 1.3.</li>
+    <li>Lab artifacts cited in this chapter: experiments/e03-pose/outputs/metrics.json (82 fps pose measurement), experiments/c10-segmentation/outputs/metrics.json (SAM cost), experiments/c12-ball/outputs/metrics.json (the ball wall). USA Pickleball rulebook (two-bounce rule) — https://usapickleball.org.</li>
+    <li>Lab artifacts for the case studies: experiments/e07-vlm-narration/outputs/metrics.json + narration.txt (the E07 single-agent narration, kept as Exhibit A) and experiments/e13-vlm-adversarial-loop/outputs/metrics.json (66.7% → 0.0% hallucination under the generator–critic loop), cited in sections 1.3b and 1.4a.</li>
+    <li>Hardware &amp; sensors research briefs (agentic-sport-analysis/book-research/Research Briefs, 2026-08-30 and 2026-09-04) — the racquet-sensor graveyard dates (Zepp ~2020, Babolat Play EOL 2021-12-31, Sony EOL 2021-09-30, HEAD with Zepp), the export-test survivor analysis (Catapult, STATSports, Polar, VALD, Hawkin), and the smart-ball league-license pattern cited in section 1.2e; full inventory in chapter 30.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="01.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 01</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 01</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">Watching, tagging, modelling, interpreting, acting — and why the field's arguments are really about which verb a tool performs</p>
+        </div>
+        <a href="01.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-19" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 19</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">From coordinate streams to coach-ready events without hallucinating a single one</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">36 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-19-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Three Layers of Eventing</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-19-1" data-section="s-19-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Three Layers of Eventing</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-19-1" data-section="s-19-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Three Layers of Eventing</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">19</span> Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h1>
+    <p class="chapter-subtitle">From coordinate streams to coach-ready events without hallucinating a single one</p>
+  </header>
+
+<h3 id="s-19-1"><span class="section-num">19.1</span> The Three Layers of Eventing</h3>
+
+<p class="section-intro">Eventing is three layers: <strong>deterministic</strong> rules on coordinates, <strong>learned</strong> ML heads for ambiguous distinctions, and <strong>hybrid</strong> routing with a human queue underneath. The engineering rule is: use the deterministic gate wherever geometry decides the event; use the model only where it doesn't; route everything uncertain to a person.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Claim</th>
+        <th>Pickleball</th>
+        <th>Rugby league</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. State machine</td>
+        <td>Facts with proof obligations</td>
+        <td>Kitchen foot fault: foot point in NVZ at contact (E05/E11 homography, RMSE 3.82–4.65 cm, measured)</td>
+        <td>Six-tackle count, PTB, 10 m retreat</td>
+      </tr>
+      <tr>
+        <td>2. ML classifier</td>
+        <td>Probabilities with calibration</td>
+        <td>Drive vs drop vs dink from the contact crop</td>
+        <td>Head-contact tackle screen (Bath et al. 2025: ~68% sensitivity / 84% specificity, source-backed)</td>
+      </tr>
+      <tr>
+        <td>3. Hybrid + queue</td>
+        <td>Owned policy</td>
+        <td>E06 windows: <code>review_required=yes</code>, <code>coaching_claim_allowed=no</code> (measured)</td>
+        <td>Every positive screen + random negatives to human review</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>FIFA's automated event-data initiative and Stats Perform's Opta pipeline both use this shape: machines resolve the bulk, humans handle the residue. The book's twist is making the queue a first-class output state — an uncertain event is emitted, marked, and queued, so uncertainty is visible as work-in-queue rather than hidden as silence.</p>
+
+  <figure id="fig-19-01" class="full">
+    <img src="shared/images/eventing-pipeline.png" alt="Eventing pipeline: tracks to state machine to confidence scorer to review queue (8-12 cap) to corrected rows loop." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.1</span>: The Eventing Pipeline. State machine, confidence scorer, review queue, corrected rows — with the loop that makes the next run better.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.1b</span> What Counts as an Event? Corpus Semantics</h2>
+  <p>An event is a timestamped, evidence-backed state transition, not a frame label. A dink is the transition <em>rally-continues → rally-continues</em> through a contact with specific geometry. A tackle is <em>play-active → play-paused</em> via ball-carrier containment. That framing means a "dink" detected while the automaton is in SERVE state is a contradiction, not a mislabel — the correct output is UNKNOWN plus a queue entry.</p>
+  <p>The hierarchy is shared across sports. Pickleball: contact (E10, 0.814 precision, measured) → shot → rally → point. Rugby league: play-the-ball → tackle → set → try/kick/turnover. E06's windows speak only to the rally/set level — "four players co-persisted for 8.33 s." The row states which level it addresses, and the season summary never aggregates across levels silently.</p>
+
+  <h2 class="section-title"><span class="section-num">19.2</span> Deterministic From Coordinates: The E06 Contract</h2>
+  <p>E06's output is honest and sparse. It ingests E05's court tracks, applies a ≥12 m/s teleport filter, summarizes 7 tracks (median 0.8 m/s), and promotes contiguous runs of ≥4 on-court tracks ≥30 frames (1 s) to candidate windows.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Candidate</th>
+        <th>Window</th>
+        <th>Duration</th>
+        <th>Basis</th>
+        <th>Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>e06-c001</td>
+        <td>frames 67-317</td>
+        <td>8.33s</td>
+        <td>on-court track count ≥4 (movement proxy only)</td>
+        <td>real-experiment-output</td>
+      </tr>
+      <tr>
+        <td>e06-c002</td>
+        <td>frames 493-878</td>
+        <td>12.83s</td>
+        <td>on-court track count ≥4 (movement proxy only)</td>
+        <td>real-experiment-output</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Both rows say <code>coaching_claim_allowed=no</code> and E06's own verdict: "no ball, contact, or shot-type claim is derivable from feet tracks alone." Nine hundred frames produce exactly two movement-fact windows. The rugby league analogue is identical restraint: the count, PTB, and retreat distance are deterministic, but a line break or dominant tackle from feet alone is refused.</p>
+
+  <h2 class="section-title"><span class="section-num">19.2b</span> The Pickleball Rally Automaton</h2>
+  <p>The rule is: <strong>a transition fires only when its guard's evidence exists.</strong></p>
+  <ul>
+    <li><strong>IDLE → SERVE</strong>: ball stationary, then below-waist contact with striker's feet behind the baseline.</li>
+    <li><strong>SERVE → RETURN</strong>: second contact, receiving side, after bounce; serve-in-box verified or FAULT.</li>
+    <li><strong>RETURN → THIRD</strong>: serving side's third contact. The automaton owns <em>that</em> it is shot three; ML owns <em>which kind</em>.</li>
+    <li><strong>THIRD → RALLY</strong>: contacts alternate sides. Same-side consecutive contacts route to UNKNOWN, never a silent label.</li>
+    <li><strong>RALLY → FAULT / POINT</strong>: ball out, net, double bounce, or kitchen foot fault (contact instant ∧ foot point in NVZ polygon).</li>
+  </ul>
+  <p>Each state carries a <code>ball_visible</code> flag. When it drops — and on pb-003 it often does, given E04's ball wall (1,082 detections, median confidence 0.1125, measured) — the automaton parks the segment as a review window rather than guessing the next transition.</p>
+
+  <figure id="fig-19-03" class="full">
+    <img src="shared/images/ch19-pickleball-rally-automaton.png" alt="Pickleball rally state machine: serve, return, third shot, dink/volley loop, fault and point terminals, no-skip arrow, UNKNOWN diamond." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.3</span>: The Pickleball Rally Automaton. Grammar owns sequence; classifier owns type; the struck-through arrow is a false positive the machine refuses to emit.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.2c</span> The Rugby League Set Automaton</h2>
+  <p>Rugby league is more automaton-friendly because the sport is a counter with rules.</p>
+  <ul>
+    <li><strong>SET_START → TACKLE_1</strong>: first ball-carrier containment after restart or PTB.</li>
+    <li><strong>TACKLE_k → PTB → TACKLE_(k+1)</strong>: carrier grounded, ball played backward with foot, defenders 10 m retreat — all geometry-checkable.</li>
+    <li><strong>SIX_AGAIN reset</strong>: referee's whistle/audio proposes the count restart; vision confirms it.</li>
+    <li><strong>TACKLE_5/6 → KICK | TRY | TURNOVER</strong>: KICK is near-rule from the ball track; TRY is grounding in-goal (human-confirm before print); TURNOVER is count expiry.</li>
+  </ul>
+  <p>The layer boundary differs from pickleball: the automaton owns the count, PTB timing, retreat, and kick; the ML+queue layer concentrates on the head-contact welfare screen and try adjudication under bodies. The boundary is decided by epistemics, not by model availability.</p>
+
+  <figure id="fig-19-04" class="full">
+    <img src="shared/images/ch19-rugby-set-automaton.png" alt="Rugby league set state machine: tackle count loop, PTB nodes, six-again reset, kick/try/turnover terminals, UNKNOWN diamond." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.4</span>: The Rugby League Set Automaton. The sport is a counter with rules — the machine owns the count and the kick; the welfare screen and the try go to the queue.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.2d</span> The Transition Table Is the Design Artifact</h2>
+  <p>Implement the automaton as a <strong>table, not code</strong>. Rows are current states, columns are guards, cells are next state + event + evidence fields. This makes it auditable: "Why third-shot drop?" answers in one cell. It makes it diff-able: changing the kitchen-foot-fault guard is one cell, and the regression fixtures re-run. And it makes it complete: empty cells are owned gaps, not bugs.</p>
+  <p>Failure modes are table-shaped. <strong>Guard gaps</strong> fire UNKNOWN, never nearest-state — nearest-state fallback is how a tracker glitch at the kitchen line becomes a phantom dink. <strong>Guard overlap</strong> is resolved by explicit priority in the table header, with adjudication events outranking rally events. <strong>Evidence lag</strong> holds transitions pending for a bounded window; the pending state is visible in the queue.</p>
+
+  <figure id="fig-19-05" class="full">
+    <img src="shared/images/ch19-transition-table.png" alt="Transition table grid: rows serve, return, dink, volley; columns ball-in, contact, feet-ok, ball-out; cells hold next-state names; dink to fault highlighted." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.5</span>: The Transition Table. Every cell is an auditable answer to "why did the system say that?" — every empty cell is an owned gap.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.2e</span> Why the Grammar Suppresses False Positives</h2>
+  <p>E22 (experiments/e22-humans-above-the-loop, measured) demonstrates the grammar's power. A 1,000-event constructed stream across both sports was routed through the state machine plus a p &lt; 0.05 significance gate. Of 1,000 inputs, only 119 alerts surfaced; <strong>88.1% were structurally suppressed</strong> at 0.08 ms processing cost. The split is dual-sport by design: pickleball produced 27 NVZ foot-fault warnings (p = 0.012, foot 2.4–4.0 cm from the kitchen line) and 25 middle-seam exposures (p = 0.034, lateral gap expanding from 2.7 m toward 4.1 m); rugby league produced 32 dog-leg ruptures and 35 offside non-compliance alerts at the 10 m line.</p>
+  <p>Most suppression is structural, not statistical: the 881 silent events were grammar violations — a "speed-up" nominated in SERVE state, a "tackle seven," a contact with no legal predecessor. A pure per-window classifier must label everything it sees; the state machine rejects what the rules forbid. What does surface carries a p-value against the team's baseline, which is the difference between an alert a coach acts on and one they mute. Caveat: E22 is a constructed stream, not a season; 88.1% is a demonstrated ceiling, not a guaranteed rate.</p>
+
+  <figure id="fig-19-08" class="full">
+    <img src="shared/images/ch19-false-positive-curve.png" alt="False-alarm curve descending as grammar constraints tighten; E22 operating point at 88.1 percent suppression, 1000 to 119 alerts, dashed p 0.05 line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.8</span>: The False-Positive Reduction Curve. Grammar removes most noise structurally; the p &lt; 0.05 gate prices what remains. E22: 1,000 in, 119 out, 88.1% suppressed (measured, constructed stream).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.3</span> Confidence: The Evidence Stack, Not a Number</h2>
+  <p>A confidence score is shorthand for the evidence behind it. The lab's scoring:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Evidence Element</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>real-experiment-output</td>
+        <td>+0.4</td>
+      </tr>
+      <tr>
+        <td>manual-proxy</td>
+        <td>+0.2</td>
+      </tr>
+      <tr>
+        <td>on-court track count</td>
+        <td>+0.2</td>
+      </tr>
+      <tr>
+        <td>movement evidence</td>
+        <td>+0.2</td>
+      </tr>
+      <tr>
+        <td>contact/ball evidence</td>
+        <td>+0.2</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>E06's windows score 0.8 (high) — the ceiling for movement-only evidence; they cannot reach 1.0 because the ball is missing, and that is correct. Tiers: ≥0.8 high (auto-accept), 0.6–0.79 medium (review), 0.4–0.59 medium-low (review only), &lt;0.4 low (discard + log). C19's metrics.json reproduces this: two candidates at 0.8/high, both review-gated (measured).</p>
+
+  <figure id="fig-19-02" class="full">
+    <img src="shared/images/confidence-histogram.png" alt="Confidence tier histogram: auto-accept, review, discard bands." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.2</span>: Confidence as a Routing Decision. The histogram is the honest report of what the system knows — the queue boundary is where the human takes over.</figcaption>
+  </figure>
+
+  <p>ML heads need calibration. Temperature scaling (Guo et al., ICML 2017) fixes overconfidence on a held-out validation split. Selective prediction (Geifman &amp; El-Yaniv, NeurIPS 2017) gives the risk-coverage curve: the auto-accept fraction vs error on that fraction. Conformal prediction (Angelopoulos &amp; Bates, 2021) gives distribution-free coverage sets, though at ~500 labels the sets may be wide — and that width is itself the signal to queue [verify set sizes at this scale]. E22's p &lt; 0.05 gate is the same idea expressed as significance against a baseline. Confidence is per-field: a row can carry <code>contact_state=confirmed</code> (high, rule-fired) beside <code>shot_type=unknown</code> (queued, head uncertain), letting the season summary count confirmed facts and report unknowns as unknowns.</p>
+
+  <figure id="fig-19-06" class="full">
+    <img src="shared/images/ch19-confidence-gate.png" alt="Confidence gate: axis 0-1 with t_lo and t_hi thresholds, discard/review/auto-accept bands, event tokens flowing through, human icon at review." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.6</span>: The Confidence Gate. Two thresholds, three bands — the edges are owned policy decisions (chapter 20), not model defaults.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.4</span> The Review Queue: The Human-In-The-Loop Valve</h2>
+  <p>The pro-team workflow is 8–12 selected clips per session, not a dump. The queue ranks by confidence, caps the load, and writes corrections back to rows (<code>human_correction=yes</code>). Those rows become the new fixture (chapter 5's regression chain).</p>
+  <p>The queue is the product. FIFA and Stats Perform use humans precisely because the residue is where truth lives. The 8–12 rule bounds the coach-facing output, not the input. Auto-accepts are continuously audited: a random sample is re-reviewed, and the audit error rate feeds back onto the high threshold. In the welfare lane, the asymmetry is explicit: Bath et al.'s 68/84 point means every positive head-contact screen and a random negative sample goes to review, because a miss costs athlete safety while a false alarm costs an analyst ninety seconds. Every queued item returns as a labeled crop, so the queue is active learning by construction.</p>
+
+  <h2 class="section-title"><span class="section-num">19.4b</span> Event Timestamp Alignment</h2>
+  <p>Three clocks meet at every contact: the 30 fps video frame clock (33 ms grid on pb-003), the audio clock (millisecond-fine onset detector from chapter 15), and the track clock. The rule is: <strong>audio proposes the when, vision confirms the what, and the event timestamp is the contact frame nearest the audio onset whose vision evidence agrees.</strong> Agreement upgrades to confirmed; disagreement queues both timestamps rather than silently picking one. Rugby league adds the broadcast production clock — replays and speed ramps — so the set automaton also anchors on the PTB metronome: three PTBs in four seconds is a replay artifact, not a set. No event carries more precision than its worst agreeing clock [verify on multi-camera footage].</p>
+
+  <h2 class="section-title"><span class="section-num">19.5</span> Missing-Data Discipline</h2>
+  <p>The hard rule: <strong>no ball/contact evidence → shot_type=unknown → no event emitted.</strong> C19 checked 11 PBN rows: 0 shot events were emitted without contact and ball evidence (measured). E04 is the canonical gap — 1,082 detections at median confidence 0.1125 means the ball is invisible half the time on pb-003. The correct response is E06's: emit movement facts and review windows, and write the wall into the artifact.</p>
+  <p>pb003-e005 already logs this: <code>court_state=1_of_expected_4_active_players_visible</code>, <code>cue=coverage_gap_after_filtering</code>, with the note "primary lesson is missing coverage, not player action." Chapter 15's two-bit confidence (audio+vision, audio-only, vision-only, none) and chapter 16's retrieval rule (similarity is not occurrence) are the same discipline. E07 is the anti-pattern: a VLM with no ball evidence hallucinated serves and lobs. For both automatons: ball lost → <code>ball_visible=no</code> propagates; dependent fields become unknown; the segment is still emitted as a review window with the gap named.</p>
+
+  <h2 class="section-title"><span class="section-num">19.6</span> Shot Classification</h2>
+  <p>The 12-event pickleball taxonomy (serve/return/third-drive/third-drop/drive/drop/dink/speed-up/volley/lob/overhead) is typed from a contact crop: at the contact frame (audio-timed, pose-confirmed), crop the striker + paddle region and classify. The ~500 hand-labeled crops (chapter 18's IRR-gated pass) fine-tune a small CNN or a frozen-feature linear head (chapter 16's recipe). <strong>Never classify from a full-frame still.</strong> The context mask — who, where, when — is the input, not the raw frame.</p>
+  <p>The external template is TTStroke-21 (MediaEval Sport Task; CRISP methodology, arXiv:2301.13576): table-tennis stroke detection + 20-class classification with a <strong>21st rejection class</strong> — external proof that unknown belongs in the taxonomy. Its documented low inter-class variability is the honest forecast: expect dink↔speed-up and drop↔drive confusion to dominate. No public shot-labeled pickleball dataset exists (verified 2026-09-01); the taxonomy and labels are the book's own contribution, so there is no benchmark to compare against. Rugby league's lane is narrower but heavier: the head-contact screen (Bath et al. 2025, ~68%/84%) is a welfare screen where the classifier proposes and the human disposes — same crop-classify-queue recipe, but the cost of a miss is athlete safety.</p>
+
+  <h2 class="section-title"><span class="section-num">19.6b</span> The Dual-Sport Event Vocabulary</h2>
+  <p>The two grammars share a skeleton. The table below makes the transfer concrete:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Pickleball (PBN)</th>
+        <th>Rugby league (NRL-set)</th>
+        <th>Layer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Atom</td>
+        <td>contact (E10 ∧ audio onset)</td>
+        <td>play-the-ball</td>
+        <td>hybrid</td>
+      </tr>
+      <tr>
+        <td>Opener</td>
+        <td>serve → return</td>
+        <td>set restart → tackle 1</td>
+        <td>rule</td>
+      </tr>
+      <tr>
+        <td>Counted body</td>
+        <td>rally shots (dink, volley, drive, lob, speed-up)</td>
+        <td>tackles 1–5, PTB metronome</td>
+        <td>rule for count; ML for type</td>
+      </tr>
+      <tr>
+        <td>Terminal</td>
+        <td>fault / point won</td>
+        <td>kick / try / turnover</td>
+        <td>rule; try human-confirmed</td>
+      </tr>
+      <tr>
+        <td>Irregularity</td>
+        <td>let, kitchen foot fault</td>
+        <td>six-again, offside, ruck infringement</td>
+        <td>rule + audio</td>
+      </tr>
+      <tr>
+        <td>Gap</td>
+        <td>unknown (PBN dictionary)</td>
+        <td>unknown (NRLSheet)</td>
+        <td>queue</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Both vocabularies are phase-derived: third_shot_* is "shot 3 of the rally" exactly as tackle_3 is "containment 3 of the set." Both separate shots from calls (dink vs kitchen foot fault; run vs offside). Both carry unknown as a first-class label, the TTStroke-21 rejection class transplanted. What differs is instructive: pickleball's rally is unbounded (termination detection matters), while league's set is a hard counter (six-again reset detection is the fragile transition and leans on the audio lane).</p>
+
+  <figure id="fig-19-07" class="full">
+    <img src="shared/images/ch19-event-vocabulary.png" alt="Dual-sport vocabulary comparison: pickleball column over court fragment; rugby league column over pitch fragment; shared contact/review/unknown center." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.7</span>: One Skeleton, Two Vocabularies. The PBN and NRL-set dictionaries differ in words, not in grammar.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">19.7</span> Error Analysis: The Confusion Matrix Is the Report</h2>
+  <p>Publish the confusion matrix, not accuracy. A false serve and a missed serve have different coaching costs. The honest report separates precision and recall, with the aggregated error cost as the decision metric.</p>
+  <p>Three readings are mandatory. <strong>Off-diagonal mass</strong>: dink↔speed-up and drop↔drive should dominate; serve/fault/let (rule-owned) should sit near zero because rules have bugs, not confusion. <strong>Class-conditional operating points</strong>: speed-up can run high-recall (queue overcalls; coaches want to see every speed-up), while third-shot typing runs high-precision (chapter 22's EV surface cares about not mislabeling). <strong>Per-rally clustering</strong>: contacts within a rally are not independent, so intervals come from a rally-level cluster bootstrap (chapter 20). Rugby league deliberately inverts the cost matrix: at 68% sensitivity the head-contact screen is good enough to screen and never to adjudicate, so the operating point sits toward recall and the queue absorbs the overcalls.</p>
+
+  <h2 class="section-title"><span class="section-num">19.8</span> Season Machinery</h2>
+  <p>The pipeline: perception stack → state machine → contact anchors → calibrated heads/rules → confidence router → human review → corrected event table → season summary. The summary is the review artifact: per-player counts, shot distributions, pressure windows — every number traceable to its rows and evidence tiers. Two properties make it machinery. <strong>Reviewed rows only</strong>: unreviewed rows never publish, so the weekly artifact is also the audit surface. <strong>Queue metrics are season KPIs</strong>: auto-accept rate, queue depth, clearance time, audit error rate, unknown rate, per-class review burden — these describe the season actually shipped, which is more honest than test-set accuracy. The rugby season gives the deterministic layer more to own (count, PTB, kicks) and concentrates the ML+queue layer on the welfare screen and line-break antecedents.</p>
+
+  <h2 class="section-title"><span class="section-num">19.8b</span> The Ten Eventing Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the three layers above to the two sports. They follow three categories: <strong>A — Structure Events: segmentation and alignment (UC 01, 02, 10)</strong>, <strong>B — Counted-Body Events: shots and set plays (UC 03-07)</strong>, and <strong>C — Adjudication &amp; Gating Events (UC 08, 09)</strong>. Each case states the practical problem, the exact state-machine mechanism with its transition math, a figure, a pickleball box and a rugby league box, and a payoff line naming who benefits. Every case carries its evidence label: measured (E-series), source-backed (paper), or [verify].</p>
+
+  <h3 class="sub-heading">Category A — Structure Events: Segmentation &amp; Alignment (UC 01, 02, 10)</h3>
+
+  <h3 class="sub-heading">UC 01 — Pickleball Rally Segmentation: Serve to Fault</h3>
+  <p>A rally is the unit every downstream statistic divides by — shots per rally, rally-length distribution, third-shot outcome rates. Today an analyst segments rallies by scrubbing video; a 900-frame clip costs twenty minutes. The eventing layer's first job is emitting bounded rally segments with proof obligations attached.</p>
+  <p>The mechanism is the contact-anchored extension of E06's state machine (19.2b). The automaton walks <code>IDLE → SERVE → RETURN → THIRD → RALLY → FAULT/POINT</code>; a segment is the maximal path from the SERVE transition to any terminal. Formally, with contact instants $c_1 &lt; c_2 &lt; \dots &lt; c_n$ from the E10 heuristic (0.814 precision, measured) intersected with chapter 15 audio onsets, the segment is $[t(c_1), t_{term}]$ where $t_{term}$ is the first frame a termination guard fires: ball-out polygon test, net-plane termination, double bounce, or kitchen foot fault. Each transition is one row of the 19.2d table: $\delta(s, g) = (s', \text{event}, \text{evidence})$, and a guard fires only when its evidence streams are present. Without the ball — E04's wall, 1,082 detections at median confidence 0.1125 (measured) — the automaton degrades exactly as E06 did: co-presence windows of 8.33 s and 12.83 s, <code>review_required=yes</code>, never a rally claim.</p>
+
+  <figure id="fig-19-09" class="full">
+    <img src="shared/images/ch19-uc-rally-segmentation.png" alt="Pickleball rally segmentation timeline: serve, return, third, rally, fault state nodes over a court sketch." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.9</span>: UC 01 — Rally Segmentation. Five states, one terminal, every arrow evidence-guarded. <strong>Pickleball</strong>: pb-003's 900 frames yield two honest windows instead of 900 pseudo-events. <strong>Rugby league</strong>: the set is the bounded version of the same walk.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball:</strong> the rally segment is the join key for the whole book — contact crops (UC 03), dink exchanges (UC 04), and the chapter 22 EV surface all index into it. Segments emitted under <code>ball_visible=no</code> stay review windows, so a coverage gap corrupts nothing downstream.</p>
+  <p><strong>Rugby league:</strong> the same walk with a hard counter bounds it — six tackles instead of an unbounded rally (UC 02). The pickleball-first build order is deliberate: an automaton that survives an unbounded rally with an invisible ball finds a six-tackle set with a 300 g oval easy, and E18's 81.4% measured code reuse is that transfer priced.</p>
+  <p><strong>Payoff (coaching):</strong> rally segmentation turns a match from a video into a table; every later chapter's per-rally statistic inherits the segment boundaries and the per-rally cluster bootstrap unit (chapter 20).</p>
+
+  <h3 class="sub-heading">UC 02 — Rugby League Set Segmentation: Tackle to Try</h3>
+  <p>The set of six is rugby league's possession unit, and possession value is defined per set — Kempton et al.'s NRL expected-possession-value model (source-backed, PMID 26190116) prices a set by where it starts and how it ends. A set that isn't segmented can't be priced, and manually charting 160+ sets a weekend is why club analysts drown.</p>
+  <p>The mechanism is the 19.2c automaton: <code>SET_START → TACKLE_k → PTB → TACKLE_(k+1) → … → KICK | TRY | TURNOVER</code>. Guards are geometric: carrier grounded plus held (tackle completion, UC 06), ball played backward with the foot (PTB, UC 05), defenders retreating to the 10 m line. The terminal guards differ in kind: KICK is near-rule from the ball track (UC 07), TRY is grounding in-goal and stays human-confirmed before print, TURNOVER is count expiry. The fragile transition is the six-again reset — the count restarts on the referee's call, so the whistle audio lane (chapter 15) proposes the reset and vision confirms it; neither is believed alone. The transition table's completeness rule applies: an unhandled fact in TACKLE_3 state emits UNKNOWN plus a queue entry, never a nearest-state guess.</p>
+
+  <figure id="fig-19-10" class="full">
+    <img src="shared/images/ch19-uc-set-segmentation.png" alt="Rugby league set segmentation timeline: tackle one through six with PTB clocks, try, kick, turnover terminals." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.10</span>: UC 02 — Set Segmentation. The sport is a counter with rules; the machine owns the count, the human owns the try. <strong>Rugby league</strong>: nrl-001 grand-final footage. <strong>Pickleball</strong>: serve-to-fault is the same walk without the counter.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league:</strong> per-set rows — start position, tackle count, PTB tempo, terminal type — are the exact input Kempton-style xP chains and chapter 23's tactical models consume. The deterministic layer owns more here than in pickleball because the sport's grammar is a counter.</p>
+  <p><strong>Pickleball:</strong> the rally is the unbounded analogue; the same engine with the counter removed. The six-again lesson transfers as the let: an audio-proposed irregularity that resets the point's grammar without ending it.</p>
+  <p><strong>Payoff (tactical):</strong> set segmentation is the difference between "we were poor in yardage" and "sets starting inside our 20 m ended in kicks 71% of the time" — one is a mood, the other is a coachable fact.</p>
+
+  <h3 class="sub-heading">Category B — Counted-Body Events: Shots &amp; Set Plays (UC 03-07)</h3>
+
+  <h3 class="sub-heading">UC 03 — Third-Shot Detection: The Event That Feeds Chapter 22</h3>
+  <p>The third shot decides whether the serving team survives the transition zone, and drive-versus-drop is the highest-value classification in the book: chapter 22's expected-value surface needs outcome-conditioned distributions, $P(\text{point won} \mid \text{drive})$ versus $P(\text{point won} \mid \text{drop})$, and an overconfident head inflates the rare-shot EV and corrupts the whole surface.</p>
+  <p>The mechanism splits ownership exactly as 19.4 prescribes. The automaton owns <em>that</em> the shot is third — it is a grammar fact, the position in the contact sequence, not a perception claim. The ML head owns <em>which kind</em>: at the contact frame, crop the striker window $[t-0.3\text{s}, t+0.3\text{s}]$, extract frozen features (chapter 16's recipe), and emit $P(\text{drive}), P(\text{drop})$ plus the margin between them. The margin is the routing variable: wide margin and $P \geq t_{hi}$ auto-accepts (audited), anything in the band goes to the queue. This is TTStroke-21's documented trap transplanted — drive/drop is a pace-arc continuum the sport discretizes, so expect the confusion mass there (source-backed, arXiv:2301.13576).</p>
+
+  <figure id="fig-19-11" class="full">
+    <img src="shared/images/ch19-uc-third-shot.png" alt="Pickleball third-shot detection: baseline hitter, drop and drive trajectory arcs over net into kitchen." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.11</span>: UC 03 — Third-Shot Detection. Grammar says it is shot three; the calibrated head says which kind; the margin decides who signs it off. <strong>Pickleball</strong>: drop vs drive from the contact crop. <strong>Rugby league</strong>: the fifth-tackle option is the analogue.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball:</strong> the typed, reviewed third shot joins to rally outcome to produce the per-state shot-value estimates with confidence intervals (chapter 20's rally-level cluster bootstrap). The classifier's uncertainty appears twice: once as queue depth, once as wider EV intervals.</p>
+  <p><strong>Rugby league:</strong> the analogue is fifth-tackle option selection — kick versus run — which is nearer to geometric (field position plus ball track) and therefore a candidate for rule-assist rather than a pure head. Same split: the automaton owns "fifth tackle," the evidence decides the rest.</p>
+  <p><strong>Payoff (tactical):</strong> this single event type is the input the entire decision-value layer stands on; a mislabeled third shot is not a labeling error, it is a corrupted EV estimate the coach acts on.</p>
+
+  <h3 class="sub-heading">UC 04 — The Dink Exchange Tracker</h3>
+  <p>Kitchen exchanges are where pickleball rallies are won by patience, and "who blinked first" is a real coaching question. Counting dinks in a fourteen-shot exchange by hand is exactly the tedium automation exists for — and exactly where an undisciplined classifier lies, because dink and speed-up live in the same visual family.</p>
+  <p>The mechanism is a sub-automaton nested inside RALLY state. A contact increments the dink counter when three guards hold: striker and contact point in NVZ-proximate zones (homography polygons, E05/E11 RMSE 3.82–4.65 cm, measured), soft arc signature from the ball track when visible, both teams pinned at the kitchen line. A speed-up, lob, or drive guard exits the exchange and logs the terminator type — the exchange's <em>ending</em> is the coaching-relevant event, not its length alone. The honesty constraint is TTStroke-21's low inter-class variability (source-backed): dink↔speed-up confusion will dominate the matrix (19.7), so the speed-up exit guard runs high-recall — queue the overcalls, because a coach forgives a false speed-up and never forgives a missed one.</p>
+
+  <figure id="fig-19-12" class="full">
+    <img src="shared/images/ch19-uc-dink-exchange.png" alt="Dink exchange tracking: two players at the kitchen line trading soft arcs, dink counter badge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.12</span>: UC 04 — The Dink Exchange Tracker. A sub-automaton inside RALLY counts the soft game and names the shot that broke it. <strong>Pickleball</strong>: kitchen-line patience duels. <strong>Rugby league</strong>: the PTB metronome streak is the same counter shape.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball:</strong> output rows are exchange records — length, participants, terminator type, who was forced back — aggregated per player per match. Under E04's ball wall the arc guard degrades to zone-plus-position only and the row carries <code>confidence=medium-low</code> with the gap named.</p>
+  <p><strong>Rugby league:</strong> the same nested-counter shape tracks PTB tempo streaks — consecutive sub-3.5 s play-the-balls inside a set (UC 05) — where the "exchange" is ruck speed and the "terminator" is the slow ruck or the defensive line folding.</p>
+  <p><strong>Payoff (coaching):</strong> patience is coachable only when measured; the exchange tracker converts "be more patient at the kitchen" into "your exchanges end on shot four, theirs on shot nine — and yours end on speed-ups you lose 60% of."</p>
+
+  <h3 class="sub-heading">UC 05 — Ruck Play-the-Ball Timing Event</h3>
+  <p>Ruck speed is rugby league's most quoted tempo statistic and its least consistently measured one: manually timed play-the-balls vary by half a second between analysts, which is the entire gap between "fast" and "slow." The PTB interval is a geometric measurement and should be produced by a rule, not a stopwatch.</p>
+  <p>The mechanism anchors both ends of the interval. Start: tackle completion (UC 06) — carrier grounded plus held, a containment signature from tracks and pose. End: the ball played backward with the foot — ball-track motion onset away from the carrier, with the dummy-half pickup as the fallback anchor when the ball is occluded. The event row is $\text{PTB}_k = t_\text{release} - t_\text{held}$ with both timestamps' evidence stacks attached. Chapter 28's green/red ruck bands are the practitioner play-calling thresholds [verify band values against measured distributions before print]; this use case supplies the distribution those bands should be set from. Broadcast production is the confound: replays and speed ramps break the clock, so the 19.4b metronome check (three PTBs in four seconds is a replay artifact) is a guard on the event, not an afterthought.</p>
+
+  <figure id="fig-19-13" class="full">
+    <img src="shared/images/ch19-uc-ptb-timing.png" alt="Rugby league play-the-ball timing: tackled carrier playing ball with foot, stopwatch badge, defenders retreating to ten metre line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.13</span>: UC 05 — PTB Timing. Two geometric anchors, one interval, every row carrying its evidence. <strong>Rugby league</strong>: ruck tempo per tackle per set. <strong>Pickleball</strong>: inter-contact tempo is the same machinery with less meaning.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league:</strong> per-team PTB distributions by field zone, by tackle number, by fatigue window — the tempo KPIs chapter 28's cockpit renders live. E22's measured stream already consumes the sibling signal: 35 offside non-compliance alerts at the 10 m line presuppose PTB-anchored ruck locations.</p>
+  <p><strong>Pickleball:</strong> the transferred form is inter-contact tempo inside a rally — the time between contacts shortening as a firefight develops. Same two-anchor machinery, lower stakes, useful as a pressure indicator feeding chapter 23.</p>
+  <p><strong>Payoff (coaching + broadcast):</strong> tempo becomes a measured distribution instead of a commentator's adjective, and the measurement cost per match drops to the queue clearance of the occluded-ruck residue.</p>
+
+  <h3 class="sub-heading">UC 06 — Tackle Completion Event</h3>
+  <p>The tackle count is rugby league's clock; an off-by-one count corrupts every set statistic built on it. The event sounds trivial — a carrier is tackled — until the footage shows four bodies in a pile and the broadcast has cut to a crowd shot.</p>
+  <p>The mechanism is hybrid by design. Vision proposes: defender-carrier contact plus carrier downward velocity plus grounded pose (chapter 11's pose stream). Audio confirms: the referee's held call and whistle (chapter 15). Agreement upgrades the row to confirmed; disagreement queues both hypotheses. Under bodies — the dense-occlusion case chapter 10's UC 09 separates with mask memory — the event stays <code>review_required=yes</code>; the count is too load-bearing to guess. The transition-table consequence: <code>TACKLE_k → PTB</code> fires only from a confirmed or reviewed completion, and a sixth-tackle completion with no terminal guard within the bounded window emits TURNOVER as count expiry — a grammar conclusion, not a perception claim.</p>
+
+  <figure id="fig-19-14" class="full">
+    <img src="shared/images/ch19-uc-tackle-completion.png" alt="Tackle completion event: ball carrier held by two defenders, whistle icon, tackle four event token." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.14</span>: UC 06 — Tackle Completion. Vision proposes, the whistle confirms, the count increments only on agreement. <strong>Rugby league</strong>: the set's clock tick. <strong>Pickleball</strong>: the let is the same audio-confirmed irregularity shape.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league:</strong> every PTB interval (UC 05), every kick (UC 07), every xP chain (chapter 23) indexes into the count this event maintains. The welfare lane hangs off it too: the Bath et al. head-contact screen (68% sensitivity / 84% specificity, source-backed) runs on the tackle-completion window, every positive and a random negative sample going to mandatory human review.</p>
+  <p><strong>Pickleball:</strong> the structural sibling is the let — an audio-proposed, vision-confirmed irregularity that pauses the grammar without terminating the point. Both sports teach the same lesson: the events that look simplest are the ones everything else indexes, so they get the strictest gates.</p>
+  <p><strong>Payoff (officiating + analytics):</strong> a trustworthy count is invisible — every downstream number quietly becomes right, and the queue absorbs exactly the occlusion cases where humans disagree anyway.</p>
+
+  <h3 class="sub-heading">UC 07 — The Kick Event</h3>
+  <p>Roughly one set in four ends in a kick, and kick type — bomb, grubber, touch-finder, 40/20 attempt — drives the field-position value the next set starts with. A kick event that says only "kick occurred" wastes the most information-dense terminal in the sport.</p>
+  <p>The mechanism is near-rule from the ball track: in TACKLE_5/6 state (or earlier — the guard is state-aware, not state-captive), foot-ball contact followed by the ball leaving the boot on a long ballistic arc fires KICK. The ball's apex and landing polygon then classify the outcome: in-goal, touch, dead, fielded-in-play. Broadcast ball tracking hits the same visibility wall as pickleball's E04 — a 300 g oval at 25 m altitude against stadium lights — so a lost ball mid-flight emits the kick with <code>landing=unknown</code> and a queue entry rather than a guessed polygon. The pickleball transfer is direct: the lob is the same near-geometric arc event, and 19.6 already flags lob as the taxonomy's rule-assist candidate.</p>
+
+  <figure id="fig-19-15" class="full">
+    <img src="shared/images/ch19-uc-kick-event.png" alt="Kick event: rugby league kicker on fifth tackle, high ball arc to landing zone near try line, chasers running." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.15</span>: UC 07 — The Kick Event. Contact, arc, landing polygon — near-rule from the ball track, honest unknown when the ball vanishes. <strong>Rugby league</strong>: fifth-tackle bombs and 40/20s. <strong>Pickleball</strong>: the lob is the same arc grammar.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league:</strong> kick-type × landing-zone rows feed the possession-value surface and the chase-versus-fielding matchup analysis — who kicks, to where, with what chase line, is three geometry queries once the event rows exist.</p>
+  <p><strong>Pickleball:</strong> lob detection rides the identical guard shape (arc signature plus apex height), and the lob's outcome polygon — in court, out, or smashed back — closes the rally grammar's most escape-prone state.</p>
+  <p><strong>Payoff (tactical):</strong> kicking stops being a highlight category and becomes a measured decision: type, target zone, outcome, and the expected value of the set that follows.</p>
+
+  <h3 class="sub-heading">Category C — Adjudication &amp; Gating Events (UC 08, 09)</h3>
+
+  <h3 class="sub-heading">UC 08 — Fault Classification: Kitchen, Net, Out</h3>
+  <p>A fault ends the point, but the fault's <em>class</em> is what coaching needs: a kitchen foot fault is a technique fix, a net fault is an execution error, an out fault is a judgment error. Three different conversations hide inside one terminal state.</p>
+  <p>The mechanism is three rule-owned classes with explicit priority — adjudication events outrank rally events in the 19.2d table header. <strong>Kitchen foot fault:</strong> the E10 contact instant (0.814 precision, measured) ∧ the striker's foot point inside the NVZ polygon at that instant, both through the calibrated homography (E05/E11, RMSE 3.82–4.65 cm, measured) — pure geometry, no model trusted over the rule. <strong>Net:</strong> the ball track terminates at the net plane without crossing. <strong>Out:</strong> the landing point falls outside the court polygon. E22's measured stream shows the kitchen class at working scale: 27 NVZ foot-fault warnings at p = 0.012, feet 2.4–4.0 cm across the line (constructed stream — a demonstrated ceiling, not a season rate). Every printed foot fault stays human-confirmed, because 4 cm is inside the same order as the homography error and the row must say so.</p>
+
+  <figure id="fig-19-16" class="full">
+    <img src="shared/images/ch19-uc-fault-classification.png" alt="Fault classification: three pickleball callouts, kitchen foot fault, net fault, out fault, on a court diagram." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.16</span>: UC 08 — Fault Classification. One terminal state, three rule-owned classes, adjudication outranking rally play. <strong>Pickleball</strong>: kitchen, net, out. <strong>Rugby league</strong>: forward pass, knock-on, offside carry the same priority.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball:</strong> fault-class distributions per player are the highest-signal technique report the pipeline produces — a player whose faults are 70% kitchen violations has a different problem from one whose faults are 70% out balls, and the eventing layer separates them for free once the classes are rule-owned.</p>
+  <p><strong>Rugby league:</strong> the siblings are forward pass, knock-on, and offside at the 10 m line — the last already geometry in E22 (35 offside non-compliance alerts, measured on the constructed stream). Same priority rule: the adjudication event outranks the set event competing for the same frames.</p>
+  <p><strong>Payoff (officiating + coaching):</strong> adjudication events carry proof obligations — each printed fault points at the exact rule, the exact foot point, the exact polygon — which is what makes a machine call defensible to a referee and useful to a coach.</p>
+
+  <h3 class="sub-heading">UC 09 — Event Confidence Gating at p &lt; 0.05</h3>
+  <p>An event feed without significance gating is an alert firehose, and coaches mute firehoses within a week. The gating problem is the chapter's thesis applied to alerting: most candidate events are noise, and the system should prove it event by event.</p>
+  <p>The mechanism is E22's two-stage gate (measured, experiments/e22-humans-above-the-loop). Stage one is structural: the state machine suppresses grammar violations — a "speed-up" nominated in SERVE state, a tackle seven, a contact with no legal predecessor. Stage two is statistical: survivors carry a p-value against the team's baseline distribution, and only p &lt; 0.05 alerts. On a 1,000-event constructed stream across both sports, 119 alerts surfaced and <strong>88.1% were structurally suppressed</strong> at 0.08 ms processing cost. The framing is selective prediction (Geifman &amp; El-Yaniv, NeurIPS 2017, source-backed) with the grammar doing most of the rejection work: coverage is the dial, risk is the price, and the risk-coverage curve is the owned policy artifact (chapter 20). The caveat is on record: E22 is a constructed stream, not a season; 88.1% is a demonstrated ceiling [verify suppression rate on real footage].</p>
+
+  <figure id="fig-19-17" class="full">
+    <img src="shared/images/ch19-uc-confidence-gating.png" alt="Confidence gating funnel: one thousand event tokens in, one hundred nineteen alerts out through p less than 0.05 gate." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.17</span>: UC 09 — The Significance Gate. Grammar rejects structurally; the p &lt; 0.05 gate prices what survives. <strong>Pickleball</strong>: 27 NVZ warnings, 25 middle-seam exposures. <strong>Rugby league</strong>: 32 dog-leg ruptures, 35 offside alerts (E22, measured, constructed stream).</figcaption>
+  </figure>
+
+  <p><strong>Pickleball:</strong> the surfaced alerts were 27 NVZ foot-fault warnings (p = 0.012) and 25 middle-seam exposures (p = 0.034, lateral gap expanding from 2.7 m toward 4.1 m) — events a coach recognizes instantly, carrying a significance statement instead of a vibe.</p>
+  <p><strong>Rugby league:</strong> 32 dog-leg ruptures and 35 offside non-compliance alerts at the 10 m line — the defensive-structure events that normally require a full video session to count, emitted with p-values at 0.08 ms.</p>
+  <p><strong>Payoff (coaching trust):</strong> the gate is what makes the 8–12 clip rule achievable — the queue may hold 200 items, but the coach-facing artifact is the dozen that are both true and significant, and significance is what keeps the channel unmuted.</p>
+
+  <h3 class="sub-heading">UC 10 — Event-to-Video Alignment: The One-Spine Join</h3>
+  <p>An event table that cannot jump to the exact video frame is a spreadsheet, not a tool. Every use case above is worth nothing to a coach until one click on the row plays the clip — and that join is an engineering problem in its own right, because three clocks disagree at every contact.</p>
+  <p>The mechanism is 19.4b made concrete. The 30 fps video frame clock (33 ms grid on pb-003), the millisecond-fine audio onset clock (chapter 15), and the track clock meet at each event; the rule is audio proposes the when, vision confirms the what, and the event timestamp is the contact frame nearest the audio onset whose vision evidence agrees. Agreement upgrades the row to confirmed; disagreement queues both timestamps rather than silently picking one. Rugby league adds the broadcast production clock — replays and speed ramps — detected by the PTB metronome guard: three PTBs in four seconds is a replay artifact, not a set. The binding constraint: <strong>no event carries more precision than its worst agreeing clock</strong> [verify residual distribution on multi-camera footage].</p>
+
+  <figure id="fig-19-18" class="full">
+    <img src="shared/images/ch19-uc-video-alignment.png" alt="Event-to-video alignment: video frame ticks, audio waveform onsets, track clock lanes joined at one contact instant." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 19.18</span>: UC 10 — The One-Spine Join. Three clocks, one event row, precision capped by the worst agreeing clock. <strong>Pickleball</strong>: 33 ms frame grid versus millisecond audio. <strong>Rugby league</strong>: plus the broadcast production clock's replays and speed ramps.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball:</strong> fixed-camera footage is the kind case — one production clock, a stable 30 fps grid — and the join is where the chapter 16 retrieval layer's "similarity is not occurrence" rule pays off: the event row, not the embedding, owns the timestamp.</p>
+  <p><strong>Rugby league:</strong> broadcast PTZ is the hostile case — cuts, replays, speed ramps — and the metronome guard is what keeps a replayed tackle from double-counting the set. The join quality gates everything downstream: a season table with 200 ms timestamp drift misaligns every clip in the coach's Monday session.</p>
+  <p><strong>Payoff (workflow):</strong> the 8–12 clip deliverable assembles itself — reviewed rows, one spine, click to clip — and the weekly summary doubles as the audit surface because every rendered clip is a join that worked.</p>
+
+  <h2 class="section-title"><span class="section-num">19.8c</span> The Eventing Ecosystem</h2>
+  <p>The layers above sit on a small ecosystem of schemas, datasets, and calibration tools. The comparison table is the honest map — including what each piece cannot do:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool / Schema</th>
+        <th>What It Provides</th>
+        <th>Pickleball Use</th>
+        <th>Rugby League Use</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>PBN / NRLSheet dictionaries (C17)</td>
+        <td>Row schema: per-field confidence, review_required, human_correction, unknown policy</td>
+        <td>12-event taxonomy (19.6), coverage-gap rows (pb003-e005)</td>
+        <td>Set/tackle/PTB rows with unknown-class gaps</td>
+        <td>Book-internal, measured</td>
+      </tr>
+      <tr>
+        <td>kloppy / SPADL (C17)</td>
+        <td>Open event-schema tooling and action-value vocabulary from soccer</td>
+        <td>Serialization target for reviewed rally events</td>
+        <td>Set-event serialization; SPADL-style value framing</td>
+        <td>Source-backed (open source)</td>
+      </tr>
+      <tr>
+        <td>FIFA Football Language / EPTS</td>
+        <td>Event definitions written so tracking can translate into them</td>
+        <td>Template for proof-carrying event definitions</td>
+        <td>The industry precedent for the three-layer shape</td>
+        <td>Source-backed (FIFA); quantitative reuse [verify]</td>
+      </tr>
+      <tr>
+        <td>Stats Perform Opta</td>
+        <td>Settlement-grade CV + human-verification pipeline</td>
+        <td>Proof the queue is the product at scale</td>
+        <td>The operating-point discipline (welfare vs stats feed)</td>
+        <td>Vendor-stated practice [verify specifics]</td>
+      </tr>
+      <tr>
+        <td>TTStroke-21 + CRISP</td>
+        <td>Stroke detection + 20 classes + a 21st rejection class</td>
+        <td>The external template for shot typing; the unknown-class proof</td>
+        <td>Detection-before-classification split for tackle typing</td>
+        <td>Source-backed (arXiv:2301.13576); data access [verify]</td>
+      </tr>
+      <tr>
+        <td>TrackNet-Pickleball</td>
+        <td>Ball-track adaptation that converts E06 windows into contact-anchored rallies</td>
+        <td>The missing ball stream behind UC 01/03/04/08</td>
+        <td>Not applicable (oval ball needs its own tracker)</td>
+        <td>Open repo; license [verify]</td>
+      </tr>
+      <tr>
+        <td>timm / OpenCLIP frozen heads</td>
+        <td>Small honest classifiers over frozen features (C16 recipe)</td>
+        <td>Drive/drop/dink heads on ~500 IRR-gated crops</td>
+        <td>Head-contact screen head (Bath et al. posture)</td>
+        <td>Source-backed; M4-feasible (frozen), Colab for fine-tune</td>
+      </tr>
+      <tr>
+        <td>Temperature scaling / selective prediction / conformal</td>
+        <td>Calibration and coverage machinery (Guo 2017; Geifman &amp; El-Yaniv 2017; Angelopoulos &amp; Bates 2021)</td>
+        <td>Calibrated third-shot margins; risk-coverage curve for the queue</td>
+        <td>Welfare-screen operating point, high-recall end</td>
+        <td>Source-backed; conformal set sizes at ~500 labels [verify]</td>
+      </tr>
+      <tr>
+        <td>Kempton et al. 2016 (NRL xP)</td>
+        <td>Expected possession value per set</td>
+        <td>Model for the C22 EV surface's structure</td>
+        <td>The canonical value layer set events feed (UC 02)</td>
+        <td>Source-backed (PMID 26190116)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">19.8d</span> Runnable Skeleton: The Table-Driven Automaton</h2>
+  <p>The engine both sports share is forty lines: a transition table, guard facts, and a step function that emits UNKNOWN rather than guessing. This is the UC 01-02 spine; UC 03-08 plug in as guards and heads on top of it.</p>
+
+  <pre><code># Table-driven eventing automaton — pickleball instance shown.
+# Rugby league swaps TABLE for the set grammar (SET_START, TACKLE_k, PTB, ...).
+TABLE = {
+    "IDLE":   {"stationary_ball_then_below_waist_contact":
+               ("SERVE", "serve", ["ball", "pose", "feet"])},
+    "SERVE":  {"second_contact_receiving_side":
+               ("RETURN", "return", ["contact", "zone"]),
+               "serve_lands_outside_box":
+               ("FAULT", "fault_out", ["ball", "polygon"])},
+    "RETURN": {"third_contact_serving_side":
+               ("THIRD", "third_shot", ["contact"])},   # grammar owns "third";
+                                                        # the ML head owns drop/drive
+    "THIRD":  {"contact_alternates": ("RALLY", None, ["contact"])},
+    "RALLY":  {"foot_in_nvz_at_contact":
+               ("FAULT", "kitchen_foot_fault", ["contact", "pose", "polygon"]),
+               "ball_net": ("FAULT", "fault_net", ["ball"]),
+               "ball_out": ("FAULT", "fault_out", ["ball", "polygon"]),
+               "double_bounce": ("POINT", "point", ["ball"])},
+}
+
+def step(state, facts, evidence):
+    """facts: guard names true this frame; evidence: streams present.
+    A guard fires only when its required evidence exists (19.2b rule)."""
+    for guard, (nxt, event, needs) in TABLE.get(state, {}).items():
+        if guard in facts:
+            if all(n in evidence for n in needs):
+                return nxt, {"event": event, "basis": guard,
+                             "review_required": False}
+            # Evidence gap: degrade, do not guess (19.5).
+            return state, {"event": "unknown", "basis": guard,
+                           "gap": [n for n in needs if n not in evidence],
+                           "review_required": True}
+    if facts:  # facts present but no legal guard: queue, never nearest-state
+        return state, {"event": "unknown", "review_required": True}
+    return state, None
+</code></pre>
+
+  <p>Three properties are the chapter in miniature: guards carry evidence requirements, so E04's ball wall degrades outputs to <code>unknown</code> instead of inventing shots; unmatched facts queue rather than snap to the nearest state, which is how a tracker glitch at the kitchen line is prevented from becoming a phantom dink; and the table — not the code — is the design artifact a reviewer audits (19.2d).</p>
+
+  <h2 class="section-title"><span class="section-num">19.8e</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are the connective tissue between the perception stack and the value layers. <strong>Upstream</strong>: UC 01-02 consume chapter 9's tracks and chapter 5/14's calibrated homography; UC 03, 04, 08 consume chapter 12's ball track, chapter 15's audio onsets, and chapter 11's pose; UC 06, 10 consume chapter 15's whistle/onset lane. <strong>Downstream</strong>: UC 01's rally segments are the cluster-bootstrap unit for chapter 20's intervals; UC 03's calibrated third-shot types are the input chapter 22's EV surface cannot function without; UC 02 and UC 07's set and kick rows feed chapter 23's tactical models and the Kempton-style value chains; UC 05's PTB distributions and UC 09's gated alerts are what chapter 28's cockpit renders. <strong>Sideways</strong>: chapter 16's retrieval layer ranks these events but never mints them; chapter 18's annotation machinery labels the crops that train UC 03's head; chapter 17's row schema is where every event lands. The boundary rule holds throughout: an event's tier is decided by its epistemics, not by which model happens to be available.</p>
+
+  <h2 class="section-title"><span class="section-num">19.9</span> Transfer Note: Rugby League Set Eventing</h2>
+  <p>The same three layers apply with the rugby grammar: deterministic = set count + PTB + tackle-hold gates; learned = Bath et al. head-contact screen (~68% sensitivity / 84% specificity); hybrid = tackle-type ambiguity confirmed by audio (the whistle). The missing-data rule transfers: no ball evidence, no kick event; NRLSheet carries unknown. League's hard counter and metronome make its automaton the simpler of the two, which is why the machinery was pressure-tested on pickleball first — if the grammar survives an unbounded rally with an invisible ball, a six-tackle set with a 300 g oval is a relief, and E18's measured 81.4% code reuse is the transfer made quantitative.</p>
+
+  <h2 class="section-title"><span class="section-num">19.10</span> The Eventing Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Grammar first</strong>: transition-table state machine, correct wherever geometry decides.</li>
+    <li><strong>Define events as transitions</strong>: timestamped, evidence-backed, hierarchy-aware. A label that contradicts the current state is UNKNOWN + queue.</li>
+    <li><strong>Score every event</strong> on its evidence stack; calibrate ML heads on held-out rallies.</li>
+    <li><strong>Route by tier</strong>: high auto-accept (audited), medium review, low discard. Thresholds are owned policy, per class.</li>
+    <li><strong>Cap the queue</strong>: 8–12 selected clips per session, not a dump.</li>
+    <li><strong>Align clocks</strong>: audio proposes when, vision confirms what; disagreement queues both timestamps.</li>
+    <li><strong>Human corrections write back</strong>; the queue doubles as active learning.</li>
+    <li><strong>Missing data → unknown</strong>, never invented.</li>
+    <li><strong>Publish confusion matrices and risk-coverage curves</strong>, intervals clustered by rally.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">19.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Contact-crop CNN on ~500 labels: 12×12 confusion matrix, ECE before/after temperature scaling, risk-coverage curve, conformal set sizes [verify].</li>
+    <li>Live queue over pb-003: correction rate, decisions/minute, clearance time for 8 presented clips.</li>
+    <li>E22 suppression rate on real season footage — 88.1% is a constructed-stream ceiling, not a season number.</li>
+    <li>Rugby deterministic layer measured against nrl-001 set chart, with six-again precision reported separately.</li>
+    <li>Audio-vision timestamp residual distribution across both sports.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">19.12</span> Sources</h2>
+  <ul>
+    <li>E06 (experiments/e06-events); C19 lab (experiments/c19-eventing/outputs/metrics.json); E22 (experiments/e22-humans-above-the-loop, 88.1% suppression, p &lt; 0.05, measured); E04/E05/E10/E11/E18 (measured); PBN Data Dictionary; pb003-e005 coverage-gap row.</li>
+    <li>Bath et al. 2025, Injury Prevention (PMID 39832883); Kempton et al. 2016, NRL xP (PMID 26190116).</li>
+    <li>TTStroke-21 / MediaEval 2021-2022 (https://multimediaeval.github.io/editions/2021/tasks/sportsvideo/); CRISP (https://arxiv.org/abs/2301.13576).</li>
+    <li>Guo et al. 2017 (https://arxiv.org/abs/1706.04599); Geifman &amp; El-Yaniv 2017 (https://arxiv.org/abs/1705.08500); Angelopoulos &amp; Bates 2021 (https://arxiv.org/abs/2107.07511); Madras et al. 2018 (https://arxiv.org/abs/1801.07866).</li>
+    <li>FIFA automated event data (https://inside.fifa.com/innovation/innovating-the-game/automated-event-data-collection); Stats Perform Opta (https://www.statsperform.com/products/opta-data/) [verify quantitative reuse].</li>
+    <li>Coaching workflow dossier, 8–12 clip rule and IRR protocol (2026-08-30).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="18.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 18</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 18 — Annotation: The Ground-Truth Workflow</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 18</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 18 — Annotation: The Ground-Truth Workflow</p>
+        </div>
+      </div>
+    </a>
+    <a href="20.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 20</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 20 — Statistics for Sport Practitioners</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 20</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 20 — Statistics for Sport Practitioners</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 20 — Statistics for Sport Practitioners</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The n-trap, honest confidence intervals, multiple comparisons, shrinkage, Bayesian updates, and the calibration discipline no model chapter can skip</p>
+        </div>
+        <a href="20.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #8C4318;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

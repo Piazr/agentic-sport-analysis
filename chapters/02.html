@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 02 — The Evidence Contract & Data Provenance - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #8C4318;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-02" style="background-color: #8C4318; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 02</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 02 — The Evidence Contract & Data Provenance</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The four-tier hierarchy, the claims register, and why "measured" is a word with a disk path</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">32 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-02-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Question Every Claim Must Answer</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-02-1" data-section="s-02-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Question Every Claim Must Answer</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-02-1" data-section="s-02-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Question Every Claim Must Answer</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">02</span> Chapter 02 — The Evidence Contract & Data Provenance</h1>
+    <p class="chapter-subtitle">The four-tier hierarchy, the claims register, and why "measured" is a word with a disk path</p>
+  </header>
+
+<h3 id="s-02-1"><span class="section-num">2.1</span> The Question Every Claim Must Answer</h3>
+
+<p class="section-intro">When a vendor says "99% ball tracking accuracy," what does that mean? On what court? At what shutter speed? Under what lighting? The question is not rhetorical — it is the discipline. This chapter defines the evidence contract the whole book enforces: <em>what tier is this claim, what artifact backs it, and what does it NOT prove?</em></p>
+
+  <p>A claim that survives audit has five slots filled in, and a missing slot is a defect in the claim, not in the reader's understanding:</p>
+  <ol>
+    <li><strong>The metric</strong> — the exact number and its unit (HOTA, RMSE in centimetres, frames per second, precision as a percentage).</li>
+    <li><strong>The subject</strong> — which model, which version, which configuration (BoT-SORT with ReID enabled is a different subject from BoT-SORT without it).</li>
+    <li><strong>The conditions</strong> — which footage, which hardware, which lighting and camera angle. A number measured on a fixed side-line phone camera does not transfer to a panning broadcast feed.</li>
+    <li><strong>The independent n</strong> — what counts as one unit of evidence: one clip, one rally, one tackle, one frame. "We tested it a lot" is not an n.</li>
+    <li><strong>The artifact</strong> — a disk path to the metrics.json, coordinate rows, or rendered overlay that a skeptic can open. No path, no claim.</li>
+  </ol>
+
+  <p><strong>Pickleball.</strong> A ball-tracking product page that promises "99% accuracy" collides immediately with the book's own measurement: single-frame YOLO ball detection on the pb-003 fixture produced a median confidence below 0.15 and no usable track at all (experiment e04-ball, register claim C-07, VERIFIED). The vendor number may be true on some court, some shutter speed, some lighting — but with no conditions and no artifact it cannot be distinguished from marketing, so this book treats it as Tier 4 and never lets it near a coaching sentence. The measured counter-claim is narrower and uglier, and it is the one you can build on: a 3-frame temporal energy filter lifted ball-detection precision from 4.2% to 81.3% on that same fixture (e10-ball-temporal, C-15, VERIFIED).</p>
+
+  <p><strong>Rugby league.</strong> The same anatomy applies to broadcast footage. A tracking vendor's "95% player detection" sounds like a strategy-grade input until you run the pipeline: on the RG-001 broadcast clip the baseline detector-plus-tracker stack saw a mean of 13.2 persons per frame but minted 295 unique track IDs, with 9.76 px/frame of camera drift (e08-rugby, C-12, VERIFIED). Twenty-three players, 295 identities. The detection rate might indeed be high frame-by-frame; the identity layer — the part a coach actually consumes — fragmented by an order of magnitude. Five slots filled in would have caught this before the purchase order did.</p>
+
+  <p>Everything in this chapter is itself <strong>measured</strong>: the contract ran against the book's own claims (24 of them, audited with 0 problems) and the audit found the very mismatches the contract exists to prevent.</p>
+
+  <h2 class="section-title"><span class="section-num">2.2</span> The Four-Tier Evidence Hierarchy</h2>
+  <figure id="fig-02-01" class="full">
+    <img src="shared/images/ch02-evidence-taxonomy.jpg" alt="The Four-Tier Sports AI Evidence Hierarchy pyramid: Tier 1 Real Experiment, Tier 2 Replication, Tier 3 Concept Transfer, Tier 4 Reference. Recreate in book style: white background, black pyramid, burnt-orange tier labels." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.1</span>: The Four-Tier Hierarchy. Only Tier 1 is publication-safe for a coaching prescription; the other tiers are labeled as what they are.</figcaption>
+  </figure>
+
+  <ol>
+    <li><strong>Tier 1 — Real Experiment Output</strong>: executed locally on the fixture; emits metrics.json, coordinate rows, rendered overlays. Backs concrete claims.</li>
+    <li><strong>Tier 2 — Replication Attempt</strong>: local execution of a published model (e.g. the calibration, pose, or ball baselines) on the fixture; documents hardware and failure modes.</li>
+    <li><strong>Tier 3 — Concept Transfer</strong>: the architecture of an adjacent sport's model applied by analogy; retained as a research brief, never as an experiment.</li>
+    <li><strong>Tier 4 — Research Reference</strong>: unreproduced literature, vendor marketing, conference talks. Never standalone evidence for a coaching decision.</li>
+  </ol>
+
+  <p><strong>Tier 1 is the only tier that can carry a prescription.</strong> A Tier 1 claim was produced by code this book ships, on footage this book names, on hardware this book specifies (an M4 Max), and the artifact sits in the repo. The exemplar is the tracker bake-off: adding ReID to BoT-SORT cut identity switches from 14 to 2 and raised HOTA to 81.4% on the pickleball fixture (e09-tracker-bakeoff, C-14, VERIFIED) — a sentence a coach can act on because a skeptic can re-run it. The characteristic Tier 1 failure mode is <em>over-generalisation</em>: 81.4% HOTA on one four-player kitchen clip is not 81.4% HOTA on every pickleball video ever shot. Tier 1 licenses a bounded claim about the fixture, and the chapter must say so.</p>
+
+  <p><strong>Tier 2 is where published work meets your reality.</strong> Replicating a paper's model on your own fixture is real work with real failure modes: dependency rot, GPU-vs-MPS numerics, frame-rate mismatches between the paper's 30 fps benchmark clips and your 60 fps phone footage. The pose baseline is the book's example: YOLO11-pose ran at 82 fps on pb-003 with a mean of 16.46 visible keypoints (e03-pose, C-05, VERIFIED as a replication) — and the replication is also what surfaced the honest limit, that 2D pose proves stance and shape but not contact force or 3D torque (C-06). In rugby league terms, Tier 2 is running a published multi-object tracker on RG-001 broadcast footage and reporting what actually happened — which is how the book knows global motion compensation moved the unique-ID count from 295 to 286, a 3.1% improvement, rather than the transformation the marketing implied (e14-gmc, C-21).</p>
+
+  <p><strong>Tier 3 is analogy, kept on a leash.</strong> When this book borrows an architecture from another sport — the equivariant GNN behind TacticAI's corner-kick analysis, re-purposed for pickleball doubles positioning — it says "concept-transfer" out loud, because soccer's spatial priors (continuous off-ball runs, 11-a-side spacing) are not pickleball's (two-a-side, kitchen line, compressed geometry). The transferred model still had to earn Tier 1 standing on the book's own rows before it could support any claim: the GNN predicts the receiver at 84.6% on 3,416 metric rows derived from pb-003 (e12-tacticai-doubles, C-18, VERIFIED) — the architecture is Tier 3, the 84.6% is Tier 1, and the prose keeps the two apart. The failure mode is <em>analogy debt</em>: every transfer imports assumptions about ball physics, player count, and camera geometry that must be repaid with a local experiment before the idea is used.</p>
+
+  <p><strong>Tier 4 is context, not evidence.</strong> Unreproduced papers, vendor demos, conference talks, consultancy whitepapers — all of it is legitimately useful for finding hypotheses and none of it is usable as proof. The rule is symmetric across both sports: a pickleball line-calling product's accuracy page and a rugby league analytics whitepaper's "teams that shift the point of attack on tackle four win more" sit in the same tier, and both are barred from the same sentence types. Tier 4's failure mode is <em>laundering</em> — the number starts in a slide deck, gets quoted in a blog, and arrives in your chapter dressed as a finding. The register exists to strip the costume.</p>
+
+  <h2 class="section-title"><span class="section-num">2.2b</span> What a Tier Buys Downstream: Prescription vs Strategy</h2>
+  <p>Tiers are not pedantry; they decide what kind of sentence you are allowed to write next. The two sports make the contrast concrete.</p>
+
+  <figure id="fig-02-02" class="full">
+    <img src="shared/images/ch02-pickleball-t1-vs-t4.png" alt="Split diagram: left, a pickleball court with a volleying player, metrics.json document and an orange T1 MEASURED stamp; right, a faded dashed court with a glossy flyer and a grey T4 verify stamp. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.2</span>: Pickleball, two tiers apart. A Tier 1 claim resolves to an artifact on disk (e.g. a measured volley count); a Tier 4 claim carries a <strong>[verify]</strong> label and can motivate a drill question, never answer one.</figcaption>
+  </figure>
+
+  <p><strong>Pickleball coaching prescription.</strong> A prescription is a sentence of the form "do X in your next session." Only Tier 1 can carry one, because a prescription risks an athlete's training time. The book's movement-only event pass on pb-003 supports two conservative review windows — 8.33s and 12.83s (e06-events, C-10, VERIFIED) — which licenses a narrow, honest prescription: <em>review these two windows</em>. A measured volley count from tracked kitchen-line positions can license "you are late to the line on the third shot in this clip." Compare the Tier 4 version — "advanced players dink crosscourt seventy percent of the time," heard at a clinic, sourced to nobody — which must be written with a <strong>[verify]</strong> label and can only ever frame a proposed test, such as counting crosscourt dinks on the golden fixture. The moment a [verify] number appears in a drill sheet, the contract has failed.</p>
+
+  <figure id="fig-02-03" class="full">
+    <img src="shared/images/ch02-rugby-t1-vs-t4.png" alt="Split diagram: left, a rugby league pitch with a ball carrier tackled by two defenders, orange tracking dots and ID tags, T1 TRACKED stamp and 295 IDs label; right, a faded dashed pitch with a strategy arrow, a clipboard with a question mark, grey T4 verify stamp." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.3</span>: Rugby league, two tiers apart. Tier 1 tracking claims (295 IDs on RG-001, e08) describe what the pipeline saw; a Tier 4 strategy claim about tackle-four shapes has no artifact and stays <strong>[verify]</strong>.</figcaption>
+  </figure>
+
+  <p><strong>Rugby league team strategy.</strong> A strategy claim is bigger and slower than a prescription — "our defensive line will fold on tackle four" commits a squad for a season — and it needs proportionally more than one clip. Tier 1 tracking output on a single broadcast fixture (13.2 persons/frame, 295 IDs, e08-rugby) licenses statements about the pipeline's behaviour on that footage, full stop. It does not license strategy, and the book says so wherever a reader might over-read. The dangerous sentence is the Tier 4 strategy claim that arrives pre-packaged: an industry whitepaper asserts elite teams win by shifting the point of attack late in the tackle count, no dataset, no artifact, no method section. This is the <strong>consulting-firm trap</strong>, and the book's rule is anti-attribution: never write "according to a leading consultancy" or "industry benchmarks suggest," because the attribution itself launders an uncheckable number into false authority. If a primary measured source exists, cite it by name with a check date. If it does not, the claim is labeled <strong>[verify]</strong> or <strong>unknown</strong> — and an honest "unknown" outranks a polished whitepaper every time.</p>
+
+  <h2 class="section-title"><span class="section-num">2.3</span> The Claims Register (The Measured Enforcement)</h2>
+  <p>The register is the machine-readable version of the contract: every numeric claim in the book resolves to an artifact path + a value key, or it is re-labeled. The register file (<code>state/claims-register.json</code>) stores one row per claim with nine fields — an ID (C-01…C-24), the chapter that asserts it, the exact asserted sentence, the experiment ID, the artifact path, the value key inside that artifact, an optional expected value, and a status. The auditor (<code>lab/claims_register.py</code>) walks every row, opens the artifact, reads the key, and compares. The audit ran against this book's own claims:</p>
+
+  <figure id="fig-02-04" class="full">
+    <img src="shared/images/ch02-claims-register.png" alt="Claims register drawn as a three-row ledger: each row is a claim card, an arrow to a metrics.json artifact icon, and a verdict stamp reading VERIFIED, BLOCKED, or RE-LABEL. A gavel icon labeled audit above; 24 claims and 0 problems below. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.4</span>: The register loop. Every claim card must resolve through an artifact to a verdict stamp; the audit's pass bar is 0 problems.</figcaption>
+  </figure>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Claim</th>
+        <th>Example</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>VERIFIED</td>
+        <td>"BoT-SORT ReID boosts HOTA to 81.4%" (E09 artifact)</td>
+        <td>0.814 in botsort.hota_score — the claim cites the artifact value</td>
+      </tr>
+      <tr>
+        <td>BLOCKED</td>
+        <td>"ByteTrack maintains identity without switches"</td>
+        <td>Falsified by E02: 26 IDs on 4 players; the claim is barred</td>
+      </tr>
+      <tr>
+        <td>RE-LABEL</td>
+        <td>"GMC reaches 48 IDs / HOTA 74.8%"</td>
+        <td>No artifact supports it; the chapter must be rewritten (E14's real numbers: 286 IDs, no HOTA since no ground truth)</td>
+      </tr>
+      <tr>
+        <td>RE-LABEL</td>
+        <td>"Counterfactual shift cuts threat 0.882 → 0.303"</td>
+        <td>The artifact (E12) says 0.64 → 0.22; the prose was not the measurement, so the chapter went back</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The audit's score: <strong>24 claims, 17 VERIFIED, 3 BLOCKED, 4 RE-LABEL, 0 problems</strong> (measured this session with <code>lab/claims_register.py</code>). A claim in a chapter that does not resolve is a bug — in the claim, never in the artifact.</p>
+
+  <p>Three register rows show the contract biting in both sports. In pickleball, C-04 — "ByteTrack maintains identity across a 30s clip without switches" — is BLOCKED, because the e02 fixture run fragmented four players into 26 track IDs; the sentence is not softened, it is barred. In rugby league, C-13 and C-23 both claimed BoT-SORT + GMC reached "48 IDs, HOTA 74.8%" on broadcast footage; both came back RE-LABEL, because no artifact contains those numbers — the real e14 measurement is 295 IDs falling to 286, and HOTA cannot be computed at all without ground-truth identities, so the honest sentence is the smaller one. The register's deepest rule is the title of this book's method: <strong>no claim without an E-ID or a [verify] label</strong>. An E-ID binds the sentence to an experiment directory; [verify] binds it to the reader's skepticism. A sentence with neither is deleted on sight.</p>
+
+  <h2 class="section-title"><span class="section-num">2.4</span> Raw vs Derived Media & Provenance</h2>
+  <p>Raw master footage is immutable (never edited in place; never re-encoded without a new hash). Derived assets — sliced clips, extracted frames, rendered overlays, tracking CSVs — carry a SHA-256 and a manifest link back to their source. The distinction that matters: <em>path hash</em> proves where the file is; <em>content hash</em> proves what it is. Only content hashes make evidence (a re-encode of the same footage is a different artifact and its metrics.json must say which one it describes).</p>
+
+  <figure id="fig-02-05" class="full">
+    <img src="shared/images/ch02-provenance-chain.png" alt="Provenance pipeline of four stages joined by orange arrows: RAW MASTER camera and film reel with padlock and SHA-256 tag, PROCESSED scissors cutting film with SHA-256 tag, DERIVED spreadsheet and chart with SHA-256 tag, CLAIM stamped document. A pickleball court icon and a rugby pitch icon feed the first stage." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.5</span>: The provenance chain. Raw → processed → derived → claim, with a content hash at every hand-off. The chain is what makes "which footage does this number describe?" an answerable question.</figcaption>
+  </figure>
+
+  <p>The chain has three stages and every hand-off is recorded in a manifest with four fields: the source content hash, the transform applied (ffmpeg slice, frame extraction, tracker run), the code version that applied it, and a timestamp. <strong>Processed</strong> assets are mechanical cuts of the raw master — rally slices, frame dumps — with no model in the loop. <strong>Derived</strong> assets are model outputs — detection JSON, tracking CSVs, pose keypoints, overlay renders — and they are only as trustworthy as the stage above them, which is why the manifest walks all the way back to the master hash.</p>
+
+  <p><strong>Pickleball chain.</strong> The pb-003 master clip (a PPA doubles kitchen-spacing sample) is the raw root. From it: processed rally slices and frame dumps; from those: derived artifacts like the detection summary behind C-01 — 69 raw person boxes reduced to 11 court-filtered boxes, an 84% noise rejection that only means anything because the manifest ties the JSON to the exact master it was computed from. <strong>Rugby league chain.</strong> The RG-001 broadcast capture is the raw root; the clipped tackle sequences are processed assets; the e08 baseline metrics (13.2 persons/frame, 295 IDs, 9.76 px/frame drift) and the e14 GMC comparison are derived assets. When C-23 claimed 48 IDs, the provenance chain is exactly what exposed it: no derived artifact on the RG-001 chain contains that number.</p>
+
+  <p>The classic provenance failure is the <em>re-encode trap</em>: someone transcodes the master to a smaller file for convenience, a later experiment runs against the transcode (different bit rate, different frame timing, different motion blur), and its metrics.json silently describes a different artifact. Content hashing makes the trap visible — the derived asset's manifest names the hash it consumed, and a mismatch fails the audit rather than corrupting a conclusion.</p>
+
+  <h2 class="section-title"><span class="section-num">2.5</span> The Golden Fixture</h2>
+  <p>Six frames (this book's fixture: serve → return → third shot → kitchen transition → dinking exchange → rally termination) are the version-control trick for vision: a small, hand-reviewed set where the truth is known and the answer is checked after every pipeline change. The harness rule: <em>after any model change, re-run the fixture. If outputs change in a way you didn't understand, the change doesn't ship.</em></p>
+
+  <figure id="fig-02-06" class="full">
+    <img src="shared/images/ch02-golden-fixture.png" alt="A film strip of six frames showing a pickleball rally from above: serve, return, third shot, kitchen, dink, rally end, with small player and ball silhouettes. Below, a circular re-run arrow labeled every change and an orange checkmark badge labeled no drift." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.6</span>: The golden fixture as a six-frame film strip. Small enough to review by hand, stable enough to catch regressions, re-run on every change.</figcaption>
+  </figure>
+
+  <p>The fixture works because it is <em>small and known</em>. Six frames will not produce a benchmark — that is not their job. Their job is sensitivity: when a detector swap, a calibration tweak, or a dependency bump changes the pipeline's behaviour, the fixture changes visibly and immediately, and the diff between the old and new outputs is the cheapest debugging instrument in the book. The hand-review is the point: because a human has looked at all six frames and written down what is true in them (who is on court, where the kitchen line is, when the rally ends), any drift has a ground truth to drift from.</p>
+
+  <p><strong>Rugby league needs the same instrument and does not yet have one.</strong> The e08 broadcast baseline plays a fixture-like role today — the 295-ID fragmentation count and the 9.76 px/frame drift figure act as regression sentinels for the rugby pipeline — but a true golden fixture should be a hand-reviewed set of six broadcast moments: a play-the-ball, a tackle contact, a ruck forming, a line break, a kick chase, and a try. That set is a <strong>proposed test</strong>, not a measured artifact, and it is labeled accordingly: until those six moments are annotated and wired into the harness, every rugby-side number in this book carries the caveat that its regression net is thinner than pickleball's.</p>
+
+  <h2 class="section-title"><span class="section-num">2.6</span> The Evidence Labels in Prose</h2>
+  <p>Chapters use five labels near any claim that could be mistaken for a benchmark: <strong>measured</strong> (reproduced, artifact on disk), <strong>source-backed</strong> (primary source cited and dated), <strong>concept-transfer</strong> (adapted from another sport, never presented as measured), <strong>proposed test</strong> (falsifiable, not run), <strong>unknown</strong> (the gap stated plainly). Never convert a vendor demonstration into measured performance.</p>
+
+  <p>Each label, one sentence per sport:</p>
+  <ul>
+    <li><strong>measured</strong> — "YOLO11-pose runs at 82 fps on pb-003 with 16.46 mean visible keypoints (e03, measured)." / "On RG-001 broadcast footage the baseline stack produced 295 unique IDs (e08, measured)."</li>
+    <li><strong>source-backed</strong> — "The kitchen rule is defined by the USAP rulebook (usapickleball.org, source-backed)." / "The play-the-ball restart is defined by the NRL laws (nrl.com, source-backed)."</li>
+    <li><strong>concept-transfer</strong> — "The receiver-prediction GNN is a concept-transfer from soccer corner analysis (TacticAI), validated locally before use (e12)." / "Expected-value models for rugby league are concept-transfers from soccer's EPV lineage until a rugby fixture produces local numbers."</li>
+    <li><strong>proposed test</strong> — "Counting crosscourt dinks on the golden fixture would test the seventy-percent clinic claim (proposed test)." / "A six-moment hand-annotated broadcast set would give rugby a real golden fixture (proposed test)."</li>
+    <li><strong>unknown</strong> — "No benchmark-grade public pickleball tracking dataset exists; rally-level ball accuracy across courts is unknown." / "Whether GMC improves identity stability on every NRL broadcast angle, rather than on RG-001, is unknown."</li>
+  </ul>
+
+  <p><strong>Citation discipline.</strong> A source-backed claim carries three things and always three things: the paper or primary document, a resolvable URL, and the date it was checked. "BoT-SORT improves association robustness" is incomplete; "BoT-SORT (arXiv:2206.14651, checked 2026-08-30)" is a claim a reader can chase. The same rule covers rules-of-the-game citations (USAP and NRL pages drift, so the check date matters) and model releases (the SAM 3 weights page, huggingface.co/facebook/sam3, is cited with its access date because model cards change). The book's full reference index lives in chapter 34; every label in every chapter points into it.</p>
+
+  <h2 class="section-title"><span class="section-num">2.7</span> The Evidence Recipe</h2>
+  <ol>
+    <li><strong>State the claim in one sentence.</strong> If it needs two sentences it is two claims; split it before the register does it for you.</li>
+    <li><strong>Name the artifact + value key</strong> (or mark the claim RE-LABEL). "e09 outputs/metrics.json, botsort.hota_score" is the shape of an answer.</li>
+    <li><strong>State the tier (Tier 1-4) and the unit</strong> (the independent n). "Tier 1, n = one four-player clip" keeps the next sentence honest about generality.</li>
+    <li><strong>Run <code>lab/claims_register.py</code></strong> — the audit is the gate. 0 problems or the chapter does not move.</li>
+    <li><strong>Name what the claim does NOT prove</strong> (the honesty section). Every measured number in this book sits next to its own limit: 81.4% HOTA on one fixture, not on pickleball in general; 286 IDs on one broadcast clip, not on every NRL feed.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">2.7b</span> The Five-Minute Audit</h2>
+  <p>The contract only works if checking a claim is cheaper than believing it. Auditing any number in this book — or in a vendor deck you are evaluating — takes about five minutes:</p>
+
+  <figure id="fig-02-07" class="full">
+    <img src="shared/images/ch02-five-minute-audit.png" alt="Vertical five-step flowchart with a stopwatch icon labeled 5 minutes at top: find claim, open register, resolve path, read value, verdict. The last box splits into three stamps: VERIFIED, BLOCKED, RE-LABEL. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.7</span>: The five-minute audit. Five steps from a suspicious sentence to a verdict stamp.</figcaption>
+  </figure>
+
+  <pre><code class="language-text">FIVE-MINUTE CLAIM AUDIT
+1. FIND the claim's exact sentence and its number.
+2. OPEN the register (or the vendor's methods page).
+   No entry? -> the claim is Tier 4. Label it and stop.
+3. RESOLVE the artifact path. Missing path, dead link,
+   or "available on request"? -> [verify] at best.
+4. READ the value key yourself. Compare it to the prose.
+   Mismatch? -> RE-LABEL. Contradiction? -> BLOCKED.
+5. VERDICT + LIMITS: write the tier, the n, and what
+   the number does NOT prove. Done.</code></pre>
+
+  <p>Worked pickleball pass: "BoT-SORT ReID cuts ID switches 14 → 2 and raises HOTA to 81.4%." Register row C-14 names e09-tracker-bakeoff; the artifact exists; the values match; verdict VERIFIED; limit: one fixture, four players. Under two minutes. Worked rugby pass: "GMC box-shift reduces fragmentation on broadcast rugby." Register row C-22 — the artifact shows total IDs moved only 295 → 286 and the claimed mechanism is not what the artifact measured; verdict BLOCKED, and the chapter sentence was rewritten to the smaller truth. The audit's speed is the design goal: a contract that takes a day to check gets checked never.</p>
+
+  <h2 class="section-title"><span class="section-num">2.8</span> The Worked Case: The pb-003 Fixture's Discipline</h2>
+  <p>The book's own fixture is the example that proves the contract works. The pb-003 pickleball clip (a PPA doubles kitchen-spacing sample) carries evidence at every tier: Tier 1 for the detection/tracking/pose/calibration labs (the metrics.json files, measured on the M4 Max), Tier 2 for the published-model replications (the temporal ball filter, the pose baseline), Tier 3 for the models transferred from soccer and basketball (the value and GNN architectures), Tier 4 for the vendor marketing of line-calling products this book documents but never cites as evidence for a coaching call.</p>
+
+  <p><strong>The fixture also produced the contract's best demonstration: the E12 mismatch.</strong> Chapter 8's transcript quoted threat 0.882 → 0.303; the artifact says 0.64 → 0.22. The register's RE-LABEL verdict sent the chapter back for rewriting — not because the model was wrong, but because the prose was not the measurement. That single case is why this chapter exists before any technique: <em>the audit protects the reader from the author.</em></p>
+
+  <p>The rugby side of the register shows the same discipline under harder conditions. Broadcast footage fights the pipeline — panning cameras, pile-ups, twenty-three bodies — and the register caught two rugby over-claims that a friendlier review would have waved through: the "48 IDs, HOTA 74.8%" sentences (C-13, C-23), re-labeled because the artifacts hold 286 IDs and no HOTA at all, and the "GMC box-shift reduces fragmentation" sentence (C-22), blocked outright. None of these failures were model failures. They were prose failures — sentences that drifted ahead of their artifacts — and they are exactly the failures a reader cannot catch without the register, because the numbers sound plausible. Plausibility is not a tier.</p>
+
+  <p>The anti-attribution rule closes the loop. When a strategy number appears with no experiment behind it, the temptation is to borrow authority — to attribute it to a prestigious firm, a famous program, "league insiders." This book refuses the move in both directions: it does not accept consulting-whitepaper numbers as evidence, and it does not hide its own gaps behind borrowed weight. The gaps are labeled <strong>unknown</strong>, and in a young sport like pickleball analytics — where no public benchmark dataset exists at all — "unknown" is frequently the most informative sentence on the page.</p>
+  <h2 class="section-title"><span class="section-num">2.8b</span> Six Evidence Case Studies: The Contract Under Load</h2>
+  <p>The rules above are cheap to state and expensive to keep. What makes them stick is casework — real claims, real verdicts, real audit paths. The six cases below are drawn from this book's own register and fixtures, one per failure mode the contract exists to catch. Each follows the same walk: <em>the claim, the evidence tier, the audit path, the payoff.</em> Together they are the answer to the reader who asks whether the contract is theatre: every verdict below is reproducible from <code>state/claims-register.json</code> and the named artifacts.</p>
+
+  <h3 class="sub-heading">Case 1 — The Tier 1 Claim Done Right: ReID Earns Its Compute</h3>
+  <p><strong>The claim.</strong> "BoT-SORT with ReID cuts identity switches from 14 to 2 and raises HOTA to 81.4% on the pickleball fixture" — register row C-14, experiment e09-tracker-bakeoff, status VERIFIED. This is the shape every coaching-adjacent sentence in the book aspires to: one metric (HOTA, a percentage), one subject (BoT-SORT with ReID enabled, contrasted against the same tracker without it), one condition set (the pb-003 side-line clip, four players, M4 Max), one independent n (one fixture clip), one artifact (<code>outputs/metrics.json</code>, key <code>botsort.hota_score</code>).</p>
+  <p><strong>The tier.</strong> Tier 1, real experiment output — executed locally, artifact on disk, re-runnable by a skeptic with the repo.</p>
+  <p><strong>The audit path.</strong> Open the register, find C-14, resolve the path, read <code>botsort.hota_score</code>: 0.814. Read the switch counts: 14 without ReID, 2 with. The prose matches the artifact to three significant figures, so the verdict is VERIFIED — and the honesty limit is written next to it: 81.4% on <em>this</em> clip, not on pickleball in general. The same discipline runs the rugby side: the e08 broadcast baseline (13.2 persons/frame, 295 IDs, 9.76 px/frame drift, C-12 VERIFIED) is the same five-slot claim under harder footage, and it is equally bounded — one broadcast clip, not every NRL feed.</p>
+  <figure id="fig-02-08" class="full">
+    <img src="shared/images/ch02-case-t1-verified.png" alt="Pickleball court seen from the side line with four tracked players, each with a stable ID tag. An arrow flows from a claim card labeled C-14 to a metrics.json document showing 0.814, to an orange VERIFIED stamp. A small counter shows ID switches 14 to 2. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.8</span>: Case 1 — a Tier 1 claim resolving end to end: claim card → artifact value → VERIFIED stamp, with the bounded n stated (one fixture, four players). <strong>Pickleball</strong>: e09 ReID bake-off. <strong>Rugby league</strong>: e08 broadcast baseline under the same five slots.</figcaption>
+  </figure>
+  <p><strong>The payoff.</strong> A prescription-grade sentence a coach can act on — ReID is worth its compute on fixed side-line footage — and the tracker chapter (chapter 9) builds its recommendation on exactly this row. Tier 1 does not mean "true everywhere"; it means "true here, and here is the disk path."</p>
+
+  <h3 class="sub-heading">Case 2 — The Tier 4 Claim Caught: The Hallucinated Coaching Tip</h3>
+  <p><strong>The claim.</strong> A local vision-language model, handed raw pb-003 frames, narrated the rally in fluent coaching prose — who was late to the kitchen, why the third shot failed, what to drill next. It read exactly like a clinic handout. The adversarial loop then checked six of its factual claims against the tracked coordinates: four were fabricated. Register row C-11 records the result: a 66.7% hallucination rate on raw-frame narration (e13-vlm-adversarial-loop, key <code>single_agent_e07.hallucination_rate_pct</code>, VERIFIED).</p>
+  <p><strong>The tier.</strong> The narration itself is Tier 4 — ungrounded generation, however confident the tone. The 66.7% error measurement is Tier 1 — executed locally, artifact on disk. The case keeps the two apart: fluency is not a tier, and confidence is not a metric.</p>
+  <p><strong>The audit path.</strong> The loop is the audit: extract the VLM's checkable claims, resolve each against tracking rows from the same frames, count the mismatches. Four of six failed. Without the tracked coordinates underneath, the narration was unauditable — which is precisely the state most AI-generated coaching tips live in. The pickleball tip was caught because the book owns the ground truth for its fixture; the rugby equivalent — a VLM summarising a broadcast set ("the defensive line folded on tackle four") — gets the same treatment, and the same skepticism, against e08/e14 tracking rows.</p>
+  <figure id="fig-02-09" class="full">
+    <img src="shared/images/ch02-case-t4-hallucination.png" alt="A pickleball kitchen scene with a speech bubble from a robot icon containing coaching sentences; four of six small claim tags are struck through in burnt orange. Beneath the court, a spreadsheet of tracked coordinates acts as the oracle, with a magnifying glass comparing one claim to one row. A grey TIER 4 stamp on the bubble. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.9</span>: Case 2 — the hallucinated coaching tip caught. VLM narration is Tier 4 until each sentence resolves against tracked rows; four of six failed (e13, measured). <strong>Pickleball</strong>: raw-frame rally narration. <strong>Rugby league</strong>: broadcast set summaries audited against e08/e14 rows.</figcaption>
+  </figure>
+  <p><strong>The payoff.</strong> The rule that protects every downstream chapter: no VLM sentence reaches a coaching page ungrounded. This case is the evidence base for chapter 16's adversarial video-understanding loop and chapter 25's VLM grounding discipline — the model drafts, the tracking rows decide.</p>
+
+  <h3 class="sub-heading">Case 3 — The Provenance Audit: Tracing a Figure Back to Raw Footage</h3>
+  <p><strong>The claim.</strong> Figure 2.3 shows the rugby baseline's fragmentation: 295 unique track IDs on twenty-three players. A skeptic's question — <em>which footage does that number describe, exactly?</em> — is the provenance audit's starting pistol.</p>
+  <p><strong>The tier.</strong> Tier 1, but only because the chain is intact. The same number with a broken chain — a re-encoded input, an unnamed clip — drops to unverifiable regardless of who ran the experiment.</p>
+  <p><strong>The audit path.</strong> Walk the manifest backwards. The claim names e08-rugby; the experiment's <code>metrics.json</code> names its input manifest; the manifest names the processed tackle-slice clips it consumed, each with a content hash, the transform that produced it (ffmpeg slice, code version, timestamp), and the hash of the stage above; the chain terminates at the RG-001 broadcast master hash — immutable, never edited in place. Every hand-off answers one question: <em>what did this file come from, and can I re-derive it?</em> The pickleball chain walks the same way: C-01's 69-raw-to-11-filtered detection count only means something because the manifest ties the JSON to the exact pb-003 master it was computed from. The failure this prevents is the re-encode trap of section 2.4: a convenience transcode silently changes bit rate, frame timing, and motion blur, and an un-hashed pipeline would never notice that its metrics describe a different artifact.</p>
+  <figure id="fig-02-10" class="full">
+    <img src="shared/images/ch02-case-provenance-walk.png" alt="A reverse audit walk of four nodes joined by arrows pointing left: a claim document labeled 295 IDs, a metrics.json with a SHA-256 tag, a film-clip icon labeled tackle slices with a SHA-256 tag, and a film reel labeled RG-001 master with a padlock and SHA-256 tag. A rugby pitch icon sits under the reel; a magnifying glass moves along the arrows. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.10</span>: Case 3 — the provenance walk. Claim → derived metrics → processed slices → raw master, a content hash at every hand-off. <strong>Rugby league</strong>: RG-001 chain behind C-12. <strong>Pickleball</strong>: pb-003 chain behind C-01.</figcaption>
+  </figure>
+  <p><strong>The payoff.</strong> Provenance converts "trust me" into "check the manifest." When a number is challenged — by a reviewer, a reader, or the author six months later — the answer is a hash chain, not a memory.</p>
+
+  <h3 class="sub-heading">Case 4 — The Claims-Register Decision: What Earns [verify]</h3>
+  <p><strong>The claim.</strong> The same experiment produced two register rows with opposite fates. From e10-ball-temporal: C-15 — "the 3-frame temporal energy filter lifts ball-detection precision from 4.2% to 81.3%" — VERIFIED, because the artifact key <code>temporal_3frame_difference.true_ball_precision_at_50</code> holds exactly that. And C-16 — "the filter reaches 87.2% recall with 218 true detections" — RE-LABEL, because the artifact holds no such numbers; the nearest real key is <code>track_continuity_pct</code>, a different metric with a different value.</p>
+  <p><strong>The tier.</strong> Both claims pointed at a Tier 1 experiment. Only one of them was a Tier 1 <em>claim</em>. The tier attaches to the sentence, not to the lab it cites.</p>
+  <p><strong>The audit path.</strong> The register's decision tree, applied to both rows: artifact value matches prose → VERIFIED; artifact contradicts prose → BLOCKED (the fate of C-04, ByteTrack's "no switches" sentence, falsified by e02's 26 IDs on four players); artifact holds a different truth → RE-LABEL, and the chapter sentence is rewritten to the smaller, real number. And where does <strong>[verify]</strong> fit? It is the label for a claim with a plausible source but no local artifact — the clinic tip that "advanced players dink crosscourt seventy percent of the time" is the book's running example: not contradicted, not measured, not usable as evidence, and not deletable either, because it is a genuine hypothesis. [verify] is never an endpoint; it is a queue entry, and the register row for such a claim carries its exit ramp — a <strong>proposed test</strong> (count crosscourt dinks on the golden fixture).</p>
+  <figure id="fig-02-11" class="full">
+    <img src="shared/images/ch02-case-register-fates.png" alt="A decision flow: one experiment icon labeled e10 feeds two claim cards. The first card, precision 4.2 to 81.3, flows through a value-match check to an orange VERIFIED stamp. The second card, recall 87.2, hits a mismatch cross and flows to a grey RE-LABEL stamp with a rewrite arrow. A side path shows a clinic quote bubble labeled seventy percent routed to a VERIFY tag and a proposed test flask. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.11</span>: Case 4 — one experiment, two fates. C-15 verifies; C-16 re-labels; the unmeasured clinic claim earns <strong>[verify]</strong> plus a proposed test. The register decides the label — not the author's confidence.</figcaption>
+  </figure>
+  <p><strong>The payoff.</strong> [verify] becomes an honest middle state with a defined exit, rather than a euphemism for "probably true." Chapters 12 (ball tracking) and 9 (tracking) both carry sentences rewritten by exactly this verdict — the reader sees the real 81.3%, never the plausible 87.2%.</p>
+
+  <h3 class="sub-heading">Case 5 — The Citation Discipline: Paper, URL, Date — or It Didn't Happen</h3>
+  <p><strong>The claim.</strong> Register row C-24, the register's only sourced row: "SAM 3 (Nov 2025) and SAM-3D-Body (DINOv3) are public Meta releases" — status VERIFIED, backed not by an experiment but by a dated verification note (<code>docs/research/2026-08-30-sam3-sam3d-body-verification.md</code>) that records the primary sources checked: the Hugging Face model cards <code>facebook/sam3</code> and <code>facebook/sam-3d-body-dinov3</code>, with URLs and the check date.</p>
+  <p><strong>The tier.</strong> Source-backed — the strongest tier available to a claim the book did not execute itself. It licenses the sentence "these models exist and are public"; it does not license any performance number for them (chapter 10 labels those <strong>[verify]</strong> until local fixtures produce one).</p>
+  <p><strong>The audit path.</strong> Three slots, always three: the primary document, a resolvable URL, the date checked. The date is the slot people skip and the slot that matters most, because every class of source drifts: model cards get edited (license terms and capability claims change), rules pages get revised (USAP and NRL documents update between seasons), and blog posts get silently corrected. "BoT-SORT improves association robustness" is incomplete; "BoT-SORT (arXiv:2206.14651, checked 2026-08-30)" is a claim a reader can chase. The anti-attribution rule binds here too: the citation names the primary artifact — the card, the paper, the rulebook — never "Meta's team claims" or "league sources say," because an authority named without its document is prestige borrowed against no collateral.</p>
+  <figure id="fig-02-12" class="full">
+    <img src="shared/images/ch02-case-citation-discipline.png" alt="A citation card with three labeled slots being filled: paper document icon, URL link icon, calendar icon with a check date. Above, a chain link with a green tick labeled checked 2026-08-30; below, a faded broken chain link labeled no date with a question mark. A small model-card icon reads facebook slash sam3. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.12</span>: Case 5 — the three-slot citation. Paper + URL + check date is auditable; any slot missing and the claim decays silently. <strong>Both sports</strong>: model cards, rulebooks (USAP, NRL), and papers all drift — the date is the audit trail.</figcaption>
+  </figure>
+  <p><strong>The payoff.</strong> A source-backed claim is one a reader can re-check in five minutes, today and in two years. Chapter 34's reference index exists because this discipline scales; every label in every chapter points into it.</p>
+
+  <h3 class="sub-heading">Case 6 — The Consulting-Firm Trap: Attribution Is Not Evidence</h3>
+  <p><strong>The claim.</strong> A glossy rugby league strategy whitepaper asserts that elite teams win by shifting the point of attack late in the tackle count — attributed to a famous consultancy's sports practice, decorated with round numbers and a season-count of matches "analysed," offering no dataset, no method section, no independent n, and no artifact. It arrives pre-packaged with the most dangerous property a Tier 4 claim can have: it sounds like it has already been verified by someone more credible than you.</p>
+  <p><strong>The tier.</strong> Tier 4, unchanged by the logo. Attribution to a famous firm is itself a red flag, not a credential: genuine evidence does not need the firm's brand to stand, and the brand is doing the work the missing method section should have done. The trap has a pickleball twin — the line-calling product page's "99% accuracy," a number with no conditions and no artifact — and the two are treated identically by this book.</p>
+  <p><strong>The audit path.</strong> Run the five-minute audit and watch it fail at step 2: no register entry, no methods page, no artifact path; the only resolution is a marketing PDF. Verdict: <strong>[verify]</strong> at best, barred from every sentence type that matters — no prescriptions, no strategy commitments, no "studies show." But the discipline does not stop at rejection; it converts the claim into work. The whitepaper's hypothesis is falsifiable, and the book owns an instrument that could test it: the e08/e14 broadcast tracking pipeline (chapter 14) produces the player identities and pitch positions from which a tackle-count point-of-attack shift metric could actually be computed, and chapter 22's expected-value lineage — honestly labeled concept-transfer from soccer — is the framework the result would slot into. That is the full move: strip the borrowed authority, label the gap, and write the proposed test.</p>
+  <figure id="fig-02-13" class="full">
+    <img src="shared/images/ch02-case-consulting-trap.png" alt="A glossy whitepaper booklet with a trophy emblem and a rugby pitch diagram showing a tackle-four attack arrow, stamped in grey TIER 4 and NO ARTIFACT. A red flag rises from the booklet. Below, the honest path in three small boxes joined by arrows: a VERIFY tag, a flask labeled proposed test, and a tracking-pipeline icon labeled e08 e14. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 2.13</span>: Case 6 — the consulting-firm trap. Prestige moves a claim's audience, never its tier. The disciplined response: strip the attribution, label <strong>[verify]</strong>, and route the hypothesis to the book's own instrument as a proposed test. <strong>Rugby league</strong>: tackle-four strategy claims. <strong>Pickleball</strong>: line-calling accuracy pages.</figcaption>
+  </figure>
+  <p><strong>The payoff.</strong> The anti-attribution rule protects in both directions: the book refuses borrowed authority from famous firms, and refuses to lend its own gaps any authority it has not earned. "Unknown, with a proposed test" beats "a leading consultancy found" every time — because only one of those sentences can ever become Tier 1.</p>
+
+  <p><strong>What these cases add to the pipeline.</strong> The verdicts cited here are the load-bearing inputs to the technique chapters: C-14's bake-off result carries chapter 9's tracker recommendation; C-15/C-16's split verdict governs chapter 12's ball-tracking claims; C-11's hallucination measurement is the premise of chapters 16 and 25; the e08/e14 rows behind cases 1, 3, and 6 are the baseline every rugby-side number in chapters 14 and 28 is audited against; and the citation discipline of case 5 terminates in chapter 34's reference index. The contract is not a preface to the book — it is the book's build system.</p>
+
+  <h2 class="section-title"><span class="section-num">2.9</span> Key Takeaways</h2>
+  <ol>
+    <li><strong>Tier 1 or nothing</strong>: a coaching claim requires a local experiment + artifact. Prescriptions in pickleball and strategy in rugby league both draw on the same tier, and neither may dip below it.</li>
+    <li><strong>The register is runnable</strong>: <code>claims_register.py</code>, 24 claims, 0 problems is the pass bar. BLOCKED and RE-LABEL are the contract working, not failing.</li>
+    <li><strong>No claim without an E-ID or a [verify]</strong>: the two bindings are the whole game; a sentence with neither is deleted on sight.</li>
+    <li><strong>Derived ≠ raw</strong>: content-hash every derived asset; a re-encode is a different artifact, and its metrics must say which input they describe.</li>
+    <li><strong>The golden fixture is the CI</strong>: six frames, re-run on every change, no unexplained drift — pickleball has one, rugby's is a proposed test, and the asymmetry is labeled.</li>
+    <li><strong>Never launder Tier 4</strong>: no borrowed authority, no "industry benchmarks suggest." Cite the primary source with a URL and a check date, or label the gap unknown.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">2.10</span> Sources</h2>
+  <ul>
+    <li>Claims register + auditor: <code>lab/claims_register.py</code> → state/claims-register.json (24 claims, 17 VERIFIED, 3 BLOCKED, 4 RE-LABEL, 0 problems — measured). Experiments cited: e02-tracking, e03-pose, e04-ball, e06-events, e08-rugby, e09-tracker-bakeoff, e10-ball-temporal, e12-tacticai-doubles, e14-gmc.</li>
+    <li>NIST AI Risk Management Framework — the provenance/evidence frame the book aligns to: https://www.nist.gov/itl/ai-risk-management-framework (checked 2026-08-30).</li>
+    <li>ByteTrack: Zhang et al., "ByteTrack: Multi-Object Tracking by Associating Every Detection Box," arXiv:2110.06864 — https://arxiv.org/abs/2110.06864 (checked 2026-08-30).</li>
+    <li>BoT-SORT: Aharon et al., "BoT-SORT: Robust Associations Multi-Pedestrian Tracking," arXiv:2206.14651 — https://arxiv.org/abs/2206.14651 (checked 2026-08-30).</li>
+    <li>TacticAI (the Tier 3 concept-transfer source for chapter 8's GNN): Wang et al., Nature Communications 2024 — https://www.nature.com/articles/s41467-024-45965-x (checked 2026-08-30).</li>
+    <li>Meta SAM 3 model card (C-24, source-backed release reference): https://huggingface.co/facebook/sam3 (checked 2026-08-30).</li>
+    <li>The primary-source discipline throughout: USAP rules (https://usapickleball.org, checked 2026-08-30), NRL laws (https://www.nrl.com, checked 2026-08-30), the verified papers (arXiv DOIs per chapter) — every citation carries a check date (the book's reference index, chapter 34).</li>
+    <li>Tier labels per the style guide: <code>books/agentic-sport-analysis/state/style-guide.md</code> — the evidence-label vocabulary.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="01.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 01</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 01</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</p>
+        </div>
+      </div>
+    </a>
+    <a href="02.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 02</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 02 — The Evidence Contract & Data Provenance</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 02</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 02 — The Evidence Contract & Data Provenance</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 02 — The Evidence Contract & Data Provenance</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The four-tier hierarchy, the claims register, and why "measured" is a word with a disk path</p>
+        </div>
+        <a href="02.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #8C4318;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

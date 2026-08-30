@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 31 — Deployment, Licensing, Rights & Ethics - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-31" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 31</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 31 — Deployment, Licensing, Rights & Ethics</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The AGPL trap, media rights, athlete data, and the no-medical-advice boundary</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">39 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-31-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Governance Pillars</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-31-1" data-section="s-31-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Governance Pillars</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-31-1" data-section="s-31-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Governance Pillars</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">31</span> Chapter 31 — Deployment, Licensing, Rights & Ethics</h1>
+    <p class="chapter-subtitle">The AGPL trap, media rights, athlete data, and the no-medical-advice boundary</p>
+  </header>
+
+<h3 id="s-31-1"><span class="section-num">31.1</span> The Governance Pillars</h3>
+
+<p class="section-intro">An AI system in sport must satisfy three governance pillars: <strong>epistemic truthfulness</strong> (the claims register), <strong>intellectual property safety</strong> (the license matrix), and <strong>athlete privacy</strong> (the consent boundary). This chapter is the third pillar's machinery — and the honesty contract that the whole book enforces. The license facts are <strong>measured</strong> (this chapter's lab scanned the environment); the rights analysis is <strong>source-backed</strong>; the economics are <strong>computed</strong> from the token dossier and flagged where they must be re-checked at print.</p>
+
+  <p>Governance fails in predictable ways. A club analyst scrapes a broadcast clip "for internal review" and the league's legal team arrives two seasons later. A startup ships a coaching SaaS on an AGPL detection model and discovers the §13 network clause during acquisition due diligence. A junior pickleball program posts pose overlays of fourteen-year-olds and a parent asks, correctly, who consented. None of these are engineering failures; all of them are deployment failures. The fix is not a policy PDF. It is a small set of mechanical controls — a dependency scan, a license matrix, a consent workflow, a risk register — that run in the same pipeline as the models themselves.</p>
+
+  <p>Both of this book's worked sports appear in every section, because the failure modes differ. The pickleball case (pb-003) is fixed-camera amateur footage: the club owns the camera, the players are members, and the governing risk is athlete privacy. The rugby league case (nrl-001) is broadcast PTZ footage: the league and its broadcast partners own the pictures, the data rights run through Stats Perform, and the governing risk is media rights. Governance is one discipline applied to two very different asset classes.</p>
+
+  <figure id="fig-31-01" class="full">
+    <img src="shared/images/licensing-decision-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.1</span>: The License Decision Tree. Choose at model-selection time: AGPL for research, Apache path for product, PML gate read before shipping.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">31.1b</span> The Deployment Landscape: Edge vs Cloud vs Hybrid</h2>
+  <p>Before any rights question can be answered, the system has to live somewhere. The deployment choice is not an infrastructure detail; it determines which licenses fire (AGPL §13 triggers on network serving), which privacy regime applies (data that never leaves the venue is a different problem from data egressed to a cloud API), and what the unit economics allow. There are three honest options.</p>
+
+  <p><strong>Edge.</strong> The M4 Max pipeline this book is built on runs the full perception stack — YOLOv11s-class detection (4.2 ms), TrackNetV4 ball tracking (3.8 ms), BoT-SORT association and homography (3.2 ms), Fast SAM body kinematics (18.5 ms), and the TacticAI GNN (4.8 ms) — inside a measured 37.0 ms end-to-end envelope, with a 55.7 ms glass-to-glass latency including ingestion. That is sub-frame real-time: feedback lands on a court-side iPad before the next rally starts. Cost per match is \$0 at the margin because the hardware is already bought, and the privacy posture is maximal — the footage never leaves the building. For the pb-003 pickleball capture, this is the correct default: the club's members never appear on a third-party server, and the club's bandwidth bill is irrelevant.</p>
+
+  <p><strong>Cloud.</strong> A frontier VLM analyzing an 80-minute rugby league match sampled at 2 FPS consumes roughly 258 tokens per frame — about 2.47 million input tokens per match — at an API cost of \$3.22 to \$13.80 per match depending on the model, with 1.2–4.5 second round-trip latencies. That profile rules out live in-game coaching, which needs sub-100 ms feedback during rallies and timeouts, but it is perfectly viable for post-match deep-dive: narrative generation, tactical summarization, the chapter 26 pipeline. Cloud is also where burst training belongs (Colab-class GPUs for the DEIM fine-tunes), because training is episodic and inference is forever.</p>
+
+  <p><strong>Hybrid.</strong> The architecture the book actually ships: edge does perception and anything latency-bound (line calls, live overlays, court-side cues); cloud does language and anything quality-bound (post-match narrative, weekly coach digests, cross-match aggregation). The boundary is drawn by two numbers — the 100 ms live-feedback budget and the per-match token bill — and by one rule: identity-bearing media stays on the edge box; only derived data (tracks, events, metrics) egresses.</p>
+
+  <figure id="fig-31-02" class="full">
+    <img src="shared/images/c31-deployment-landscape.png" alt="Deployment landscape: edge laptop courtside, hybrid split, cloud server rack; pickleball court and rugby pitch feeds." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.2</span>: The Deployment Landscape. Edge (55.7 ms, \$0/match, maximal privacy), cloud (2.4 s, \$3.22+/match, episodic quality work), and the hybrid split that the book ships: perception local, language remote.</figcaption>
+  </figure>
+
+  <p><strong>The M4 edge economics.</strong> The capital question answers itself quickly. A Mac Studio-class M4 Max is a one-time CAPEX of about \$3,199. Billed against GPT-4o-class cloud inference at \$6.45 per 80-minute match, the machine breaks even after <strong>496 matches</strong> [verify at print]. For a pickleball academy processing 50 hours of court footage a week, payback arrives in under six weeks; for an NRL club analyzing a season of 24 regular-season matches plus training sessions, the edge box pays for itself inside two seasons even if cloud were used for nothing else. The deeper point is structural: token-priced cloud inference scales with usage, while edge inference scales with hardware count. A league analyzing thousands of matches a season is a hardware fleet problem, not an API bill.</p>
+
+  <figure id="fig-31-03" class="full">
+    <img src="shared/images/c31-edge-economics.png" alt="Break-even chart: flat M4 Max capex line at 3199 dollars crossed by rising cloud cost line at 496 matches." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.3</span>: Edge Economics. The flat \$3,199 CAPEX line against the \$6.45/match cloud line; the crossover sits at 496 matches [verify at print], and every hour of academy footage after that is free at the margin.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">31.2</span> The OSS Licensing Deep-Dive (W7.4 Lab, Measured)</h2>
+  <p>The chapter's lab scanned the actual venv and emitted the matrix. The measured result: three AGPL carriers flagged in the installed environment — <code>ultralytics 8.4.117</code>, <code>opencv-contrib-python 5.0.0.93</code>, and <code>opencv-python 5.0.0.93</code> — alongside a full license matrix for the stack's load-bearing components. The findings:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>License</th>
+        <th>Ship Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>ultralytics YOLO</strong></td>
+        <td>AGPL-3.0</td>
+        <td><strong>Flagged by the scan</strong> — fine for the book's experiments; a closed product must buy Enterprise or switch</td>
+      </tr>
+      <tr>
+        <td><strong>RF-DETR / D-FINE / DEIM</strong></td>
+        <td>Apache-2.0 (PML gate on XL/2XL)</td>
+        <td><strong>The ship path</strong> — permissive, 2026-accuracy-equivalent</td>
+      </tr>
+      <tr>
+        <td><strong>supervision / kloppy</strong></td>
+        <td>MIT / BSD-3-Clause</td>
+        <td>Permissive; the spine tools</td>
+      </tr>
+      <tr>
+        <td><strong>SAM 2 / SAM 3</strong></td>
+        <td>Apache-2.0 / custom SAM License</td>
+        <td>Permissive; attribution required for SAM 3 publications</td>
+      </tr>
+      <tr>
+        <td><strong>DINOv3</strong></td>
+        <td>Custom (NOT Apache)</td>
+        <td>Read before commercial use</td>
+      </tr>
+      <tr>
+        <td><strong>PnLCalib / T-DEED</strong></td>
+        <td>GPL-2.0 / GPL-3.0</td>
+        <td>Evaluation-only — never vendor</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The AGPL consequence in full:</strong> the §13 network clause (serving the model over a network releases your source) + the Ultralytics FAQ position (fine-tuned weights inherit AGPL; Pro plan is not a commercial exemption). This matters more for vision than for ordinary software because vision models are almost always deployed as APIs, hosted endpoints, or edge runtimes queried by other systems — precisely the fact pattern §13 was written to catch. The derivative-work line for ML is genuinely unsettled in court: whether fine-tuned weights derive from base weights, whether a training script derives from training code, and whether an application importing an AGPL model is a combined work are all open questions. But the licensor reads its license broadly, the existence of a paid Enterprise tier is the market signal for how broadly, and the uncertainty itself fails legal review before it fails technically. The book's verdict: <strong>choose the license at model-selection time, not deploy time</strong> — the C08 chapter made this decision first; this chapter audits it.</p>
+
+  <p><strong>The permissive path.</strong> RF-DETR (Nano–Large) is Apache-2.0 end to end, matches or beats YOLO on accuracy/latency, and exports to ONNX/TensorRT — the book's default commercial-safe recommendation for both the pickleball detector and the rugby ball/player detector. RT-DETR, D-FINE, and the DEIM training recipe (which cuts DETR convergence time by up to 50% per the paper) are Apache-2.0 as well, giving a clean training path for custom fine-tunes. The two caveats the scan teaches: RF-DETR XL/2XL sit behind the PML-1.0 platform license (the constructors refuse to load unless <code>accept_platform_model_license=True</code> is passed — a license gate enforced in code), and DEIMv2's DINOv3 backbones carry Meta's custom DINOv3 license, not Apache [verify whether those terms propagate to downstream weights]. The book's discipline: <strong>pick permissive</strong>, and treat "we only use the weights, not the code" as a question for counsel, not an engineering shortcut.</p>
+
+  <figure id="fig-31-04" class="full">
+    <img src="shared/images/c31-license-matrix.png" alt="License comparison matrix: YOLO AGPL marked no-ship; RF-DETR, SAM2, DEIM Apache-2.0 marked ship path." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.4</span>: The License Matrix. AGPL (research-only) versus the Apache-2.0 ship path; the orange highlight marks the row the book's product lane uses.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">31.2b</span> The License Decision Tree</h2>
+  <p>The checklist the lab script automates, printable as-is. Run it against every component before it enters the pipeline, not after:</p>
+
+  <pre><code class="language-text">1. Is the component AGPL-3.0 or GPL-family?
+   ├─ Yes → Are you shipping a product/service over a network?
+   │   ├─ Yes → Open-source everything under AGPL, buy commercial, or replace.
+   │   └─ No (pure internal research, no distribution) → obligations may not fire; check counsel.
+   └─ No → continue.
+2. Is the component Apache 2.0 / MIT / BSD?
+   ├─ Yes → Keep attribution notices; proprietary shipping is fine.
+   └─ No → continue.
+3. Custom platform license (PML-1.0, DINOv3, Deci weights)?
+   ├─ Yes → Verify platform agreement and acceptance flag before use.
+   └─ No → continue.
+4. Are the weights redistributable? (SMPL-X, registration-gated checkpoints)
+   ├─ Yes → Include license and attribution.
+   └─ No → Do not bundle; the user downloads separately.</code></pre>
+
+  <p>Heuristic actions for the scanner: AGPL-3.0 served over a network → <code>legal_review</code> or <code>replace</code>; Apache/MIT/BSD → <code>keep</code> with attribution check; custom platform licenses → <code>buy_license</code> if the platform agreement is active; unknown or absent license → <code>legal_review</code>. <code>pip-licenses</code> or a small parser over <code>pip show</code> is all the machinery required — the lab's script is under fifty lines and runs in CI on every dependency change.</p>
+
+  <h2 class="section-title"><span class="section-num">31.3</span> Media Rights: Book vs Product</h2>
+  <p>Media rights separate into two assets that are contracted independently: <strong>event data</strong> (who did what, when) and <strong>footage</strong> (the pictures). Licensing one never grants the other. The verified reality in both sports:</p>
+
+  <ul>
+    <li><strong>Rugby league (NRL)</strong>: official data runs through Stats Perform (Opta brand), the NRL's data partner for more than a decade, collecting roughly 14,000 data points per match and feeding broadcasters, media, sponsors, and team analysts. Video and performance analysis run through Hudl's multi-year ARLC renewal covering NRL, NRLW, State of Origin, and the pathway competitions — the footage lives on Hudl and is governed by league and club agreements, not by the broadcast deal. Broadcast pictures themselves sit with the league's television partners (free-to-air and subscription), and the neighboring AFL's A\$4.5 billion 2025–2031 deal with Seven and Foxtel shows the scale of what leagues protect: a 2025 dispute over behind-the-goals footage aired on a rival network triggered a formal AFL review of broadcast rights. Footage is a core revenue asset and is policed like one.</li>
+    <li><strong>Pickleball (PPA/MLP)</strong>: professional media is controlled by Pickleball Inc., distributed mainly through Pickleball TV (a joint venture with Tennis Channel) plus limited barter windows; as of 2026 there is no full-scale rights-fee national television deal, though executives expect one within 1–2 years. The G0.5 decision encodes the consequence: labels are CC-BY-4.0, frames are NOT redistributable.</li>
+    <li><strong>Book vs product</strong>: the book cites and describes the broadcast footage (the NRL GF highlights case); the fair-use/fair-dealing analysis separates the practitioner reference from the commercial product. A product must license the footage.</li>
+    <li><strong>The rule that never changes</strong>: frames are not redistributable without rights; the book publishes metadata, hashes, and the analysis — never the identity-bearing media.</li>
+  </ul>
+
+  <p><strong>Fair use is a defense, not a plan.</strong> It is raised after a claim, not granted in advance. The factors that strengthen a book's position are transformative purpose (tactical annotation, data visualization, teaching), small proportion (a single frame from a multi-hour broadcast), no market substitution (the book is not a substitute for watching the match), and the factual nature of a sporting event. The factors that weaken it: commercial publication of the book, taking the most valuable moment (the game-deciding try is the most licensable clip in the match), and unedited reposting — a voiceover alone is usually insufficient; spoken analysis plus diagrams plus data overlays is much stronger. The operational split: one annotated frame from a grand-final try with a tactical overlay is likely defensible as commentary; a 30-second highlight clip of the match-winning play is a licensing transaction; a generated data visualization from licensed event data is fine under the data license; an auto-compiled highlight reel from broadcast footage is not allowed at any scale without a clip-licensing agreement.</p>
+
+  <figure id="fig-31-05" class="full">
+    <img src="shared/images/c31-rights-decision-tree.png" alt="Rights decision tree: club camera branch with player consent, broadcast branch blocked for license, self-filmed branch with subject rules." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.5</span>: Who Owns the Footage. Three branches — club camera (the pb-003 case: club owns, players consent), broadcast (the nrl-001 case: rights held, license first), and self-filmed (subject to venue and subject rules).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">31.3b</span> The NRL Broadcast Rights Case</h2>
+  <p>The concrete question a club analyst asks: <em>the match was on the broadcast — can the club use that footage for analysis?</em> The answer demonstrates why the two-layer rights structure matters. The broadcast feed (the pictures produced by the league's free-to-air and subscription television partners) is the broadcasters' licensed product; a club capturing the telecast and cutting it into an analysis package is reusing someone else's licensed asset, and redistributing any of it — even internally-branded clips on a public channel — is a rights violation. The club's legitimate path is the second layer: the Hudl-hosted footage and Opta event data the club receives under the ARLC performance-analysis agreements, which exist precisely so clubs do not need the broadcast feed. In other words, <strong>a club can analyze the match, but not from the broadcast</strong> — it analyzes from the league-sanctioned video and data feeds, and it licenses anything it wants to publish [verify the operative clauses of the current ARLC/Hudl agreement before relying on this in a product].</p>
+
+  <p>The pickleball mirror is instructive: PPA/MLP footage has no Hudl-equivalent club layer because professional pickleball's media structure is younger and centralized under Pickleball Inc.; a pro pickleball analyst has fewer sanctioned video sources than an NRL analyst, which is exactly why the book's pickleball pipeline is built on self-captured club footage instead. The rights structure you operate under determines the capture architecture you build.</p>
+
+  <figure id="fig-31-06" class="full">
+    <img src="shared/images/c31-nrl-broadcast-rights.png" alt="Three stacked rights layers for rugby league: broadcast, league data, club video; club use blocked from broadcast layer, allowed from club video layer." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.6</span>: The NRL Rights Stack. Broadcast pictures (licensed, off-limits for redistribution), league event data (~14,000 points/match via Stats Perform), and club video (Hudl/ARLC) — the club's lawful analysis path runs through the bottom two layers, not the top one.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">31.3c</span> Data Provenance: Where the Footage Came From</h2>
+  <p>Every asset in this book carries a provenance chain, because a rights answer is only as good as the record of where the media originated. The pb-003 pickleball set: club-mounted fixed cameras, club-owned recordings, players covered by the club's consent workflow, sessions hashed (SHA-256 per source clip) at ingest, and labels derived from those hashes — so a released label row can always be traced back to its exact source clip without the clip itself ever leaving the club. The nrl-001 rugby league set: broadcast footage used as reference material only — cited, described, and analyzed, never vendored or redistributed; the derived artifacts (event tables, tracking re-annotations, tactical diagrams) are the publishable layer. Provenance is what makes the G0.5 release rule auditable: labels CC-BY-4.0, frame indices plus source-clip hashes for verification, frames themselves withheld. If you cannot state, for every clip in your pipeline, who recorded it, who owns it, and who consented to it, the clip does not enter the pipeline.</p>
+
+  <h2 class="section-title"><span class="section-num">31.4</span> Athlete Data Rights</h2>
+  <p>Biometrics are the sensitive category: joint angles, 3D meshes, HR traces, gait — all of it — under GDPR Article 9 (EU) and the Australian Privacy Act's sensitive-information class. Under APP 3, an entity may collect sensitive information only with consent and only where reasonably necessary for its functions; the employee-records exemption does not reliably cover biometric collection, which is why "the player is our employee" is not a privacy answer. The athlete's <em>right to understand</em> is the operant requirement: what is analyzed, for what purpose, retained for how long, and who can see it.</p>
+
+  <p>The rugby league reference is the 2023–2027 NRL Collective Bargaining Agreement, which was negotiated partly over player data: the RLPA's dispute FAQ stated that the league had sought to assert ownership over player data and to use or sell it without informed consent, and the signed CBA responded with clarification of player property rights and mandated entry/exit medicals. The CBA makes consent structural — but the practitioner's duty is to make the analysis comprehensible, not just to collect a signature. The structural problem the CBA does not solve: consent inside an employer-athlete relationship is often not freely given. A "consent" checkbox under a power imbalance is a fiction; the honest design is purpose-specific consent, transparent retention, and independent oversight, with contractual data-rights clauses doing the work a click-through cannot.</p>
+
+  <p><strong>The face lane is off for the amateur case</strong>: face recognition carries the NIST FRVT 10–100× demographic false-positive differentials (the error is not evenly distributed) and the structural consent failure (club/employer power imbalance means the athlete cannot freely refuse). For the pb-003 pickleball footage the default is <strong>blur or skip</strong>: jersey numbers or anonymous player IDs for tracking, faces blurred in any published frame, minors covered by parental consent. For the pro case (an NRL squad in a Hudl environment): consent is managed, purpose-bound, and revocable — and the default remains no faces unless the analysis requires them and the consent is explicit, with a documented DPIA for any high-risk processing.</p>
+
+  <p><strong>The release rule:</strong> the label dataset is personal data (subjects' appearance, location, play patterns). The pb-003 pattern — labels CC-BY-4.0, frames not redistributable, no faces — is the model for every release in this space.</p>
+  <ul>
+    <li><strong>Biometrics = sensitive data</strong>: GDPR Art 9 (EU) / Australian Privacy Act (sensitive-information class) — joint angles, 3D meshes, HR, all of it.</li>
+    <li><strong>The face lane is off</strong>: no face recognition in amateur footage (the NIST FRVT 10–100× demographic false-positive differentials + the structural consent failure: club/employer power imbalance).</li>
+    <li><strong>Sports-specific</strong>: NRL CBA consent frameworks for pro teams; the athlete's right to understand what is analyzed.</li>
+  </ul>
+
+  <figure id="fig-31-07" class="full">
+    <img src="shared/images/c31-athlete-consent-flow.png" alt="Five-stage athlete consent flow: collect, inform, sign, process with no-faces tag, revoke loop; blurred-face athlete silhouette with privacy shield." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.7</span>: The Consent Flow. Collect → inform → sign → process (no faces) → revocable. The loop back is the load-bearing stage: consent that cannot be withdrawn was never consent.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">31.4b</span> The Consent Template</h2>
+  <p>A minimal consent form has nine fields, each of which exists because a real failure mode demanded it:</p>
+
+  <table>
+    <thead>
+      <tr><th>Field</th><th>Why it matters</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Who is collecting</strong></td><td>Named club, school, league, or app operator — accountability starts with a name.</td></tr>
+      <tr><td><strong>What is collected</strong></td><td>Video, pose keypoints, heart rate, GPS, biometrics — enumerated, not implied.</td></tr>
+      <tr><td><strong>Purpose</strong></td><td>Coaching feedback, highlights, research, scouting — purpose binds the processing.</td></tr>
+      <tr><td><strong>Retention period</strong></td><td>Delete after season / after the player leaves / a specific number of years.</td></tr>
+      <tr><td><strong>Who can access</strong></td><td>Coaches, medical staff, the player, parents, league, third-party vendors.</td></tr>
+      <tr><td><strong>Secondary use</strong></td><td>Commercial highlights, AI training, research — each needs separate consent.</td></tr>
+      <tr><td><strong>Withdrawal</strong></td><td>How the player or parent revokes, and what happens to existing data.</td></tr>
+      <tr><td><strong>DPIA reference</strong></td><td>Link to the Data Protection Impact Assessment for high-risk processing.</td></tr>
+      <tr><td><strong>Signature / date</strong></td><td>Explicit consent, not implied.</td></tr>
+    </tbody>
+  </table>
+
+  <p>The secondary-use row is where amateur clubs most often fail: the season's highlight reel, the model-training contribution, and the coaching review are three different purposes and need three different consents. A pickleball club contributing labels to a shared dataset needs the "AI training / research" line signed by every identifiable player; an NRL pathway program exporting GPS traces to a vendor needs the same. Treat every identifiable athlete as a data subject whose consent is explicit, specific, and revocable.</p>
+
+  <h2 class="section-title"><span class="section-num">31.5</span> NIST AI RMF and the Risk Register</h2>
+  <p>The NIST AI Risk Management Framework 1.0 is voluntary and structured around four functions: <strong>Govern, Map, Measure, Manage</strong>. For a sport-analytics product the mapping is direct. <em>Govern</em>: who approves high-risk use cases, model procurement, athlete-data policy, and the no-medical-advice boundary. <em>Map</em>: the inventory of models (detection, tracking, pose, ball tracking, VLM, LLM), data sources, deployment contexts (a live pickleball line call versus a post-match rugby review are different risk classes), and impacted stakeholders (athletes, referees, coaches, fans). <em>Measure</em>: validation metrics per component — HOTA and IDF1 for tracking, homography RMSE for calibration, keypoint confidence for pose, ball-detection precision, VLM hallucination rate — plus human-in-the-loop checks. <em>Manage</em>: incident response, rollback plans, vendor escalation, and the re-audit cadence.</p>
+
+  <p>The register itself is a living table with a unique ID, likelihood and impact scores, inherent and residual risk, controls, a named owner, and a review date. This chapter's lab ships the starter rows:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Risk</th>
+        <th>Impact</th>
+        <th>Mitigation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>False line call in live use</td>
+        <td>Match decision error</td>
+        <td>Multi-view + published σ (C14); single-cam is a different product</td>
+      </tr>
+      <tr>
+        <td>AGPL contamination</td>
+        <td>Source-release obligation</td>
+        <td>RF-DETR path; the dependency scan (W7.4)</td>
+      </tr>
+      <tr>
+        <td>Biometric publication</td>
+        <td>Privacy violation</td>
+        <td>No faces; per-athlete consent; blur/skip</td>
+      </tr>
+      <tr>
+        <td>Injury-cue from kinematics</td>
+        <td>Medical misjudgment</td>
+        <td>Monocular forces NOT defensible (C11); medical clearance</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Two worked extensions show the register growing. <strong>Pickleball:</strong> a live line-call overlay at a club tournament — likelihood 3, impact 5, inherent 15 — controlled by a human-in-the-loop challenge rule, a confidence threshold, model version pinning, and the chapter 14 multi-view σ gate; residual 6, owned by the product safety lead. <strong>Rugby league:</strong> a VLM-generated tactical explanation shown to a player — likelihood 4, impact 3, inherent 12 — controlled by the generator-critic loop, confidence gating, and a human coach reviewing before delivery; residual 5, owned by the ML lead. Every system that affects a match decision, a coaching intervention, or a medical impression needs a named owner, an override path, and a rollback plan; the register is the operational record of who is accountable when the model is wrong. Review weekly during development, monthly in production, and ad-hoc after any incident, model update, or new data source.</p>
+
+  <h2 class="section-title"><span class="section-num">31.6</span> Vendor Lock-In: The Open-Formats Answer</h2>
+  <p>The PB Vision partner-API pattern (OAuth + analytics-return) vs PlaySight's closed data — the book's answer is the one-spine + open formats (kloppy/EPTS export, chapter 17): your data stays queryable regardless of which vendor you use for capture. PB Vision is the model to copy: an adapter boundary that lets users bring their own footage and take their own analytics back out — not fully open, but portable. PlaySight is the cautionary case: fixed multi-camera SmartCourt infrastructure with footage stored on PlaySight's proprietary cloud, no general public API for automated export of raw video or deep analytics, and access through PlaySight's own apps or select partners. The lock-in is partly physical: the cameras are embedded in the facility, so switching vendors is a construction project, not a software migration.</p>
+
+  <p>The portability test is four questions, answerable today:</p>
+
+  <pre><code class="language-text">1. Can you export your raw data and model weights in an open format today?
+   ├─ Yes → You own the spine; the vendor is replaceable.
+   └─ No → You are building on someone else's land.
+2. Does the vendor offer an API, or only a dashboard?
+   ├─ API → Portability is possible with effort.
+   └─ Dashboard only → You are a data tenant.
+3. Is inference self-hosted or vendor-hosted?
+   ├─ Self-hosted (M4 Max, Colab, on-prem) → You control the pipeline.
+   └─ Vendor cloud → Check egress, terms, and model-license gates.
+4. Can the same pipeline run on a second vendor's hardware without code changes?
+   ├─ Yes → You have a genuine abstraction layer.
+   └─ No → Lock-in is a future migration cost.</code></pre>
+
+  <p>A closed data store is the lock-in; the spine is the exit. For the pickleball club this means the pb-003 captures live on club storage as MP4 plus CSV/JSON annotations, not inside a vendor dashboard. For the NRL analyst it means every Hudl-derived artifact is also exported to kloppy-compatible tables, so a change of video vendor does not orphan a decade of analysis history.</p>
+
+  <h2 class="section-title"><span class="section-num">31.7</span> The No-Medical-Advice Boundary</h2>
+  <p>The config's legal disclaimer applies mechanically: "not legal, financial, medical, or professional advice. It does not diagnose athletes." The chapter's red lines: never diagnose from monocular kinematics (C11 — sagittal-plane angles, CoM height, and calibrated joint angular velocities are defensible from single-camera video; ground-reaction forces, joint torques, and injury-risk probabilities are not); never prescribe injury rehab or return-to-play protocols (C29 — the coaching layer suggests drills and constraints, never rehabilitation progressions); never gate athletes on screening scores (the Bath 68% sensitivity means a third of at-risk athletes pass the screen). The standard disclaimer text — derived from the terms of the AI fitness platforms — belongs in every coaching product:</p>
+
+  <blockquote>
+    <p>The coaching feedback, training plans, and analytics provided by this system are generated by artificial intelligence for informational and fitness-coaching purposes only. They do not constitute medical advice, diagnosis, or treatment. The AI cannot physically assess you, observe your form in a clinical setting, or account for your full injury history. Always consult a qualified healthcare professional before acting on any recommendation.</p>
+  </blockquote>
+
+  <p>But the boundary is a <strong>system behavior</strong>, not a Terms-of-Service paragraph. Build it as a hard guardrail in the agent's output filter (not a soft prompt), a logged audit point (every blocked medical-advice attempt is recorded for safety review), and an escalation path (a human coach or medical reviewer unlocks anything that could read as diagnosis or prescription). A pickleball coaching agent that observes a player's knee valgus in the pb-003 overlays may say "knee flexion angle is X degrees relative to the calibrated court" — it may not say "you have patellar tendinopathy risk." An NRL workload dashboard may flag an ACWR spike — it may not clear a player to train. <strong>Computable is not the same as permissible</strong>, and the boundary is drawn at measurement time, not publication.</p>
+
+  <h2 class="section-title"><span class="section-num">31.8</span> The Pickleball Worked Case: The G0.5 Decision</h2>
+  <p>The clearest legal case in this book is the dataset contribution: the pb-003 labels are <strong>CC-BY-4.0</strong> (the analysis is yours), but the <strong>frames are NOT redistributable</strong> (PPA broadcast rights for pro footage; athlete privacy for club footage). The book publishes: the labels, the frame indices, the source-clip SHA-256, and the analysis — never the frames themselves. This single decision models every rights question in the book: <em>what belongs to the copyright holder, what belongs to the analyst, and how you split them in a release.</em></p>
+
+  <p><strong>The pickleball club case in full.</strong> The club owns the camera — that part is easy: a camera mounted by the venue on its own wall records on the club's storage, and the raw recording is the club's asset. The harder question is the subjects. The players are identifiable data subjects: their appearance, movement patterns, and (in the pb-003 footage) their faces are personal data. The club's ownership of the recording does not grant the right to publish the players; that right comes from the consent workflow of §31.4b, signed per player, with parental consent for minors, and with the secondary-use line covering any dataset contribution or model training. The operational result is the three-way split in the figure: labels out (CC-BY-4.0), hashes out (verification without exposure), frames locked. A member who revokes consent triggers removal of their rows from future releases and blurring in any re-published analysis — which is why the provenance hashes of §31.3c matter: you can only honor revocation if you can trace every derived artifact back to its source clip.</p>
+
+  <figure id="fig-31-08" class="full">
+    <img src="shared/images/c31-pickleball-club-rights.png" alt="Pickleball court with club cameras feeding three outputs: labels CC-BY ticked, frames locked with X, hashes only ticked." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.8</span>: The Pickleball Club Split. The club owns the camera and the recording; the players own their identifiability. Labels release under CC-BY-4.0, hashes release for verification, frames stay locked.</figcaption>
+  </figure>
+
+  <p>The rugby league contrast closes the loop: the NRL analyst never faces the club-camera question because the club does not own the pictures — the league's media stack does — and the analyst's consent problem is contractual (the CBA) rather than ad-hoc. Two sports, two ownership structures, one discipline: name the owner, name the data subject, name the consent, and publish only what all three permit.</p>
+
+  <h2 class="section-title"><span class="section-num">31.9</span> The Governance Recipe</h2>
+  <ol>
+    <li>Dependency scan (the W7.4 script) for AGPL/GPL carriers — measured here: ultralytics 8.4.117 and the two OpenCV 5.0.0.93 wheels flagged in the working venv.</li>
+    <li>License matrix per model (the C31 table at selection time, not deploy time).</li>
+    <li>Risk register per deployment (the 4 rows above are the starters; grow it per use case).</li>
+    <li>Media rights: cite-only for broadcast; license for product; provenance hash per source clip.</li>
+    <li>Consent: nine-field template, no faces, biometrics = sensitive, revocation wired to the provenance chain.</li>
+    <li>Deployment split by the two numbers: 100 ms live budget and per-match token bill; identity-bearing media stays on the edge.</li>
+    <li>No-medical-advice guardrail as output filter + logged audit point, tested with adversarial prompts.</li>
+    <li>Re-audit on every version bump (licenses move — the RF-DETR+ split and the DEIMv2 backbone question are the cautionary cases).</li>
+  </ol>
+
+  <p>Before any model goes live, the checklist is binary: license scan passed; provenance documented and consent verified or faces anonymized; risk register populated and reviewed; the no-medical-advice guardrail adversarially tested; override and rollback documented; human-in-the-loop approval on match-decision outputs; and the 30-day export test — can your data and models leave the vendor within a month? Governance becomes real only when it is automated. The license matrix script and the risk register are the two minimum viable controls: one prevents IP surprises, the other prevents harm surprises.</p>
+  <h2 class="section-title"><span class="section-num">31.9b</span> The Use-Case Library I: Rights &amp; Economics of Deployment</h2>
+  <p>The ten use cases below convert this chapter's governance machinery into the decisions a club, academy, or product team actually faces, organized into three categories: <strong>rights &amp; economics of deployment (UC 01–04)</strong>, <strong>athlete rights &amp; privacy (UC 05–07)</strong>, and <strong>supply chain &amp; operations (UC 08–10)</strong>. Each case states the practical problem, the mechanism with its cost math, a figure, a pickleball and a rugby league application, and the payoff. Evidence labels follow the book's contract: measured (this chapter's lab), source-backed (named source), or [verify] (practitioner estimate or price to re-check at print).</p>
+
+  <h3 class="sub-heading">UC 01 — Club Video Rights: The NRL Broadcast Trap</h3>
+  <p>The problem: the match was on television, so the analyst assumes the club can cut the telecast into a review package. It cannot. The mechanism is the two-layer rights structure of §31.3b — broadcast pictures are the broadcasters' licensed product, while the club's lawful path is the Hudl/ARLC footage layer plus Stats Perform's ~14,000 event data points per match. The math is asymmetric: a clip-licensing conversation for broadcast footage runs to a per-clip fee and a negotiation cycle measured in weeks [verify — league-specific], while the sanctioned club layer is already paid for inside the ARLC agreement. The cost of getting it wrong is not a fine schedule; it is a takedown plus a damaged league relationship.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-nrl-club-video-rights.png" alt="Rugby league pitch from a broadcast gantry with three stacked rights layers: broadcast blocked, league data and club video open to the analyst laptop." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.9</span>: UC 01 — The Rights Stack in Practice. <strong>Rugby league</strong>: broadcast layer blocked for reuse; the analyst's lawful path is league data plus club video. <strong>Pickleball</strong>: no broadcast layer exists for club footage — the club camera is the only layer, and consent governs it.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> There is no Hudl-equivalent in amateur pickleball: the club's own fixed camera is simultaneously the capture layer and the rights layer, so the "which layer may I use" question collapses into the consent question of UC 05. PPA/MLP pro footage, by contrast, is Pickleball Inc. property — treat it like the broadcast layer: cite, never cut.</p>
+  <p><strong>Rugby league application.</strong> Route every analysis request through the Hudl/Opta layers; if a broadcast moment is genuinely needed (the grand-final try as a teaching still), transform it — annotation, diagram, data overlay — and cite it, per the fair-use analysis of §31.3.</p>
+  <p><strong>Payoff.</strong> The analyst keeps working instead of lawyering: one routing rule ("which layer?") replaces a legal review per clip.</p>
+
+  <h3 class="sub-heading">UC 02 — Pickleball Club Recording Rights</h3>
+  <p>The problem: a club mounts a camera, records a season, and only later asks who may publish what. The mechanism is the three-way split of §31.8: the club owns the recording, the players own their identifiability, and the release separates into labels out (CC-BY-4.0), hashes out (SHA-256 provenance), frames locked. The math is the admin overhead: a nine-field consent form costs roughly 10 minutes per player — about 7 staff-hours for a 40-member roster, once per season — against the alternative cost of a full dataset takedown and re-collection if one parent objects after publication.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-pickleball-recording-rights.png" alt="Pickleball court with club cameras feeding three outputs: labels ticked, hashes ticked, frames padlocked." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.10</span>: UC 02 — The Club Split. <strong>Pickleball</strong>: labels and hashes publish, frames stay locked (the pb-003 pattern). <strong>Rugby league</strong>: the same split applies to training-ground footage the club shoots itself, outside the Hudl agreement.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> pb-003 in full: club-mounted cameras, per-player signed consent, parental consent for juniors, frames never leave club storage, labels released with source-clip hashes so any row traces back without the clip egressing.</p>
+  <p><strong>Rugby league application.</strong> An NRL club filming its own opposed sessions owns those pictures outright (they are not broadcast product), but player identifiability still runs through the CBA consent framework — the three-way split is identical, only the consent instrument changes.</p>
+  <p><strong>Payoff.</strong> A publishable dataset with a defensible provenance chain, at the cost of one afternoon of paperwork per season.</p>
+
+  <h3 class="sub-heading">UC 03 — AGPL vs Apache: The YOLO/RF-DETR Decision</h3>
+  <p>The problem: the detector that tops the hobby benchmarks is AGPL-3.0, and the product team discovers it at acquisition due diligence, not at model selection. The mechanism is §13: serving an AGPL model over a network triggers source release for the whole combined work, and the licensor reads fine-tuned weights as covered. The math, from this chapter's measured scan: the working venv carries three AGPL packages (ultralytics 8.4.117, opencv-contrib-python 5.0.0.93, opencv-python 5.0.0.93). The escape routes price out as: Ultralytics Enterprise license [verify at print — quote-based], full AGPL source release (usually fatal to a closed product), or migration to RF-DETR (Apache-2.0, ONNX/TensorRT export, accuracy-equivalent) at roughly two engineer-days for a drop-in detector swap [verify — practitioner estimate]. Migration is almost always the cheapest cell in that table.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-agpl-vs-apache.png" alt="Forked decision: YOLO branch ends at an AGPL stop sign; RF-DETR branch ends at a ship tick." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.11</span>: UC 03 — The Fork. <strong>Pickleball</strong>: the club ball/paddle detector ships on RF-DETR Nano. <strong>Rugby league</strong>: the 26-player broadcast detector ships on RF-DETR Large; XL/2XL stay behind the PML gate.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> The pb-003 detector fine-tune runs the DEIM recipe on an Apache base, so the club's coaching app can be sold or open-sourced on the club's own terms — the license is a choice, not a surprise.</p>
+  <p><strong>Rugby league application.</strong> The nrl-001 broadcast detector is the highest-stakes model in the book's stack (26 players, live line-of-scrimmage calls feeding C28); it is precisely the model an acquirer would audit first, and it sits on the Apache path for that reason.</p>
+  <p><strong>Payoff.</strong> A detector decision made at selection time costs engineer-days; made at due-diligence time it costs the deal.</p>
+
+  <h3 class="sub-heading">UC 04 — Edge vs Cloud: The M4 Economics</h3>
+  <p>The problem: cloud inference is priced per token and per match, so a successful season is a growing bill; edge hardware is priced once. The mechanism is the hybrid split of §31.1b — perception local (37.0 ms end-to-end, 55.7 ms glass-to-glass, measured), language remote. The math: the M4 Max box at \$3,199 CAPEX against \$6.45 per 80-minute match of cloud VLM inference breaks even at <strong>496 matches</strong> [verify at print]; a pickleball academy processing 50 court-hours a week crosses inside six weeks, and an NRL club analyzing 24 regular-season matches plus training crosses inside two seasons. Below break-even the cloud is cheaper in cash; above it, every marginal match is free — and identity-bearing frames never leave the building at any volume.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-edge-vs-cloud.png" alt="Edge laptop courtside versus cloud server rack with the hybrid boundary between them." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.12</span>: UC 04 — The Split. <strong>Pickleball</strong>: the court-side iPad cue needs the 55.7 ms edge path. <strong>Rugby league</strong>: the post-match narrative digest tolerates cloud's 2.4 s round trips and pays per match.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> The academy default is edge-only: member footage never egresses, the per-match marginal cost is zero, and live dink-feedback cues stay inside the 100 ms budget.</p>
+  <p><strong>Rugby league application.</strong> The club runs hybrid: live sideline perception on the edge box during training, cloud VLM for the weekly tactical digest on Hudl-derived artifacts — only tracks and events cross the boundary, never frames.</p>
+  <p><strong>Payoff.</strong> The deployment choice stops being an opinion: two numbers (100 ms budget, per-match token bill) and one rule (identity stays local) decide it.</p>
+
+  <h2 class="section-title"><span class="section-num">31.9c</span> The Use-Case Library II: Athlete Rights &amp; Privacy</h2>
+
+  <h3 class="sub-heading">UC 05 — The Athlete Consent Flow</h3>
+  <p>The problem: consent collected as a single season-start checkbox cannot support the three different purposes (coaching review, highlights, dataset contribution) a club actually uses footage for. The mechanism is the five-stage flow of §31.4 — collect, inform, sign, process (no faces), revoke — with the nine-field template of §31.4b binding each purpose separately. The math is revocation cost: with the SHA-256 provenance chain of §31.3c, withdrawing one athlete is an O(their labels) deletion — hash-indexed rows drop out of the released dataset without touching anyone else's data. Without provenance, revocation is an O(everything) re-collection.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-consent-flow.png" alt="Five-node consent ring: collect, inform, sign, process, revoke, looping back; blurred-face athlete at center." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.13</span>: UC 05 — Consent as a Loop. <strong>Pickleball</strong>: per-player forms with a parental line for juniors. <strong>Rugby league</strong>: CBA-structured consent, purpose-bound and revocable inside the employment relationship.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> The club's season workflow: forms at registration, the AI-training secondary-use line signed before any label leaves the building, revocation honored by hash-indexed deletion from the published dataset.</p>
+  <p><strong>Rugby league application.</strong> The NRL squad's consent is contractual (the 2023–2027 CBA clarified player property rights after the RLPA dispute), but the practitioner's duty is the same: the player must be able to say what is measured, why, and for how long — and to refuse without selection consequences, which is the part a checkbox cannot deliver.</p>
+  <p><strong>Payoff.</strong> Revocable consent is the difference between a dataset and a liability: the loop back is the load-bearing stage.</p>
+
+  <h3 class="sub-heading">UC 06 — Data Retention: How Long to Keep the Footage</h3>
+  <p>The problem: clubs keep everything forever because deletion feels like waste, and discover the cost when a subject requests erasure across three seasons of unsorted drives. The mechanism is a retention schedule bound to the consent form's retention field: delete after season, after departure, or after a fixed period — enforced by the provenance chain, not by memory. The math is storage plus risk: 1080p30 club footage runs about 8 GB per hour, so a 50-hour week is ~400 GB and a kept-forever academy accumulates ~20 TB per year [verify — bitrate-dependent]; a delete-after-season policy caps that at one NAS drive, and every retained hour beyond its purpose is breach surface with zero analytical value.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-retention-policy.png" alt="Retention timeline from record to delete with season, one-year, and three-year bars and scissors cutting the reel." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.14</span>: UC 06 — The Retention Clock. <strong>Pickleball</strong>: delete-after-season caps the academy at one drive. <strong>Rugby league</strong>: Hudl-hosted retention is set by the league agreement; the club's own exports follow the same clock.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> pb-003 policy: raw clips live one season on club storage, derived labels persist (they are the publishable asset), and a season-end script deletes footage whose consent period has lapsed — logged, not manual.</p>
+  <p><strong>Rugby league application.</strong> The analyst's local exports of Hudl artifacts inherit the agreement's retention terms; the CBA's mandated entry/exit medicals set the pattern for medical-adjacent data — retained for a defined purpose, then gone.</p>
+  <p><strong>Payoff.</strong> Retention is a clock with a purpose attached, not a hoard: what you delete on schedule can never breach.</p>
+
+  <h3 class="sub-heading">UC 07 — Facial Recognition: The Ethical Line</h3>
+  <p>The problem: "we already have the video — can we auto-tag players by face?" is technically trivial and ethically indefensible in the amateur case. The mechanism is §31.4's face lane: NIST FRVT measured demographic false-positive differentials of 10–100× mean the error lands unevenly on the athletes least likely to be believed when they dispute it, and the club/employer power imbalance means refusal is not free. The math is expected harm: at even a 0.1% false-match rate across 200 members, the system manufactures false identifications on a schedule, each one carrying reputational cost to the wrongly matched athlete and none to the operator — an asymmetry no accuracy improvement fully closes for non-consenting subjects.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-facial-risk-line.png" alt="A line dividing off-limits facial recognition above from allowed jersey numbers and anonymous IDs below." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.15</span>: UC 07 — The Line. <strong>Pickleball</strong>: jersey numbers or anonymous IDs, faces blurred, minors under parental consent. <strong>Rugby league</strong>: pro squads may run managed, purpose-bound, DPIA-documented face pipelines — the amateur default never crosses.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> pb-003 default is blur-or-skip: tracking keys on jersey number or anonymous ID, published frames blur faces, and no face template is ever built from club footage.</p>
+  <p><strong>Rugby league application.</strong> Inside an NRL Hudl environment a managed face pipeline is conceivable — explicit consent, DPIA, revocable — but the book's pipeline deliberately never builds one: broadcast tracking runs on detection plus jersey-plus-pose association (C08/C09), not identity recognition.</p>
+  <p><strong>Payoff.</strong> The line is cheap to hold and expensive to cross: anonymous IDs answer every coaching question the face would have answered.</p>
+
+  <h2 class="section-title"><span class="section-num">31.9d</span> The Use-Case Library III: Supply Chain &amp; Operations</h2>
+
+  <h3 class="sub-heading">UC 08 — Model License Propagation: Fine-Tuning AGPL</h3>
+  <p>The problem: the team fine-tunes an AGPL detector on its own footage and assumes the new weights are theirs. The licensor's position (Ultralytics FAQ) is that fine-tuned weights inherit AGPL — the license propagates through training, not just through code import. The mechanism is the propagation chain: base weights → fine-tuned weights → served API, with §13 firing at the last hop. The math is the retraining premium as insurance: the DEIM recipe cuts DETR convergence time by up to 50% (source-backed, the DEIM paper), so re-deriving the club's detector on an Apache base is measured in Colab-days [verify — dataset-dependent], which is trivially cheaper than open-sourcing the product or buying out of the license after the fact. The derivative-work question is legally unsettled — treat the licensor's broad reading as the planning assumption, not the court's.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-license-propagation.png" alt="License propagation flowchart: AGPL contamination spreading from base weights to fine-tuned weights to served API; parallel clean Apache path." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.16</span>: UC 08 — Propagation. <strong>Pickleball</strong>: the paddle detector re-derived on DEIM in days. <strong>Rugby league</strong>: the player detector's 26-class fine-tune rebuilt on RF-DETR before any commercial pilot.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> The academy's ball detector, fine-tuned on pb-003 labels, is rebuilt on the Apache path the day the coaching app charges its first dollar — the labels (CC-BY-4.0, club-owned) port cleanly; only the base weights change.</p>
+  <p><strong>Rugby league application.</strong> Any NRL-facing analytics product fine-tunes on Apache bases from day one, because the moment a club pays for the product the AGPL question stops being academic.</p>
+  <p><strong>Payoff.</strong> License propagation is one-directional and invisible until it is expensive: retrain early, while it costs GPU-hours instead of legal hours.</p>
+
+  <h3 class="sub-heading">UC 09 — The Deploy Checklist</h3>
+  <p>The problem: governance fails at the seam between "the model works" and "the system is live" — every control in this chapter exists, but nobody ran them in order. The mechanism is §31.9's binary gate: license scan passed, provenance documented, consent verified or faces anonymized, risk register populated, no-medical-advice guardrail adversarially tested, override and rollback documented, human approval on match-decision outputs, and the 30-day export test. The math is automation cost: the license scanner is under fifty lines over <code>pip show</code> and runs in CI on every dependency change; the full checklist is a one-hour ceremony per release [verify — practitioner estimate] against the alternative of discovering any single gate's failure in production, where each maps to a known incident class (takedown, breach, wrong call, medical misread).</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-deploy-checklist.png" alt="Deployment checklist clipboard with eight ticked gates: license scan, hash, consent, risk, medical shield, stopwatch, export, whistle." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.17</span>: UC 09 — Eight Gates. <strong>Pickleball</strong>: the club tournament overlay passes all eight before the first live line call. <strong>Rugby league</strong>: the sideline cockpit adds one more — the league's data-agreement check on any Hudl-derived artifact.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> The club tournament deployment: scan, consent audit against the roster, risk register row for the live overlay, guardrail test, referee override drilled before round one.</p>
+  <p><strong>Rugby league application.</strong> The match-week deployment adds the league layer: every artifact crossing from Hudl into the club's spine carries its rights metadata, and the export test proves the club could leave its video vendor inside a month.</p>
+  <p><strong>Payoff.</strong> Governance becomes real only when automated — the checklist turns this entire chapter into one hour per release.</p>
+
+  <h3 class="sub-heading">UC 10 — Incident Response: The Mislabeled Line Call</h3>
+  <p>The problem: the live line-call overlay calls a ball out that was in, the clip is on social media before the match ends, and the question arrives: who is accountable? The mechanism is the risk register's R-01 row operated as a loop — detect (confidence gate plus the C14 multi-view σ bound), contain (human-in-the-loop challenge rule overrides the model), rollback (model version pinning returns the last known-good), review (the incident log records input clip hash, model version, confidence, and the human decision). The math: inherent risk 3 × 5 = 15 drops to residual 6 under those controls — a 60% risk reduction bought with a challenge rule and a version pin [verify — register scores are the lab's calibrated judgment, not actuarial data]. The residual never reaches zero, which is why the accountability chain (who trained, who deployed, who can override) is named before the first live call, not after the first wrong one.</p>
+  <figure class="full">
+    <img src="shared/images/c31-uc-incident-response.png" alt="Incident loop on a pickleball line: miscall alert to referee override to rollback to incident log." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 31.18</span>: UC 10 — The Incident Loop. <strong>Pickleball</strong>: the tournament referee overrides the overlay; the log holds the clip hash and confidence. <strong>Rugby league</strong>: a VLM tactical misread follows the same loop with the coach as the override.</figcaption>
+  </figure>
+  <p><strong>Pickleball application.</strong> Club tournament: the overlay is advisory, the referee's challenge window is the containment, and a mislabeled call triggers rollback to the pinned model version plus a register review within 48 hours.</p>
+  <p><strong>Rugby league application.</strong> The analogue is R-03: a hallucinated VLM tactical explanation reaches a player — the generator-critic gate and human coach review are the containment, and the incident log feeds the next fine-tune's hard-negative set (C25).</p>
+  <p><strong>Payoff.</strong> The wrong call is survivable when the loop exists: detect, override, roll back, learn — with a named owner at every arrow.</p>
+
+  <p><strong>What this adds to the pipeline.</strong> UC 01–02 close the capture layer that feeds C08 (detection) and C09 (tracking) with lawful footage; UC 03 and UC 08 fix the license bases for every model trained in C08–C16; UC 04 is the economic frame for the C28 cockpit's edge deployment; UC 05–07 govern every athlete-facing artifact in C11 (pose) and C29 (coaching); UC 09–10 are the operational wrapper for anything that touches a match decision — the line between a demo and a deployment.</p>
+
+  <h2 class="section-title"><span class="section-num">31.10</span> Sources</h2>
+  <ul>
+    <li>AGPL-3.0 text + Ultralytics FAQ (docs.ultralytics.com/help/contributing); Roboflow, "Why AGPL-3.0 Is a Risk for Computer Vision Teams" (blog.roboflow.com); PML-1.0 (roboflow.com/platform-model-license-1-0); SAM License (Meta, Nov 2025); DEIM (github.com/Intellindust-AI-Lab/DEIM, arxiv.org/abs/2412.04234) — read 2026-08-30.</li>
+    <li>Stats Perform, "Ten Years as Official NRL Data Provider" (statsperform.com); Hudl/ARLC renewal (hudl.com, 2026-01-29); AFL A\$4.5b broadcast deal (afl.com.au; abc.net.au, 2022-09-06); AFL broadcast-rights review (tvblackbox.com.au, 2025-07-30); Pickleball Inc. / Pickleball TV structure (sportsbusinessjournal.com, 2026-08-28; pickleball.com); fair-use framing (autoclip.dev; sportiq.org).</li>
+    <li>GDPR Art 9; Australian Privacy Act 1988 + OAIC APP 3 guidance and OAIC facial-recognition risk guide; NIST AI RMF 1.0 (nist.gov); RLPA CBA dispute FAQ + NRL/RLPA long-form CBA announcement (2024-04-04); athlete data sovereignty (pmc.ncbi.nlm.nih.gov/articles/PMC12745375).</li>
+    <li>Vendor lock-in: PB Vision partner API (pb.vision/apps); PlaySight product-intelligence report (sgx.studio); Playbypoint and KINEXON integrations. Disclaimer pattern: Moku Coach, SEMIPRO, Coach AI, Training Sparq terms.</li>
+    <li>Token economics and edge hardware: <em>Token Unit Economics and Edge Neural Hardware in Sports</em> dossier (258 tokens/frame; 2.47M tokens/match; 55.7 ms glass-to-glass; \$3,199 CAPEX; 496-match break-even [verify at print]).</li>
+    <li>Lab: <code>lab/w7_lab_deployment.py</code> → <code>experiments/c31-deployment/outputs/metrics.json</code> (measured scan flagged ultralytics 8.4.117, opencv-contrib-python 5.0.0.93, opencv-python 5.0.0.93; license matrix and 4-row risk register emitted).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="30.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 30</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 30</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</p>
+        </div>
+      </div>
+    </a>
+    <a href="32.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 32</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 32 — The Laboratory: Reproducing the Book's Claims</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 32</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 32 — The Laboratory: Reproducing the Book's Claims</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">One runner, every lab, and the status table that separates measured from pending</p>
+        </div>
+        <a href="32.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #8C4318;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

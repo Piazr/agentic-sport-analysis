@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-28" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 28</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The latency budget re-verified, the live/async split, and the alert semantics coaches can trust</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">32 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-28-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The 55.7ms Claim, Re-Verified</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-28-1" data-section="s-28-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The 55.7ms Claim, Re-Verified</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-28-1" data-section="s-28-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The 55.7ms Claim, Re-Verified</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">28</span> Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h1>
+    <p class="chapter-subtitle">The latency budget re-verified, the live/async split, and the alert semantics coaches can trust</p>
+  </header>
+
+<h3 id="s-28-1"><span class="section-num">28.1</span> The 55.7ms Claim, Re-Verified</h3>
+
+<p class="section-intro">The v1 book quoted 55.7ms glass-to-glass. The re-verification (this chapter's dossier + lab) found: <strong>55.7ms was a design sum, not an end-to-end measurement</strong> — it added stage numbers from different runs (E2 tracking at 18.8ms, E3 pose at 25.3ms) plus <em>estimates</em> for ingest, render, and WebRTC, and excluded the stages that dominate a real pipeline. The v1 draft's own appendix was more honest than its headline: it warned that a sequential combined pass lands near 44ms/frame (~22.7 fps). The published number was a budget sketch that got promoted to a claim. This chapter replaces it with a measured, decomposed budget — and states plainly what the number covers and what it does not.</p>
+
+  <p>The honest measurement on the current M4 Max stack (the C28 lab: <code>experiments/c28-live/benchmark.py</code>, PyTorch MPS, yolo11n.pt at imgsz=960, 500 frames of the pb-003 pickleball doubles clip at 1080p30):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Mean (ms)</th>
+        <th>Median (ms)</th>
+        <th>p95 (ms)</th>
+        <th>What it covers</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ingest (decode)</td>
+        <td>0.53</td>
+        <td>0.36</td>
+        <td>1.32</td>
+        <td><code>cv2.VideoCapture.read</code> from the derived mp4</td>
+      </tr>
+      <tr>
+        <td>Detect (YOLO11n)</td>
+        <td>10.97</td>
+        <td>8.73</td>
+        <td>13.33</td>
+        <td>Person boxes on MPS, person class only</td>
+      </tr>
+      <tr>
+        <td>Track (ByteTrack association)</td>
+        <td>0.67</td>
+        <td>0.65</td>
+        <td>0.80</td>
+        <td>Online track-ID assignment</td>
+      </tr>
+      <tr>
+        <td>Homography</td>
+        <td>0.03</td>
+        <td>0.03</td>
+        <td>0.03</td>
+        <td>Foot point → court coords + zone test</td>
+      </tr>
+      <tr>
+        <td>Render + encode</td>
+        <td>1.71</td>
+        <td>1.56</td>
+        <td>2.82</td>
+        <td>Overlay draw, resize, encode to memory</td>
+      </tr>
+      <tr>
+        <td><strong>Core loop</strong></td>
+        <td><strong>13.9 mean</strong></td>
+        <td><strong>11.6</strong></td>
+        <td><strong>16.04</strong></td>
+        <td><strong>500 frames in 7.25s → 69.0 fps wall</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Three honest readings of this table. First, the core loop clears the 16.67ms frame budget for 60fps capture — the mean is 13.9ms and even the p95 (16.04ms) stays inside it. That claim is <strong>measured</strong>, end to end, on the machine the book runs on. Second, detection is 79% of the budget: the tracker and homography are rounding errors, so any optimisation effort belongs in the detector (smaller imgsz, CoreML/ANE conversion, or a lighter head), nowhere else. Third, this is a <em>perception</em> loop, not a coaching system. It sees players and places them on the court. It does not yet know what they are doing.</p>
+
+  <p><strong>The honest caveat: full YOLO-pose every frame, WebRTC encode/transport, and the event/VLM stages are excluded from this number.</strong> Add E03's measured pose stage (25.3ms/frame) to the core loop and the pipeline drops to ~39ms/frame — ~25.6 fps, below any live bar. Production WebRTC glass-to-glass latency in the literature runs 200-400ms, with the jitter buffer alone often 100-250ms [verify on the lab network]. So the truthful sentence is: <em>the local inference loop is 60fps-capable on the M4 Max; the coach's remote screen is a delayed mirror of that loop.</em> Never quote a stage sum as a system latency — that was the v1 error, and the fix is to publish the decomposition.</p>
+
+  <p>The rugby side makes the same point from the other direction. On the nrl-001 broadcast clip the same core loop has to track 13+13 players through a PTZ pan, and E02's tracking run (900 frames in 16.9s, 53.2 fps) produced 26 raw IDs for what should have been 4 tracked bodies even on the easier pickleball clip. The milliseconds are not the hard part of a live rugby cockpit; identity is. A 13.9ms loop that mislabels who is where produces a beautifully rendered wrong answer, faster.</p>
+
+  <figure id="fig-28-01" class="full">
+    <img src="shared/images/c28-latency-budget-fixed.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.1</span>: The Measured Latency Budget. Core loop 13.9ms (measured, 500 frames, pb-003, M4 Max); the 55.7ms v1 figure was a design sum. The full glass-to-glass adds pose, encode, network, display — measure those before quoting a system number.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">28.2</span> The Live/Async Split (Keep)</h2>
+  <p>The v1 architecture was right and survives re-verification: <strong>geometry-only spatial cues live; meaning-making async.</strong> The rule has a crisp test — a cue belongs on the live wire when (a) it can be derived from geometry alone, with no ball state, identity, or language, and (b) a false positive is cheap to recover from. Everything else waits.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Loop</th>
+        <th>Latency target</th>
+        <th>What it runs</th>
+        <th>What it outputs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Hard live</strong></td>
+        <td>&lt;20ms core (measured 13.9ms)</td>
+        <td>Ingest, detect, ByteTrack, homography, Metal HUD, optional WebRTC</td>
+        <td>Boxes, traces, court occupancy, kitchen/offside/spacing alerts</td>
+      </tr>
+      <tr>
+        <td><strong>Sampled soft</strong></td>
+        <td>30-100ms acceptable</td>
+        <td>YOLO-pose every 2nd-3rd frame, audio peak detection, health telemetry</td>
+        <td>Stance cues, posture flags, "tracker degraded" warnings</td>
+      </tr>
+      <tr>
+        <td><strong>Async review</strong></td>
+        <td>Seconds to minutes</td>
+        <td>Ball/contact events (C19), VLM summary, identity correction, drill generation</td>
+        <td>Reviewed PBN rows, practice recipes, notebook export</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Pickleball worked example.</strong> Live (sub-100ms wire): "your foot is 3cm from the kitchen line" — a point-to-line distance from the homography, checkable every frame. Async (post-match or between games): the third-shot pattern report, the dink-to-drive rally profile, the expected-value rows from C22. A live "third-shot pattern" alert is an architectural error — it needs the ball track plus multiple completed shots, and E04 measured the raw ball detector at a 0.1125 median confidence, i.e. candidate noise, not a track. The same logic fixes what the HUD may <em>display</em> from the async lane: the dink-to-drive ratio on the panel is a rolling async output, so it must carry a freshness stamp ("updated 4 rallies ago"). Live pixels, stale-by-label statistics — never the reverse.</p>
+
+  <p><strong>Rugby worked example.</strong> Live: the 10m offside retreat line overlaid on the broadcast frame (C07 per-frame calibration + C09 tracks) and the play-the-ball stopwatch started by the C15 whistle timestamp. Async: the PTB speed-band trend across a set of six, the line-speed synchronisation report, the dog-leg rupture reel for Monday review. The radio call to the on-field trainer can carry "two defenders slow off the line" — geometry — but "our right edge is structurally vulnerable to the sweep" is a reviewed conclusion, not a beep.</p>
+
+  <figure id="fig-28-02" class="full">
+    <img src="shared/images/c28-live-async-split.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.2</span>: The Live/Async Split. Geometric cues live; meaning-making async; line calls never from single-cam.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">28.3</span> The Real-Time Stack</h2>
+  <p>The chain is deliberately boring: capture → detect → track → homography → HUD, with the HUD delivered via WebRTC to the tablet; PyTorch MPS through Ultralytics on the M4 Max (the C08 deployment lane); Metal-backed drawing for the render. Boring is the point — every exotic layer you add (conversion, graph partitioning, custom kernels) is a place latency hides and a place the honest number breaks.</p>
+
+  <pre>camera 1080p30 ──► cv2.VideoCapture ──► YOLO11n (MPS) ──► ByteTrack
+                                           │
+                                           ▼
+                              foot point ──► homography ──► court coords
+                                           │
+                                           ▼
+                              Metal HUD (cv2 + optional MTKView)
+                                           │
+                                           ▼
+                              WebRTC / AirPlay / HDMI to iPad</pre>
+
+  <p>The deployment-path decision, with the tradeoffs stated:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Target</th>
+        <th>When to use it</th>
+        <th>Friction</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>PyTorch MPS</strong> (Ultralytics)</td>
+        <td>GPU via Metal</td>
+        <td>Lab prototype, fast iteration — the book's measured lane</td>
+        <td>Some ops fall back to CPU; pose historically less stable than detection</td>
+      </tr>
+      <tr>
+        <td><strong>CoreML</strong> (coremltools)</td>
+        <td>Apple Neural Engine</td>
+        <td>Production iOS/macOS app; battery and thermal headroom</td>
+        <td>Opaque hardware routing; convert, then verify ANE coverage per layer</td>
+      </tr>
+      <tr>
+        <td><strong>ONNX Runtime + CoreML EP</strong></td>
+        <td>Cross-platform Apple deployment</td>
+        <td>Same binary must also run on Windows/Linux</td>
+        <td>Graph partitioning can silently CPU-fallback — profile every layer</td>
+      </tr>
+      <tr>
+        <td><strong>MLX / YOLO-MLX ports</strong></td>
+        <td>Research lane</td>
+        <td>Bypassing PyTorch overhead on unified memory</td>
+        <td>Community ports vary; not a production dependency yet [verify]</td>
+      </tr>
+      <tr>
+        <td><strong>WebRTC</strong></td>
+        <td>iPad/tablet stream</td>
+        <td>Remote sideline screen</td>
+        <td>200-400ms typical glass-to-glass [verify locally]; sub-200ms only in tuned P2P/SFU</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The hardware story is the M4 Max edge.</strong> The entire live lane — the 13.9ms loop, the rolling replay buffer, the alert engine (E22's gate ran 1,000 events in 0.08ms) — runs on one laptop at the court, with zero token cost and zero cloud egress; the economics of that choice against cloud VLM APIs are C32's territory, but the cockpit's version of the argument is latency: a round trip to a cloud model costs more than the whole local loop before the network even answers. The machine is also the honest boundary of the claim: these numbers are M4 Max numbers. A MacBook Air or a mini will run the same code slower; re-measure, don't extrapolate.</p>
+
+  <p>The book's live prototype (dossier: <code>experiments/c28-live/nvz_alert.py</code>) ran the NVZ alert path at <strong>84.7 fps, logging 525 proximity cues in 500 frames</strong> — about 1.05 cues per frame — and its own honest note is the chapter's lesson in one line: <strong>a proximity cue is not a fault.</strong> The geometry says "foot in kitchen (x ∈ [15, 29] ft)"; the fault semantics need the volley state, which needs the ball, which is async. The HUD wording must say exactly which one it is.</p>
+
+  <figure id="fig-28-03" class="full">
+    <img src="shared/images/c28-edge-hardware.png" alt="Edge hardware pipeline: camera to M4 Max core loop to coach tablet via WebRTC and async store. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.3</span>: The Edge Hardware Pipeline. One M4 Max at the court runs the 13.9ms measured core loop; WebRTC mirrors the HUD to the coach's tablet (a delayed mirror, not the live number); the async store feeds the review lane.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">28.3b</span> What the Coach Sees: The Pickleball Cockpit</h2>
+  <p>The pickleball HUD is a top-down court with four tracked players, motion trails, and a telemetry panel — and every element on it is traceable to a measured stage. The live elements: player positions and trails (detect + track + homography), the NVZ proximity ring (court coords vs the kitchen line), the spacing indicator (pairwise distances). The async-derived elements, freshness-stamped: the <strong>dink-to-drive ratio</strong> (a rolling count from the C19 eventing — the machine cannot see a dink without the ball, so the panel shows the last confirmed value, never a live guess) and the rally-pattern summary.</p>
+
+  <p>The <strong>NVZ violation alert</strong> is the cockpit's centrepiece and its honesty test. The prototype's 525 logged cues are <em>proximity</em> events; promoting one to a fault requires two gates, both async: (1) the volley-state worker decides the player hit the ball out of the air (C12 ball wall + C19 eventing), and (2) the human review panel confirms the candidate clip. Until both gates pass, the HUD says "NVZ 3cm — proximity, not a fault," and the wording is load-bearing. A coach who trusts a proximity cue as a fault call will stop trusting the cockpit the first time the replay shows a legal toe-behind-the-line dink.</p>
+
+  <figure id="fig-28-04" class="full">
+    <img src="shared/images/c28-hud-pickleball.png" alt="Pickleball live HUD mockup: top-down doubles court, NVZ shaded, proximity ring, telemetry panel with dink-to-drive ratio. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.4</span>: The Pickleball Cockpit (mockup). Live geometry — NVZ proximity ring, spacing, trails — beside async-derived stats with freshness stamps; the alert card says "proximity," not "fault."</figcaption>
+  </figure>
+
+  <figure id="fig-28-05" class="full">
+    <img src="shared/images/c28-hud-screenshot.png" alt="Real pickleball doubles frame from pb-003 with live HUD overlays: player boxes, traces, kitchen-distance telemetry, alert queue. Prototype capture." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.5</span>: The Prototype, Real Frame. The pb-003 HUD from the C28 lab run: bounding boxes, traces, kitchen-distance telemetry, and the alert queue — the measured 13.9ms loop rendering, not a mockup.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">28.4</span> Alert Semantics: The False-Positive Cost and the p&lt;0.05 Gate</h2>
+  <p><strong>A beep that is wrong is worse than no beep.</strong> The cockpit is not a dashboard of everything the model sees; it is a dashboard of cues the coach can act on without being misled, and the deciding factor is false-positive cost, not model confidence. The grading:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Alert</th>
+        <th>False-positive cost</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>NVZ proximity (pickleball)</strong></td>
+        <td>Low (informational)</td>
+        <td>Live, always on — with the proximity/fault wording honest</td>
+      </tr>
+      <tr>
+        <td><strong>Offside line (rugby)</strong></td>
+        <td>Medium (referee-visible)</td>
+        <td>Live cue to the trainer; the call is the referee's</td>
+      </tr>
+      <tr>
+        <td><strong>Spacing violation (both)</strong></td>
+        <td>Low (teaching cue)</td>
+        <td>Live, drill-friendly</td>
+      </tr>
+      <tr>
+        <td><strong>Dog-leg rupture (rugby)</strong></td>
+        <td>Medium (structural call)</td>
+        <td>Live flag to the box; threshold is a domain model [verify]</td>
+      </tr>
+      <tr>
+        <td><strong>Line call (ball in/out)</strong></td>
+        <td><strong>HIGH (match decision)</strong></td>
+        <td><strong>Never live from single-cam</strong> — C14 multi-view, published σ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Above the per-cue grading sits the volume problem: even honest cues drown a coach if every one of them arrives. The book's answer is the E22 exception gate (<code>experiments/e22-humans-above-the-loop/</code>): the perception swarm processes the routine stream in the background, and only statistically anomalous events surface to the human. In the benchmark run, <strong>1,000 input events produced 119 surfaced alerts — 88.1% routine-noise suppression at 0.08ms per event</strong>. The mechanics: each event is scored against the routine baseline and only p&lt;0.05 exceptions pass. What passed the gate, by sport: pickleball surfaced NVZ foot-fault warnings (foot 2.2-4.9cm from the kitchen line during an airborne volley, p=0.012) and middle-seam exposures (partner gap 3.6-4.3m against a 2.7m norm, p=0.034); rugby surfaced offside non-compliance (2-3 defenders short of the 10m retreat at dummy-half delivery, p=0.008) and dog-leg ruptures (edge gap 2.8-3.6m between second-rower and centre, p=0.021).</p>
+
+  <p><strong>The honest label on E22:</strong> those events come from a thresholded synthetic event distribution — the gate mechanics and suppression rate are measured, but the p-values are model parameters, not statistics of real footage. Chapter 20's warning applies in full: p&lt;0.05 on a small n is a lottery ticket, and the ASA's statement is the canonical citation for not treating 0.05 as a law of nature. The gate is the right <em>architecture</em> — humans above the loop, deciding on the 12% that matters — and validating its thresholds against real video is an open run (28.9).</p>
+
+  <figure id="fig-28-06" class="full">
+    <img src="shared/images/c28-alert-gate.png" alt="Alert exception gate funnel: 1000 events in, p<0.05 gate filter, 119 alerts out, 881 routine to silent log, coach decides. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.6</span>: The p&lt;0.05 Exception Gate (E22, measured mechanics). 1,000 routine events in, 119 anomalies out — 88.1% suppression; the silent log keeps the 881 for review. The coach sits above the loop, not inside it.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">28.4b</span> The Rugby Live Metrics: DLSM, PTB Bands, RCM</h2>
+  <p>The rugby HUD's alert set (from the practitioner playbook; labels [verify] — these are domain-model values, not a published benchmark):</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Definition</th>
+        <th>Alert threshold</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>RCM</strong> (Retreat Compliance)</td>
+        <td>RCM = (X_ruck − X_defender) / 10m at PTB release</td>
+        <td>RCM &lt; 1.0 = early line (offside)</td>
+      </tr>
+      <tr>
+        <td><strong>DLSM</strong> (Defensive Line Sync)</td>
+        <td>max line X − min line X (the dog-leg gap)</td>
+        <td>DLSM &gt; 2.5m = dog-leg (line-break risk 4.2% → 28.6%) [verify]</td>
+      </tr>
+      <tr>
+        <td><strong>Line speed</strong></td>
+        <td>Mean advance rate of the defensive line off the PTB (m/s)</td>
+        <td>Line-speed spread across the line &gt; the sync band = flag [verify]</td>
+      </tr>
+      <tr>
+        <td><strong>PTB speed</strong></td>
+        <td>Play-the-ball time from hold to release</td>
+        <td>&lt;3.0s quick ball (42% retreat failure); &gt;3.8s controlled (96% set) [verify]</td>
+      </tr>
+      <tr>
+        <td><strong>Edge spacing</strong></td>
+        <td>‖P_secondrow − P_centre‖</td>
+        <td>&gt;6.2m = inside-shoulder breaks (3.4×); optimal 4.8-5.6m [verify]</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>These are the metrics the E22 gate surfaces (the p&lt;0.05 exceptions), the DART grounding (chapter 8.12) supplies the classes, and C07's per-frame calibration supplies the meters. The honest caveat is unchanged from the playbook: the line-break probabilities, PTB bands, and spacing thresholds are the practitioner's domain model — the book states them as the model's hypothesis and the NRL literature-validation (the Kempton/Sawczuk lineage) as the open research lane. A live cockpit may <em>flag</em> on a hypothesis; it may not <em>call</em> on one.</p>
+
+  <h2 class="section-title"><span class="section-num">28.4c</span> The 10 Cockpit Use Cases: The Live Wire, Itemized</h2>
+  <p>The tables above name the cues; this section itemizes them as ten buildable use cases in three lanes: <strong>Lane A — Pickleball Live Cues (UC 01, 04, 06, 07)</strong>, <strong>Lane B — Rugby League Live Cues (UC 02, 03, 05, 08)</strong>, and <strong>Lane C — Cross-Sport Cockpit Systems (UC 09, 10)</strong>. Each case states its practical problem, the exact mechanism and its latency math against the measured 13.9ms core loop, the figure, both sport applications, and the payoff. Each carries its evidence label: <strong>measured</strong> (C28 lab / E-series), <strong>source-backed</strong> (paper or rulebook), or <strong>[verify]</strong> (practitioner domain model, not a published benchmark). The 55.7ms lesson governs every number below: the core loop is measured; everything stacked on it is labelled as design budget, literature estimate, or open run — never as a measurement.</p>
+
+  <h3 class="sub-heading">Lane A: Pickleball Live Cues</h3>
+
+  <h3 class="sub-heading">UC 01 — NVZ Foot-Fault Live Alert</h3>
+  <p><strong>The problem.</strong> The kitchen foot fault is the most disputed call in doubles, and the player genuinely cannot feel a 2-3cm toe encroachment mid-volley — the rule (source-backed: USA Pickleball rulebook) is unforgiving and the body's proprioception is not. <strong>The mechanism.</strong> The bottom-centre of the player box (or the ankle keypoint when pose is sampled) goes through the homography into court feet; the zone test is <code>15 ≤ x ≤ 29</code>. The C28 lab measured the homography-plus-zone stage at <strong>0.03ms</strong> — 0.2% of the 13.9ms core budget — and the prototype ran the path at 84.7 fps, logging 525 proximity cues in 500 frames. The E22 gate surfaced exactly this cue class at p=0.012 (feet 2.2-4.9cm from the line during an airborne volley; gate mechanics measured, baseline synthetic). <strong>The honesty gate:</strong> a proximity cue becomes a <em>fault</em> only when the async volley-state worker (C12 ball + C19 eventing) confirms the ball was taken out of the air — until then the HUD says "NVZ 3cm — proximity, not a fault."</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc01-nvz-live-alert.png" alt="Pickleball court top-down, kitchen zone shaded, foot marker on the kitchen line, HUD alert card reading NVZ proximity. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.8</span>: UC 01 — NVZ Live Alert. Foot point through the homography into the kitchen band, with the proximity-not-fault wording on the alert card. <strong>Pickleball</strong>: audible beep during dink drills; silent log in match play. <strong>Rugby league</strong>: the same point-vs-line primitive is the kick-chase offside check (chaser ahead of the kicker at contact) and dead-ball-line proximity on attacking kicks.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> coaching — drill discipline at the kitchen line. Never an officiating call from a single camera; that is C14's multi-view job.</p>
+
+  <h3 class="sub-heading">UC 04 — Seam Exposure Alert (Doubles)</h3>
+  <p><strong>The problem.</strong> "Down the middle solves the riddle" is the oldest doubles heuristic because it works: partners drift, the seam corridor opens, and the ball goes through the gap neither player owns. <strong>The mechanism.</strong> One Euclidean distance per frame between the partners' court coordinates; the seam corridor is the lateral gap projected onto the net axis. Alert above 3.2m [verify — practitioner threshold]; the E22 gate surfaced middle-seam exposures at p=0.034 (gaps 3.6-4.3m against a 2.7m norm). Latency math: this is arithmetic on track rows the loop already produces — no new stage, the measured 13.9ms budget is untouched. False-positive cost is low (a teaching cue, not a call), so per the 28.4 grading it runs live and always on.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc04-seam-exposure.png" alt="Pickleball doubles court, partners drifted apart, middle seam corridor shaded, ball passing through the gap. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.9</span>: UC 04 — Seam Exposure. Partner gap beyond 3.2m opens the shaded corridor. <strong>Pickleball</strong>: the elastic-string drill cue — partners move as if tied by a 3m rope. <strong>Rugby league</strong>: the same norm on the edge — ‖P_secondrow − P_centre‖ beyond 6.2m flags inside-shoulder break risk (3.4×) [verify]; optimal band 4.8-5.6m.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> teaching cue with the cheapest false positive in the book — the alert that earns coach trust before the expensive ones ask for it.</p>
+
+  <h3 class="sub-heading">UC 06 — Ready-Stance Angle Check</h3>
+  <p><strong>The problem.</strong> Upright at the kitchen means late on the dink; the player cannot see their own posture and the coach cannot watch four players' knees at once. <strong>The mechanism.</strong> Knee angle from the hip-knee-ankle keypoints of the pose model; the target band is 120-130° [verify — practitioner band]. The lane honesty is the point of this case: pose is E03-measured at <strong>25.3ms/frame</strong>, which can never join the 13.9ms hard loop — even sampled every second frame it amortizes to ~12.7ms and breaks the budget. So the stance check runs on a separate worker at 10-15Hz, in the sampled-soft lane, and drives a HUD gauge — never a beep. A beep needs a discrete event; posture is a continuous state, and continuous states get dials, not alarms.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc06-ready-stance.png" alt="Pickleball player side view in ready stance at the kitchen line, knee angle arc labelled, upright posture ghost crossed out. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.10</span>: UC 06 — Ready-Stance Check. The 120-130° knee band on the sampled-soft lane. <strong>Pickleball</strong>: kitchen-line ready posture during dink rallies. <strong>Rugby league</strong>: marker body height and hip hinge at the ruck — the upright marker is the one the dummy-half runs past.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> biomechanics teaching — the gauge the player checks between rallies, and the chapter's worked example of why pose never rides the live wire.</p>
+
+  <h3 class="sub-heading">UC 07 — Shot-Selection Count</h3>
+  <p><strong>The problem.</strong> Players overdrive under pressure, and nobody counts the dink-to-drive ratio accurately by eye — yet it is the discipline stat that decides who controls a kitchen rally. <strong>The mechanism.</strong> A rolling tally from the C19 event stream: dink / drive / lob classifications into a sliding rally window, ratio <code>r = drives / (dinks + drives)</code> with EWMA smoothing, updated only when event confidence clears the C19 threshold. The lane is the honesty: the machine cannot see a dink without the ball, and E04 measured the raw ball detector at 0.1125 median confidence — candidate noise. So the count is an async-derived panel stat with a freshness stamp ("updated 4 rallies ago"), and a live shot-count beep is an architectural error on two grounds: it needs the ball, and it needs completed shots.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc07-shot-count.png" alt="Pickleball rally top-down with ball arcs and a side tally panel counting dinks, drives, lobs with a freshness stamp. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.11</span>: UC 07 — Shot-Selection Count. The rolling tally panel, freshness-stamped. <strong>Pickleball</strong>: the dink-to-drive discipline check between games. <strong>Rugby league</strong>: the tackle-5 kick-vs-run count and PTB-location distribution — the same rolling tally on the C19 event stream.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the between-games coaching number — the panel stat the coach actually quotes, precisely because it never pretended to be live.</p>
+
+  <h3 class="sub-heading">Lane B: Rugby League Live Cues</h3>
+
+  <h3 class="sub-heading">UC 02 — RCM Retreat Compliance</h3>
+  <p><strong>The problem.</strong> Thirteen defenders must retreat 10m at every play-the-ball; the trainer on the sideline can watch one edge, and early lines win penalties that swing field position. <strong>The mechanism.</strong> RCM = (X_ruck − X_defender) / 10m, evaluated at PTB release: thirteen point transforms through the C07 per-frame homography plus a scalar division per defender — arithmetic on C09 track rows, no new stage, the measured core budget untouched. The release timestamp comes from C15 audio (whistle/held) with C19 confirming the event. Alert below RCM 1.0 [verify — practitioner model]. The E22 gate surfaced offside non-compliance at p=0.008 (2-3 defenders short at dummy-half delivery) — the strongest exception signal in the synthetic run. The rugby caveat from 28.1 applies: the cue is only as honest as the calibration, so a fast PTZ pan that breaks C07's re-lock degrades the cue to "tracker degraded" rather than a wrong line.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc02-rcm-compliance.png" alt="Rugby league pitch top-down, ruck marker, dashed 10m retreat line, defenders behind the line, one early defender flagged. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.12</span>: UC 02 — RCM Retreat Compliance. The 10m line with one early defender flagged. <strong>Rugby league</strong>: radio cue to the on-field trainer — "two short" — inside the play-to-play window. <strong>Pickleball</strong>: the same ratio as the baseline-reset check — both partners behind the baseline before the opponent's lob lands — and the server-behind-baseline rule check at contact (source-backed: USA Pickleball rulebook).</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> a referee-visible cue for the trainer; the call remains the referee's. The cockpit flags geometry, never officiates it.</p>
+
+  <h3 class="sub-heading">UC 03 — DLSM Dog-Leg Alert</h3>
+  <p><strong>The problem.</strong> One lagging defender opens a dog-leg in the line, and by the time it is visible as a line break the play is gone — the box needs the flag one set earlier. <strong>The mechanism.</strong> DLSM = max(line X) − min(line X) across the defensive line each frame after the PTB; flag above 2.5m, with the stated line-break risk shift of 4.2% → 28.6% <strong>[verify — practitioner domain model, not a published benchmark; the NRL literature-validation is the open research lane]</strong>. Compute: a thirteen-element min-max — microseconds on track rows. The E22 gate surfaced dog-leg ruptures at p=0.021 (edge gap 2.8-3.6m between second-rower and centre). This is the case where the chapter's honesty rule does the most work: a live cockpit may <em>flag</em> on a hypothesis; it may not <em>call</em> on one — the alert card reads "dog-leg forming," never "missed tackle coming."</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc03-dlsm-dogleg.png" alt="Rugby league defensive line top-down, one defender lagging, dog-leg gap shaded, ball runner arrow through the gap. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.13</span>: UC 03 — DLSM Dog-Leg. The lagging defender opens the shaded gap; the attack arrow finds it. <strong>Rugby league</strong>: flag to the box so the centre calls slide defence next set. <strong>Pickleball</strong>: the vertical equivalent — one partner pinned at the baseline while the other holds the kitchen, a front-back dog-leg that invites the drop shot at the deep player's feet.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> tactical — a flag to the coaches' box one set early. The threshold is a hypothesis with a [verify] label, and the HUD wording says so.</p>
+
+  <h3 class="sub-heading">UC 05 — PTB Speed Gauge</h3>
+  <p><strong>The problem.</strong> Ruck speed decides whether the defence is set, and the box currently learns it from the tackle count two plays late. <strong>The mechanism.</strong> A stopwatch from tackle-held to PTB release: C15 audio timestamps the whistle/held moment, C19 confirms the release event. Bands: under 3.0s is quick ball (42% retreat failure), over 3.8s is controlled (96% set completion) [verify — practitioner bands]. Lane honesty: event timing is not a per-frame geometry read, so the gauge sits at the sampled-soft/async boundary and carries a freshness stamp; the stopwatch itself is a timestamp subtraction — the cost lives in the event detection, which is why the gauge updates per ruck, not per frame. Quick-ball alerts surface through the E22 gate so a fast ruck in a routine set does not beep.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc05-ptb-gauge.png" alt="Rugby league play-the-ball side view with stopwatch gauge, green band under 3 seconds, red band over 3.8 seconds. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.14</span>: UC 05 — PTB Speed Gauge. Held-to-release stopwatch with the quick/controlled bands. <strong>Rugby league</strong>: quick-ball alerts to the box; the trend feeds C23 tactical models between sets. <strong>Pickleball</strong>: the tempo analogue — time-between-shots in a kitchen dink rally; a shrinking inter-shot interval predicts the speed-up before it happens [verify].</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the momentum read — the box sees the set speeding up while there is still time to change it.</p>
+
+  <h3 class="sub-heading">UC 08 — Line-Speed Meter</h3>
+  <p><strong>The problem.</strong> The slow edge defender is visible as geometry a full play before he is visible as a missed tackle; line speed is the defensive metric coaches cite and cannot see. <strong>The mechanism.</strong> Per-defender advance rate off the PTB: a finite difference of court coordinates over a 0.5s window, giving the line's mean rate and — the useful half — its spread. A defender one band slow gets flagged [verify — band width is practitioner-set]. Latency math: differences on existing track rows, microseconds; the real cost is the C07 calibration that makes the metres real, which is why the meter degrades to "tracker degraded" when a pan outruns re-lock instead of publishing confident garbage. Radio-safe wording: "two slow off the line" is geometry; "our right edge is structurally vulnerable" is a reviewed conclusion, and the meter only says the first.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc08-line-speed.png" alt="Rugby league defensive line advancing top-down, per-player speed arrows, one edge arrow shorter and flagged. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.15</span>: UC 08 — Line-Speed Meter. The advance-rate arrows with the slow edge flagged. <strong>Rugby league</strong>: the "two slow" radio cue before the break, not after. <strong>Pickleball</strong>: partner advance synchrony — both players closing to the kitchen line together after the return; the lagging partner is the same geometry at a tenth of the field.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the box acts on the slow edge while the set is still winnable — geometry arrives before the consequence.</p>
+
+  <h3 class="sub-heading">Lane C: Cross-Sport Cockpit Systems</h3>
+
+  <h3 class="sub-heading">UC 09 — Fatigue Gauge</h3>
+  <p><strong>The problem.</strong> Fatigue shows in the tracking data before the athlete reports it and before the coach's eye catches it — and acting late is a welfare issue, not just a performance one. <strong>The mechanism.</strong> A per-player EWMA of effort proxies against the player's own session baseline: rally-depth decay and approach speed (pickleball); sprint speed off the line and ruck-attendance rate (rugby). Amber zone at −10% from baseline [verify — practitioner threshold]. Lane: sampled soft — the gauge is a trend over minutes, never a per-frame cue, so its latency budget is measured in rallies, not milliseconds. The rugby side carries the contact-welfare frame (source-backed: Bath et al. 2025, <em>Injury Prevention</em>): a fatigue gauge that informs rotation is a welfare screen, and its thresholds must be validated on real squads, not assumed from a formula.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc09-fatigue-gauge.png" alt="Two-panel diagram with pickleball and rugby players, declining performance curves, shared gauge entering amber zone. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.16</span>: UC 09 — Fatigue Gauge. Decay against the player's own baseline, amber at −10% [verify]. <strong>Pickleball</strong>: fourth-game dink-depth decay and kitchen-approach slowdown. <strong>Rugby league</strong>: second-half line-speed fade per defender, feeding rotation timing.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> welfare and substitution timing — the cue with the highest human stakes in the chapter, which is why it carries the strictest [verify] discipline.</p>
+
+  <h3 class="sub-heading">UC 10 — Coach Radio Integration</h3>
+  <p><strong>The problem.</strong> A HUD the coach is not watching during the rally is a screensaver; the cue has to reach the voice channel to be acted on. <strong>The mechanism.</strong> The E22 gate (0.08ms/event, measured) feeds a priority queue ordered by false-positive cost; the top entry goes to TTS on the sideline speaker (pickleball, between rallies) or the radio link to the on-field trainer (rugby, play-to-play). The latency math, honestly summed in the chapter's own rule: 13.9ms core + 0.08ms gate + TTS/radio delivery (~1-2s, [verify — not measured in the lab]) — the delivery leg is the dominant term, so quote the sum, never the core. At rugby's play-to-play timescale the sum is still tactically live; in pickleball the audible waits for the dead ball between rallies, because a beep mid-volley is a distraction, not a cue.</p>
+
+  <figure class="full">
+    <img src="shared/images/c28-uc10-coach-radio.png" alt="Sideline flow diagram: camera to M4 Max laptop with alert gate, radio link to coach with headset, second link to review tablet. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.17</span>: UC 10 — Coach Radio Flow. Gate to queue to voice channel. <strong>Pickleball</strong>: between-rally audible on the sideline speaker. <strong>Rugby league</strong>: the radio call to the trainer — "two slow off the line" — inside the play-to-play window.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> humans above the loop, literally heard — the coach's voice is the delivery layer, and the machine never talks to the players directly.</p>
+
+  <h2 class="section-title"><span class="section-num">28.4d</span> Runnable Skeleton: The Alert Engine</h2>
+  <p>The ten use cases above are one loop with ten geometry checks. The abridged pattern (the full lab version is <code>experiments/c28-live/nvz_alert.py</code>):</p>
+
+  <pre># alert_engine.py — the pattern, abridged
+FRAME_BUDGET_MS = 16.67      # 60fps budget; core loop measured 13.9ms (C28 lab)
+GATE_P = 0.05                # E22 exception threshold — validate on real video
+
+for frame in stream:                                  # hard live loop
+    dets   = detect(frame)                            # 10.97ms mean (measured)
+    tracks = tracker.update(dets)                     #  0.67ms
+    court  = {t.id: H @ foot_point(t) for t in tracks}#  0.03ms — homography
+
+    for pid, (x, y) in court.items():
+        if 15.0 &lt;= x &lt;= 29.0:                       # UC 01: NVZ band (feet)
+            emit("nvz_proximity", pid)                # cue — NOT a fault
+    if gap(partners(court)) &gt; 3.2:                   # UC 04: seam, metres [verify]
+        emit("seam_exposure")
+    dlsm = max_x(defenders(court)) - min_x(defenders(court))
+    if dlsm &gt; 2.5:                                   # UC 03: dog-leg [verify]
+        emit("dog_leg_flag")
+
+    alert_queue.push(gate(events, p=GATE_P))          #  0.08ms/event (E22, measured)
+
+# UC 05/06/07/09: sampled-soft + async workers (pose, events, trends)
+# UC 10: priority queue → TTS/radio; volley state → C12/C19 async gate</pre>
+
+  <p>Every check inside the loop is arithmetic on rows the loop already produces — that is the whole architectural argument. The moment a check needs the ball, identity, pose, or language, it moves below the line, out of the live function.</p>
+
+  <h2 class="section-title"><span class="section-num">28.4e</span> What This Adds to the Pipeline</h2>
+  <p>The use cases are the consumption layer of everything upstream. <strong>C07</strong> (per-frame calibration) makes the metres in UC 02/03/04/08 real and owns their graceful degradation. <strong>C09</strong> (tracking) supplies the track rows every check reads; E02's 26 raw IDs for 4 players is why the live cues are identity-free team-shape reads. <strong>C12</strong> (ball wall) and <strong>C19</strong> (eventing) hold the async gates that turn UC 01's proximity into a fault and UC 07's events into counts. <strong>C13</strong> (identity) is the prerequisite for any per-player overlay, which is why none of the ten need it. <strong>C15</strong> (audio) timestamps UC 05's stopwatch. <strong>C14</strong> (multi-view) owns the line-call category the cockpit explicitly refuses. Downstream, UC 05 and UC 08's bands feed <strong>C23</strong> (tactical ML), UC 07's counts feed <strong>C22</strong> (expected value), the review clips land in <strong>C26</strong>'s 8-12 rule, and UC 09's gauge is the welfare screen C31's ethics chapter will audit. The cockpit is where the pipeline's measurements become a coach's Tuesday — with the evidence tier of every element printed on its face.</p>
+
+  <h2 class="section-title"><span class="section-num">28.5</span> Review Clips and Product Framing</h2>
+  <p><strong>Review-clip auto-generation</strong> (keep): the live loop writes a rolling replay buffer (last 30s); when a stable event window closes — four players visible, an alert fires, or the coach presses the manual mark — the system nominates a 5-10s clip with its track rows, sampled pose rows, and the alert log and health state at that moment. The C19 eventing produces the clip list (the 8-12 rule, chapter 26); the coach reviews on the tablet; the reviewed row becomes the next fixture. The clip list <em>is</em> the live system's async output — a live HUD that only flashes and never clips is a demo, not a coaching tool. Clips are candidates, not verdicts: the machine compresses attention, the coach confirms meaning.</p>
+
+  <p><strong>Product framing</strong> (verified against vendor pages, 2026-08-30). <strong>SwingVision</strong>: single-phone UX with Apple Watch challenge triggers; Pro at $179.99/yr [verify current pricing] — and the honest note that watch-based line challenges are a consumer challenge product, not officiating. <strong>PlaySight</strong>: fixed multi-cam SmartCourt, facility installs in the ~$10k-15k/court class [verify], automated highlights downstream of the rig — the infrastructure-first pattern. <strong>Sporfie</strong>: sub-2s bounce-to-playable replay on a courtside iPad — the amateur UX bar; if your feedback loop is slower than the walk back to position, it is not a coaching tool. <strong>Owl AI</strong>: software-only line calling for Major League Pickleball 2026 from existing broadcast feeds — the no-hardware CAPEX future, with the single-cam prior attached: their method is undisclosed, and the book's C14 math says single-cam line calls need a multi-view reference. <strong>The honest reality: broadcast-grade line calling needs the C14 multi-view hardware (Hawk-Eye Live class: 10-18 high-speed cameras, ~2.6-4mm triangulation accuracy); single-cam is a training/review product, not an officiating one.</strong> Say it plainly, because the marketing pages won't.</p>
+
+  <h2 class="section-title"><span class="section-num">28.6</span> The Acceptance Test</h2>
+  <ol>
+    <li><strong>Measure each stage separately.</strong> Core loop = 13.9ms mean / 16.04ms p95 (measured, 500 frames, pb-003); detection is 79% of it, so optimise there first.</li>
+    <li><strong>Sum + encode + display = the true budget</strong> — measured end to end on one run, never a design sum of stages from different runs. The 55.7ms failure was exactly this.</li>
+    <li><strong>Split by honesty:</strong> geometric cues live; synthesis async; async-derived panel stats carry freshness stamps; line calls never from single-cam.</li>
+    <li><strong>Gate the volume:</strong> the E22 pattern — swarm suppresses the routine, humans see the p&lt;0.05 exceptions; alert priority set by false-positive cost, not confidence.</li>
+    <li><strong>Alert field test:</strong> which cues survive a week of coach use? Log every beep, ask afterwards which were wanted, compute per-cue precision from the answers.</li>
+    <li><strong>The acceptance bar:</strong> sub-100ms for the wire (the coach-visible cue), not the whole ML stack — and the HUD wording matches the evidence tier of every element on screen.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">28.7</span> Transfer Note: Rugby League Coaches' Box</h2>
+  <p>The same architecture ports to the rugby coaches' box with the broadcast caveat first: the feed is the OB camera (you do not own capture, chapter 4), so the live lane is the geometric cues the frame supports — the 10m offside retreat line (C07 per-frame calibration re-locks the homography as the PTZ pans; C09 tracks supply the feet) and the PTB speed stopwatch (C15 audio timestamps the whistle; C09 tracks the ruck). The box's latency target is the tolerance of the radio call, not the millisecond — a cue that arrives two seconds after the play-the-ball is still tactically live, which is lucky, because the broadcast chain alone is already seconds behind the grass.</p>
+
+  <p>The two rugby cockpit alerts worth the wire: the <strong>dog-leg rupture</strong> — DLSM &gt; 2.5m between adjacent defenders, the E22 gate's p=0.021 exception, flagged to the box so the centre can call slide defence on the next set [verify: threshold and line-break probabilities are the domain model, not a published benchmark] — and <strong>line-speed synchronisation</strong>, the defensive line's advance rate and its spread, where a slow edge defender is visible as geometry before he is visible as a missed tackle. Both are point-and-line measurements; both degrade gracefully to "tracker degraded" when the pan moves too fast for the calibration to re-lock.</p>
+
+  <p>The honest note: a 13-player live overlay is a different engineering problem than a 4-player doubles court. Identity resolution (chapter 13) is the prerequisite — E02's 26 raw IDs for 4 players is the measured warning — and without it the overlay is noise rendered at 60fps. The box HUD therefore shows <em>team-shape</em> cues (line position, line spread, retreat compliance) that do not need persistent identity, and leaves per-player overlays to the review lane where identity gets corrected by the human gate.</p>
+
+  <figure id="fig-28-07" class="full">
+    <img src="shared/images/c28-hud-rugby.png" alt="Rugby league live HUD mockup: top-down pitch, defensive line, dog-leg gap highlighted, 10m retreat line, telemetry panel with line speed and PTB. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 28.7</span>: The Rugby League Cockpit (mockup). The defensive line with the DLSM dog-leg gap flagged, the 10m retreat line, and team-shape telemetry — identity-free cues that survive the broadcast identity problem.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">28.8</span> The Cockpit Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Measure each stage</strong> (the lab's benchmark: ingest/detect/track/homography/render = 13.9ms core, measured on 500 frames of pb-003).</li>
+    <li><strong>Add the real system stages</strong>: pose, encode, network, display — the glass-to-glass is the measured sum of one run, never a design sum of stage bests.</li>
+    <li><strong>Split by honesty</strong>: geometric cues live, meaning async, async stats freshness-stamped, line calls never from single-cam.</li>
+    <li><strong>Grade alerts by false-positive cost</strong> (a wrong beep is worse than none), then gate the survivors through the E22 exception filter so volume never reaches the coach.</li>
+    <li><strong>Name things what they are</strong>: "proximity, not a fault"; "flag, not a call." The HUD wording is an evidence label, and the coach reads it as one.</li>
+    <li><strong>Field-test trust</strong>: which cues survive a week of coach use? (the acceptance gate; log every alert, ask afterwards, compute per-cue precision).</li>
+    <li><strong>Document the product boundary</strong>: live training/review is real; officiating is C14 multi-view with published σ.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">28.9</span> What I Would Measure Next</h2>
+  <ul>
+    <li>The full end-to-end run (core + pose + WebRTC + display to a real iPad on the lab network) — the honest glass-to-glass, replacing the 200-400ms literature estimate with a local number.</li>
+    <li>The CoreML conversion of YOLO11n-pose: ANE coverage per layer, and whether it beats MPS's measured 25.3ms/frame (E03) on the M4 Max.</li>
+    <li>The E22 gate on real video: replace the synthetic event distribution with C19-evented footage and re-measure the suppression rate and per-cue precision.</li>
+    <li>The field test: which of the live cues do coaches actually trust after a week of use — and the observed false-positive rate per cue, fed back into the alert table.</li>
+    <li>The rugby live loop on nrl-001: does the 13-player broadcast frame degrade the measured budget gracefully (the dossier's open item), and how fast can C07 re-lock the homography through a PTZ pan?</li>
+    <li>ByteTrack API deprecation in supervision v0.28+: pin the replacement before this lab ships against a newer dependency.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">28.10</span> Sources</h2>
+  <ul>
+    <li>Lab: <code>lab/w7_lab_live.py</code> + dossier <code>experiments/c28-live/</code> (benchmark.py, nvz_alert.py, metrics.json) — 13.9ms core measured (500 frames, pb-003, M4 Max), 84.7fps NVZ prototype, 525 proximity cues. E22 gate: <code>experiments/e22-humans-above-the-loop/humans_above_the_loop_alerts.json</code> — 1,000 → 119, 88.1% suppression (measured mechanics on a synthetic event stream).</li>
+    <li>Anchors: E02 (tracking: 900 frames, 53.2 fps, 26 raw IDs for 4 players); E03 (pose 25.3ms/frame); E04 (ball detector median confidence 0.1125); E09 (ByteTrack HOTA 0.642 vs BoT-SORT 0.814); E05/E11 (homography RMSE 3.82-4.65cm).</li>
+    <li>Product pages (retrieved 2026-08-30): SwingVision — <a href="https://swing.vision/guides/challenge-line-calls">swing.vision/guides/challenge-line-calls</a>, <a href="https://swing.vision/subscribe">swing.vision/subscribe</a>; PlaySight — <a href="https://playsight.com">playsight.com</a>; Sporfie — <a href="https://www.sporfie.com/pickleball">sporfie.com/pickleball</a>; Owl AI × MLP — <a href="https://majorleaguepickleball.co/news/major-league-pickleball-announces-partnership-with-sports-tech-company-owl-ai/">majorleaguepickleball.co</a>. Pricing/SLAs marked [verify] where vendor pages move.</li>
+    <li>Hawk-Eye multi-camera line calling (10-18 cameras, ~2.6-4mm) — <a href="https://en.wikipedia.org/wiki/Hawk-Eye">en.wikipedia.org/wiki/Hawk-Eye</a>; WebRTC glass-to-glass 200-400ms — literature consensus [verify locally].</li>
+    <li>Rules context: USA Pickleball rulebook (NVZ fault rules) — <a href="https://usapickleball.org/rules/">usapickleball.org/rules</a>; NRL 2026 rule changes (10m offside at the PTB) — <a href="https://www.nrl.com/news/2026/02/04/arlc-confirms-2026-on-field-rule-changes-following-extensive-consultation/">nrl.com</a>.</li>
+    <li>Wasserstein &amp; Lazar, The ASA's Statement on p-Values, <em>The American Statistician</em> 2016 — the chapter 20 citation behind the p&lt;0.05 honesty note. Bath et al. 2025 (<em>Injury Prevention</em>, PMID 39832883) — the rugby welfare screen referenced in the transfer note.</li>
+    <li>Apple CoreML — <a href="https://developer.apple.com/documentation/coreml">developer.apple.com/documentation/coreml</a>; ONNX Runtime CoreML EP — <a href="https://onnxruntime.ai/docs/execution-providers/CoreML-ExecutionProvider.html">onnxruntime.ai</a>; MLX — <a href="https://github.com/ml-explore/mlx">github.com/ml-explore/mlx</a> [verify YOLO port currency].</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="27.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 27</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 27 — The Agent Harness for Sport Analytics</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 27</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 27 — The Agent Harness for Sport Analytics</p>
+        </div>
+      </div>
+    </a>
+    <a href="29.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 29</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 29 — Practice Design & Interventions: The Acting Loop</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 29</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 29 — Practice Design & Interventions: The Acting Loop</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 29 — Practice Design & Interventions: The Acting Loop</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">From match faults to constrained practice, grounded in the coaching science that actually has evidence</p>
+        </div>
+        <a href="29.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #9A5A2E;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

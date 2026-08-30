@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #9A5A2E;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-23" style="background-color: #9A5A2E; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 23</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">TacticAI's architecture, the rotation test, and why 84.6% on one clip is a hypothesis</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">33 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-23-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Space Is the Graph</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-23-1" data-section="s-23-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Space Is the Graph</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-23-1" data-section="s-23-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Space Is the Graph</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">23</span> Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h1>
+    <p class="chapter-subtitle">TacticAI's architecture, the rotation test, and why 84.6% on one clip is a hypothesis</p>
+  </header>
+
+<h3 id="s-23-1"><span class="section-num">23.1</span> Space Is the Graph</h3>
+
+<p class="section-intro">Team sport is a spatial graph: players are nodes, distances are edges, tactics are the message flow. Google DeepMind's TacticAI (Nature Communications 2024, built with Liverpool FC) proved the architecture: an equivariant graph neural network with a dual head — <em>predictive</em> (who receives the next pass, shot probability) and <em>generative</em> (what positions would minimize the opponent's threat). This chapter is that architecture, the equivalence guarantee, and the honest re-analysis of the book's own E12 adaptation.</p>
+
+  <p>Why a graph and not a video frame or a feature vector? Because the structure of the problem is relational. A tactical state has a <em>variable number of entities</em> (4 players in pickleball doubles, 26 in rugby league), it is <em>permutation-invariant</em> (relabel the defenders and nothing about the tactic changes), and the quantities a coach cares about — who is open, where the seam is, which tackle is coming — are <em>functions of relationships</em>, not of any single player. A graph encodes all three properties natively: nodes carry the entities, edges carry the relationships, and message passing computes over neighbourhoods without ever fixing an ordering. A CNN over a rasterized pitch wastes capacity re-learning that translation invariance; an MLP over a flattened vector has to re-learn permutation invariance from data. The graph gets both for free, by construction.</p>
+
+  <p>The pickleball instance is small enough to hold in your head. A doubles court is 13.41 m × 6.10 m with a 2.13 m non-volley zone (the kitchen) on each side of the net. Four players and one ball give a five-node graph. The edges that matter are not abstract: the <em>partner-spacing edge</em> (how far apart the two teammates at the kitchen line stand) controls the middle seam; the two <em>cross-court diagonal edges</em> control the dink lanes; the <em>ball-to-receiver edges</em> control who takes the next touch. The entire dink-drop-drive decision structure of a rally is a walk through this graph: dink (hold the kitchen-line geometry), drop (reset from the transition zone), drive (attack a seam whose spacing edge has stretched too wide).</p>
+
+  <p>The rugby league instance is the same idea at six times the node count. On a 100 m × 68 m pitch, a defensive set is thirteen nodes strung across the field in a line, plus the ball carrier and his support runners. The edges with tactical meaning are the <em>line-spacing edges</em> between adjacent defenders: compress them and the line folds inward; stretch one and a running channel opens. The classic failure is the dog-leg — one defender lagging a half-metre behind the line, turning a straight adjacency edge into a diagonal one and handing the attack an angled gap at exactly the moment the play-the-ball speeds up. Marker and A-defender edges around the ruck carry the short-side threat; edge-back-rower to centre edges carry the wide threat. Same mathematics, different scale, different failure modes.</p>
+
+  <figure id="fig-23-04" class="full">
+    <img src="shared/images/c23-sport-as-graph.png" alt="Sport as a graph: pickleball doubles court with four player nodes and a ball node beside a rugby league pitch with thirteen defensive nodes linked by line-spacing edges." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.1</span>: Sport Is a Graph. Left: the pickleball doubles court as a five-node graph (4 players + ball), edges as spacing and pass lanes. Right: the rugby league defensive line as thirteen nodes, with a burnt-orange edge marking the stretched gap.</figcaption>
+  </figure>
+
+  <p>TacticAI facts are <strong>source-backed</strong> (the paper, 2024) or [verify]-marked (the Palmeiras/CBF live deployment, secondary sources only); E12 values are <strong>measured</strong> (the artifact, corrected from the v1 transcripts).</p>
+
+  <figure id="fig-23-01" class="full">
+    <img src="shared/images/c23-tacticai-architecture.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.2</span>: TacticAI Architecture. Equivariant message passing feeds a predictive head (receiver, shot probability) and a generative head (counterfactual positions).</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.2</span> The Architecture</h2>
+  <p>TacticAI's graph construction is deliberately boring, and that is a lesson. Nodes = the 22 on-pitch players with [2D position, 2D velocity, height, weight, ball-possession flag]; edges = the complete graph $E = V \times V$ with a one-hot teammate/opponent feature; the ball itself appears only as a possession indicator, not as a tracked node. Positions are zero-centred and normalized onto a 10 m × 10 m canonical pitch; velocities rescaled; heights and weights divided by 100. The dataset was 7,176 valid corner kicks from the 2020–2021 Premier League (9,693 collected, 2,517 dropped for alignment issues), trained with a single 80:20 split — acceptable for a research paper, too weak for a production claim, as section 23.6 will insist.</p>
+
+  <p>The layers are GATv2 graph attention with D₂ group convolutions. D₂ is the four-element reflection group $\{id, \leftrightarrow, \updownarrow, \leftrightarrow\updownarrow\}$ — horizontal flip, vertical flip, both. Each of the four encoder layers maintains all four reflected views of every node's features and mixes them equivariantly, with 8 attention heads producing 4 latent features per player per view. Message passing looks like:</p>
+
+  <p>$$\mathbf{m}_{ij} = \phi_e\left(\mathbf{h}_i^{(l)}, \mathbf{h}_j^{(l)}, \|\mathbf{p}_i - \mathbf{p}_j\|^2, \mathbf{v}_i \cdot \mathbf{v}_j\right), \qquad \mathbf{h}_i^{(l+1)} = \phi_v\left(\mathbf{h}_i^{(l)}, \sum_{j \in \mathcal{N}(i)} \alpha_{ij} \, \mathbf{m}_{ij}\right)$$</p>
+
+  <p>Note what the messages are built from: squared distances and velocity dot products — quantities that are themselves invariant under rotation and reflection, so the update cannot accidentally depend on the coordinate frame. The attention weights $\alpha_{ij}$ decide <em>which relationships matter</em> for each prediction, and they are the coach-facing interpretability channel of section 23.8.</p>
+
+  <p>The decoder is task-specific, and the split between invariant and equivariant outputs is the subtle part. Receiver prediction (a distribution over 22 nodes) and shot prediction (a graph-level probability) are <em>invariant</em> tasks — mirror the corner and the answer should not change — so the decoder averages over the four D₂ views (frame averaging). The generative head, which outputs adjusted player positions and velocities, is <em>equivariant</em> — mirror the corner and the suggested positions must mirror too — so it reads only the identity view and extends it with a conditional VAE to sample realistic adjustments. Getting this invariant/equivariant split wrong is the most common home-brew GNN bug: the model averages away exactly the geometric information the generative task needs.</p>
+
+  <p>The published numbers are <strong>source-backed</strong>: receiver top-3 accuracy 0.782 ± 0.039; shot prediction F1 0.52 ± 0.03 unconditional, rising to 0.71 ± 0.01 when factorized through the receiver probabilities (decompose the hard problem into an easy one plus a conditional — a pattern worth stealing); generated setups indistinguishable from real corners by an MLP classifier (F1 0.53 ± 0.05, chance level); 100 defensive refinements lowered mean shot probability from 0.75 ± 0.14 to 0.69 ± 0.16 (z = 2.62, p &lt; 0.001); Liverpool FC experts preferred TacticAI's suggestions to the original setups 90% of the time on 50 blind held-out corners. The open-play successor deployed at Palmeiras with the CBF in June 2026, with a claimed t+8s forecast horizon, is press-release evidence only — [verify].</p>
+
+  <p>Transfer is the point of the architecture, not an afterthought. The E12 pickleball adaptation shrinks the graph to 5 nodes (4 players + a real ball node with position, velocity and height — pickleball rallies are short enough that the ball is cheap to track) and forecasts the receiver at t+1.5s. The rugby league adaptation grows it: 13 defenders + ball carrier for a team-centric 14-node view, or 26 + 1 for full play, at which point the complete graph's 351 edges stop being a feature and start being an overfitting surface — section 23.9 covers the sparsification options.</p>
+
+  <figure id="fig-23-05" class="full">
+    <img src="shared/images/c23-message-passing.png" alt="Message passing on a five-node pickleball graph: one highlighted player node aggregates messages from its neighbours across two layers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.3</span>: Message Passing. A player node aggregates edge-feature-weighted messages from its neighbours; each layer widens the receptive field by one hop. Two layers on the doubles graph already see the whole court — on the 14-node rugby graph they see the whole defensive line.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.3</span> Equivariance Beyond SE(2)</h2>
+  <p>SE(2) is rotations + translations; E(2) adds reflections; D₂ is just the two axis-aligned reflections. Which group is <em>true</em> for your sport is a physics question, not an architecture preference. Football corners are taken from fixed spots on a rectangular pitch, so only D₂ is a genuine symmetry — TacticAI's choice, and a deliberate one. A continuous-rotation SE(2) model would be a stronger prior than the task actually has, and a stronger prior than the truth costs data efficiency in the directions where the prior is wrong.</p>
+
+  <table>
+    <thead>
+      <tr><th>Group</th><th>Contains</th><th>When it is the true symmetry</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>D₂</strong></td><td>Translations + horizontal/vertical reflections</td><td>Rectangular pitch, fixed set-piece origin (TacticAI corners)</td></tr>
+      <tr><td><strong>SE(2)</strong></td><td>2D rotations + translations</td><td>Free-space play where absolute orientation carries no meaning</td></tr>
+      <tr><td><strong>E(2)</strong></td><td>SE(2) + all reflections</td><td>Mirror-court tactics: stacking, left/right-handed geometry</td></tr>
+    </tbody>
+  </table>
+
+  <p>For pickleball the distinction matters. The court is nominally symmetric — mirror the court and the tactic mirrors, which says E(2) — but the <em>players</em> break the symmetry in three ways. Stacking puts the stronger forehand on a chosen side by design; handedness flips the geometry of every cross-court attack (a lefty's inside-out dink attacks a different seam than a righty's); and outdoor conditions (sun, wind) make left and right genuinely different playing environments. The honest design is E(2) for the geometry with player-specific node features that are allowed to break it — the equivariance is the default, the handedness feature is the sanctioned exception. For rugby league the pitch is symmetric but the roles are not: the #7 organizes, the #9 services the ruck, the #1 sweeps behind. Mirroring a defensive line and swapping the markers to the wrong side produces a state that will never occur — so role embeddings must break reflection symmetry while the spatial layers keep it.</p>
+
+  <p><strong>The equivalence guarantee is an architectural property, not a training property.</strong> Data augmentation can teach a model to be <em>approximately</em> invariant on the training distribution; group convolutions make it <em>exactly</em> equivariant everywhere, including on inputs nothing like the training set. The difference is testable in ten lines of code, which is the next section.</p>
+
+  <figure id="fig-23-02" class="full">
+    <img src="shared/images/c23-rotation-test-grid.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.4</span>: The Rotation Test. Six orientations of one formation: receiver and threat predictions must rotate with the court. A raw MLP fails this test; an equivariant model passes by construction.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.4</span> The Rotation Test (W5.3 Lab, Measured)</h2>
+  <p>The lab ran the check: for a 180° court rotation $R$, an equivariant model must satisfy $y(W, R\,x) = R\,y(W, x)$ — rotate the feature vector 180°, the prediction must rotate. The measured result in <code>experiments/c23-tactical-ml/outputs/metrics.json</code> is that a <strong>naive linear layer FAILS the test</strong> (<code>linear_layer_passes: false</code>) — which is exactly the point. There is no amount of training that fixes this; the symmetry is either in the weight structure or it is not. TacticAI's equivariance is why its predictions are trustworthy under court orientation changes; a raw MLP is not equivariant, and any model claiming otherwise needs this test before the claim.</p>
+
+  <p>The full grid is six transformations, not one: identity, 90° rotation, 180° rotation, horizontal mirror, vertical mirror, diagonal reflection. Receiver predictions and threat scores must be invariant (for invariant heads) or transform consistently (for equivariant heads) within floating-point tolerance on <em>every cell of the grid</em>. A model that passes 180° but fails the horizontal mirror has D₁, not D₂, and will silently misbehave on left-handed pickleball stacks and on rugby plays run to the short side. <strong>"Rotate the court 180 degrees; predictions must rotate with it"</strong> is the chapter's takeaway test. It separates real equivariance from marketing.</p>
+
+  <h2 class="section-title"><span class="section-num">23.5</span> The E12 Honest Re-Analysis</h2>
+  <p>The v1 chapter 8 claimed: baseline threat 0.882 → 0.303, A1 +0.42m, -65.64%. The artifact says different:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>v1 Transcript (fabricated)</th>
+        <th>Artifact (measured)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Receiver accuracy</td>
+        <td>84.62%</td>
+        <td>0.846 (same, but see the CV analysis)</td>
+      </tr>
+      <tr>
+        <td>Baseline threat</td>
+        <td>0.882</td>
+        <td><strong>0.64</strong></td>
+      </tr>
+      <tr>
+        <td>Counterfactual threat</td>
+        <td>0.303</td>
+        <td><strong>0.22</strong></td>
+      </tr>
+      <tr>
+        <td>Coached adjustment</td>
+        <td>A1 +0.42m</td>
+        <td><strong>A2 +0.35m</strong></td>
+      </tr>
+      <tr>
+        <td>Threat reduction</td>
+        <td>-65.64%</td>
+        <td><strong>65.6%</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The artifact values are real; the v1 prose values were not. The artifact also records the two numbers the v1 prose never mentioned: attack-threat PR-AUC <strong>0.812</strong> and inference latency <strong>3.4 ms</strong> per forward pass on the M4 Max — fast enough that equivariant tactical inference is not the bottleneck anywhere in this book's pipeline. But the artifact value itself needs the C20 discipline: our lab's 10-fold CV analysis of the 0.846 gives <strong>mean 0.836, std 0.032 (range 0.796-0.913)</strong> — the singleton 0.846 is one draw from a wide distribution.</p>
+
+  <p>The sample-size check is worse. The E12 run has 3,416 rows, but those rows come from <strong>1 clip with 4 players</strong> — 3,416 rows is not 3,416 independent observations, it is one rally's worth of context resampled at frame rate. The rally-cluster bootstrap CI from C20 is <strong>0.779-0.815</strong>, and the sign-test caveat (<strong>p ≈ 0.125-0.31</strong>) means the improvement over chance is not statistically significant on this evidence. There is also no baseline comparison: an always-near-player heuristic would score well above the 0.50 coin flip on doubles receiver prediction, because the nearest player to the ball really does take most next touches. Without that number on the table, the GNN's marginal value over a one-line heuristic is unknown. <strong>The honest framing: E12 is a proof-of-concept that equivariant GNNs transfer to doubles tactics and run in real time — not a league-grade model.</strong> The chapter says so.</p>
+
+  <h2 class="section-title"><span class="section-num">23.6</span> Graph Building Best Practice</h2>
+  <p>A tactical GNN is only as good as its graph, and the graph is a design decision you make before any training run. The recipe is the same for both sports; only the scale changes.</p>
+
+  <ul>
+    <li><strong>Nodes/edges</strong>: players + ball node; edges by displacement threshold (complete graph for the 5-node doubles court — 10 edges is nothing; distance-limited or k-nearest for the 14-27 node rugby graph, where a complete graph's 351 edges outnumber your training rallies). Beware k-nearest with a fixed k: it breaks reflection symmetry unless the distance rule is itself symmetric.</li>
+    <li><strong>Edge features that earn their place</strong>: relative displacement (dx, dy) and Euclidean distance; relative velocity difference; team relation (teammate/opponent/ball); line-of-sight or occlusion flag; and a historical edge weight — how long this pair has been near each other, which is the feature that distinguishes a settled defensive line from one that is still folding in rugby, and a settled kitchen-line pair from a still-transitioning one in pickleball.</li>
+    <li><strong>History windows</strong>: stack t-5..t frames as node features, or encode a short trajectory embedding (1D CNN or small transformer) per node before the GNN. The 5-frame vs 1-frame window is an architecture decision measured on the task, not assumed — and the window must match the forecast horizon (a t+8s rugby forecast with 0.2s of history is guessing).</li>
+    <li><strong>Global features</strong>: score, game/set state, serve order or tackle count, time remaining, court side. These are invariant under reflection and rotation, so append them after the equivariant layers — never bake them into the geometric features, or they contaminate the symmetry.</li>
+    <li><strong>Normalization</strong>: zero-centre the court, scale to canonical dimensions (pickleball 13.41 m × 6.10 m; rugby league 100 m × 68 m), and transform velocities <em>with</em> the coordinates — negate x-velocity under a horizontal reflection, or your equivariance test will fail for reasons that have nothing to do with the network.</li>
+    <li><strong>Leakage-safe splits</strong>: rally-boundary train/test — NEVER frame-level (a frame at t+1 leaks the same rally context as frame t). For season data, hold out whole matches; for cross-opponent claims, hold out whole teams. This is the single most common GNN failure in sports.</li>
+    <li><strong>N-fold CV</strong>: by clip, not by frame; the 20-model winner's curse (chapter 20) applies with full force — pick the best of 20 variants on one split and your reported number is an upper bound wearing a costume.</li>
+  </ul>
+
+  <figure id="fig-23-06" class="full">
+    <img src="shared/images/c23-pickleball-court-graph.png" alt="A pickleball doubles court drawn as a graph: four player nodes, a ball node, partner-spacing and cross-court diagonal edges, and the middle seam highlighted." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.6</span>: The Pickleball Court as a Graph. Five nodes on the 13.41 m × 6.10 m court; the partner-spacing edge controls the middle seam, the diagonal edges control the dink lanes, and the ball node's edges decide the next touch. The dink-drop-drive decision structure is a policy over exactly these edge weights.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.7</span> Forecast Horizons</h2>
+  <p>The E12 receiver head forecasts at t+1.5s; TacticAI's open-play headline is t+8s [verify]. The honest horizon question: <strong>how far ahead can a tactic model forecast before it is forecasting noise?</strong> The answer is empirical — measure accuracy at +0.5/1/2/4/8s and plot the decay — and it is one of the most valuable figures the book can ship, because every practitioner needs to know where their model's horizon ends before they wire it to a decision.</p>
+
+  <table>
+    <thead>
+      <tr><th>Horizon</th><th>Typical use</th><th>Accuracy expectation</th><th>Sport examples</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>≤ 0.5 s</td><td>Reaction / reflex</td><td>Very high</td><td>Volley return; goal-line scramble tackle</td></tr>
+      <tr><td>1–2 s</td><td>Receiver / next touch</td><td>High</td><td>Pickleball speed-up receiver; rugby pass target</td></tr>
+      <tr><td>2–5 s</td><td>Threat / defensive rotation</td><td>Moderate</td><td>Poach timing; defensive line compression</td></tr>
+      <tr><td>5–8 s</td><td>Shape / phase play</td><td>Lower, strategic</td><td>Set-piece setup; rugby attacking shape off the ruck</td></tr>
+      <tr><td>&gt; 8 s</td><td>Tactical planning</td><td>Very low, scenario-based</td><td>Game model, pre-match setup</td></tr>
+    </tbody>
+  </table>
+
+  <p>The principle that survives every sport: the further ahead you forecast, the more the output is a <em>distribution of scenarios</em> rather than a prediction. At t+1.5s on the pickleball court the receiver distribution is usually peaked — one player is clearly taking the dink. At t+8s on a rugby league set the honest output is four or five modal shapes with attached probabilities, and presenting the argmax as "the prediction" is fabrication by rounding. The C22 value model should consume the full forecast distribution, never a point estimate.</p>
+
+  <figure id="fig-23-07" class="full">
+    <img src="shared/images/c23-horizon-decay.png" alt="Forecast horizon decay curve: accuracy against horizon from 0.5 to 8 seconds, with a confidence band and a flat baseline." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.7</span>: The Horizon-Decay Curve (schematic). Accuracy decays with forecast horizon; the confidence band widens with it; the flat baseline is the trivial heuristic every tactical model must beat at <em>its</em> horizon. Measure this curve for your sport before quoting any single number.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.8</span> Uncertainty and Interpretation</h2>
+  <p><strong>Uncertainty</strong>: the TacticAI paper explicitly does not model aleatoric uncertainty, and that is the gap a production system must close. Two kinds matter: <em>epistemic</em> (what the model has not seen — reducible with data) and <em>aleatoric</em> (the sport's irreducible randomness — the third-shot drop that becomes a drive for no model-visible reason). The practical methods, in cost order: MC dropout (one model, multiple stochastic forward passes — a cheap epistemic proxy), evidential or NLL heads (aleatoric, medium cost), and deep ensembles (5-10 models, the expensive option that captures both). Our recommendation for this book's pipeline is the 5-model ensemble: collect receiver logits and threat scores per test frame, compute the mean and covariance, and hand the <em>covariance</em> to the C22 value model. The off-diagonal terms encode how receiver uncertainty correlates with threat uncertainty, and they are what lets the value model down-weight decisions exactly when the forecast is guessing. Feasible on the M4 Max at the 5-node pickleball scale; a Colab GPU job at the 14-node rugby scale.</p>
+
+  <p><strong>Interpretation</strong>: what does the graph attention highlight? Node attention names the players the model is watching (the poacher, the late-arriving defender); edge attention names the relationships driving the call (the gap between B1 and B2, A2's closing speed); head diversity often specializes — one head on ball pressure, one on court coverage. Rendered as position heat on the court, this is the coach's view, and the honest phrasing is a template: <em>"the model expects A2 to take the next touch because it is attending to the B1-B2 spacing edge (0.31) and A2's closing speed (0.24)."</em> It is an explanation, not a claim. Never present attention weights as causal — attention records where the model looked, not why the outcome happened; the C24 counterfactual framing applies, and confusing the two is how plausible dashboards become wrong coaching.</p>
+
+  <figure id="fig-23-03" class="full">
+    <img src="shared/images/c23-pickleball-vs-rugby-graph.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.9</span>: Graph Topologies at Scale. The doubles court is a complete graph; the rugby defense is a line lattice with ruck clusters.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.9</span> Pickleball vs Rugby Graphs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Pickleball (doubles)</th>
+        <th>Rugby League (defense)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Nodes</td>
+        <td>5 (4 players + ball)</td>
+        <td>14 (13 defenders + ball carrier); 27 for full play</td>
+      </tr>
+      <tr>
+        <td>Edges (complete)</td>
+        <td>10</td>
+        <td>91 (team-centric) / 351 (full play)</td>
+      </tr>
+      <tr>
+        <td>Topology</td>
+        <td>Complete K5 (everyone interacts)</td>
+        <td>Line-adjacency lattice + ruck cluster</td>
+      </tr>
+      <tr>
+        <td>Equivariance</td>
+        <td>E(2) geometry; handedness breaks it</td>
+        <td>E(2) for geometry; roles break it</td>
+      </tr>
+      <tr>
+        <td>Forecast horizon</td>
+        <td>1-2 s receiver; 2-3 s threat</td>
+        <td>2-8 s shape / next pass / line break</td>
+      </tr>
+      <tr>
+        <td>Objective</td>
+        <td>Middle seam vulnerability (the kitchen)</td>
+        <td>Line compression + line-break risk</td>
+      </tr>
+      <tr>
+        <td>Data reality</td>
+        <td>Video only; no public tracking set</td>
+        <td>Event data (Kempton/Sawczuk EPV); no open tracking at scale</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Two structural options keep the rugby graph tractable. The <em>team-centric graph</em> models one team's 13 players plus the ball and 1-2 nearest defenders — 14-16 nodes, the right size for attack-shape forecasting off the play-the-ball. The <em>hierarchical graph</em> pools player nodes into cluster nodes (forward pack, halves, back line) and runs message passing at both levels, matching how rugby league is actually coached. Both are preferable to the naive 27-node complete graph, whose edge count exceeds the number of training possessions in any realistic nrl-001-derived dataset. The rugby lab anchor stays the Kempton (2016) and Sawczuk (2021, 2024) EPV line — expected-possession-value surfaces from hundreds of matches — with the explicit caveat that none of it has been re-estimated for the six-again era; that is a reader project, not a solved problem.</p>
+
+  <figure id="fig-23-08" class="full">
+    <img src="shared/images/c23-rugby-graph.png" alt="A rugby league pitch drawn as a graph: thirteen defensive nodes in a line with adjacency edges, one lagging defender creating a burnt-orange dog-leg gap, and a ruck cluster near the ball carrier." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.10</span>: The Rugby League Pitch as a Graph. Thirteen defensive nodes linked by line-spacing edges; the dog-leg — one defender lagging behind the line — turns a straight adjacency edge into a diagonal running channel. The ruck cluster carries the short-side edges.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.9b</span> Ten Use Cases for Tactical Graph ML</h2>
+  <p>The ten use cases below are the applied layer of everything above — the graph, the equivariance guarantee, and the honesty discipline, pointed at the two sports. They fall into three named categories: <strong>A. Reading the Play (UC 01–03)</strong> — prediction heads that name the next receiver, audit the partnership, and classify the shot choice; <strong>B. Owning Space (UC 04–06)</strong> — geometry cases that turn the graph into territorial statements; <strong>C. Making the Model (UC 07–10)</strong> — the architecture decisions that decide whether any of the above can be trusted. Each case carries its evidence label: <strong>measured</strong> (book lab artifact), <strong>source-backed</strong> (peer-reviewed paper), or <strong>[verify]</strong> (practitioner threshold or press claim, not yet established in the literature).</p>
+
+  <h3 class="sub-heading">Category A — Reading the Play (UC 01–03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Pass-Network Receiver Prediction</h3>
+  <p>After the play-the-ball, the defensive line has roughly 1.5 seconds to guess which support runner receives — guess wrong and the line slides the wrong way. The receiver head is node classification over the graph: $p(y = i \mid G) = \exp(z_i) / \sum_j \exp(z_j)$, where the logits $\mathbf{z}$ come from the equivariant encoder, so the distribution is guaranteed identical under any legal rotation or reflection of the pitch. The edge attention around the ruck names which dummy-half-to-runner relationship is driving the call. TacticAI's published receiver top-3 accuracy of 0.782 ± 0.039 over 7,176 corners is <strong>source-backed</strong>; the E12 doubles receiver accuracy of 0.846 is <strong>measured</strong> on one clip — a hypothesis, per section 23.5, until the rally-boundary CV run lands. <strong>The payoff is defensive pre-loading: the marker and A-defender shift before the pass, not after — and the full receiver distribution (never the argmax) is the direct input to the C22 value model.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-pass-network.png" alt="A rugby league ruck drawn as a graph: ball node, dummy-half, and support-runner nodes with burnt-orange probability arrows to each candidate receiver." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.11</span>: UC 01 — Pass-Network Receiver Prediction. The ruck as a graph; softmax arrows over candidate receivers. <strong>Rugby league</strong>: which support runner takes the first pass off the ruck. <strong>Pickleball</strong>: which opponent takes the next dink at the kitchen line.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 02 — The Doubles Partnership Spacing Edge</h3>
+  <p>Doubles partners at the kitchen line defend as a tethered pair: drift too far apart and the middle seam — the highest-value target in the sport — opens between them. In graph terms this is one edge, watched over time: the partner-spacing edge $d_t = \|\mathbf{p}_{A1} - \mathbf{p}_{A2}\|$, fed to the model as both a current feature and a <em>historical edge weight</em> (how long the pair has held its corridor), which is what separates a settled kitchen-line pair from two players still scrambling forward. The coaching corridor of ~2.4 m and the split-seam alarm past ~3.2 m are <strong>[verify]</strong> practitioner thresholds, consistent with the tandem-spacing case in chapter 10; the edge-as-time-series mechanism itself is <strong>source-backed</strong> graph practice. <strong>The payoff is kitchen synchrony made measurable: the seam-exposure alert this edge drives is exactly the metric the C28 live cockpit surfaces.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-doubles-partnership.png" alt="A pickleball kitchen line with two partner nodes joined by a burnt-orange spacing edge, contrasted with a drifted pair and a highlighted middle seam." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.12</span>: UC 02 — The Partnership Edge. The ~2.4 m corridor versus the drifted pair with the burnt-orange middle seam exposed. <strong>Pickleball</strong>: the tether rule at the kitchen line. <strong>Rugby league</strong>: halves-pairing lateral spacing behind the ruck.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 03 — The Shot-Selection Graph</h3>
+  <p>The dink-drop-drive decision is the highest-leverage choice in a pickleball rally, and it is a graph-level read: the right shot is a function of all five nodes, not the hitter alone. The head is a graph classification over the action set {dink, drop, drive, lob, speed-up}: $p(a \mid G) = \mathrm{softmax}(\mathrm{MLP}(\mathrm{pool}(\mathbf{h})))$, where pooling is permutation-invariant so the answer never depends on player ordering. The output that matters is the <em>distribution</em>: it is handed whole to the C22 ΔEPV value model, which prices each candidate action rather than blessing the argmax. There is no public pickleball tactical dataset, so this head is a <strong>proposed</strong> architecture to be trained on lab-labelled clips — the mechanism is <strong>source-backed</strong>, the pickleball accuracy is <strong>[verify]</strong> until the E12 multi-clip run exists. <strong>The payoff is a shot-quality dashboard grounded in geometry: every rally tagged with what the graph thought the options were worth.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-shot-selection-graph.png" alt="A five-node pickleball graph feeding a small decision panel with dink, drop, and drive options shown as burnt-orange probability bars." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.13</span>: UC 03 — The Shot-Selection Graph. Graph state to action distribution; the full distribution feeds the C22 value model. <strong>Pickleball</strong>: dink vs drop vs drive pricing per rally state. <strong>Rugby league</strong>: run vs short-pass vs kick on tackle five.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category B — Owning Space (UC 04–06)</h3>
+
+  <h3 class="sub-heading">UC 04 — The Defensive-Line Shape Graph</h3>
+  <p>A rugby league defensive set is thirteen nodes strung across the pitch, and its failures are edge failures: the dog-leg (one defender a half-metre behind the line, turning a straight adjacency edge diagonal) and the fold (compressed interior edges stretching the exterior ones). The mechanism is a line-adjacency graph with edge features of length and angle; a line-break probability head reads the stretched edges, and the dog-leg detector is an angle-deviation threshold on adjacency edges. The 3.5 m edge-stretch and 2.5 m dog-leg thresholds are <strong>[verify]</strong> practitioner values inherited from the chapter 10 line-compression case; the graph mechanism is <strong>source-backed</strong>. <strong>The payoff is direct: this graph's edge-length monitor is the DLSM dog-leg metric the C28 cockpit renders live — chapter 23 supplies the model, chapter 28 supplies the screen.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-defensive-line-graph.png" alt="A rugby league defensive line of thirteen nodes with adjacency edges, one lagging defender forming a burnt-orange dog-leg and an angled running channel." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.14</span>: UC 04 — The Defensive-Line Graph. Thirteen nodes, adjacency edges, one burnt-orange dog-leg opening an angled channel. <strong>Rugby league</strong>: dog-leg and fold detection feeding C28's DLSM. <strong>Pickleball</strong>: the two-node kitchen line as the degenerate case — one spacing edge, one seam.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 05 — Voronoi Space Ownership</h3>
+  <p>"Who owns which patch of court right now" is the territorial question underneath every tactic. From the graph's node positions, compute a velocity-weighted Voronoi partition: player $i$ owns the cell $\{x : \|\,x - \mathbf{p}_i\,\| / s_i \le \|\,x - \mathbf{p}_j\,\| / s_j \ \forall j\}$, where $s_i$ scales reach by current speed. Team area share $A_{\text{team}} / A_{\text{total}}$ is then appended to the graph as a global feature, and per-node cell area becomes a node feature that tells the GNN who is actually covering ground. The pitch-control lineage in soccer (Spearman's physics-based model; Fernández &amp; Bornn's dominant regions) is <strong>source-backed</strong>; the pickleball and rugby league calibrations are <strong>[verify]</strong> practitioner transfers — chapter 10's UC 12 grounds the same tessellation in foot polygons from the vision layer. <strong>The payoff: a tracking feed becomes a territorial statement a coach can act on — "we own 38% of the attacking half on tackle four" is a sentence that changes a game plan.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-voronoi-ownership.png" alt="Split panel: a pickleball court divided into four Voronoi cells beside a rugby league pitch segment tessellated between attackers and a defensive line, with contested cells in burnt-orange." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.15</span>: UC 05 — Voronoi Space Ownership. Velocity-weighted cells per player; contested space in burnt-orange. <strong>Pickleball</strong>: middle-seam ownership between the two partnerships. <strong>Rugby league</strong>: defensive territory control across the line.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 06 — Attacking-Channel Identification</h3>
+  <p>Attackers do not need the whole graph; they need to know where the seam is <em>this</em> second. The identification mechanism reuses the trained model's own attention: edge attention $\alpha_{ij}$ on opponent–opponent spacing edges names the gap the model is watching, and a channel score — spacing-edge stretch multiplied by the ball carrier's closing speed along that edge's normal — ranks the available lanes. The discipline of section 23.8 applies with full force: the attention map is an explanation of where the model looked, <strong>not a causal claim</strong> about why the channel exists. Mechanism <strong>source-backed</strong> (attention interpretability); channel-score thresholds <strong>[verify]</strong>. <strong>The payoff is play-calling at game speed: the third-shot drive target down the stretched seam in pickleball, the edge back-rower's channel off the spread in rugby league.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-attacking-channels.png" alt="Two panels: a pickleball court with a burnt-orange corridor between two defenders, and a rugby pitch segment with three numbered running channels, one highlighted." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.16</span>: UC 06 — Attacking Channels. Edge attention names the gap; the burnt-orange corridor is the ranked target. <strong>Pickleball</strong>: the middle seam between kitchen-line partners. <strong>Rugby league</strong>: numbered running channels along the defensive line.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">Category C — Making the Model (UC 07–10)</h3>
+
+  <h3 class="sub-heading">UC 07 — Generative Play-Pattern Discovery (the TacticAI Shotgun)</h3>
+  <p>The most valuable tactical adjustment is usually the one the coaching staff did not consider. The discovery loop is a shotgun, not a scalpel: the conditional-VAE generative head samples K = 50 counterfactual formations from one real setup, the predictive threat head ranks all fifty, and the top three are presented to the coach with their before/after threat scores. TacticAI's validation is <strong>source-backed</strong> and unusually strong: generated setups were indistinguishable from real corners by an MLP classifier (F1 0.53 ± 0.05, chance level), and Liverpool FC experts preferred the model's suggestions to the original setups 90% of the time across 50 blind held-out corners. Transfer of that preference rate to pickleball or rugby league is <strong>[verify]</strong> — the architecture transfers, the expert study does not. <strong>The payoff is a tactic-discovery assistant: fifty sampled answers to "what if we shifted the seam defender?" before the video session ends.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-pattern-discovery.png" alt="Before and after panels of the same pickleball formation: a threat glow around a receiver in the before panel, one player shifted with an arrow in the after panel, and the glow reduced." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.17</span>: UC 07 — The Generative Shotgun. One real formation, K counterfactual samples, the threat head ranks them. <strong>Pickleball</strong>: counterfactual partner positions against a speed-up. <strong>Rugby league</strong>: counterfactual defensive spacing against a shape the team has never drilled.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 08 — The Equivariance Guarantee Under Rotation</h3>
+  <p>Training data is biased: pickleball clips over-represent right-side stacks, rugby footage over-represent plays run to the open side. A model without built-in symmetry will silently misbehave the first time it sees a left-handed stack or a short-side raid. The guarantee is architectural: group convolutions enforce $y(W, g \cdot x) = g \cdot y(W, x)$ for every transform $g$ in the group, exactly, on every input — not approximately, on the training distribution, the way augmentation does. The verification is the six-cell test grid of section 23.4 — identity, 90°, 180°, horizontal mirror, vertical mirror, diagonal reflection — runnable in ten lines; the lab result is <strong>measured</strong>: the naive linear layer fails the grid (<code>linear_layer_passes: false</code> in <code>experiments/c23-tactical-ml/outputs/metrics.json</code>), and no amount of training would fix it. <strong>The payoff is a certificate: equivariance is the difference between a model you trust on orientations never seen in training and a model you merely hope generalizes.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-equivariance-rotation.png" alt="A two-by-three grid showing the same five-node pickleball graph under six transformations, with the highlighted receiver rotating consistently in every cell." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.18</span>: UC 08 — The Six-Transform Grid. Identity, 90°, 180°, horizontal mirror, vertical mirror, diagonal reflection; invariant outputs must not change, equivariant outputs must transform. <strong>Pickleball</strong>: left-handed stacks and mirror-court coaching. <strong>Rugby league</strong>: short-side plays and mirrored attacking shapes.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 09 — Message-Passing Depth Tuning</h3>
+  <p>How many GNN layers is a topology question, not a hyperparameter superstition. Each layer extends a node's receptive field by one hop, so the right depth tracks the graph's diameter: the complete five-node doubles graph has diameter 1 — two layers already see the whole court, and additional layers only risk over-smoothing, where repeated neighbourhood averaging collapses every node's embedding toward the same vector. The rugby line-adjacency lattice has diameter ~12 along the line, so depth 3–4 with residual connections is the working range, and edge sparsification matters more than raw depth. The measured anchor is latency: E12's shallow model runs a forward pass in 3.4 ms on the M4 Max (<strong>measured</strong>), so depth is a latency budget as much as an accuracy one; the optimal depth per topology is a sweep result, <strong>[verify]</strong>, not a law. <strong>The payoff is a right-sized model: deep enough to see the tactic, shallow enough to run live on the sideline laptop.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-message-depth.png" alt="Three panels showing one player node with an expanding receptive field: layer one highlights direct neighbours, layer two the whole five-node pickleball graph, layer three faded nodes labelled over-smoothed." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.19</span>: UC 09 — Depth and the Receptive Field. One hop sees neighbours; two hops see the doubles court; three hops over-smooth it. <strong>Pickleball</strong>: two layers suffice on K5. <strong>Rugby league</strong>: depth 3–4 with residuals on the line lattice.</figcaption>
+  </figure>
+
+  <h3 class="sub-heading">UC 10 — Graph-to-Action: The Suggestion Head</h3>
+  <p>A coach on a sideline does not want a probability; they want "move A2 half a metre toward the middle." The suggestion head closes that gap: the generative decoder outputs a per-node position delta $\Delta \mathbf{p}_i$ plus the predicted threat change, and the output contract handed downstream is the tuple $(\Delta \mathbf{p}, \Delta \text{threat}, \Sigma)$ — action, expected effect, and the ensemble covariance that tells the consumer how much to trust it. The E12 artifact is the <strong>measured</strong> instance: shift A2 +0.35 m toward the centreline, threat 0.64 → 0.22, a 65.6% reduction at 3.4 ms latency — on one clip, so per section 23.5 it is a hypothesis with a pulse, not a product spec. C22 consumes the tuple as value input; C28 renders it as the live suggestion card. <strong>The payoff is the only tactical output a sideline can use at speed: an action, a number, and an honest error bar.</strong></p>
+
+  <figure class="full">
+    <img src="shared/images/c23-uc-graph-to-action.png" alt="A pickleball doubles court with an overlaid five-node graph, one player node carrying a burnt-orange movement arrow toward the centreline and a small output chip reading threat 0.64 to 0.22." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 23.20</span>: UC 10 — Graph-to-Action. The model's output is a move, a threat delta, and a covariance. <strong>Pickleball</strong>: "shift A2 +0.35 m" with threat 0.64 → 0.22 (measured, n = 1 clip). <strong>Rugby league</strong>: "fold the edge defender in 0.5 m" with the line-break probability delta.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">23.9c</span> The Tactical-ML Ecosystem and a Runnable Skeleton</h2>
+  <p>The stack around the model is small and mature; the choice that matters is where equivariance lives. PyTorch Geometric carries the message-passing layers; the equivariance libraries carry the symmetry; GATv2 is the attention layer TacticAI itself builds on.</p>
+
+  <table>
+    <thead>
+      <tr><th>Library</th><th>Role in the stack</th><th>Pickleball use</th><th>Rugby league use</th><th>Label</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>PyTorch Geometric</strong></td><td>Message-passing layers, graph batching</td><td>5-node doubles graph, real-time on M4 (3.4 ms measured)</td><td>14-node team-centric graph</td><td>source-backed</td></tr>
+      <tr><td><strong>GATv2 (PyG conv)</strong></td><td>Dynamic attention layer — TacticAI's base</td><td>Receiver + threat heads</td><td>Line-break probability head</td><td>source-backed</td></tr>
+      <tr><td><strong>e3nn</strong></td><td>E(3)/SE(3)-equivariant layers</td><td>3D extension once C11 pose adds height</td><td>Aerial contest and kick geometry</td><td>source-backed</td></tr>
+      <tr><td><strong>ESCNN</strong></td><td>E(2)-equivariant CNNs for court imagery</td><td>Reflection-safe court features</td><td>Reflection-safe pitch features</td><td>source-backed</td></tr>
+      <tr><td><strong>DGL</strong></td><td>Alternative GNN framework, sparse-graph kernels</td><td>—</td><td>Batched match graphs at scale</td><td>source-backed</td></tr>
+      <tr><td><strong>TacticAI reference</strong></td><td>The benchmark architecture (D₂ group convs, dual head)</td><td>E12 adaptation (measured, n = 1 clip)</td><td>Proposed adaptation</td><td>[verify] transfer</td></tr>
+    </tbody>
+  </table>
+
+  <p>The skeleton below is the whole doubles pipeline in miniature — graph build, equivariant encoder, the three heads, and the honesty harness. It runs on the M4 Max as written; the rugby version changes the node count and the edge rule, nothing else.</p>
+
+  <pre><code class="language-python">import torch
+from torch_geometric.nn import GATv2Conv
+
+# 1. Build the doubles graph (one frame)
+#    nodes: A1, A2, B1, B2, ball -&gt; features [x, y, vx, vy, h, team]
+x = load_frame()                       # [5, F], zero-centred on 13.41 x 6.10 m court
+edge_index = fully_connected(5)        # K5: 10 edges, both directions
+edge_attr = relative_features(x)       # [dx, dy, dist, dvx, dvy, relation]
+
+# 2. E(2) encoder: four reflected views, mixed every layer
+class E2Encoder(torch.nn.Module):
+    def __init__(self, F=6, H=16):
+        super().__init__()
+        self.conv1 = GATv2Conv(F, H, heads=4, edge_dim=6)
+        self.conv2 = GATv2Conv(H * 4, H, heads=1, edge_dim=6)
+    def forward(self, views, edge_index, edge_attr):
+        # views: [4, 5, F] = id, h-mirror, v-mirror, both
+        # (reflect velocities WITH the coordinates or the test fails)
+        return torch.stack([
+            self.conv2(torch.relu(self.conv1(v, edge_index, edge_attr)),
+                       edge_index, edge_attr)
+            for v in views
+        ])
+
+# 3. Heads — the invariant/equivariant split is the whole game
+#    receiver (invariant):  softmax over nodes, frame-average the 4 views
+#    threat   (invariant):  mean-pool -&gt; MLP -&gt; sigmoid, frame-average
+#    suggest  (equivariant): identity view ONLY -&gt; per-node delta-p
+#    (frame-averaging the suggestion head averages away the geometry)
+
+# 4. The honesty harness (not optional)
+#    splits:    rally-boundary 5-fold CV, never frame-level
+#    baselines: always-near-player receiver, base-rate threat
+#    rotation:  6-transform grid; invariant heads match to 1e-6
+#    ensemble:  5 seeds -&gt; mean + covariance handed to the C22 value model</code></pre>
+
+  <h2 class="section-title"><span class="section-num">23.9d</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are not ten projects; they are the graph layer feeding the chapters around it:</p>
+  <ul>
+    <li><strong>To C22 (value model)</strong>: UC 03's action distribution, UC 01's receiver distribution, and UC 10's $(\Delta \mathbf{p}, \Delta \text{threat}, \Sigma)$ tuple — the value model prices distributions and covariances, never point estimates.</li>
+    <li><strong>To C28 (cockpit)</strong>: UC 02's partner-spacing edge and UC 04's line-shape edges are exactly the seam-alert and DLSM dog-leg metrics the live cockpit renders; chapter 23 supplies the model, chapter 28 the screen.</li>
+    <li><strong>From C09 and C12</strong>: UC 05 and UC 06 consume the tracking layer's player node positions (C09) and the ball node's state (C12); the graph is only ever as good as those feeds.</li>
+    <li><strong>To C24 (simulation)</strong>: UC 07's counterfactual shotgun is the small-scale, single-frame instance of the chapter 24 digital twin — same counterfactual logic, cheaper machine.</li>
+    <li><strong>Under C20 (statistics)</strong>: UC 08's rotation grid, the rally-boundary splits, and the ensemble covariance are the chapter 20 discipline applied to graphs — the honest labels on every use case above are its terms.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">23.10</span> The Tactical-ML Recipe</h2>
+  <ol>
+    <li><strong>Splits</strong>: rally-boundary train/test, NEVER frame-level. Season data: hold out matches. Cross-opponent claims: hold out teams.</li>
+    <li><strong>Baselines</strong>: trivial heuristics (always-near-player receiver, base-rate threat) and the coin flip — build them first, publish them always. A GNN that does not beat a one-line heuristic is a one-line heuristic with a power bill.</li>
+    <li><strong>Rotation test</strong>: the six-transformation grid, 180° invariance minimum — or document the non-equivariance on the record.</li>
+    <li><strong>Uncertainty</strong>: MC dropout minimum, 5-model ensemble if the forecast feeds a value model; hand over the covariance, not the mean.</li>
+    <li><strong>Interpretation</strong>: position heat and edge attention, explained as explanation, never as cause.</li>
+    <li><strong>Honest framing</strong>: n=1 clip = hypothesis, not product spec. Report CV mean ± std, the cluster bootstrap CI, and the sign-test p-value next to every headline number.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">23.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li><strong>The horizon-decay curve</strong> (accuracy vs forecast horizon at +0.5/1/2/4/8s) — the practitioner's boundary chart, measured per sport, per task. The single most useful figure this chapter could add with real data.</li>
+    <li><strong>Multi-clip E12 re-run</strong>: 8-10 labelled pickleball clips, rally-boundary 5-fold CV, trivial baselines on the table, CIs on everything — the honest GNN evaluation that turns the proof-of-concept into a claim.</li>
+    <li><strong>The trivial-baseline gap</strong>: always-near-player receiver accuracy on the same splits. If it sits above 0.75, the GNN's real contribution is the threat head and the generative counterfactuals, not receiver prediction — and the chapter should say so.</li>
+    <li><strong>Rugby team-centric prototype</strong>: a 14-node attack-shape graph over nrl-001 events plus synthetic tracking, compared against the Sawczuk EPV surface as a sanity prior; explicit re-estimation note for the six-again era.</li>
+    <li><strong>Coach validation of the attention view</strong>: whether position-heat explanations change a real coach's decision on real rallies. Attention maps are plausible; plausibility is not validation.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">23.12</span> Sources</h2>
+  <ul>
+    <li>TacticAI (Zhe Wang, Petar Veličković, Daniel Hennes et al., "TacticAI: an AI assistant for football tactics", Nature Communications 2024, doi: 10.1038/s41467-024-45965-x, <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10951310/">PMC10951310</a>, preprint arXiv 2310.10553); DeepMind blog <a href="https://deepmind.google/blog/tacticai-ai-assistant-for-football-tactics/">deepmind.google/blog/tacticai</a>; Palmeiras/CBF live deployment June 2026 [verify].</li>
+    <li>Equivariance foundations: Satorras, Hoogeboom &amp; Welling, "E(n) Equivariant Graph Neural Networks", <a href="https://arxiv.org/abs/2102.09844">arXiv 2102.09844</a>; Fuchs et al., "SE(3)-Transformers", <a href="https://arxiv.org/abs/2002.12853">arXiv 2002.12853</a>; Cohen &amp; Welling, "Group Equivariant Convolutional Networks", <a href="https://arxiv.org/abs/1602.07576">arXiv 1602.07576</a>; Brody et al., GATv2, <a href="https://arxiv.org/abs/2105.14491">arXiv 2105.14491</a>.</li>
+    <li>Rugby league EPV anchors: Kempton et al. 2016 (J Sports Sci, doi: 10.1080/02640414.2015.1022578, 768 matches); Sawczuk et al. 2021 (Super League, pre-six-again) and 2024 (NRL Bayesian-mixture EPV, arXiv 2212.10904).</li>
+    <li>E12 artifact (experiments/e12-tacticai-doubles/outputs/metrics.json) — the verified numbers; claims register C-19.</li>
+    <li>Lab: <code>lab/w5_lab_tactical_ml.py</code> → <code>experiments/c23-tactical-ml/outputs/metrics.json</code> (CV mean 0.836 ± 0.032; rotation test FAILS naive layer; sample-size check 3,416 rows / 1 clip / 4 players).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="22.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 22</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 22</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</p>
+        </div>
+      </div>
+    </a>
+    <a href="24.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 24</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 24</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">What-IF is only well-posed with an explicit response model — and the v1 book proved the cost of forgetting</p>
+        </div>
+        <a href="24.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #A2542A;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

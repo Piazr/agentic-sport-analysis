@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-04" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 04</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The physics of getting footage your models can use: sensor geometry, motion blur, rolling shutter, and the placement math</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">38 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-04-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Capture Is a Design Decision, Not an Accident</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-04-1" data-section="s-04-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Capture Is a Design Decision, Not an Accident</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-04-1" data-section="s-04-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Capture Is a Design Decision, Not an Accident</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">04</span> Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h1>
+    <p class="chapter-subtitle">The physics of getting footage your models can use: sensor geometry, motion blur, rolling shutter, and the placement math</p>
+  </header>
+
+<h3 id="s-04-1"><span class="section-num">4.1</span> Capture Is a Design Decision, Not an Accident</h3>
+
+<p class="section-intro">Every chapter in this book assumes footage. Almost none of the failure modes that follow are model failures — they are capture failures. A ball that is 83 pixels of motion blur is not undetectable because of a bad detector; it is undetectable because the shutter was 1/60s. A kitchen foot fault that a coach cannot see on review is not a camera-angle problem; it is a parallax problem from a 2.5m-tall camera. Capture is where you design in — or out — the questions your analysis will be able to answer.</p>
+
+  <p>The two sports in this book sit at opposite ends of the capture-contract spectrum, and the contrast is the lesson. In <strong>pickleball</strong> you usually own the camera: a 13.41m × 6.10m court, often indoors under LED light, and complete freedom to choose the sensor, lens, shutter, frame rate, and mounting position. Capture is a free design parameter you should optimize <em>before</em> the first model runs. In <strong>rugby league</strong> you usually do not own the camera: the analysis feed is a broadcast host feed of a 100m × 68m pitch, shot from a gantry you will never visit, with pan, tilt, zoom, shutter, and frame rate all fixed by a production crew optimizing for television, not for computer vision. Capture is a <em>given</em> you must calibrate around. Everything in this chapter is computed for both regimes.</p>
+
+  <p>Before anything else, run the numbers for <em>your</em> court or pitch and <em>your</em> camera. This chapter gives you the formulas, the worked cases, and the exact numbers from our lab.</p>
+
+  <p>Everything below is <strong>measured</strong> or <strong>derived from measured inputs</strong>: the FOV/shutter/parallax numbers come from our lab (<code>experiments/c04-capture/outputs/capture-math.json</code>), the fixture probe from ffprobe on our own clip, and the sport dimensions from the governing-body rulebooks (USAP Official Rulebook 2026; NRL Laws of the Game). Where a number comes from vendor reporting rather than our instruments it is marked [verify]. Vendor claims of "99% line-call accuracy" remain <em>source-backed marketing</em> until replicated — and the parallax math in section 4.4 is why the replication bar is a two-camera setup.</p>
+
+  <h2 class="section-title"><span class="section-num">4.2</span> Sensor Geometry: What Covers the Court — and the Pitch</h2>
+  <p>The fundamental camera equation for a flat scene is the horizontal field of view, which reduces to two formulas that answer every "what lens do I need" question in this book:</p>
+
+  <p>$$\text{HFOV} = 2 \cdot \arctan\left(\frac{d}{2f}\right) \qquad\qquad W = \frac{D \cdot d}{f}$$</p>
+
+  <p>where $d$ is the sensor width, $f$ the focal length, $W$ the scene width covered at distance $D$. Rearranged, the focal length required to cover width $W$ at distance $D$ is $f = D \cdot d / W$.</p>
+
+  <p>Sensor formats matter more than the stated lens: a phone "24mm" is 24mm <em>equivalent</em> — the physical sensor is ~9.8mm wide (1/1.28" class) behind a ~6.8mm physical lens. The same field of view needs an 8.8mm lens on a 1" sensor (13.2 × 8.8mm — the "1-inch" name is a Vidicon-tube artifact, not a dimension) and 15.7mm on APS-C. Because FOV depends only on the <em>equivalent</em> focal length, every cross-format comparison in this chapter is done in equivalent millimetres.</p>
+
+  <p>The scale gap between our two sports is the entire design problem in one number pair. Covering a pickleball court's 6.10m width from 12m behind the baseline needs a modest wide lens; covering a rugby league pitch's 68m width from a broadcast gantry 60–90m away needs a narrow telephoto. Our lab computed the broadcast case directly for an APS-C sensor (23.5mm wide): at 60m from the far sideline the required focal length is <strong>20.7mm</strong> (HFOV 59.1°); at 90m it is <strong>31.1mm</strong> (HFOV 41.4°). That is the optical envelope the NRL host feed is shot inside — and it is why the main match camera <em>zooms to follow play</em> rather than holding a static wide: at 21–31mm equivalent the ball (28cm) is a few dozen pixels, so the production tightens the shot for humans and your calibration inherits a different focal length on every frame.</p>
+
+  <figure id="fig-04-04" class="full">
+    <img src="shared/images/c04-fov-court-vs-pitch.png" alt="Two-panel plan-view FOV comparison: pickleball court 13.4m x 6.1m with a narrow 24mm-equivalent frustum from behind the baseline vs rugby league pitch 100m x 68m with a wide frustum from a broadcast gantry 40m back at 21mm APS-C. Recreate: white background, black engineering lines, burnt-orange frustums." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.4</span>: FOV Math, Court vs Pitch. The same two formulas produce opposite rigs: a wide phone lens behind a 13.4m court, a 21–31mm (APS-C) telephoto envelope on a 100m pitch. Frustum width at the far line — not megapixels — is the first constraint.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">4.3</span> Worked Case: Pickleball Court Coverage (W1.2 Lab)</h2>
+  <p>The court is 13.41m × 6.10m (44ft × 20ft, per USA Pickleball). A camera mounted behind the baseline needs to cover the full 6.10m width at the far baseline for line calls. Our lab computed, for a 1" sensor (9.6mm wide):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Camera Distance to Far Baseline</th>
+        <th>Required Focal (1" sensor)</th>
+        <th>HFOV</th>
+        <th>Practical Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>9.0m</td>
+        <td>9.0mm</td>
+        <td>37.4°</td>
+        <td>Fixed mini camera on back wall — tight but covers width</td>
+      </tr>
+      <tr>
+        <td>12.0m</td>
+        <td>12.0mm</td>
+        <td>28.5°</td>
+        <td>Phone (1x) equivalent — typical gym wall mount</td>
+      </tr>
+      <tr>
+        <td>16.0m</td>
+        <td>16.0mm</td>
+        <td>21.6°</td>
+        <td>Mounted behind spectators — needs a zoom or tele</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-04-01" class="full">
+    <img src="shared/images/cam-fov-placement.png" alt="Camera FOV and placement geometry side elevation: 4.5m pole at 3m setback, sight-line grazing net tape to far kitchen line, court 13.41m full length. Recreate: white background, black engineering lines, burnt-orange frustum." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.1</span>: Placement Geometry. A 4.5m pole at 3m setback keeps the far kitchen line visible past the net tape — the sight-line that makes foot-fault review possible.</figcaption>
+  </figure>
+
+  <p><strong>Interpretation:</strong> FOV is almost never the binding constraint behind a pickleball court — a 24mm-equivalent phone camera at 12m covers the court width three times over. The binding constraint is <strong>pixels on target</strong>. Computed for a 4K (3840px-wide) frame at the far baseline, 16.4m from the lens:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Setup</th>
+        <th>Coverage at 16.4m</th>
+        <th>mm per pixel</th>
+        <th>Ball (74mm)</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>24mm-eq phone main</td>
+        <td>24.6m</td>
+        <td>6.4mm/px</td>
+        <td>~12px</td>
+        <td>Detectable, marginal for spin/hole features</td>
+      </tr>
+      <tr>
+        <td>48mm-eq (2× tele crop)</td>
+        <td>11.9m</td>
+        <td>3.1mm/px</td>
+        <td>~24px</td>
+        <td>Good ball track, still full court width plus margin</td>
+      </tr>
+      <tr>
+        <td>1080p mode (half resolution)</td>
+        <td>24.6m</td>
+        <td>12.8mm/px</td>
+        <td>~6px</td>
+        <td>Don't: shoot 4K and downscale in post</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>This is why SwingVision-class products ask you to place the phone on a tripod <em>behind the court center</em> and why pro pickleball consoles (PlaySight; Owl AI's broadcast-software line calling) use dedicated wide-angle optics. The copyable recipe from our lab: <strong>phone main camera, 4K, 48mm-equivalent crop, 4.5–5m pole, 3m setback, slight down-tilt</strong> → full court, ball ≥20px everywhere.</p>
+
+  <h2 class="section-title"><span class="section-num">4.3b</span> Worked Case: Rugby League — Broadcast vs Sideline (W1.2 Lab)</h2>
+  <p>Rugby league inverts the pickleball answer. The playing surface is 100m × 68m plus in-goals (design length ~116m), and there are three realistic placements, each answering a different question.</p>
+
+  <p><strong>Case 1 — halfway sideline pano (the rig you own).</strong> A Veo-class dual-lens 180° camera on a 3.8–7.3m tripod, 3–5m back from the halfway line (Veo's own setup guidance), captures the whole pitch in one 7680px-wide panorama at ~42.7px per degree. Our lab's pixels-on-target math:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Target</th>
+        <th>Distance</th>
+        <th>Player (1.85m)</th>
+        <th>Ball (28cm)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Near sideline</td>
+        <td>5m</td>
+        <td>866px tall</td>
+        <td>137px</td>
+      </tr>
+      <tr>
+        <td>Far sideline</td>
+        <td>39m</td>
+        <td>116px</td>
+        <td>18px</td>
+      </tr>
+      <tr>
+        <td>Far corner</td>
+        <td>58m</td>
+        <td>78px</td>
+        <td>12px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Tactical-grade everywhere — shape, spacing, line speed, and runs are all resolvable — while ball and identity degrade past ~30m. This is exactly why Veo-class systems sell <em>tactical</em> analysis, not officiating: the geometry cannot support it, and no model upgrade fixes a 12-pixel ball.</p>
+
+  <p><strong>Case 2 — end-on full pitch (training-ground DIY).</strong> From an end stand or scaffold 10m behind the dead-ball line at ~30m height with a 35mm-equivalent lens, the far-end coverage is ~130m, so the 68m pitch width occupies about half a 4K frame: <strong>34mm/px → ball ~8px, player ~56px</strong>. Officiating-grade calls are impossible from one static wide; this shot answers shape and spacing questions only.</p>
+
+  <p><strong>Case 3 — the broadcast gantry (the feed you ingest).</strong> The main NRL match camera is a manned PTZ on the halfway gantry, 20–30m high and 40–50m back, inside the 21–31mm (APS-C) envelope from section 4.2 — and it <em>zooms to follow play</em>. The consequence for the whole book: broadcast footage has a variable focal length per frame, so the homography chapters (6–7) must estimate calibration frame-by-frame rather than once per session. End cameras (18-yard and try-line positions) exist in the host production for exactly the geometry the gantry cannot see — low, near-axial views of the try line — but you receive only the one feed the director cuts to air.</p>
+
+  <figure id="fig-04-05" class="full">
+    <img src="shared/images/c04-placement-both-sports.png" alt="Two-panel camera placement diagram: pickleball court with endline pole camera at 4.5m and sideline camera at 6m; rugby league pitch with grandstand gantry camera at 25m on halfway, end-on camera at 30m, and halfway sideline tripod. Recreate: white background, black linework, burnt-orange sight-lines." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.5</span>: Placement, Both Sports. Pickleball's choice is endline (full-court, line geometry) versus sideline (technique view). Rugby league's is gantry broadcast (follow-cam, variable focal), end-on high (shape), or halfway tripod (tactical pano) — three different questions, three different rigs.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">4.4</span> Elevation: The Parallax Trap for Foot Faults</h2>
+  <p>A camera 2.5m up and behind the baseline sees the far NVZ line at an elevation angle of about <strong>11.9°</strong> (same-side NVZ line at ~4.88m from the baseline camera). That low angle means the line is what the athletes' <em>feet</em> hide — exactly when you need to check foot placement during a volley.</p>
+
+  <p>The deeper problem is parallax. A ball 0.9m off the ground seen from a 2.5m camera has a projected position offset of <strong>18cm</strong> at a 0.5m distance from the sideline. Our lab computed it directly:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Quantity</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Camera height</td>
+        <td>2.5m</td>
+      </tr>
+      <tr>
+        <td>Object height (ball above court)</td>
+        <td>0.9m</td>
+      </tr>
+      <tr>
+        <td>Distance from sideline</td>
+        <td>0.5m</td>
+      </tr>
+      <tr>
+        <td><strong>Projection offset</strong></td>
+        <td><strong>18.0cm</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-04-03" class="full">
+    <img src="shared/images/cam-placement-poster.png" alt="Two-panel placement comparison: single end-camera with blind zone and 66mm parallax error vs 2-cam ELC with clean sight-lines. Recreate: white background, black linework, burnt-orange callouts." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.3</span>: Single Camera vs Two-Camera Line Calling. The single end-cam has a blind zone behind the net and a 66mm parallax bias; two net-post cameras (PlayReplay architecture) see the line plane directly.</figcaption>
+  </figure>
+
+  <p>Eighteen centimetres is roughly the width of a pickleball; it is well inside the margin of a contested line call. From the lab's 4.5m-pole rig the error grows: a bounce at the far sideline (~8m lateral) shifts by <strong>66mm — larger than the 5.08cm line width itself</strong>. Uncallable. The escape is geometric, not algorithmic: a net-post camera at ~1.1m looks <em>along</em> the line plane, so the across-line component of parallax collapses toward zero — the design PlayReplay exploits with two cameras per net post [verify per-model fps]. <strong>Conclusion: single-camera 2D position is fine for court-zone occupancy but mathematically insufficient for line calls</strong> — which is exactly why Chapter 14 exists (multi-view geometry / triangulation).</p>
+
+  <p>Rugby league's version of the trap is inverted. The gantry's 20–30m elevation is a <em>feature</em> for tactics: from 25m up and 45m back, the viewing angle across the 68m width keeps player spacing readable — high elevation is what makes broadcast footage the default input for shape analysis. But the same height makes grounding and try-line calls impossible from the gantry: a ball carrier's hand and the ball over the try line separate vertically, and parallax from 25m up projects them metres apart. That is why host productions add low end-on cameras for the try line, and why any RL officiating pipeline needs those feeds, not the main camera.</p>
+
+  <h2 class="section-title"><span class="section-num">4.5</span> Shutter Speed vs Motion Blur: The Ball Wall Begins Here</h2>
+  <p>Blur is $b = v \cdot t$ — velocity times exposure time. Nothing else matters. The ball moves at 20m/s on a hard drive (72km/h) and 31.3m/s on the record serve (Zane Navratil, 70mph, Guinness World Records 2024). At 1080p with ~250 pixels per metre at the near baseline, the blur equation in pixels is:</p>
+
+  <p>$$\text{blur}_\text{px} = v \cdot t_\text{shutter} \cdot \text{px/m}$$</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Shutter</th>
+        <th>Blur @ 20 m/s (smash)</th>
+        <th>Blur @ 8 m/s (dink)</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1/60s</td>
+        <td>83.3 px</td>
+        <td>33.3 px</td>
+        <td>Ball is a streak — unusable</td>
+      </tr>
+      <tr>
+        <td>1/250s</td>
+        <td>20.0 px</td>
+        <td>8.0 px</td>
+        <td>Marginal; ball center smeared</td>
+      </tr>
+      <tr>
+        <td>1/1000s</td>
+        <td>5.0 px</td>
+        <td>2.0 px</td>
+        <td>Usable for trajectory models</td>
+      </tr>
+      <tr>
+        <td>1/2000s</td>
+        <td>2.5 px</td>
+        <td>1.0 px</td>
+        <td>Ideal — but expensive (needs light/ND, high frame rate)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-04-02" class="full">
+    <img src="shared/images/cam-blur-chart.png" alt="Motion blur vs shutter speed log-log chart: three ball speeds 10 20 31 m/s, 37mm ball radius threshold dashed, SHOOT 1/1000s annotation. Recreate: white background, black axes, burnt-orange threshold line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.2</span>: Blur vs Shutter. At 1/60s a 20m/s ball smears 83px — invisible. At 1/1000s it is 5px — a trackable point. The shutter is the first detector.</figcaption>
+  </figure>
+
+  <p>The rule of thumb, derived: keep blur under one ball radius (37mm) so the apparent center stays the true center, i.e. $t \le 37\text{mm}/v$. A 20m/s drive needs ≥1/540s; the 31.3m/s record serve needs ≥1/845s → <strong>standardize on 1/1000s for ball work</strong>. In millimetres of smear, the dual-sport table:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Shutter</th>
+        <th>PB drive 20 m/s</th>
+        <th>PB serve 31.3 m/s</th>
+        <th>RL sprint 10 m/s</th>
+        <th>RL kick ~27 m/s [verify]</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1/60</td>
+        <td>333mm</td>
+        <td>522mm</td>
+        <td>167mm</td>
+        <td>450mm</td>
+      </tr>
+      <tr>
+        <td>1/250</td>
+        <td>80mm</td>
+        <td>125mm</td>
+        <td>40mm</td>
+        <td>108mm</td>
+      </tr>
+      <tr>
+        <td>1/500</td>
+        <td>40mm</td>
+        <td>63mm</td>
+        <td>20mm</td>
+        <td>54mm</td>
+      </tr>
+      <tr>
+        <td>1/1000</td>
+        <td>20mm</td>
+        <td>31mm</td>
+        <td>10mm</td>
+        <td>27mm</td>
+      </tr>
+      <tr>
+        <td>1/2000</td>
+        <td>10mm</td>
+        <td>16mm</td>
+        <td>5mm</td>
+        <td>14mm</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <figure id="fig-04-06" class="full">
+    <img src="shared/images/c04-shutter-blur-dual.png" alt="Motion blur comparison: pickleball serve at 31 m/s and rugby league kick at 27 m/s rendered as shrinking streaks at shutter speeds 1/60, 1/250, 1/1000, 1/2000. Recreate: white background, black ball outlines, burnt-orange streaks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.6</span>: The Blur Budget, Both Sports. A 31.3m/s pickleball serve and a ~27m/s RL kick smear almost identically — half a metre at 1/60s, one ball radius at 1/1000s. Player bodies (≤10m/s) are an order of magnitude cheaper to freeze than either ball.</figcaption>
+  </figure>
+
+  <p>Two practitioner notes. First, a directional streak is not pure loss: streak length divided by exposure time <em>is</em> velocity, so a 43px streak at 1/250s is usable for speed estimation even though it destroys centroid accuracy and spin features. Second, the cost side: 1/1000s is five stops darker than 1/30s, so indoor pickleball venues push ISO into noise territory — the shutter budget is paid in light (section 4.7), while outdoor rugby league in daylight pays nothing. Broadcasters shoot sport at 1/250–1/500s because it looks natural to humans; their tradeoff is not yours. Set the shutter for the fastest object you care about, not the subject.</p>
+
+  <p>This is the root cause of the "Ball Wall" from Chapter 12. Per-frame detectors fail on <em>blurred</em> balls, not just small ones. Set the shutter first; change the detector only after the footage is clean.</p>
+
+  <h2 class="section-title"><span class="section-num">4.6</span> Frame Rate and Temporal Aliasing</h2>
+  <p>Shutter fixes <em>within-frame</em> smear; frame rate fixes <em>between-frame</em> sampling. At 25–30fps the ball moves 0.67–0.8m per frame at 20m/s — and 1.04m per frame at the 31.3m/s record serve: <strong>14 ball diameters between frames</strong>. If the frame time is longer than the ball's crossing time of a small region, the ball can skip entire sectors of the court between frames. Displacement and the probability of catching a ~4ms ball–paddle contact window at all:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>fps</th>
+        <th>mm/frame @ 31.3 m/s</th>
+        <th>Ball diameters/frame</th>
+        <th>P(catch contact frame)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>25</td>
+        <td>1,252</td>
+        <td>16.9</td>
+        <td>10%</td>
+      </tr>
+      <tr>
+        <td>30</td>
+        <td>1,043</td>
+        <td>14.1</td>
+        <td>12%</td>
+      </tr>
+      <tr>
+        <td>60</td>
+        <td>522</td>
+        <td>7.0</td>
+        <td>24%</td>
+      </tr>
+      <tr>
+        <td>120</td>
+        <td>261</td>
+        <td>3.5</td>
+        <td>48%</td>
+      </tr>
+      <tr>
+        <td>240</td>
+        <td>130</td>
+        <td>1.8</td>
+        <td>96%</td>
+      </tr>
+      <tr>
+        <td>340</td>
+        <td>92</td>
+        <td>1.2</td>
+        <td>~100%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The 340fps row is not hypothetical: Hawk-Eye tennis runs ~10–18 cameras at ~340fps for its cited ~2.6–3.6mm triangulation error [verify current figures — secondary reporting; the ITF approval criterion of ≤5mm is documented].</p>
+
+  <p><strong>The rugby league comparison reframes the same math.</strong> The RL ball is a 28cm prolate spheroid — 3.8× the pickleball's diameter — so it tolerates proportionally fewer frames. A strong punt kick at ~27m/s [verify] travels 450mm/frame at 60fps, just 1.6 ball lengths, versus the pickleball serve's 3.5 diameters per frame even at 120fps. Per-diameter, broadcast 50–60fps rugby footage is <em>better</em> sampled than 120fps pickleball footage. The catch is that you don't choose: Australian broadcast is a 50Hz family (25/50fps) heritage, so the RL ball at 50fps moves 540mm — 1.9 ball lengths — and the frame rate is whatever the host feed carries. Ball tracking from broadcast rugby is therefore a tracking-association problem (Chapter 9), not a capture upgrade. Where you <em>do</em> rig the camera — training-ground skill clips — the same rule as pickleball applies: 120fps floor for contact work, 240fps if you want the kick contact frame guaranteed.</p>
+
+  <p>Note the numerical reality of OUR fixture: the pb-003 derived clip is actually <strong>1920×1080 @ 30fps, AV1 codec, 1,786 kbps</strong> (probed 2026-08-30) — not the 25fps the earlier experiment metrics assumed. Every pipeline downstream of this fixture inherits that capture reality. Options that buy real margin: 60fps (halves inter-frame travel), 120fps (line-call region work, though rolling shutter constraints apply), and 240fps slow-mo for the highest-velocity examinations. Each doubles the data volume; the ingest chapter (C05) is where you pay for it. One warning: check whether a "slow-mo" mode is true capture or optical-flow interpolation — interpolated frames hallucinate ball positions and must never feed a measurement pipeline [verify per-device].</p>
+
+  <h2 class="section-title"><span class="section-num">4.7</span> Rolling Shutter, LED Flicker, Lighting, and Codecs</h2>
+  <ul>
+    <li><strong>Rolling vs global shutter:</strong> phone and most mirrorless sensors read rows in sequence over a readout time $t_r$ — ~5ms on recent phone sensors [verify per-model; community-measured], 15–30ms on older full-sensor mirrorless. During 5ms, a 31.3m/s serve moves <strong>156mm</strong>: the ball's top and bottom rows are captured 156mm apart in world space, rendering a skewed ellipse — and worse, different rows of the same frame disagree about court geometry, so the homography is time-varying <em>within</em> the frame. At 25ms that shear is 782mm, nearly a metre. Global-shutter cameras (Sony A9 III, 4K120 uncropped, $5,999; machine-vision Pregius sensors) are the money-no-object fix; rolling-shutter-aware pipelines are the pragmatic one. You can measure your own $t_r$ by filming a known-frequency LED strobe and counting bands.</li>
+    <li><strong>LED flicker — the indoor pickleball tax:</strong> LEDs on AC mains pulse at 2× mains frequency — <strong>100Hz in Australia (50Hz), 120Hz in the US (60Hz)</strong> — and PWM-dimmed fixtures are worst at low dim levels. Rolling shutter turns this into moving dark bands. The trap: the flicker fix is shutter = integer multiple of the flicker period (1/100s in 50Hz venues), but section 4.5 demands 1/1000s — which is exactly 10.0 cycles at 100Hz (benign in Australia) and 8.33 cycles at 120Hz (bands badly in the US). The mitigation ladder, in order: (1) get flicker-free light — ask the venue for full brightness, PWM flicker is worst dimmed; (2) lock shutter to a multiple so bands are static rather than rolling (static bands are maskable in CV); (3) accept 1/100–1/120s and give up ball blur — fine for pose/tactics, not ball tracking. The 60-second venue test: record 10s at 1/1000s under match lighting and scrub frame by frame for bands.</li>
+    <li><strong>Outdoor rugby league lighting is the easy case — until night:</strong> daylight makes 1/1000–1/2000s free, and stadium floodlights for night matches are engineered flicker-safe for broadcast because the host production cannot tolerate banding on air. When you ingest the host feed, lighting is solved upstream; when you rig a training-ground camera under club LEDs, run the same 10-second test.</li>
+    <li><strong>Codec & bitrate:</strong> our pb-003 clip is AV1 at 1,786kbps — that is a YouTube re-encode, not a capture product. For your own footage: H.264 or HEVC 4:2:2 10-bit at 50+ Mbps for 4K60; AV1 is fine for delivery, not ground truth. GOP structure matters for CV throughput: long-GOP (H.264/HEVC) stores most frames as motion-compensated deltas, so random access to frame <em>n</em> decodes back to the previous keyframe — the #1 silent cause of off-by-a-few-frames labels in sport datasets. All-Intra (ProRes, XAVC S-I) decodes any frame standalone, at a storage price: <strong>1h of 4K60 ProRes 422 HQ ≈ 793GB; the same hour in HEVC 10-bit ≈ 9–14GB</strong>. Color: most CV models expect sRGB; iPhone default video is Dolby Vision (10-bit PQ), and feeding a PQ frame raw into an sRGB-trained model applies an unknown per-frame tone curve — brightness distribution shift, crushed shadows [verify magnitude with a controlled experiment]. Shoot Rec.709 where possible, or tone-map deliberately (section 4.8b).</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">4.8</span> Camera Tiers</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Tier</th>
+        <th>Examples</th>
+        <th>Strength</th>
+        <th>Weakness</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Phone (single)</strong></td>
+        <td>iPhone 15/16/17 Pro (4K120), Pixel</td>
+        <td>You own it; app ecosystem (SwingVision, PB Vision); 17 Pro + Blackmagic ProDock adds genlock/timecode ($295)</td>
+        <td>Rolling shutter; small-sensor lens limits; battery/heat</td>
+      </tr>
+      <tr>
+        <td><strong>Compact camera</strong></td>
+        <td>Sony ZV-1 (1"), GoPro 13 (2.7K240)</td>
+        <td>Good lens; manual exposure; price-accessible</td>
+        <td>GoPro fisheye distorts court geometry</td>
+      </tr>
+      <tr>
+        <td><strong>Fixed court cam</strong></td>
+        <td>PlaySight (~$10–15k/court), Veo Cam 3 ($1,299 + sub), Insta360 X5 (~$550)</td>
+        <td>Long-duration reliability; multi-cam sync; auto-tracking; Veo's 180° pano is the RL training-ground default</td>
+        <td>Cost; vendor lock; cloud dependency (Veo has no raw SD pull [verify export API])</td>
+      </tr>
+      <tr>
+        <td><strong>Broadcast OB</strong></td>
+        <td>NRL host feed, 50–60fps PTZ rigs, gimbal follow cams, EVS slomo</td>
+        <td>Genlocked, phase-locked, flicker-safe, zoom into play; broadcast-grade picture</td>
+        <td>Camera motion + variable zoom = per-frame calibration liability (Ch. 7); you get one cut feed, not the iso cameras; cost is quote-only [verify]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">4.8b</span> The Ingestion Pipeline: From Stream to Dataset</h2>
+  <p>Capture ends at the card or the SDI cable; ingestion turns it into something a pipeline can trust. The lab pattern is boring on purpose: <strong>capture long-GOP HEVC for economy; transcode analysis clips to All-Intra once</strong>. On the M4 Max, VideoToolbox decodes HEVC 10-bit and encodes ProRes in hardware, so a 1080p60 stream or 4K60 file transcodes faster than real time. The stages, each with its failure mode:</p>
+
+  <ol>
+    <li><strong>Offload with verification.</strong> Checksum every file on copy, keep two copies before cards are wiped. A corrupted card discovered after the session is unrecoverable data loss, not an inconvenience.</li>
+    <li><strong>Manifest at capture time.</strong> File naming <code>YYYY-MM-DD_venue_camA_fps_shutter_codec.ext</code> plus one metadata row per file — camera model, equivalent mm, height/setback distances, fps, shutter, ISO, codec, color mode. A photo of a filled whiteboard card per camera is enough; Chapter 5 builds the dataset on top of this row.</li>
+    <li><strong>Transcode for access pattern, not storage.</strong> Long-GOP for archive; ProRes 422 or image sequences for anything frame-indexed (training, evaluation, labeling). Frame-accurate seeking on long-GOP files is how off-by-three labels happen.</li>
+    <li><strong>Tone-map HDR masters before inference.</strong> Dolby Vision/HLG masters feed models only after conversion to SDR BT.709.</li>
+    <li><strong>Broadcast ingest (RL).</strong> Host feed via DeckLink/UltraStudio SDI/HDMI into ProRes 422 HQ analysis masters. Host-feed latency (30–100ms through HDMI capture, variable) is irrelevant for post-hoc analysis — but it is <em>never</em> usable as a multi-camera sync reference (section 7 of the research dossier; phone clocks drift ~1ms/min ≈ 3 frames per hour at 30fps, so clap-sync at both ends of any session over 20 minutes).</li>
+  </ol>
+
+  <pre><code class="language-bash"># FOV answer in one line (width covered at distance D):
+#   W = D * sensor_width / focal
+python3 -c "print(16.4 * 9.6 / 12.0)"   # -> 13.1m covered by 12mm on a 1in sensor at 16.4m
+
+# HDR -> SDR tone-map before model inference (M4 Max, hardware decode):
+ffmpeg -i master_dv.mov -vf zscale=t=bt709:m=bt709:tonemap=hable,format=yuv420p \
+       -c:v hevc_videotoolbox -b:v 25M analysis.mp4
+
+# Long-GOP capture -> frame-accurate analysis master:
+ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</code></pre>
+
+  <figure id="fig-04-08" class="full">
+    <img src="shared/images/c04-capture-ingest-pipeline.png" alt="Capture-to-ingest pipeline: five stages — capture 4K60 HEVC 10-bit, offload with checksum, transcode to ProRes 422, manifest, dataset — connected by burnt-orange arrows. Recreate: white background, black glyphs, burnt-orange connectors." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.8</span>: Capture to Ingest. Every stage has exactly one job and one failure mode: checksums catch bad cards, manifests preserve rig metadata, and the All-Intra transcode is what makes frame <em>n</em> mean frame <em>n</em>.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">4.9</span> The Capture Checklist</h2>
+  <ol>
+    <li>Define the analysis question FIRST (line calls? foot faults? ball trajectory? team shape? — each has different camera requirements).</li>
+    <li>Work the FOV math: sensor width, distance, subject width (use the lab's formula; don't guess) — then check <em>pixels on target</em> for the smallest object you care about.</li>
+    <li>Shutter ≥ 1/1000s for any ball tracking (either ball, either sport); 1/2000s if the budget allows. Pose-only work can relax to 1/250–1/500s.</li>
+    <li>Frame rate from the event window, not the deliverable: 30fps minimum for tactical views; 60fps for ball work; 120fps+ for contact events; 240fps for line-call-grade review.</li>
+    <li>Placement: as low as the rules allow to reduce parallax (net-post height for pickleball line calls; end-on low cameras for the RL try line); fixed position for calibration stability whenever you own the rig.</li>
+    <li>Indoor: run the 10-second 1/1000s flicker test; if banding, apply the ladder — full-brightness lights → locked flicker-multiple shutter → accept static bands → trade away ball blur last.</li>
+    <li>Color: Rec.709, 4:2:2 10-bit if possible; tone-map HDR to sRGB before models; keep the HDR master only for human deliverables.</li>
+    <li>Sync: clap/flash at start AND end of every session (measure drift, ~1ms/min on phones); re-sync every 15–20 minutes; never trust HDMI latency as a sync reference.</li>
+    <li>Rugby league specifics: halfway tripod 3.8–7.3m high, 3–5m back, wind-braced for tactical pano; broadcast analysis ingests the 50Hz-family host feed and calibrates per frame — do not assume static focal length.</li>
+    <li>Hygiene: checksum on offload, two copies before wipe, manifest row per file, filename carries venue/camera/fps/shutter/codec.</li>
+    <li>Mic: even a phone mic captures paddle/ball or boot/ball contact — audio is a free event sensor (Ch. 15) and the cheapest cross-camera sync signal you own.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">4.10</span> Transfer Note: Rugby League Broadcast Capture</h2>
+  <p>Rugby League changes the capture contract in three ways, and all three are <em>measured</em> constraints of the domain: (1) <strong>you do not own the camera</strong> — the broadcast OB controls pan/zoom, which means capture parameters (shutter, FOV, height) are fixed by the production, and your calibration instead has to adapt per frame (chapters 6–7); (2) <strong>scale is 15× the pickleball court</strong> — the 100m × 68m pitch at 60–90m from the broadcast gantry needs 21–31mm (APS-C) focal equivalents to fill the frame with play, per our lab's math; (3) <strong>line calls are less demanding but offside is more demanding</strong> — the 10m retreat line tolerance (~30cm) is an order of magnitude looser than a pickleball line call, but the check is against a <em>moving</em> reference (the PTB point), which capture must resolve at 25fps with 26 players. The honest verdict: for rugby, capture is a <em>given</em> you must calibrate around; for pickleball, capture is a <em>free design parameter</em> you should optimize before the first model runs.</p>
+
+  <figure id="fig-04-07" class="full">
+    <img src="shared/images/c04-broadcast-chain.png" alt="Rugby league broadcast chain: stadium cameras feed an OB truck, host feed 1080p at 50Hz leaves via SDI, capture card ingests, laptop transcodes to ProRes for analysis. Recreate: white background, black glyphs, burnt-orange flow arrows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.7</span>: The Broadcast Chain. Every upstream stage — cameras, OB truck, host feed — is optimized for television and outside your control. Your pipeline starts at the SDI ingest: the first point where capture decisions become yours again.</figcaption>
+  </figure>
+
+  <p>The broadcast chain also explains what the feed <em>is</em>: genlocked, phase-locked, flicker-safe cameras mixed live to a single 1080p (50Hz in Australia) program feed, with the iso recordings, slomo channels, and end-on try-line cameras staying in the truck. One cut feed means your analysis sees what the director chose — a tight follow shot during the run, a wide only at the play-the-ball. Any spatial method on broadcast RL footage must therefore survive shot changes, zoom ramps, and replays interleaved with live frames; the eventing chapter (19) treats those as first-class inputs, not noise.</p>
+
+  <h2 class="section-title"><span class="section-num">4.10b</span> Honest Limits: iPhone 4K vs Pro Broadcast</h2>
+  <p>The lab's own fixture is the honesty anchor. Our pb-003 derived clip — the clip several downstream chapters' metrics were computed on — is <strong>1920×1080 @ 30fps, AV1, 1,786kbps, 955 frames</strong>: a YouTube re-encode of someone else's capture. By this chapter's own math it is undersampled for contact events (12% contact-catch probability at a serve), long-GOP compressed at a delivery bitrate, and shot with unknown shutter and unknown elevation. It is adequate for the tactical and pipeline demonstrations it is used for, and inadequate for line-call or spin claims — and the book labels its evidence accordingly rather than pretending otherwise.</p>
+
+  <p>The same honesty applies to the tier ladder. A $1,099 iPhone 17 Pro shoots 4K120 Dolby Vision that is genuinely better sampled than the NRL host feed (50Hz, interlaced heritage) — for the one court it is pointed at, from the one position you mounted it. What the phone cannot give you is the gantry's elevation, the end-on try-line angle, genlocked multi-camera phase, or a director cutting between them. Conversely, the broadcast feed cannot give you 120fps, a 1/1000s shutter, or a fixed calibration. Neither is "better"; they answer different question sets, and the capture checklist's first item — define the analysis question first — is what chooses between them. The known unknowns we carry forward as [verify]: per-model phone rolling-shutter readout times, PlayReplay's per-camera fps, Hawk-Eye's current camera count, and the measured accuracy delta of feeding HDR frames to sRGB-trained models. Each has a lab recipe attached in section 4.11.</p>
+
+  <h2 class="section-title"><span class="section-num">4.10c</span> The 10 Capture Use Cases: A Decision Framework</h2>
+  <p>The sections above give the physics; this section puts it to work. Ten concrete capture decisions, organized into three groups: <strong>A. Rigs You Own (UC 01–04)</strong> — the placements and mounts you control; <strong>B. Light and Time (UC 05–08)</strong> — the exposure and sampling decisions that decide whether the ball survives; <strong>C. Feeds and Sync (UC 09–10)</strong> — the multi-camera and ingest plumbing that downstream chapters build on. Each case states the practical problem, the mechanism with its math, a figure, a pickleball and a rugby league application, and a payoff. Evidence labels follow the book convention: measured (lab), source-backed (vendor/paper), [verify] (practitioner value, not established).</p>
+
+  <h3 class="sub-heading">Group A: Rigs You Own (01–04)</h3>
+
+  <h3 class="sub-heading">UC 01 — The Pickleball Endline Camera at 120fps</h3>
+  <p><strong>The problem.</strong> A coach wants every rally on one court captured well enough that later chapters can track the ball, lift pose, and review kitchen foot faults — without a crew. <strong>The mechanism.</strong> One phone on a pole does it, but only inside a tight geometric envelope: pole height $H = 4.5$–$5$m clears the net-tape sight-line to the far kitchen line ($H_{\min} = 0.86(1 + L/2.13)$, section 4.4's inequality), a 3m setback keeps the vertical span inside a 24mm-equivalent lens (41.0° required vs 45.7° available), and a 48mm-equivalent crop puts $\ge 20$px on the ball at the far baseline (3.1mm/px, section 4.3). Frame rate is the last dial: 4K120 catches the ~4ms paddle–ball contact window in ~48% of rallies versus 12% at 30fps (measured math, section 4.6). <strong>The recipe: 4K120, 1/1000s, 48mm-eq, 4.5–5m pole, 3m setback, locked exposure.</strong></p>
+
+  <figure id="fig-04-09" class="full">
+    <img src="shared/images/c04-uc01-endline-120fps.png" alt="Side-elevation diagram of a pickleball court with a 4.5m pole camera 3m behind the baseline, frustum covering the full court, 120fps ball trail. White background, black linework, burnt-orange frustum." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.9</span>: UC 01 — The Endline 120fps Rig. One pole, one phone, five dials: height, setback, focal crop, shutter, frame rate. <strong>Pickleball</strong>: the default coaching rig — full-court ball track plus far-kitchen-line visibility in a single take. <strong>Rugby league</strong>: the same recipe scaled — an end-on scaffold camera at a training ground, 35–50mm-eq, for shape drills the host feed never shows.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> every downstream chapter that touches pickleball (8 detection, 9 tracking, 11 pose, 12 ball) inherits footage that is actually analyzable — the rig is the cheapest accuracy upgrade in the book.</p>
+
+  <h3 class="sub-heading">UC 02 — The Rugby League Sideline Camera: Covering 100m in One Frame</h3>
+  <p><strong>The problem.</strong> A club analyst needs whole-pitch shape — line spacing, retreat speed, kick-chase coverage — from a training ground with no broadcast infrastructure and a sub-$2k budget. <strong>The mechanism.</strong> The pitch is 100m × 68m; no single rectilinear lens covers it at tactical resolution from ground level, so the answer is a dual-lens 180° panorama (Veo Cam 3 class, 7680px stitched width ≈ 42.7px/°) on a 3.8–7.3m tripod, 3–5m back from halfway. The pixels-on-target math (measured, section 4.3b) sets the honest promise: 866px on a player at the near sideline, 116px at the far sideline, 78px at the far corner — tactical-grade everywhere, ball degraded past ~30m. FOV here is the <em>product</em>: $W = D \cdot d / f$ with a stitched sensor means the constraint shifts from lens choice to tripod height and wind bracing.</p>
+
+  <figure id="fig-04-10" class="full">
+    <img src="shared/images/c04-uc02-sideline-fov.png" alt="Plan view of a 100m by 68m rugby league pitch with a 180-degree panoramic camera at halfway, field-of-view arc covering the whole pitch with distance callouts. White background, black linework, burnt-orange arc." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.10</span>: UC 02 — The 100m Sideline Pano. One tripod at halfway replaces a camera crew; resolution, not coverage, is the limit. <strong>Rugby league</strong>: every-set shape, 10m retreat compliance, and kick-chase geometry from one file. <strong>Pickleball</strong>: the same pano thinking covers two adjacent courts at once at a club night — one device, two datasets.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the tactical chapters (22–23) get a repeatable, ownable RL data source whose known limits (12px ball at 58m) are stated up front instead of discovered after a season of filming.</p>
+
+  <h3 class="sub-heading">UC 03 — The Broadcast Chain: Ingesting a Feed You Do Not Control</h3>
+  <p><strong>The problem.</strong> For NRL analysis the footage already exists — but it arrives as one cut program feed, and every upstream decision was made for television. <strong>The mechanism.</strong> The chain runs: stadium cameras (genlocked, 20–30m gantry plus end-on and try-line positions) → OB truck vision mixer → host feed (1080p, 50Hz family in Australia) → your SDI/HDMI capture (DeckLink/UltraStudio) → ProRes 422 HQ analysis master. The flow has roughly three dozen documented handoffs in a full host production [verify — production runbooks are quote-only and vendor-confidential]; the one that matters to you is the last. Two consequences are load-bearing for this book: the main camera <em>zooms to follow play</em>, so focal length varies per frame and chapters 6–7 must calibrate continuously; and HDMI/SDI capture adds 30–100ms of variable latency, fine for post-hoc analysis, useless as a sync reference.</p>
+
+  <figure id="fig-04-11" class="full">
+    <img src="shared/images/c04-uc03-broadcast-flow.png" alt="Flow diagram: stadium cameras to OB truck to 1080p50 host feed to SDI capture card to analysis laptop, with the capture card marked as the first controlled stage. White background, black glyphs, burnt-orange arrows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.11</span>: UC 03 — Where Your Pipeline Starts. Everything left of the capture card is optimized for television and outside your control. <strong>Rugby league</strong>: the NRL host feed, ingested once, becomes the analysis master for chapters 6–9 and 19. <strong>Pickleball</strong>: PPA/MLP broadcasts carry the same contract — one cut feed, director-chosen angles, 30/60Hz family in the US.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the analyst stops fighting the feed and starts engineering around it — per-frame calibration, shot-change detection (Chapter 19), and All-Intra transcodes turn a television product into a dataset.</p>
+
+  <h3 class="sub-heading">UC 04 — Handheld vs Mast: The Fence-Mount Trap</h3>
+  <p><strong>The problem.</strong> The default pickleball filming setup at most clubs is a phone clipped to the fence at ~2.4m, or a parent holding it at chest height. Both feel adequate; both are structurally blind. <strong>The mechanism.</strong> The far kitchen line sits at grazing incidence from any low camera: from 2.4m the sight-line over the 0.86m net tape intersects the court <em>short</em> of the far NVZ line, so foot faults on the far side are geometrically invisible — not occluded by players, but absent from the image. The elevation inequality from section 4.4 is the whole story: $H_{\min} = h(1 + L/2.13)$ gives 3.57m even standing <em>on</em> the baseline, and 4.78–5.11m at a realistic 3m setback. Handheld adds a second failure: uncontrolled camera motion breaks the fixed-homography assumption every court-mapping chapter relies on. A $60 pole is the difference between footage that can answer foot-fault questions and footage that never will.</p>
+
+  <figure id="fig-04-12" class="full">
+    <img src="shared/images/c04-uc04-handheld-vs-mast.png" alt="Two-panel pickleball side elevation: handheld phone at 1.5m with sight-line blocked by the net versus phone on a 4.5m mast with a clean sight-line to the far kitchen line. White background, black linework, burnt-orange sight-lines." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.12</span>: UC 04 — Height Is a Feature, Not a Preference. Below ~3.6m the far kitchen line does not exist in the image. <strong>Pickleball</strong>: mast mounting unlocks NVZ foot-fault review and stable calibration. <strong>Rugby league</strong>: the same inequality is why Veo's own guidance demands 3.8–7.3m tripods — a fence-height RL camera loses the far ruck to the near players' bodies.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> one inequality ($H_{\min}$) explains most "why can't the model see it" support requests — check elevation before touching a single model weight.</p>
+
+  <h3 class="sub-heading">Group B: Light and Time (05–08)</h3>
+
+  <h3 class="sub-heading">UC 05 — Stadium Lighting: The RL Night Game</h3>
+  <p><strong>The problem.</strong> Night rugby league under floodlights is the RL analyst's bread and butter, and the first instinct — the lighting is dim, so open the shutter — is exactly wrong for analysis. <strong>The mechanism.</strong> Broadcast-grade stadium floodlights are engineered flicker-safe because the host production cannot tolerate banding on air, so when you ingest the host feed the lighting problem is already solved upstream; the broadcast shutter (1/250–1/500s) is a <em>look</em> decision, not a capture limit. For your own training-ground rig under club LEDs the math is the exposure triangle with a floor: holding 1/1000s at night costs roughly five stops versus 1/30s, which is paid in ISO noise — and 8-bit 4:2:0 chroma noise at distance is what degrades team-color classification first (section 4.7). The honest rule: at night, drop the ball work and shoot 1/500s for shape, or light the drill area properly.</p>
+
+  <figure id="fig-04-13" class="full">
+    <img src="shared/images/c04-uc05-stadium-lighting.png" alt="Rugby league stadium at night with four floodlight towers, light cones onto the pitch, gantry camera on halfway, lux contours on the turf. White background, black linework, burnt-orange light cones." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.13</span>: UC 05 — Night Game, Two Regimes. Broadcast floodlights are flicker-safe by contract; club LEDs are not. <strong>Rugby league</strong>: the host feed arrives pre-solved; the training-ground rig must budget five stops or accept 1/500s shape-only footage. <strong>Pickleball</strong>: outdoor evening sessions under court floodlights sit in the same regime — test, then set the shutter floor.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the night-game decision becomes explicit — shape analysis at 1/500s or ball analysis with added light — instead of a noisy compromise that serves neither.</p>
+
+  <h3 class="sub-heading">UC 06 — Indoor LED Flicker: The Pickleball Venue Tax</h3>
+  <p><strong>The problem.</strong> Most pickleball is played indoors under LED panels, and a rolling-shutter camera at 1/1000s turns mains-frequency LED flicker into moving dark bands that corrupt background subtraction and optical flow. <strong>The mechanism.</strong> LEDs on AC pulse at twice mains frequency — <strong>100Hz in Australia, 120Hz in the US</strong> — and PWM-dimmed fixtures flicker worst at low dim levels. The exposure must be an integer multiple of the flicker period to keep bands static: 1/1000s is exactly 10.0 cycles at 100Hz (benign in Australia) and 8.33 cycles at 120Hz (bands badly in the US). The mitigation ladder, in order: (1) ask the venue for full brightness — flicker-free by dimmer position; (2) lock shutter to a flicker multiple and stabilize the bands; (3) shoot 1/100–1/120s and give up ball blur, acceptable for pose and tactics only. The 60-second test: record 10s at 1/1000s under match lighting and scrub for bands.</p>
+
+  <figure id="fig-04-14" class="full">
+    <img src="shared/images/c04-uc06-indoor-flicker.png" alt="Indoor pickleball court under LED panels with a video frame inset showing dark rolling bands and a 100Hz flicker waveform. White background, black linework, burnt-orange band highlights." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.14</span>: UC 06 — Rolling Bands Are a Lighting Bug. The bands live in the venue, not the sensor. <strong>Pickleball</strong>: the AU/US mains split means a rig that is clean in Sydney can band in Austin — test every venue, log the lighting class in the manifest. <strong>Rugby league</strong>: indoor training centres and gym-based skills sessions inherit the identical test.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> a 10-second phone clip per venue replaces a week of debugging "unstable" detectors that were never the problem.</p>
+
+  <h3 class="sub-heading">UC 07 — Shutter Speed vs Motion Blur: The 40mm Smear Budget</h3>
+  <p><strong>The problem.</strong> A ball at serve speed crosses its own radius in about a millisecond; whether your footage contains a <em>ball</em> or a <em>streak</em> is decided entirely by the shutter dial. <strong>The mechanism.</strong> Blur is $b = v \cdot t$: a 31.3m/s serve smears 31mm at 1/1000s, 125mm at 1/250s, and 522mm at 1/60s — the last being seven ball diameters. The derived rule (measured inputs, section 4.5): keep smear under one ball radius (37mm), i.e. $t \le 37\text{mm}/v$, which forces ≥1/845s at serve speed → standardize on 1/1000s. In pixels on the lab's 48mm-eq rig (3.1mm/px) that is an 11px streak at 1/1000s versus 43px at 1/250s — the former keeps the centroid inside the ball, the latter smears it across a court line. The same budget governs RL: a ~27m/s kick [verify] smears 27mm at 1/1000s, and player bodies at ≤10m/s are an order of magnitude cheaper to freeze.</p>
+
+  <figure id="fig-04-15" class="full">
+    <img src="shared/images/c04-uc07-shutter-blur.png" alt="Four rows showing a ball streak shrinking at shutter speeds 1/60, 1/250, 1/1000, 1/2000 with millimetre callouts and a ball-radius threshold. White background, black outlines, burnt-orange streaks." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.15</span>: UC 07 — The Smear Budget, Expanded. 522mm at 1/60s to 16mm at 1/2000s for a serve-class ball. <strong>Pickleball</strong>: 1/1000s is the floor for trajectory and contact work; 1/2000s if the light allows. <strong>Rugby league</strong>: broadcast 1/250s is why host-feed ball tracking is a streak-association problem (Chapter 12) rather than a detection problem.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> set the shutter for the fastest object you care about and the Ball Wall of Chapter 12 mostly disappears — the cheapest model upgrade is a faster shutter.</p>
+
+  <h3 class="sub-heading">UC 08 — Frame Rate Choice: 25, 60, or 120</h3>
+  <p><strong>The problem.</strong> Frame rate is usually chosen by what the deliverable looks like; it should be chosen by the shortest event you must catch. <strong>The mechanism.</strong> Between-frame sampling is a Nyquist problem with a concrete window: paddle–ball contact lasts ~3–4ms, so the probability of catching a contact frame at all is $P \approx w \cdot f$ for window $w$ and frame rate $f$ — 12% at 30fps, 24% at 60fps, 48% at 120fps, 96% at 240fps (measured math, section 4.6). Displacement tells the same story in diameters: the 31.3m/s serve travels 14 ball diameters per frame at 30fps — track association becomes guesswork — versus 1.8 at 240fps. Australian broadcast heritage pins RL to the 50Hz family (25/50fps), and the 28cm RL ball tolerates it: 540mm per frame at 50fps is only 1.9 ball lengths. Choose by event window: 30fps tactics, 60fps ball work, 120fps contact, 240fps line-call grade.</p>
+
+  <figure id="fig-04-16" class="full">
+    <img src="shared/images/c04-uc08-framerate-choice.png" alt="Chart of ball travel per frame in ball diameters versus frame rate 25 to 240 fps, falling curve crossing a one-diameter threshold with contact-catch probability annotations. White background, black axes, burnt-orange curve." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.16</span>: UC 08 — Sampling the Event Window. The serve crosses 14 of its own diameters between 30fps frames. <strong>Pickleball</strong>: 4K120 (iPhone) is the coaching sweet spot; 240fps (GoPro 2.7K) is the officiating floor. <strong>Rugby league</strong>: the 50Hz host feed is adequate per-diameter for the bigger ball — the RL frame-rate constraint is inherited, not chosen.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> every doubling of frame rate doubles ingest cost (Chapter 5) — buying exactly the frame rate the event window demands, and no more, is a budget decision with a formula attached.</p>
+
+  <h3 class="sub-heading">Group C: Feeds and Sync (09–10)</h3>
+
+  <h3 class="sub-heading">UC 09 — Camera Sync for Multiview: Feeding Chapter 14</h3>
+  <p><strong>The problem.</strong> Chapter 14's triangulation needs two cameras looking at the same instant; two phones recording the same rally are not that, by default. <strong>The mechanism.</strong> Consumer clocks drift 10–20ppm ≈ <strong>1ms per minute</strong> — up to ~100ms (3 frames at 30fps) over an hour — so a clap sync at the start of a session is stale by the end. The honest ladder: (1) clap/flash sync at start <em>and</em> end, measure the drift rate, stretch one timeline (free, ±half frame); (2) re-clap every 15–20 minutes on long sessions; (3) audio-transient alignment — paddle–ball impact is a ~2kHz transient in every mic track, free ground truth; (4) genlock via iPhone 17 Pro + Blackmagic ProDock ($295, BNC) for true phase lock (source-backed, Sep 2025 release). What never works: HDMI latency as a sync reference — it is 30–100ms and variable. For line-call triangulation the error budget is brutal: at 31.3m/s a half-frame at 60fps is 260mm of disagreement between views.</p>
+
+  <figure id="fig-04-17" class="full">
+    <img src="shared/images/c04-uc09-multicam-sync.png" alt="Two phone cameras on poles aimed at one pickleball court with aligned clap waveforms, a 1ms per minute drift arrow, and a genlock cable option. White background, black linework, burnt-orange sync pulses." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.17</span>: UC 09 — Same Instant, Two Sensors. Clap at both ends, measure the drift, or buy genlock. <strong>Pickleball</strong>: endline plus net-post cameras become a triangulation rig for line calls (Chapter 14) once sync is honest. <strong>Rugby league</strong>: the broadcast truck is genlocked for you; your own two-camera training rig needs the clap protocol before any 3D pose work.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> sync discipline is what separates a two-camera rig from two unrelated videos — and it costs one clap per 20 minutes.</p>
+
+  <h3 class="sub-heading">UC 10 — The Ingest Path: Feeding Chapter 5</h3>
+  <p><strong>The problem.</strong> Capture ends at the card; the dataset chapter (5) begins at a folder of files — and everything in between is where footage silently rots. <strong>The mechanism.</strong> The lab path is five stages, each with one job and one failure mode: (1) <strong>offload with checksums</strong>, two copies before any card is wiped — a corrupt card found later is unrecoverable data loss; (2) <strong>manifest at capture time</strong> — filename <code>YYYY-MM-DD_venue_camA_fps_shutter_codec.ext</code> plus a metadata row (camera, equivalent mm, height, setback, fps, shutter, ISO, codec, color mode); (3) <strong>transcode for access pattern</strong> — long-GOP HEVC for archive, ProRes 422 or image sequences for anything frame-indexed, because random access on long-GOP files is the #1 cause of off-by-a-few-frames labels (measured cost: 1h 4K60 ProRes 422 HQ ≈ 793GB vs 9–14GB HEVC); (4) <strong>tone-map HDR masters to SDR BT.709</strong> before inference — iPhone Dolby Vision PQ frames fed raw to an sRGB-trained model apply an unknown per-frame tone curve [verify — the mAP delta is asserted, not yet benchmarked]; (5) <strong>hand off to Chapter 5</strong> with the manifest row as the join key.</p>
+
+  <figure id="fig-04-18" class="full">
+    <img src="shared/images/c04-uc10-ingest-path.png" alt="Five-stage flow: SD card, checksum offload, manifest row, ProRes transcode, dataset folder, each with a failure-mode caption. White background, black glyphs, burnt-orange arrows." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 4.18</span>: UC 10 — Five Stages, Five Failure Modes. Checksums catch bad cards; manifests preserve the rig; All-Intra makes frame <em>n</em> mean frame <em>n</em>. <strong>Pickleball</strong>: one afternoon of drills becomes a labeled, frame-accurate asset instead of a camera-roll graveyard. <strong>Rugby league</strong>: the SDI-ingested broadcast master enters the same five stages — the chain converges at the manifest.</figcaption>
+  </figure>
+
+  <p><strong>Payoff:</strong> the ingest path is the difference between a dataset and a pile of clips — every downstream metric in this book stands on stage 3's frame accuracy.</p>
+
+  <h2 class="section-title"><span class="section-num">4.10d</span> What This Adds to the Pipeline</h2>
+  <p>These ten use cases are the capture layer's contract with the rest of the book. UC 01 and UC 04 produce the fixed-calibration pickleball footage that chapters 8 (detection), 9 (tracking), 11 (pose), and 12 (ball) all assume; UC 02 and UC 05 define the ownable RL data source that feeds the tactical chapters (22–23) when no host feed exists. UC 03 is the front door of the broadcast thread — its variable-focal feed is the reason chapters 6–7 calibrate per frame and Chapter 19 treats shot changes as first-class events. UC 07 and UC 08 are the upstream fix for Chapter 12's Ball Wall: shutter and frame rate chosen by formula, not by default. UC 09 is the enabling constraint for Chapter 14's multi-view triangulation, and UC 10 hands Chapter 5 a manifest-joined, frame-accurate master. The honest labels carry forward: measured math (FOV, blur, elevation, drift) is load-bearing; the [verify] items — per-model rolling-shutter readout, HDR-to-model accuracy delta, PlayReplay fps, Hawk-Eye's current figures — are listed in section 4.11 as the lab's open measurements.</p>
+
+  <h2 class="section-title"><span class="section-num">4.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Shoot a 4-second test on YOUR court at 1/60 vs 1/1000 and compare ball blur visually — this 10-minute test makes the chapter's math personal.</li>
+    <li>Measure the actual parallax with a two-camera setup (a ball on a string 20cm above the line at 0.5m out; compare both camera projections).</li>
+    <li>Measure rolling-shutter readout on the lab's actual devices: film a known-frequency LED strobe, count bands, publish the per-model $t_r$ table the vendors don't.</li>
+    <li>Run the HDR→CV experiment: same clip as SDR, naive-PQ, and tone-mapped; report detector mAP and pose PCK deltas so section 4.7's distribution-shift claim becomes measured.</li>
+    <li>Survey venue flicker: the 10-second 1/1000s test across a dozen real pickleball venues in 50Hz and 60Hz countries, published as a reference table.</li>
+    <li>Rugby league: log focal-length drift across one full NRL broadcast half (frame-by-frame homography residuals) to quantify how variable the host feed's zoom really is — the number that sizes Chapter 7's calibration budget.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">4.12</span> Sources</h2>
+  <ul>
+    <li>USAP Official Rulebook 2026 — court 13.41×6.10m, NVZ 2.13m, net 0.86/0.92m: https://usapickleball.org/docs/rules/USAP-Official-Rulebook.pdf ; Equipment Standards Manual Rev 3 (Jan 2025) — ball 73–75mm, 22.1–26.5g.</li>
+    <li>Guinness World Records — fastest pickleball serve 70mph (31.3 m/s), Zane Navratil, 2024-09-13: https://www.guinnessworldrecords.com/world-records/772808-fastest-pickleball-serve-male</li>
+    <li>Apple — iPhone 16 Pro tech specs (4K120 Dolby Vision, ProRes 4K120 external SSD): https://support.apple.com/en-au/121031 ; About Apple ProRes data rates: https://support.apple.com/en-us/102207</li>
+    <li>Blackmagic — Camera ProDock for iPhone 17 Pro (BNC genlock/timecode, $295, Sep 2025): https://www.blackmagicdesign.com/media/release/20250910-01</li>
+    <li>Sony — A9 III global shutter, 4K120, $5,999 (Nov 2023): https://www.sony.com.au/interchangeable-lens-cameras/products/ilce-9m3</li>
+    <li>Veo — Cam 3 pricing and halfway-line setup guidance: https://www.veo.com/pricing ; https://support.veo.com/hc/en-us/articles/5922516538897</li>
+    <li>Prices verified 2026-08-30: PlaySight ~$10–15k/court [verify quote], Veo Cam 3 $1,299+subscription, Insta360 X5 ~$550.</li>
+    <li>Lab: <code>lab/w1_lab_capture.py</code> → <code>experiments/c04-capture/outputs/capture-math.json</code> (FOV, blur, elevation, parallax, RL broadcast focal numbers).</li>
+    <li>Probe: pb-003 clip = AV1 1920×1080 @30fps 955 frames 1,786kbps (ffprobe).</li>
+    <li>Full dossier with per-topic sources: <code>book-research/Research Briefs/2026-08-30-c04-capture-hardware.md</code>.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="03.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 03</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 03 — Sport Rules as Formal Systems</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 03</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 03 — Sport Rules as Formal Systems</p>
+        </div>
+      </div>
+    </a>
+    <a href="04.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 04</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 04</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The physics of getting footage your models can use: sensor geometry, motion blur, rolling shutter, and the placement math</p>
+        </div>
+        <a href="04.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #B45F2D;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

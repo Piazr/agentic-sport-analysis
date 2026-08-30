@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #B45F2D;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-16" style="background-color: #B45F2D; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 16</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The 2026 recipe, the SoccerNet suite, and the measured gap between describing and deciding</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">35 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-16-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">Three Tasks, One Boundary</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-16-1" data-section="s-16-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Three Tasks, One Boundary</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-16-1" data-section="s-16-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>Three Tasks, One Boundary</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">16</span> Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h1>
+    <p class="chapter-subtitle">The 2026 recipe, the SoccerNet suite, and the measured gap between describing and deciding</p>
+  </header>
+
+<h3 id="s-16-1"><span class="section-num">16.1</span> Three Tasks, One Boundary</h3>
+
+<p class="section-intro">"What happened in this clip" is three different jobs: (1) <strong>action recognition</strong> — classify a short clip or moment into a predefined sport action; (2) <strong>temporal spotting</strong> — find <em>when</em> in a long video an action occurs; (3) <strong>retrieval</strong> — find similar moments to a query. All three have mature 2026 recipes. All three sit behind one boundary: video models describe what they see; the deterministic pipeline decides what happened. This chapter expands the action-recognition lineage, then measures the boundary with the book's own frames.</p>
+
+  <h2 class="section-title"><span class="section-num">16.2</span> The 2026 Recipe: Frozen Foundation + Small Head</h2>
+  <p>The lineage of video action recognition — 2D CNN plus temporal pooling, I3D, SlowFast, X3D, VideoMAE, InternVideo2 — is tabled and largely dormant on the training side (MMAction2/PySlowFast unmaintained). The 2026 recipe: <strong>frozen V-JEPA 2/2.1 features (MIT) + a small probe head</strong>. V-JEPA 2.1's dense per-patch features are temporally consistent, enabling detector-free player-region tracking and zone-activity maps. The head is a linear layer or single-attention probe trained on a few hundred labeled contacts; it cannot silently overfit a backbone you will never retrain.</p>
+
+  <p>Keep an honesty baseline: X3D-XS fine-tune (the old way) still works and is the comparison. <strong>Landmine: T-DEED</strong> — the 2024 spotting winner — is GPL-3.0: reproduce to learn, never ship.</p>
+
+  <h2 class="section-title"><span class="section-num">16.2b</span> Action Recognition: 2D CNN + Temporal Pooling</h2>
+  <p>The simplest recipe is two stages: run a 2D image CNN on every frame, then pool the frame features across time. For a clip of <em>T</em> frames, each frame <em>x<sub>t</sub></em> is encoded by a CNN into a feature vector <em>f<sub>t</sub></em> = CNN(<em>x<sub>t</sub></em>), and the clip-level prediction is <em>y</em> = <em>g</em>({<em>f<sub>1</sub></em>...<em>f<sub>T</sub></em>}). The temporal aggregator <em>g</em> is usually mean pooling, max pooling, an LSTM, or a shallow Transformer. Mean pooling is order-invariant: it answers "which action appears most often" but not "in which order." Max pooling captures the most salient frame but loses the build-up. A temporal attention layer learns to weight frames, yet it still operates on per-frame semantics and has no explicit motion representation.</p>
+
+  <p>Pickleball example: a 2-second clip from <strong>pb-003</strong> containing a serve looks like a player behind the baseline, ball toss, and paddle contact. A 2D CNN sees each frame as a still photograph; the model can learn that baseline + ball + raised arm correlates with "serve," but it has no notion that the toss must precede the contact. If the same player stands still in a ready stance at the baseline, the frame-level CNN may still score high for "serve" because the spatial cues are present. Rugby league example: a tackle clip shows a defender closing on a ball-carrier, contact, and the carrier falling. Mean pooling smooths the aggression across the clip and may confuse a dominant tackle with a passive wrap because the static frame features of two bodies close together are similar. The baseline needs labels for every sport and every camera angle; a rugby-tackle head does not transfer to a pickleball serve.</p>
+
+  <p><strong>Practitioner limit:</strong> 2D CNN + temporal pooling is cheap, fast, and easy to deploy, but it cannot model the order of sub-actions or the motion between frames. It is a useful baseline for clip-level classification when the action is visually obvious and the camera is fixed, but it is not a spotting model and it is not a decision model.</p>
+
+  <figure id="fig-16-01" class="full">
+    <img src="shared/images/ch16-action-pipeline.png" alt="Action recognition pipeline: a strip of video frames feeds a frozen encoder, then a feature bank, then three small heads for spotting, classification, and retrieval." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.1</span>: Action recognition pipeline. The same frozen encoder can feed a spotting head, a classification head, and a retrieval index. The head is the product; the backbone is frozen.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.2c</span> I3D: Inflating 2D Convolutions into 3D</h2>
+  <p>I3D (Carreira & Zisserman, 2017, arXiv:1705.07750) asks a practical question: how do you train a 3D CNN when 3D video datasets are tiny compared to ImageNet? The answer is <strong>inflation</strong>: take a 2D convolution trained on images and repeat its weights across the time dimension, turning a 3 × 3 kernel into a 3 × 3 × 3 kernel. The model can then be fine-tuned on video with a much smaller motion dataset. The original I3D architecture also used a two-stream design: one stream ingests RGB frames, the other ingests dense optical flow, and the two are averaged at prediction time. The flow stream captures motion explicitly, which is exactly what sports need.</p>
+
+  <p>Pickleball example: a 3D convolutional tube over 64 frames can learn the wind-up of a serve, the ball toss, the below-waist paddle contact, and the low trajectory into the service box. The flow stream sees the hand-to-ball timing that distinguishes a serve from a return-of-serve. Rugby league example: the same tube captures the closing angle of a defender, the foot plant of the ball-carrier, and the abrupt deceleration at contact. The RGB stream sees body position; the flow stream sees the velocity change that marks the tackle. The approach is conceptually clean but operationally heavy: optical flow must be pre-computed, and the 3D convolutions consume memory quadratically with clip length.</p>
+
+  <p><strong>Honest caveat:</strong> I3D and its variants need labels. A model trained on Kinetics-400 knows "swinging a baseball bat" and "kicking a soccer ball," but it does not know a pickleball <em>dink</em> or a rugby league <em>play-the-ball</em> unless you fine-tune it on those classes. The classes are sport-specific, and the taxonomy must be built before the model can be trained.</p>
+
+  <h2 class="section-title"><span class="section-num">16.2d</span> SlowFast: Two Temporal Pathways</h2>
+  <p>SlowFast (Feichtenhofer et al., 2019, arXiv:1812.03982) splits the temporal problem into two pathways. The <strong>slow</strong> pathway runs at a low frame rate with high channel capacity — it learns semantics: court position, player pose, team shape. The <strong>fast</strong> pathway runs at a high frame rate with low channel capacity — it learns motion: paddle flick, footwork, ball flight. Lateral connections fuse fast motion cues into the slow semantic pathway at each stage. The insight is that semantics change slowly while motion changes quickly, so a single uniform frame rate is either wasteful or blind.</p>
+
+  <p>Pickleball example: the slow pathway sees that both players are at the kitchen line, bodies low, ready for a soft exchange. The fast pathway sees the abrupt paddle acceleration of a <em>speed-up</em> off a dink — the same low stance, but the motion signature changes the label from "dink" to "speed-up." Rugby league example: the slow pathway sees the defensive line compressed around the ruck area and the dummy-half standing at the PTB. The fast pathway sees the quick ball transfer or the dummy runner's change of direction. A pass that looks identical to an offload at the instant of release is distinguished by the fast pathway's capture of the preceding tackle pressure.</p>
+
+  <p>SlowFast is the canonical demonstration that sport action recognition is a spatio-temporal problem, not a frame-recognition problem. The slow/fast split is also the ancestor of the 2026 recipe: V-JEPA 2.1's dense features preserve both spatial structure and temporal coherence in a single frozen encoder, but the design intuition — separate the stable scene from the fast motion — remains the same.</p>
+
+  <figure id="fig-16-02" class="full">
+    <img src="shared/images/ch16-slowfast-i3d.png" alt="I3D inflated 3D convolutions and SlowFast dual-pathway architecture side by side." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.2</span>: I3D inflates 2D kernels into 3D tubes; SlowFast keeps a slow semantic pathway and a fast motion pathway. Both are history; the 2026 recipe freezes the encoder and trains a small head.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.2e</span> VideoMAE: Masked Autoencoding for Video</h2>
+  <p>VideoMAE (NeurIPS 2022, arXiv:2203.12602) and its successor VideoMAEv2 bring self-supervised learning to video. Instead of labels, the model masks random space-time tubes in the input and learns to reconstruct the missing pixels. The encoder therefore learns a general representation of motion, object permanence, and human pose. A small classification head is then fine-tuned on labeled data. The promise is powerful: you can pre-train on thousands of hours of unlabeled broadcast sport and then fine-tune on a few hundred labeled contacts.</p>
+
+  <p>Pickleball example: pre-train VideoMAE on unlabeled pb-003 rallies, then fine-tune a linear head on 500 hand-labeled contacts for the 12-event taxonomy (§16.5). The model learns that a paddle is a rigid object, that the ball bounces, and that players move in pairs — priors that would take thousands of supervised labels to teach from scratch. Rugby league example: pre-train on broadcast NRL fixtures, then fine-tune on tackle, pass, kick, and PTB clips. The model learns the cadence of the six-tackle set before any human annotator marks a tackle.</p>
+
+  <p><strong>2026 status:</strong> VideoMAE's upstream repository has been quiet since 2024, and V-JEPA 2/2.1 now reports better frozen-feature probing with no fine-tuning of the backbone. The lesson remains: self-supervised pre-training helps, but the head still needs labeled data, and the labels must be sport-specific.</p>
+
+  <h2 class="section-title"><span class="section-num">16.3</span> Sport Event Spotting: The SoccerNet Suite</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>2026 Task</th>
+        <th>Coarse</th>
+        <th>Test</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Player-Centric Ball Action Spotting</strong> (what + when + WHO)</td>
+        <td>1s</td>
+        <td>mAP@1s — the tight tolerance</td>
+      </tr>
+      <tr>
+        <td><strong>Ball Action Anticipation</strong></td>
+        <td>future</td>
+        <td>mAP over horizons</td>
+      </tr>
+      <tr>
+        <td><strong>Novel View Synthesis</strong></td>
+        <td>—</td>
+        <td>PSNR/SSIM</td>
+      </tr>
+      <tr>
+        <td><strong>SynLoc</strong> (single-frame world localization)</td>
+        <td>—</td>
+        <td>localization error</td>
+      </tr>
+      <tr>
+        <td><strong>VQA</strong></td>
+        <td>—</td>
+        <td>VQA accuracy</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Verified: 5 Codabench tracks (427 teams, 1,129 entries), data on Hugging Face. GSR (Game State Reconstruction) was dropped this cycle; the FIFA skeletal tracking initiative is adjacent and distinct [verify umbrella]. Tolerance matters: loose 5-60s windows are for highlights; 1s is for ball actions; <strong>dF1 is NOT a SoccerNet standard</strong> [verify — do not cite it as such].</p>
+
+  <p>Pickleball transfer: the same mAP@1s tolerance is the right metric for serve and paddle-ball contacts. Rugby league transfer: mAP@1s applies to tackle contacts, PTB completions, and kick contacts; the six-tackle set gives a natural horizon for anticipation.</p>
+
+  <h2 class="section-title"><span class="section-num">16.4</span> Captioning and Foul Detection</h2>
+  <p><strong>SoccerNet-Caption</strong> (±15s windows, METEOR/CIDEr/BLEU, 471 games) and <strong>SCBench</strong> (5,775 clips, 6 sports, GPT-judged 6-dimension rubric — with judge-bias caveat). Book stance: <strong>captions render reviewed event rows; they never source them.</strong></p>
+  <p><strong>MVFoul</strong> (3,000+ multi-view clips) is the foul-detection reference with VARS aggregation. Rugby high-tackle detection is the welfare analogue (Bath 2025: 68% sensitivity / 84% specificity — the operating point is policy, not model default). Pickleball single-camera: review-support only, never automated calls.</p>
+
+  <h2 class="section-title"><span class="section-num">16.5</span> The Taxonomies</h2>
+  <p>The taxonomy work matters because it decides what spotting can even detect. A pickleball contact is a sub-frame event; a rugby league tackle is a 1-2 second contact interval. The vocabulary must be <em>answerable</em> from pixels and <em>closed</em> enough that every frame falls into a class or an explicit "unknown" bucket. The following two subsections close the pickleball and rugby league vocabularies used throughout the book.</p>
+
+  <h2 class="section-title"><span class="section-num">16.5b</span> The Pickleball Action Taxonomy</h2>
+  <p>Pickleball is structured by the rally sequence: <strong>serve → return → third shot → kitchen exchange → finish</strong>. The book's 12-event closure is built from the PBN <code>shot_phase</code> and <code>shot_type</code> fields. The design principle is <em>phase × type</em>, not a flat label list: a third-shot drop is the conjunction (phase=third, type=drop), and a third-shot drive is (phase=third, type=drive).</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Event</th>
+        <th>Phase</th>
+        <th>Spotting cue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>serve</td><td>point start</td><td>below-waist contact, feet behind baseline</td></tr>
+      <tr><td>2</td><td>return</td><td>point start</td><td>deep contact off serve, receiver behind/at baseline</td></tr>
+      <tr><td>3</td><td>third-shot drive</td><td>transition</td><td>hard flat contact from baseline after return</td></tr>
+      <tr><td>4</td><td>third-shot drop</td><td>transition</td><td>soft arc from baseline/transition, lands in kitchen</td></tr>
+      <tr><td>5</td><td>drive</td><td>rally</td><td>flat fast contact, any zone</td></tr>
+      <tr><td>6</td><td>drop</td><td>rally/transition</td><td>soft arc into kitchen from mid-court</td></tr>
+      <tr><td>7</td><td>dink</td><td>kitchen rally</td><td>soft contact at/near NVZ line, crosscourt or middle</td></tr>
+      <tr><td>8</td><td>reset</td><td>defense</td><td>absorbing pace from transition zone into kitchen</td></tr>
+      <tr><td>9</td><td>speed-up</td><td>kitchen rally</td><td>sudden fast contact off a dink pattern</td></tr>
+      <tr><td>10</td><td>volley</td><td>rally</td><td>contact out of the air, typically at NVZ</td></tr>
+      <tr><td>11</td><td>lob</td><td>rally</td><td>high arc over opponents, from kitchen or mid-court</td></tr>
+      <tr><td>12</td><td>overhead</td><td>attack</td><td>above-head contact on a high ball</td></tr>
+    </tbody>
+  </table>
+
+  <p>The implicit 13th class is <strong>unknown</strong>: between contacts, during body movements that are not shots, and in ambiguous cases, the model must say "I don't know" rather than force a guess. Unknown is not a missing label; it is the honest bucket that the review queue (chapter 19) consumes. A taxonomy without an unknown class is a taxonomy that will hallucinate.</p>
+
+  <figure id="fig-16-03" class="full">
+    <img src="shared/images/ch16-pb-taxonomy.png" alt="Pickleball action taxonomy: twelve spokes grouped by phase around a central contact hub, with an unknown hatched segment." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.3</span>: Pickleball action taxonomy: 12 events anchored to contact, grouped by phase, plus an explicit unknown class. Phase × type, not flat labels.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.5c</span> The Rugby League Action Taxonomy</h2>
+  <p>Rugby league's event grammar is coarser than pickleball's and set-piece-structured around the six-tackle count. The basic cycle is: <strong>play-the-ball → carry or pass → tackle → play-the-ball</strong>. A kick branches off the sixth tackle, and a try ends the cycle.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Event</th>
+        <th>Spotting cue</th>
+        <th>Chapter role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>tackle</td><td>defender-ball-carrier contact, carrier to ground or held</td><td>welfare anchor (head-contact screening)</td></tr>
+      <tr><td>pass</td><td>lateral/backward ball flight between carriers</td><td>structured by PTB position</td></tr>
+      <tr><td>kick</td><td>foot contact: bomb / grubber / touch-finder / kick-off / conversion</td><td>special-teams layer</td></tr>
+      <tr><td>play-the-ball (PTB)</td><td>carrier rises, heels ball back, dummy-half collects</td><td>the metronome; resets position priors every ~10 s</td></tr>
+      <tr><td>ruck-area contest</td><td>bodies over the PTB, marker pressure</td><td>league's informal "ruck" — distinct from union's ruck</td></tr>
+      <tr><td>strip</td><td>defender dislodges ball in contact</td><td>turnover event</td></tr>
+      <tr><td>try</td><td>ball grounded in-goal</td><td>scoring event</td></tr>
+    </tbody>
+  </table>
+
+  <p>Welfare anchor: the Bath 2025 tackle study distinguishes head-contact tackle types at <strong>68% sensitivity / 84% specificity</strong> (source-backed on the book's record; primary citation must be verified before print). The numbers are good enough to <em>screen</em> candidate head-contact tackles for human review and nowhere near good enough to <em>adjudicate</em>. The operating point is a policy decision, not a model default.</p>
+
+  <p>PTB timing is also a performance feature: ruck speed (PTB duration) is a standard league metric, so the spotting head's per-frame outputs feed a duration statistic directly. The taxonomy exists so that high-risk events can be surfaced, counted, and reviewed, and so that routine events can be turned into numbers coaches already consume.</p>
+
+  <figure id="fig-16-04" class="full">
+    <img src="shared/images/ch16-rl-taxonomy.png" alt="Rugby league action taxonomy: a six-tackle cycle from PTB through carry, pass, tackle, and kick on the sixth tackle." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.4</span>: Rugby league action taxonomy: a six-tackle cycle plus branching kick, strip, and try events. PTB is the metronome.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.5d</span> The Spatio-Temporal Problem</h2>
+  <p>Action recognition is not image classification with extra frames. A single frame can be ambiguous because the action is defined by what happens across space and time. The <strong>spatio-temporal problem</strong> is: the same pose at one instant can belong to different actions depending on the preceding and following motion.</p>
+
+  <p>Pickleball case study: a <em>drop</em> and a <em>dink</em> can look identical at the instant of contact — a soft hit near the kitchen line. The difference is in the trajectory arc over the previous second: a drop travels from mid-court or baseline in a high arc, while a dink is a short arc from the kitchen line. Without the temporal window, a frame-level model will conflate them. Rugby league case study: a <em>pass</em> and an <em>offload</em> look identical at the instant the ball leaves the hands. The difference is the preceding tackle pressure: an offload is a pass executed while being tackled. A frame-level model sees two arms moving the ball; it does not see the defender arriving a quarter-second earlier.</p>
+
+  <p>This is why the 2D CNN + pooling baseline is only a baseline, and why architectures like I3D, SlowFast, and VideoMAE exist. They model the temporal structure explicitly. The 2026 recipe takes the same insight but freezes the temporal encoder and trains a small head, because the temporal encoder is now a foundation model rather than a per-task network.</p>
+
+  <h2 class="section-title"><span class="section-num">16.5e</span> The Temporal Window: Frames per Action</h2>
+  <p>The length of the input clip is a model hyperparameter and a sport design choice. Too short and the model misses the wind-up; too long and it mixes multiple actions. The practical window for most sport actions is <strong>2–4 seconds</strong>. At 30 fps, 2 seconds is 60 frames; 4 seconds is 120 frames. The 2026 default is often 64 frames at 30–32 fps (~2–2.1 seconds), which is long enough for a serve wind-up and short enough to avoid kitchen rallies.</p>
+
+  <p>Pickleball windows: a <em>serve</em> is well-contained in 2 seconds (toss to contact). A <em>third-shot drop</em> needs 3–4 seconds to show the arc from baseline to kitchen. A <em>dink exchange</em> is a sequence of contacts, so each individual dink is a 1–1.5 second window, but the exchange as a rally phase may be 4 seconds. Rugby league windows: a <em>tackle</em> is 1–2 seconds (defender commitment to ground contact). A <em>PTB</em> is 2–3 seconds (carrier rising, heel, dummy-half collect). A <em>kick</em> is 1.5–2 seconds (run-up to foot contact). The six-tackle set is a 40–60 second macro sequence, but the action taxonomy operates at the micro-event level.</p>
+
+  <p>Spotting uses overlapping windows with 50% stride to avoid missing a boundary. The SoccerNet mAP@1s tolerance then scores a prediction as correct if its timestamp falls within 1 second of a ground-truth contact. That tolerance is generous for a PTB but tight for a serve contact. The window design and the tolerance design must be chosen together.</p>
+
+  <figure id="fig-16-05" class="full">
+    <img src="shared/images/ch16-temporal-window.png" alt="A timeline of a pickleball rally with sliding windows highlighting a 2-4 second span around a volley contact." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.5</span>: Temporal window design. A 2–4 second window with 50% overlap captures the wind-up and follow-through without mixing multiple actions. Tolerance is chosen separately.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.5f</span> The VLM Alternative: When It Can (and Should) Answer</h2>
+  <p>Vision-language models (VLMs) can answer natural-language questions about video. They are useful when the task is <strong>descriptive</strong> and the answer does not require precise geometry, identity, or timing. A VLM can say "the player at the kitchen line hits a soft shot toward the left corner" or "the fullback receives a long kick and runs it back." It can propose candidate labels for a human reviewer. It can caption a highlight reel. It should not decide whether the ball was in or out, whether a serve was legal, whether a tackle was high, or whether a contact was a drop versus a dink.</p>
+
+  <p>Pickleball example: a VLM can describe the shape of a rally, but it cannot reliably label a <em>speed-up</em> versus a <em>volley</em> at the contact frame because the difference is the sudden acceleration in the 200 ms before contact. Rugby league example: a VLM can narrate "the ball-carrier is tackled by two defenders," but it cannot judge whether the contact was shoulder-to-head without calibrated multi-view geometry and a policy threshold. The VLM is a generator of proposals, not a judge.</p>
+
+  <p>The boundary is quantified by two source-backed benchmarks. <strong>SportD</strong> (Aug 2026, arXiv:2607.14616) found that frontier VLMs pick the optimal on-ball action in 31.4% of decisions versus 38.9% for professional players. <strong>HourVideo</strong> found that Gemini 1.5 Pro scores 37.3% on hour-scale video understanding versus 85.0% for human experts. The gap is not a small calibration issue; it is a structural limit on description-versus-decision.</p>
+
+  <figure id="fig-16-06" class="full">
+    <img src="shared/images/describe-vs-decide.png" alt="Paired bar chart comparing model and human performance on SportD and HourVideo benchmarks, with a human-parity dashed line." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.6</span>: The Describe-vs-Decide Gap. Frontier models describe at 31–37%; humans decide at 39–85%. The deterministic pipeline must decide.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.5g</span> The Honest Benchmark: The C16 Lab</h2>
+  <p>The chapter's own lab ran zero-shot retrieval on six golden-fixture frames from <strong>pb-003</strong> using OpenCLIP ViT-B/32. The query was not a synthetic benchmark; it was the kind of question a coach would ask: "find all third-shot drops to the left corner" or "find the serve." The measured result is source-backed from <code>experiments/c16-video-understanding/outputs/metrics.json</code>.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Query</th>
+        <th>Top score</th>
+        <th>Score spread across 6 frames</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>"a serve from behind the baseline"</td>
+        <td>0.300</td>
+        <td>0.288 – 0.300</td>
+        <td><strong>NO separation</strong> — every frame scores nearly the same</td>
+      </tr>
+      <tr>
+        <td>"a dink exchange at the kitchen line"</td>
+        <td>0.229</td>
+        <td>similar tight spread</td>
+        <td><strong>NO separation</strong> — the query rank is meaningless</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>The finding is blunt: zero-shot CLIP on real sports frames gives no discriminative signal for these action queries.</strong> A score of 0.300 is not "a little wrong"; it is the same score that every frame gets, which means the rank is random. Retrieval that works needs either a deterministic metadata filter first (PBN rows are the index), a fine-tuned embedding (V-JEPA probe), or exemplar-based retrieval. This is why the book's retrieval pattern is <em>hybrid</em>, never embedding-only.</p>
+
+  <p>The same measured failure transfers to rugby league. A query like "a dominant tackle in the defensive line" would return a narrow cosine band because all broadcast frames share the same grass, posts, and player shapes. The embedding sees the scene, not the action.</p>
+
+  <figure id="fig-16-07" class="full">
+    <img src="shared/images/ch16-benchmark-spread.png" alt="Dot chart showing CLIP cosine similarities for six frames cluster in a tight band from 0.23 to 0.30 for both a serve query and a dink exchange query, annotated as no separation." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.7</span>: C16 lab measured result. Zero-shot CLIP cosine similarities for six pb-003 frames cluster in a tight band for both "a serve" and "a dink exchange" — no discriminative separation.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">16.5h</span> Limits and Landmines</h2>
+  <p>Action recognition has hard limits that are easy to forget when the demos look good.</p>
+  <ul>
+    <li><strong>Labels are sport-specific.</strong> A model trained on pickleball serves will not classify rugby kicks. The taxonomy must be built before the head, and the head must be trained per sport.</li>
+    <li><strong>Labels are scarce.</strong> VideoMAE and V-JEPA can pre-train on unlabeled video, but the downstream head still needs hundreds to thousands of labeled contacts. The 12-event pickleball taxonomy is a book construction; the PBN Data Dictionary's open <code>shot_type</code> values are not yet closed.</li>
+    <li><strong>Classes must be answerable from pixels.</strong> "Did the player intend to hit a drop?" is not answerable. "Was the contact soft and did the ball arc into the kitchen?" is answerable.</li>
+    <li><strong>Unknown is a class.</strong> Every taxonomy must include an explicit unknown bucket. A model forced to choose among 12 classes for a between-contact frame will hallucinate.</li>
+    <li><strong>Temporal window choices are model decisions.</strong> A 2-second window and a 4-second window are different models with different failure modes. Measure them separately.</li>
+    <li><strong>Tooling landmines.</strong> MMAction2 and PySlowFast are effectively dormant. T-DEED is GPL-3.0 and must not enter the product path.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">16.6</span> Retrieval: The Hybrid Pattern (W3.7 Lab)</h2>
+  <p>The engine is metadata PBN filter + embedding rank: "find all third-shot drops to left corner" decomposes into a deterministic WHERE (metadata) + cosine ORDER BY (embeddings). Infrastructure: LanceDB (Apache-2.0) over FAISS.</p>
+
+  <p><strong>Our lab ran exactly this on the 6 golden fixtures with CLIP.</strong> The result is the chapter's evidence — and it says the embedding half alone is useless (§16.5g). The metadata half is what makes retrieval possible: PBN rows carry phase, type, and landing zone as filterable columns. The embedding ranks only within the candidates the metadata already returned.</p>
+
+  <h2 class="section-title"><span class="section-num">16.7</span> The Describe-vs-Decide Boundary</h2>
+  <p>Two verified numbers anchor the book's agentic architecture:</p>
+  <ul>
+    <li><strong>SportD</strong> (Aug 2026): best frontier VLM picks the optimal on-ball action <strong>31.4%</strong> vs <strong>38.9%</strong> for professional players (478 World Cup 2022 decisions).</li>
+    <li><strong>HourVideo</strong>: Gemini 1.5 Pro scores <strong>37.3%</strong> vs <strong>85.0%</strong> human experts.</li>
+    <li><strong>SoccerLens</strong>: SOTA video-VLMs <50% grounding even when answers are correct.</li>
+  </ul>
+
+  <p><strong>Rule: models describe, the deterministic pipeline decides.</strong> A VLM can draft "this looks like a dink to the left corner"; the PBN state machine + track rows decide whether it happened. This is the generator-critic rule of chapter 25 applied to perception.</p>
+
+  <h2 class="section-title"><span class="section-num">16.8</span> The Hybrid Retrieval Recipe (Copy This)</h2>
+  <ol>
+    <li><strong>Define the query as structured predicates first</strong>: "third-shot drop to the left corner" = {event_type: third_shot_drop, zone: left_corner} — this is a deterministic WHERE clause over PBN rows.</li>
+    <li><strong>Filter on metadata</strong>: the event table query returns a small candidate set (dozens, not thousands).</li>
+    <li><strong>Rank the candidates by embedding similarity</strong> (V-JEPA probe or fine-tuned CLIP — never zero-shot CLIP, per our measured 0.23-0.30 wash).</li>
+    <li><strong>Evidence-link</strong>: every candidate retains its clip path, frame index, and event row (chapter 5 spine).</li>
+    <li><strong>Human confirms</strong>: the analyst reviews the top-k; unreviewed cards stay hidden from decision use.</li>
+    <li><strong>Never emit an event from retrieval alone</strong>: retrieval is discovery; the C19 state machine is judgement.</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">16.9</span> What I Would Measure Next</h2>
+  <ul>
+    <li>V-JEPA 2.1 probe on the pb-003 fixtures: does the dense-feature head separate action classes where CLIP failed?</li>
+    <li>PBN-metadata + embedding hybrid: filter first, then rank — measure precision@10.</li>
+    <li>X3D-XS fine-tune on the rally set (leave-one-rally-out) as the honest baseline.</li>
+    <li>Temporal window ablation for pickleball serves (1 s vs 2 s vs 4 s) and rugby tackles (1 s vs 2 s).</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">16.9b</span> The Ecosystem: What Sits Around the Recipe</h2>
+  <p>The 2026 recipe is one line — frozen encoder, small head, tolerance-aware eval — but the working stack around it is a family of encoders, legacy trainers, and index infrastructure. The table is the shopping list with the sport use and the license flag per row; the landmines are marked, not hidden.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Role</th>
+        <th>License</th>
+        <th>Pickleball use</th>
+        <th>Rugby league use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>V-JEPA 2 / 2.1 (Meta)</td><td>frozen encoder; 2.1 adds dense per-patch features</td><td>MIT</td><td>shot-head features; zone-activity maps on pb-003</td><td>tackle/PTB head features on nrl-001</td></tr>
+      <tr><td>OpenCLIP ViT-B/32</td><td>text-aligned embedding (measured weak zero-shot, §16.5g)</td><td>MIT</td><td>hybrid retrieval ranker within PBN filters</td><td>same pattern on tackle/PTB rows</td></tr>
+      <tr><td>X3D-XS</td><td>honesty baseline fine-tune</td><td>Apache-2.0</td><td>leave-one-rally-out baseline on shot clips</td><td>baseline on tackle clips</td></tr>
+      <tr><td>VideoMAE / v2</td><td>masked-autoencoding pre-train lineage</td><td>MIT; repo quiet since 2024</td><td>pre-train on unlabeled rallies</td><td>pre-train on broadcast fixtures</td></tr>
+      <tr><td>InternVideo2</td><td>unified recognition + retrieval encoder</td><td>Apache-2.0 per checkpoint [verify NC wording]</td><td>candidate retrieval encoder</td><td>candidate retrieval encoder</td></tr>
+      <tr><td>SlowFast / PySlowFast</td><td>dual-pathway ancestor (UC 10)</td><td>Apache-2.0; frozen since ~2022</td><td>baseline reproduction only</td><td>baseline reproduction only</td></tr>
+      <tr><td>MMAction2</td><td>training framework</td><td>Apache-2.0; dormant</td><td>container-pinned baselines</td><td>container-pinned baselines</td></tr>
+      <tr><td>T-DEED</td><td>end-to-end spotting reference</td><td><strong>GPL-3.0 — landmine</strong></td><td>reproduce to learn; never ship</td><td>reproduce to learn; never ship</td></tr>
+      <tr><td>LanceDB</td><td>vector + metadata index (the hybrid engine)</td><td>Apache-2.0</td><td>clip index with PBN filter columns</td><td>clip index with event filter columns</td></tr>
+      <tr><td>FAISS</td><td>raw vector engine / brute-force baseline</td><td>MIT</td><td>embedding rank fallback</td><td>embedding rank fallback</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title"><span class="section-num">16.9c</span> The 10 Use Cases: Applied Framework</h2>
+  <p>The use cases below are the applied bridge from the architectures above to the two sports. They follow three groups: <strong>A — Shot &amp; Serve Classification (01-03)</strong>, <strong>B — Collision-Cycle Events (04-07)</strong>, and <strong>C — Sequence-Level Products (08-10)</strong>. Each case pairs a pickleball and a rugby league application so the pipeline transfers, and each carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established in literature).</p>
+
+  <h3 class="sub-heading">Group A: Shot &amp; Serve Classification (01-03)</h3>
+
+  <h3 class="sub-heading">UC 01 — Serve Classification and Legality Screening</h3>
+  <p>The serve is the only closed-skill event in either sport: same start position, same cue sequence, every point. That makes it the cheapest classification win in the book and the natural first head to train. The problem a coach actually has: which serve type is a player hitting under pressure (drive, lob, drop serve), and is the motion legal — contact below the waist, paddle head below the wrist, feet behind the baseline.</p>
+  <p>Mechanism: contact-anchored 2-second windows (the §16.5e design) are encoded by the frozen V-JEPA 2 features <em>f<sub>1</sub></em>...<em>f<sub>T</sub></em>, pooled to <em>z</em> = mean<sub><em>t</em></sub>(<em>f<sub>t</sub></em>), and classified by a linear probe P(<em>y</em> | clip) = softmax(<em>Wz</em>) over {drive, lob, drop serve, fault, unknown}. Legality is <em>not</em> the softmax's job: it is a geometric predicate — contact height &lt; waist, computed from the C06 homography feet and the C11 pose wrist/hip keypoints — attached to the classified row. E10's temporal-difference contact heuristic (0.814 precision, measured) supplies the anchor instants the windows are centered on.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc01-serve-classification.png" alt="Pickleball serve classification pipeline from contact-anchored clip through frozen encoder and probe head to serve-type and fault outputs." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.8</span>: UC 01 — Serve Classification. Contact-anchored 2s window → frozen encoder → linear probe over serve types; legality stays a geometric predicate. <strong>Pickleball</strong>: drive/lob/drop-serve profiling per player per session. <strong>Rugby league</strong>: the same head pattern classifies kick-offs (short, deep, out-on-the-full) — the sport's only comparably closed skill.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> coaching — a serve-type distribution per player replaces anecdote; officiating — legality clips surface for review instead of being adjudicated blind.</p>
+
+  <h3 class="sub-heading">UC 02 — Shot Classification: Drive, Dink, Drop, Smash</h3>
+  <p>Rally shots are the volume events of pickleball, and their labels are the input to everything downstream — the ΔEPV value model of chapter 22, the drill design of chapter 29, the retrieval index of §16.6. The problem: a frame-level model conflates the soft shots (§16.5d); the label lives in the arc before contact.</p>
+  <p>Mechanism: the head scores the <em>phase × type</em> conjunction from §16.5b rather than a flat label list: P(phase, type | clip) = P(phase | clip) · P(type | clip, phase), which shrinks the hypothesis space before the type decision. The type head consumes trajectory-arc features — pre-contact ball rise/fall and net clearance from the C12 ball track where visible (E04's ball wall: median confidence 0.1125, so pose and paddle motion carry the load when the ball is invisible) — resolving the drop-versus-dink confusion by the arc's origin zone. The implicit 13th class, <strong>unknown</strong>, absorbs between-contact frames.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc02-shot-classes.png" alt="Pickleball court with four shot archetype trajectories: flat drive, soft dink at the kitchen line, arcing drop from baseline, steep smash." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.9</span>: UC 02 — Shot Classification. Four archetype trajectories on the court; the phase × type head scores the conjunction, never a flat label. <strong>Pickleball</strong>: per-shot labels feed C22 ΔEPV (drop +0.142 vs drive -0.188 [verify]). <strong>Rugby league</strong>: the same conjunction pattern separates pass types (flat, cut-out, offload) by phase (inside contact vs open play).</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> tactical — shot distributions per rally phase are the raw material of the value model; every labeled contact compounds into C22 and C29.</p>
+
+  <h3 class="sub-heading">UC 03 — Kitchen-Fault and Foul Classification</h3>
+  <p>The NVZ foot fault is pickleball's highest-stakes adjudication target: a volley contacted while any part of the foot touches the kitchen line or zone. The practical problem is not calling it live — the book's single fixed camera cannot see every angle — but surfacing the right clips for review instead of asking a referee to scrub a full match.</p>
+  <p>Mechanism: a two-stage sieve. Stage one is the spotting head from UC 02 flagging volley contacts near the NVZ. Stage two is geometric: the C06 homography (E05/E11, 3.82–4.65 cm RMSE, measured) maps the contact-frame foot keypoints to court coordinates, and the predicate foot_y &lt; NVZ_line scores the violation margin. The output row is a review candidate with the margin attached — never a call. This is the single-view analogue of MVFoul's VARS aggregation (§16.4): multi-view foul classification adjudicates; single-view foul classification <em>triages</em>.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc03-kitchen-fault.png" alt="Pickleball non-volley zone close-up with a foot on the kitchen line during a volley, homography grid overlay, and a review-only badge." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.10</span>: UC 03 — Kitchen-Fault Triage. Volley contacts near the NVZ are surfaced with a calibrated foot-to-line margin. <strong>Pickleball</strong>: review queue for NVZ foot faults, margin in cm attached. <strong>Rugby league</strong>: the same sieve pattern triages high-tackle candidates — Bath 2025's 68% sensitivity / 84% specificity (source-backed; primary citation [verify before print]) screens for human review, never adjudicates.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> officiating — referee time spent on the 2% of contacts that matter; the review queue (chapter 19) consumes what this head emits.</p>
+
+  <h3 class="sub-heading">Group B: Collision-Cycle Events (04-07)</h3>
+
+  <h3 class="sub-heading">UC 04 — Tackle Detection</h3>
+  <p>The tackle is rugby league's atomic event: it ends the carry, starts the ruck, resets the six-tackle count, and anchors the welfare screen. Missing tackles breaks every downstream statistic; hallucinating them poisons the count. The problem is that a tackle is a 1–2 second contact interval in dense occlusion, not a visible instant.</p>
+  <p>Mechanism: per-frame discriminability. The frozen features give a per-frame logit p<sub><em>t</em></sub> = σ(<em>w</em> · <em>f<sub>t</sub></em>) for "tackle in progress"; an event is proposed where p<sub><em>t</em></sub> crosses a calibrated threshold, and temporal non-maximum suppression merges adjacent crossings into one timestamped interval. Scoring is mAP@1s (§16.3): a prediction is correct if its contact timestamp lands within 1 second of ground truth. The spotting cues the head learns — closing angle, contact deceleration, carrier to ground or held — are exactly the §16.2c flow-stream signals, now carried by the frozen encoder.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc04-tackle-detection.png" alt="Rugby league tackle detection: ball-carrier tackled by two defenders above a per-frame probability timeline peaking at the contact instant." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.11</span>: UC 04 — Tackle Detection. Per-frame tackle probability with threshold crossing and temporal NMS, scored at mAP@1s. <strong>Rugby league</strong>: the six-tackle count, tackle-burden stats, and the welfare screen of UC 03 all consume this head. <strong>Pickleball</strong>: the identical mechanism spots paddle-ball contacts — the event that anchors every pickleball label.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> statistical — the tackle count and burden numbers coaches already consume, produced without a human spotter; welfare — the contact rows UC 03's screen reads.</p>
+
+  <h3 class="sub-heading">UC 05 — Ruck Start/End Detection</h3>
+  <p>Between the tackle and the next play-the-ball completion sits the ruck: bodies over the ball, marker pressure, the carrier rising and heeling it back. Coaches measure this interval obsessively, and chapter 28's cockpit renders it live. The problem: neither its start nor its end has a clean visual instant — the ruck is a state, entered and left gradually.</p>
+  <p>Mechanism: change-point detection over the per-frame state probabilities. UC 04's head emits p<sub><em>t</em></sub>(ruck); the interval [<em>t<sub>s</sub></em>, <em>t<sub>e</sub></em>] is the maximum-posterior binary segmentation of that sequence — the same penalty formulation as classic change-point detection, argmin over segmentations of the within-segment cost plus λ per boundary. The output is a start row and an end row with the duration Δ<em>t</em> = <em>t<sub>e</sub></em> − <em>t<sub>s</sub></em>, which is the PTB-timing statistic of UC 06 and the band input of C28.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc05-ruck-boundary.png" alt="Rugby league ruck boundary detection: players over the play-the-ball area above a step-function timeline marking ruck start and ruck end with a duration bracket." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.12</span>: UC 05 — Ruck Boundaries. Binary segmentation over per-frame ruck-state probabilities yields start, end, and duration. <strong>Rugby league</strong>: feeds C28's live PTB band directly. <strong>Pickleball</strong>: the same state-boundary machinery segments rally phases — kitchen exchange start/end — from per-frame phase probabilities.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> tactical and live — the ruck-speed number arrives during the match, not after the video session; extends C28 without duplicating it.</p>
+
+  <h3 class="sub-heading">UC 06 — Play-the-Ball Speed</h3>
+  <p>Ruck speed — the duration from tackle completion to dummy-half collection — is one of the few statistics that predicts attacking success in league, and it is traditionally coded by hand. The problem is pure throughput: a season of matches is thousands of PTBs, and manual coding lags the fixture by days.</p>
+  <p>Mechanism: the duration statistic is read directly off UC 05's boundaries: PTB speed = Δ<em>t</em> per event, aggregated per team, per ruck position, per tackle number. The practitioner playbook bands it green &lt; 3.2s, amber, red &gt; 4.0s [verify — coaching-standard bands, not a published benchmark]. Because the statistic is a difference of two spotted timestamps, its error is the sum of two spotting errors — which is why the mAP@1s tolerance of §16.3 propagates: at 1s tolerance per boundary, a duration is honest to roughly ±2s worst case, tight enough for band assignment, too loose for sub-second claims. Cluster-bootstrap by match (C20) gives the confidence intervals.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc06-ptb-speed.png" alt="Rugby league play-the-ball speed: three-phase sequence of carrier rising, heeling the ball, dummy-half collecting, with a band gauge from green under 3.2 seconds to red over 4.0 seconds." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.13</span>: UC 06 — PTB Speed. Duration read off spotted boundaries, banded green &lt; 3.2s / red &gt; 4.0s [verify]. <strong>Rugby league</strong>: per-team ruck-speed distributions per match and season. <strong>Pickleball</strong>: the analogue statistic is rally tempo — mean inter-contact interval in kitchen exchanges — read off UC 04's contact timestamps the same way.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> performance — a hand-coded statistic becomes automatic and immediate; the band assignment is the number the coaching staff already speaks in.</p>
+
+  <h3 class="sub-heading">UC 07 — Pass Detection and Direction</h3>
+  <p>The pass is league's connective event: it moves the ball laterally and backward, and its count and direction structure the attack. The problem is that a pass and an offload are visually identical at release (§16.5d), and a forward pass is a rule violation — so the label must carry direction, not just occurrence.</p>
+  <p>Mechanism: the head pairs a spotting logit with a geometric direction test. Spotting proposes the release instant; the C12 ball track then gives the velocity vector <em>v</em> = (<em>v<sub>x</sub></em>, <em>v<sub>y</sub></em>) in the pitch frame, and the legality predicate is the sign of the play-direction component: <em>v<sub>x</sub></em> ≤ 0 is backward or lateral, <em>v<sub>x</sub></em> &gt; 0 is a forward-pass candidate for review. Type (flat, cut-out, offload) is the phase × type conjunction of UC 02 conditioned on tackle pressure in the preceding window — the UC 04 head's output reused as a feature. Where the ball is lost (E04's wall applies to an oval ball too), hand-velocity from pose is the fallback signal.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc07-pass-detection.png" alt="Rugby league pass detection: top-down pitch with a lateral backward pass arc and velocity vector decomposition against the play direction." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.14</span>: UC 07 — Pass Detection. Release spotting plus a geometric direction test on the ball-velocity vector; offload separated by preceding tackle pressure. <strong>Rugby league</strong>: pass counts, direction audit, forward-pass review candidates. <strong>Pickleball</strong>: the direction test transfers as shot-direction classification — crosscourt vs down-the-line — the landing-zone column the retrieval index filters on.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> tactical and officiating — attack shape statistics for coaches; forward-pass clips triaged for review with the direction margin attached.</p>
+
+  <h3 class="sub-heading">Group C: Sequence-Level Products (08-10)</h3>
+
+  <h3 class="sub-heading">UC 08 — Highlight Extraction</h3>
+  <p>Every downstream consumer — coach review, recruitment reels, the chapter 19 cards — wants the two minutes that matter from ninety minutes of footage. The problem is that "highlight" is a budget problem, not a detection problem: the events are already spotted; the question is which windows earn the reel.</p>
+  <p>Mechanism: score each spotted event window by rarity-weighted density, S(<em>w</em>) = Σ<sub><em>e ∈ w</em></sub> −log P(class(<em>e</em>)) over the events in the window, then select the budgeted set: max Σ S(<em>w<sub>i</sub></em>) subject to Σ duration(<em>w<sub>i</sub></em>) ≤ <em>B</em> and non-overlap — a knapsack solved greedily or exactly at this scale. Rarity comes from the class priors the UC 01–07 heads themselves emit, so a speed-up off a dink pattern outranks a routine dink, and a try-scoring kick return outranks a midfield PTB. Unreviewed events are excluded by the chapter 5 evidence rule: retrieval is discovery, review is judgement.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc08-highlight-extraction.png" alt="Highlight extraction: a match timeline with an event-density curve, selected highlight windows, and ranked clip cards." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.15</span>: UC 08 — Highlight Extraction. Rarity-weighted event density with a budgeted, non-overlapping selection. <strong>Pickleball</strong>: a match reel of speed-ups, Erne attempts, and third-shot battles under a 90-second budget. <strong>Rugby league</strong>: tries, line breaks, and big contacts selected against the same budget.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> analyst time — the review session starts at the reel, not at minute zero; every downstream consumer inherits ranked, evidence-linked clips.</p>
+
+  <h3 class="sub-heading">UC 09 — Temporal-Window Tuning per Action</h3>
+  <p>Section 16.5e set the default — 2–4 seconds, 50% stride — as a design principle. The applied problem is that the default is wrong per class: a serve is contained in 2 seconds, a third-shot drop is not, and a tackle sits in between. Training one window length for all classes bakes the mismatch into every head.</p>
+  <p>Mechanism: an ablation, not an architecture. For each action class, train the probe head at window <em>w</em> ∈ {1, 2, 4} s with the stride fixed at 50%, and score mAP@1s(<em>w</em>) per class on the labeled contacts, with leave-one-rally-out splits and C20's cluster bootstrap so the comparison is honest. The deliverable is a per-class window table — serve 2s, third-shot drop 3–4s, tackle 1–2s, PTB 2–3s (the §16.5e numbers, measured per sport rather than asserted) — and the deployment rule that the window is a class-level hyperparameter, not a model-level one. Overlapping windows with 50% stride keep boundary events detectable throughout.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc09-window-tuning.png" alt="Temporal window tuning ablation: mAP at 1-second tolerance versus window length for a pickleball serve and a rugby tackle, with sliding overlapping windows below." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.16</span>: UC 09 — Window Tuning. mAP@1s versus window length per class; the optimum is class-specific. <strong>Pickleball</strong>: serve windows at 2s, third-shot drops at 3–4s. <strong>Rugby league</strong>: tackles at 1–2s, PTBs at 2–3s. Ablation protocol measured per the §16.9 measurement plan.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> model quality — per-class windows recover the accuracy a single global window throws away, at the cost of one extra ablation run.</p>
+
+  <h3 class="sub-heading">UC 10 — Slow-Fast Fusion as the Deployment Pattern</h3>
+  <p>SlowFast (§16.2d) is history as a training recipe, but its insight — semantics change slowly, motion changes quickly — is permanent. The applied problem: the frozen-encoder pipeline must still answer both kinds of question, "what is the scene" (court position, team shape) and "what just moved" (paddle flick, ball transfer), without paying for a second backbone.</p>
+  <p>Mechanism: sample the frozen features at two temporal rates over the same clip — a slow stream at frame stride α and a fast stream at full rate with a reduced feature width β — then fuse by the lateral connection pattern: <em>z</em> = <em>z</em><sub>slow</sub> + <em>W</em> · <em>z</em><sub>fast</sub>, with one head on the fused representation. This is SlowFast's lateral fusion (source-backed, arXiv:1812.03982) re-implemented as a <em>feature-sampling</em> choice on a frozen encoder rather than a two-branch network — V-JEPA 2.1's dense temporally consistent features are exactly what makes the cheap version possible. The speed-up-versus-dink case of §16.2d is the canonical test: identical slow stream, different fast stream.</p>
+  <figure class="full">
+    <img src="shared/images/ch16-uc10-slowfast-fusion.png" alt="SlowFast two-pathway diagram: slow semantic stream and fast motion stream with lateral fusion into a shared classification head, with pickleball and rugby insets." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 16.17</span>: UC 10 — Slow-Fast Fusion. Two sampling rates over frozen features, lateral fusion, one head. <strong>Pickleball</strong>: the fast stream separates speed-up from dink at identical stances. <strong>Rugby league</strong>: the fast stream separates offload from pass by the arriving defender a quarter-second before release.</figcaption>
+  </figure>
+  <p><strong>Payoff:</strong> deployment — one frozen encoder, one head, and the motion sensitivity of a two-branch network for the price of a second feature sampler.</p>
+
+  <h2 class="section-title"><span class="section-num">16.9d</span> Runnable Implementation</h2>
+  <p>The minimal frozen-encoder action head — the skeleton every use case above shares — is a feature extractor run once per clip, a per-class probe head, and the tolerance-aware scorer. The full lab lives in <code>experiments/c16-video-understanding</code>:</p>
+  <pre><code>import torch, torch.nn as nn
+
+class FrozenActionHead(nn.Module):
+    """V-JEPA 2 features (frozen) + per-class probe. Window is a class-level hyperparameter (UC 09)."""
+    def __init__(self, feat_dim=1024, classes=13, window_s=2.0, fps=30):
+        super().__init__()
+        self.encoder = load_vjepa2("vjepa2-vitl")      # frozen, MIT
+        for p in self.encoder.parameters(): p.requires_grad = False
+        self.probe = nn.Linear(feat_dim, classes)      # the product
+        self.T = int(window_s * fps)                   # 2s -> 60 frames
+
+    def forward(self, clip):                           # clip: [T, C, H, W]
+        with torch.no_grad():
+            f = self.encoder(clip)                     # [T, feat_dim]
+        z = f.mean(dim=0)                              # temporal mean pool (UC 01-02)
+        return self.probe(z)                           # logits over 12 events + unknown
+
+def score_spotting(preds, truths, tolerance_s=1.0):
+    """mAP@1s-style: a prediction is correct within tolerance of a ground-truth contact."""
+    hits = sum(1 for p in preds if any(abs(p - t) &lt;= tolerance_s for t in truths))
+    return hits / max(len(truths), 1)</code></pre>
+
+  <h2 class="section-title"><span class="section-num">16.9e</span> What This Adds to the Pipeline</h2>
+  <p>The ten use cases are not separate projects; they are the video-understanding layer applied across the book's verbs. UC 02's shot labels feed the C22 value model; UC 03's fault triage and UC 07's forward-pass candidates feed the C19 review queue; UC 04's contact spotting replaces the E10 heuristic as the anchor for every contact-based chapter; UC 05 and UC 06 feed the C28 cockpit's live PTB bands; UC 08's reels feed C19 cards and C29 practice design; UC 09 and UC 10 are the tuning and deployment patterns every head inherits. The honest labels mark what is measured in the book's lab (E10's 0.814 precision floor, the §16.5g CLIP wash), what is source-backed (SlowFast, I3D, mAP@1s, Bath 2025 pending primary citation), and what remains a practitioner model ([verify] serve sub-classes, PTB bands, per-class window table) awaiting the spotting labs of §16.9.</p>
+
+  <h2 class="section-title"><span class="section-num">16.10</span> Sources</h2>
+  <ul>
+    <li>SoccerNet 2026 suite (soccer-net.org; Codabench IDs; arXiv 2607.07320); MVFoul; SoccerNet-Caption; SCBench.</li>
+    <li>V-JEPA 2/2.1 (MIT); T-DEED (GPL-3.0 — landmine); X3D/VideoMAE lineage; MMAction2 dormant.</li>
+    <li>I3D: Carreira & Zisserman, arXiv:1705.07750; SlowFast: Feichtenhofer et al., arXiv:1812.03982; VideoMAE: arXiv:2203.12602.</li>
+    <li>SportD (arXiv 2607.14616); HourVideo; SoccerLens — the describe-vs-decide numbers.</li>
+    <li>Lab: <code>lab/w3_lab_video_understanding.py</code> → <code>experiments/c16-video-understanding/outputs/metrics.json</code> (CLIP scores 0.23-0.30, no separation).</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="15.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 15</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 15</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</p>
+        </div>
+      </div>
+    </a>
+    <a href="17.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 17</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 17 — Event Data &amp; the Common Representation</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 17</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 17 — Event Data &amp; the Common Representation</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 17 — Event Data &amp; the Common Representation</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">PBN formalization, rugby's missing schema, and the one-spine standards that make it all queryable</p>
+        </div>
+        <a href="17.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #9A5A2E;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>

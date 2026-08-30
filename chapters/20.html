@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="bw-version" content="0.1.0">
+  <title>Chapter 20 — Statistics for Sport Practitioners - Agentic Sport Analytics</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x2728;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Beausite Classic Medium', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono"', '"Fragment Mono"', 'monospace'],
+          },
+          colors: {
+            coral: '#fe7141',
+            lavender: '#cdabfe',
+            sage: '#597e87',
+            'sage-light': '#d1ddd3',
+            'blue-light': '#f5f9fc',
+            'blue-dark': '#153250',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @font-face { font-family: 'Beausite Classic Medium'; src: url('../assets/fonts/beausite-medium.woff2') format('woff2'); font-weight: 500; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Regular'; src: url('../assets/fonts/beausite-regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
+    @font-face { font-family: 'Beausite Classic Bold'; src: url('../assets/fonts/beausite-bold.woff2') format('woff2'); font-weight: 700; font-style: normal; }
+    html { scroll-behavior: smooth; }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    .book-content {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+      max-width: 680px;
+      margin-left: auto;
+    }
+    .book-content h3 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 64px;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      padding-top: 24px;
+      padding-bottom: 16px;
+    }
+    .book-content h3:first-child {
+      border-top: 1px solid #000;
+    }
+    .book-content h3:not(:first-child) {
+      border-bottom: 1px solid #000;
+    }
+    .book-content h4 {
+      font-family: 'Beausite Classic Regular', Inter, system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #000;
+      margin-top: 32px;
+      margin-bottom: 12px;
+    }
+    .book-content p { margin-bottom: 18px; color: rgba(0,0,0,0.75); }
+    .book-content em { font-style: italic; color: rgba(0,0,0,0.6); }
+    .book-content strong { font-weight: 700; color: #000; }
+    .book-content a { color: #fe7141; text-decoration: underline; text-underline-offset: 2px; text-decoration-color: rgba(254,113,65,0.4); }
+    .book-content a:hover { text-decoration-color: #fe7141; }
+    .book-content pre {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      overflow-x: auto;
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 24px 0;
+    }
+    .book-content code {
+      font-family: "Geist Mono", "Fragment Mono", monospace;
+      font-size: 13px;
+      background: #f7f7f5;
+      padding: 2px 6px;
+      border-radius: 0;
+    }
+    .book-content pre code { background: none; padding: 0; }
+    .book-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .book-content thead th {
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid #000;
+      font-size: 11px;
+      color: rgba(0,0,0,0.4);
+      font-family: "Geist Mono", monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .book-content td { padding: 12px 14px; border-bottom: 1px solid rgba(0,0,0,0.06); vertical-align: top; }
+    .book-content tbody tr:hover { background: #fafaf8; }
+    .book-content .callout {
+      background: #f5f9fc;
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 0;
+      padding: 24px 28px;
+      margin: 28px 0;
+      font-size: 15px;
+    }
+    .book-content .callout strong { color: #153250; }
+    .book-content .tip {
+      background: #f5f9fc;
+      border-left: 3px solid #597e87;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .warning {
+      background: #fef2f2;
+      border-left: 3px solid #dc2626;
+      padding: 20px 24px;
+      margin: 28px 0;
+      border-radius: 0;
+      font-size: 15px;
+    }
+    .book-content .compare-good {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .compare-bad {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0;
+      padding: 14px 18px;
+      font-size: 14px;
+    }
+    .book-content .file-tree {
+      background: #f7f7f5;
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 20px 24px;
+      font-family: "Geist Mono", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.7);
+    }
+    .book-content .flow {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 28px 0;
+      flex-wrap: wrap;
+    }
+    .book-content .flow > .flow-item {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 0;
+      padding: 12px 18px;
+      font-weight: 600;
+      font-size: 13px;
+      color: #000;
+      font-family: "Geist Mono", monospace;
+    }
+    .book-content .flow-arrow { color: rgba(0,0,0,0.2); font-size: 18px; }
+    .book-content .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .book-content .step > .step-num {
+      width: 28px; height: 28px;
+      background: #fe7141;
+      color: white;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      font-family: "Geist Mono", monospace;
+      flex-shrink: 0;
+    }
+    .book-content .diagram {
+      background: #f7f7f5;
+      border: 2px dashed rgba(0,0,0,0.08);
+      border-radius: 0;
+      padding: 36px;
+      margin: 28px 0;
+      text-align: center;
+      color: rgba(0,0,0,0.35);
+      font-size: 14px;
+    }
+    .book-content figure { margin: 32px 0; }
+    .book-content figure img {
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .book-content figcaption { margin-top: 10px; font-size: 13px; color: rgba(0,0,0,0.4); line-height: 1.4; }
+    .book-content .figure__number {
+      font-weight: 700;
+      color: #fe7141;
+      margin-right: 6px;
+      font-family: "Geist Mono", monospace;
+      font-size: 11px;
+    }
+    .book-content ul, .book-content ol { margin: 12px 0 20px 24px; }
+    .book-content li { margin-bottom: 6px; }
+    .book-content li::marker { color: rgba(0,0,0,0.25); }
+
+
+    .chapter-hero {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-stack {
+      position: relative;
+      z-index: 2;
+    }
+    .chapter-body {
+      width: 100%;
+      padding: 64px clamp(24px, 4vw, 80px) 96px;
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+    }
+    .chapter-grid {
+      display: grid;
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(24px, 3vw, 48px);
+      row-gap: 32px;
+      align-items: start;
+    }
+    .chapter-sidebar-rail {
+      --page-padding: clamp(24px, 4vw, 80px);
+      --site-header-height: 3.5rem;
+      --section-nav-height: 2.75rem;
+      --sidebar-top: calc(var(--site-header-height) + var(--section-nav-height));
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, 1920px);
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 1;
+      padding: 0 var(--page-padding);
+      box-sizing: border-box;
+    }
+    .chapter-nav {
+      position: absolute;
+      top: var(--sidebar-top);
+      left: var(--page-padding);
+      width: 160px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+    .sidebar-nav {
+      background: #fff;
+      padding: 1rem 0;
+      max-height: calc(100vh - var(--sidebar-top) - 1rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .chapter-nav-spacer {
+      grid-column: 1 / span 2;
+    }
+    .chapter-main {
+      grid-column: 4 / -1;
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+      background: #fff;
+    }
+    @media (max-width: 1023px) {
+      .chapter-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+      .chapter-nav-spacer {
+        grid-column: 1 / span 2;
+      }
+      .chapter-main {
+        grid-column: 3 / span 4;
+      }
+    }
+    @media (max-width: 767px) {
+      .chapter-sidebar-rail {
+        display: none;
+      }
+      .chapter-grid {
+        grid-template-columns: 1fr;
+      }
+      .chapter-nav-spacer {
+        display: none;
+      }
+      .chapter-main {
+        grid-column: 1 / -1;
+      }
+      .chapter-mobile-nav {
+        display: block;
+        margin-bottom: 2rem;
+      }
+    }
+    @media (min-width: 768px) {
+      .chapter-mobile-nav {
+        display: none;
+      }
+    }
+
+    .page-shell {
+      width: 100%;
+      max-width: 1920px;
+      margin: 0 auto;
+      padding-left: clamp(24px, 4vw, 80px);
+      padding-right: clamp(24px, 4vw, 80px);
+    }
+
+    .nav-hover-link {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 0 24px;
+      color: #000;
+      font-family: 'Beausite Classic Medium', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+    .bg-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      width: 200%;
+      height: 100%;
+      z-index: 0;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .bg-slide-primary {
+      width: 50%;
+      height: 100%;
+      background-color: #8C4318;
+    }
+    .bg-slide-secondary {
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+    }
+    .nav-hover-link:hover .bg-slide {
+      transform: translateX(-50%);
+    }
+    .nav-hover-link .nav-text-wrapper {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      height: 1.4em;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+    }
+    .nav-hover-link .nav-text {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link .nav-text-clone {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      transition: transform 0.4s cubic-bezier(0.44, 0, 0.56, 1);
+    }
+    .nav-hover-link:hover .nav-text {
+      transform: translateY(-100%);
+    }
+    .nav-hover-link:hover .nav-text-clone {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-black">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 flex h-14 items-center justify-between bg-white border-b border-black select-none">
+    <div class="flex h-full items-center">
+      <a href="../index.html" id="logo-link" class="flex h-full items-center bg-black px-4 text-white hover:bg-neutral-900 transition-colors">
+        <span class="font-sans text-sm font-bold tracking-tight">AS</span>
+        <span class="ml-0.5 font-mono text-[10px] font-medium leading-none">'26</span>
+      </a>
+      <div id="menu-placeholder" class="h-full border-r border-black shrink-0 w-[120px] sm:w-[550px]"></div>
+    </div>
+    <div class="flex h-full items-center">
+      <a href="https://github.com/imehr/agentic-sport-analysis" target="_blank" rel="noopener" class="hidden items-center gap-1 border border-black px-4 py-2 text-sm font-medium text-black md:flex font-mono mr-4 hover:bg-black hover:text-white transition-colors duration-200">
+        View on GitHub
+      </a>
+      <nav class="flex h-full items-center text-sm font-sans text-black">
+        <a href="../about.html" class="nav-hover-link">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">About</span>
+            <span class="nav-text-clone">About</span>
+          </span>
+        </a>
+        <a href="../index.html#chapters" class="nav-hover-link border-r border-black">
+          <span class="bg-slide">
+            <span class="bg-slide-secondary bg-white"></span>
+            <span class="bg-slide-primary"></span>
+          </span>
+          <span class="nav-text-wrapper">
+            <span class="nav-text">Chapters</span>
+            <span class="nav-text-clone">Chapters</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="chapter-hero" id="ch-20" style="background-color: #8C4318; background-image: url('../assets/gradients/gradient_coral_peach.png'); background-size: cover; background-position: center;">
+    <div class="page-shell py-16 md:py-24 lg:py-32">
+      <div class="flex flex-col justify-between md:flex-row md:items-end">
+        <div class="max-w-3xl">
+          <a href="../index.html#chapters" class="mb-8 inline-flex items-center gap-2 font-sans text-sm text-black/60 hover:text-black transition-colors">
+            <i data-lucide="arrow-left" class="size-4"></i>
+            All Chapters
+          </a>
+          <p class="font-mono text-[13px] font-medium uppercase tracking-wider text-black/30 mb-6">CHAPTER 20</p>
+          <h1 class="font-sans text-4xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-5xl md:text-6xl lg:text-7xl">Chapter 20 — Statistics for Sport Practitioners</h1>
+          <p class="mt-6 max-w-lg font-sans text-lg leading-relaxed text-black/50">The n-trap, honest confidence intervals, multiple comparisons, shrinkage, Bayesian updates, and the calibration discipline no model chapter can skip</p>
+        </div>
+        <div class="mt-8 md:mt-0 md:text-right flex-shrink-0">
+          <p class="font-mono text-[13px] font-medium text-black/25">Reading time</p>
+          <p class="font-sans text-4xl font-bold tracking-tight text-black/30 mt-1">31 <span class="text-lg font-normal">min</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Navigation -->
+  <nav class="sticky top-14 z-40 border-b border-black bg-white/95 backdrop-blur-sm">
+    <div class="page-shell">
+      <div class="flex gap-8 overflow-x-auto py-3 -mb-px scrollbar-hide">
+        <a href="#s-20-1" class="whitespace-nowrap font-mono text-[13px] font-medium text-black/40 hover:text-black transition-colors">The Question Is Not "Does It Work" but "How Certain Should We Be"</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar rail -->
+  <div class="chapter-sidebar-rail" id="chapter-sidebar-rail">
+    <aside class="chapter-nav" id="chapter-sidebar-nav-wrap" aria-label="In this chapter">
+      <nav class="sidebar-nav" id="chapter-sidebar-nav">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-20-1" data-section="s-20-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Question Is Not "Does It Work" but "How Certain Should We Be"</span></a>
+      </nav>
+    </aside>
+  </div>
+
+  <!-- Content -->
+  <div class="chapter-body" id="chapter-body">
+    <div class="chapter-grid">
+      <div class="chapter-nav-spacer" aria-hidden="true"></div>
+      <nav class="chapter-mobile-nav sidebar-nav" aria-label="In this chapter">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mb-4">Front Matter</p>
+          <a href="preface.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Preface</span></a>
+          <a href="copyright.html" class="sidebar-link flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black py-2"><span>Copyright & License</span></a>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-black/25 mt-6 mb-4">In this chapter</p>
+          <a href="#s-20-1" data-section="s-20-1" class="sidebar-link group flex items-center gap-3 font-mono text-[11px] text-black/35 hover:text-black transition-all duration-200 py-2"><span class="inline-block w-0 group-[.active]:w-9 h-px bg-black transition-all duration-200"></span><span>The Question Is Not "Does It Work" but "How Certain Should We Be"</span></a>
+      </nav>
+      <main class="chapter-main">
+        <div class="book-content">
+<header class="chapter-header">
+    <h1 class="chapter-title"><span class="chapter-num">20</span> Chapter 20 — Statistics for Sport Practitioners</h1>
+    <p class="chapter-subtitle">The n-trap, honest confidence intervals, multiple comparisons, shrinkage, Bayesian updates, and the calibration discipline no model chapter can skip</p>
+  </header>
+
+<h3 id="s-20-1"><span class="section-num">20.1</span> The Question Is Not "Does It Work" but "How Certain Should We Be"</h3>
+
+<p class="section-intro">Sport data is small, autocorrelated, and strange: one match is not 90 minutes of independent trials, one season is not 50 independent games, and one clip is not 900 independent frames. The most valuable statistical skill in a performance department is not running a fancy model — it is knowing the difference between a number and an estimate, and being honest about uncertainty when a coach asks "is that really better?"</p>
+
+    <p><strong>Descriptive aggregates are the start, not the end.</strong> A pickleball dashboard shows a player's shot mix and landing zones; a rugby league dashboard shows line-break frequency by left edge, middle, and right edge. The dashboard must carry the count of each cell, not just the percentage. A coach reads a percentage as truth; the honest tile shows the percentage, the count, and the interval (or shrinkage estimate) together.</p>
+
+  <figure id="fig-20-01" class="full">
+    <img src="shared/images/ch20-descriptive-dashboard.png" alt="Descriptive statistics dashboard: left panel top-down pickleball court with shot-frequency histogram (dink, drive, drop, serve); right panel top-down rugby league pitch with tackle events and set-outcome histogram. Style: white background, black linework, burnt-orange accent bars." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.1</span>: The Descriptive Dashboard Done Right. Frequencies by zone and event type, with the n of each panel stated.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">20.2</span> The n-Trap and the Variance Problem</h2>
+  <p>The canonical mistake: reporting a result without saying how many independent units produced it.</p>
+
+  <ul>
+    <li>A 30-second clip of one doubles rally is <strong>n = 1</strong> (one match context); it is not n = 900 (frames) or n = 6 (player positions).</li>
+    <li>"84.6% receiver accuracy on 3,416 rows" sounds like a large sample. It is <strong>one clip</strong> with a single train/test split, and the rows are not independent — they come from one continuous rally.</li>
+    <li>"Our model beat the baseline" from a single tournament weekend is anecdote, not evidence. You need repeats: several matches, several weeks, or several slices of play.</li>
+  </ul>
+
+  <p>The practical rule: <strong>state the unit of the claim</strong> before stating the number. "This model is 84.6% accurate on 3,416 rows from one clip, one split" is honest. "This model is 84.6% accurate" is not.</p>
+
+  <pre><code class="language-text">pickleball:     player &gt; match &gt; game &gt; rally &gt; shot &gt; frame
+rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &gt; frame</code></pre>
+
+  <p>A claim about "the tracker" inherits the n of clips. A claim about "this player's third-shot drop" inherits the n of rallies. A claim about a club's right-edge defence inherits the n of matches — roughly 24 per season — even though those matches contain ~300 play-the-balls each. The play-the-balls within a match share the opponent, referee, weather, and game state; they are one draw from the match distribution, not 300.</p>
+
+  <p><strong>The variance problem: a 15-rally match is not a 15-sample study.</strong> Even at the correct level, units within a cluster are correlated. A player losing 2–8 plays differently than at 8–8; a rugby league team trailing by 18 attacks differently than a team level with ten to play. The honest statement is "we observed 15 correlated draws from this matchup," which carries far less information than 15 independent draws. The design-effect calculation in section 20.4 quantifies how much less.</p>
+
+  <p><strong>The sample-size reality.</strong> For a proportion, the standard error is approximately √(p(1−p)/n_eff). At n = 24 matches, the standard error is about 0.10; a full NRL season cannot resolve a team-level difference smaller than roughly ±20 percentage points at 95% confidence. At n = 15 rallies, the same arithmetic gives ±25 points. This is why dashboards must show distributions and intervals, not bare season averages.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>n at the claim's unit</th>
+        <th>What you can honestly say</th>
+        <th>What you cannot say</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 clip / 1 session</td>
+        <td>"On this footage, under these conditions, we observed X."</td>
+        <td>Anything about other players, venues, days.</td>
+      </tr>
+      <tr>
+        <td>4–10 units</td>
+        <td>Direction and rough magnitude; screening, not selection.</td>
+        <td>Rankings; "A beats B" (4/4 sign-test wins give p = 0.125).</td>
+      </tr>
+      <tr>
+        <td>~30 units</td>
+        <td>Confidence intervals behave; medium effects detectable.</td>
+        <td>Small effects, subgroup claims, calibration finer than ±5 points.</td>
+      </tr>
+      <tr>
+        <td>100+ units</td>
+        <td>Calibration curves, per-subgroup estimates, optional shrinkage.</td>
+        <td>Rare events under ~1% base rate (needs thousands).</td>
+      </tr>
+      <tr>
+        <td>1,000+ rows, one cluster</td>
+        <td>Same as n = 1 cluster. Rows are the wrong unit.</td>
+        <td>Any claim beyond the cluster.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Pickleball: shot distribution on the pklmart corpus.</strong> The pklmart Kaggle corpus (300k+ shot records, ~1,000 matches; CC BY-NC-SA [verify]) is a first statistical prior for the sport. The useful dashboard is a <em>conditional</em> distribution: third-shot choices by score, dink location by player position, lob frequency by surface. The n of each cell is the number of rallies satisfying the condition, not the rows in the corpus.</p>
+
+  <p><strong>Rugby league: line-break frequency by zone.</strong> A typical NRL match has on the order of 5–10 line breaks [verify]. Over 24 rounds a club accumulates 120–180 line breaks, but those are clustered within matches: opponent, injuries, weather, and home/away all move together. A dashboard showing 43% left edge, 31% middle, 26% right edge is a <em>description</em> of the season, not a stable estimate of attacking shape until a second season and a match-level interval are added.</p>
+
+  <figure id="fig-20-02" class="full">
+    <img src="shared/images/ch20-sample-size-variance.png" alt="Sample-size versus uncertainty chart: x-axis 'independent matches' from 1 to 30, y-axis 'CI width'. Two decaying curves labelled 'rally rate' (pickleball) and 'season rate' (rugby league), with burnt-orange shaded bands. Vertical dashed line at match 5 annotated 'noisy zone'." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.2</span>: What More n Buys. Interval width falls with the square root of independent units.</figcaption>
+  </figure>
+
+  <figure id="fig-20-03" class="full">
+    <img src="shared/images/ch20-pb-shot-distribution.png" alt="Top-down pickleball court with black engineering linework, baseline, NVZ, and net. Burnt-orange density zones showing where shots land, concentrated near NVZ corners. Beside the court a vertical bar chart of shot mix labelled dink, drive, drop, lob, serve." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.3</span>: Pickleball Shot Distribution. The pklmart corpus lets a club describe shot-type mix and landing zones, but every cell must be read with its conditional n.</figcaption>
+  </figure>
+
+  <figure id="fig-20-04" class="full">
+    <img src="shared/images/ch20-rl-linebreak-freq.png" alt="Top-down rugby league pitch with try lines, 40m and 20m markings, and goal posts. Horizontal bar chart in burnt-orange showing line-break frequency by field zone labelled left edge, middle, right edge. Small black tackle dots with burnt-orange burst markers where line breaks occur." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.4</span>: Rugby League Line-Break Frequency by Zone. A season description, not a stable estimate of attacking shape until the match-level interval is added.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">20.3</span> Uncertainty: Bootstrap Confidence Intervals (W1.4 Lab)</h2>
+  <p>The bootstrap is the workhorse: resample with replacement from your data, recompute the statistic, repeat thousands of times, take the 2.5th and 97.5th percentiles. It requires no distributional assumptions and works on nearly any statistic.</p>
+
+  <p>The whole correction is one line of NumPy — resample cluster ids, not rows: <code>rng.choice(rally_ids, size=len(rally_ids), replace=True)</code>, then recompute the statistic on the resampled clusters. Everything else about the bootstrap stays the same; only the unit changes.</p>
+
+  <p>But the resampling unit must match the unit of the claim. Our lab demonstrates the trap on the book's own E09 tracker bake-off:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Approach</th>
+        <th>ByteTrack HOTA</th>
+        <th>BoT-SORT HOTA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Point estimate</strong> (as originally reported)</td>
+        <td>0.642</td>
+        <td>0.815</td>
+      </tr>
+      <tr>
+        <td><strong>Bootstrap by play-window</strong> (honest unit: 45 windows)</td>
+        <td>0.621 (0.607–0.635)</td>
+        <td>0.815 (0.803–0.828)</td>
+      </tr>
+      <tr>
+        <td><strong>Naive frame bootstrap</strong> (900 frames, wrong unit)</td>
+        <td>0.620 (0.605–0.634)</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The naive CI is far too tight: it treats 900 consecutive frames as 900 independent observations. The E09 delta is +0.172 HOTA, but the independent units are <strong>4 players</strong> (n = 4), and a sign test gives <strong>p = 0.125</strong> — not significant. "BoT-SORT is better" from one clip is a hypothesis, not a measurement. Re-running across 10–20 clips and bootstrapping by clip is the honest path.</p>
+
+  <h3>The block bootstrap for time-ordered sport</h3>
+  <p>When the unit is sequential — rallies within a pickleball match, sets-of-six within a rugby league match — a naive elementwise bootstrap under-states uncertainty by splitting what should stay together. The fix is a <strong>block bootstrap</strong>: resample whole rallies, whole sets, or whole clips, not rows. For a 15-rally pickleball match the correct unit is rallies; for a full rugby league match the correct unit is sets-of-six, giving roughly 24 blocks per match. The resulting interval is wider, slower to decay, and honest.</p>
+
+  <p><strong>Pickleball and rugby league examples.</strong> The E12 classifier reports 84.6% accuracy on 3,416 rows. A row-level bootstrap gives a spuriously tight interval because rows inside a rally move together: a receiver well-positioned at frame t tends to stay well-positioned at frame t+1, so the model is repeatedly correct for the same physical reason. The rally-level bootstrap gives the honest interval [0.779, 0.815]. In rugby league, a set-completion rate over eight rounds is not 192 independent observations (8 matches × 24 sets); a block bootstrap by match can produce a 95% interval twice as wide as the naive binomial interval. Cumming's "new statistics" recommendation — estimate with an interval, avoid a binary significant/not-significant declaration — is the spine of the frequentist half of this chapter.</p>
+
+  <h2 class="section-title"><span class="section-num">20.3b</span> Hypothesis Testing: the p &lt; 0.05 Gate</h2>
+  <p>Hypothesis testing is a triage gate, not a truth machine. The p-value answers: "if there were really no difference, how often would I see a result this extreme?" When the answer is rarely (conventionally p &lt; 0.05), the result is worth a closer look. It is not proof that your model is better, and it is not the probability that the null is true. The ASA's 2016 statement is the canonical caution: p-values do not measure effect size or importance.</p>
+
+  <p>The book's E22 "Humans Above the Loop" engine uses the p-value exactly this way: 1,000 raw sensor events are passed through a statistical screen, and only 119 alerts are surfaced (88.1% noise suppression). Each alert carries a p-value: a pickleball NVZ foot-fault alert might read p = 0.012, a middle-seam exposure alert p = 0.034. The gate is triage: below 0.05, show the human; above 0.05, suppress. The engine is not claiming the foot fault definitely happened; it is claiming the deviation is unusual enough to be worth human review.</p>
+
+  <p><strong>The 20-metrics-on-the-HUD problem.</strong> A coaching dashboard might display 20 metrics per match. If you flag any metric crossing p &lt; 0.05, you expect about one false alarm by chance; with 20 metrics the probability of at least one false alarm is 1 − (1 − 0.05)^20 ≈ 0.64. The fix is to pre-specify the metrics that matter, apply Benjamini–Hochberg false-discovery control, or build a small number of composite indicators rather than trawling 20 metrics.</p>
+
+  <p><strong>Pickleball and rugby league examples.</strong> A player switches paddle and goes 8/10 on third-shot drops; against a 60% historical rate the two-sided binomial p-value is about 0.06 — not significant. A club moves its best second-rower to the left edge and records four line breaks in two matches; n = 2 matches is too few for a rare event. In both cases the honest interim statement is "we do not know yet; collect more independent units."</p>
+
+  <figure id="fig-20-05" class="full">
+    <img src="shared/images/ch20-hypothesis-gate.png" alt="Hypothesis-test gate diagram: black linework null-distribution bell curve with the right tail beyond a vertical dashed line shaded burnt-orange and labelled p < 0.05. Above, a funnel narrows from 1000 events to 119 alerts. Small pickleball and rugby league ball icons below the axis." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.5</span>: The p-Value as a Triage Gate, Not a Verdict. E22 surfaces 119 of 1,000 events as alerts because the deviation is unusual under the null.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">20.3c</span> Regression: the Honest Correlation</h2>
+  <p>Regression is the most abused tool in sport analytics. A coefficient tells you the association; it does not tell you that changing the input causes the output to change. The coach's question is causal: "If I make my player run more, will they get injured less?" The regression answer is only: "Players who run more are currently injured more/less often." The gap is selection bias: players who run more may already be more durable, more fatigued, or in different positions.</p>
+
+  <p><strong>The honest example: GPS load and injury.</strong> A sports-science department collects GPS load for every session and regresses next-week injury on the previous week's load. The coefficient on high-speed distance may be positive. The honest conclusion is "under our current schedule, high-speed load covaries with injury risk." It is not "cut high-speed running and injuries will fall." The next step is a controlled load-prescription trial or a causal inference design, not a blanket rule.</p>
+
+  <p><strong>Pickleball and rugby league examples.</strong> A logistic regression of point-win on shot-choice indicators (drive, drop, lob) in the pklmart corpus might show drives are associated with higher win probability; players choose drives in high-leverage moments, so the coefficient does not prove "drive more and win more." A rugby league club that regresses wins on line-break frequency finds a strong positive coefficient, but winning teams also create more situations that produce line breaks. The regression shows association; the causal claim needs a randomized experiment or an instrument.</p>
+
+  <h2 class="section-title"><span class="section-num">20.4</span> Effective Sample Size: the Intraclass Correlation Fix</h2>
+  <p>For the E12 GNN accuracy (84.6% on 3,416 rows), the honest error bar depends on how correlated rows within a rally are. The cluster correction: effective n = n / (1 + (m − 1)·ρ), where m is cluster size and ρ is the intraclass correlation. Our lab shows the same point estimate with different honest error bars:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ρ (within-rally correlation)</th>
+        <th>Effective n</th>
+        <th>95% CI for 0.846</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0.00 (rows independent — false)</td>
+        <td>3,416</td>
+        <td>0.834 – 0.858</td>
+      </tr>
+      <tr>
+        <td>0.05</td>
+        <td>990</td>
+        <td>0.824 – 0.868</td>
+      </tr>
+      <tr>
+        <td>0.10</td>
+        <td>579</td>
+        <td>0.817 – 0.875</td>
+      </tr>
+      <tr>
+        <td>0.30</td>
+        <td>218</td>
+        <td>0.798 – 0.894</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Cross-check: Wilson interval on 3,416 rows = [0.834, 0.858]; naive row bootstrap = [0.784, 0.810]; rally-cluster bootstrap = [0.779, 0.815]. The rally-cluster interval is the honest one and is <em>wider</em> than the naive bootstrap — the design effect at work.</p>
+
+  <p><strong>Rugby league translation.</strong> A tackle-efficiency metric computed over 300 play-the-balls within a match is not n = 300; it is one match with perhaps 24 sets-of-six as the effective unit. If the within-match correlation is 0.10, the effective n for a single-match metric is closer to 27 than to 300. Aggregate a whole season (24 matches) and the effective n becomes 24, not 7,200. That is why team-level defensive claims need two seasons, not one, to stabilize.</p>
+
+  <figure id="fig-20-07" class="full">
+    <img src="shared/images/stats-bootstrap-ci.png" alt="Confidence interval comparison: naive rows tight CI vs rally-cluster wide CI vs honest labelled, design effect annotation, point estimate 0.846. Style: white background, black axes, burnt-orange honest CI." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.7</span>: The Design Effect in Action. Same point estimate, three different error bars. The honest interval is the widest because the rows are not independent.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">20.5</span> Baselines: What Does Blind Guess Score?</h2>
+  <p>Accuracy is meaningless without a baseline. In doubles, a receiver predictor that always picks the near player scores 0.50 if there are two candidates, 0.25 if four. Our lab's baseline check:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Baseline</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Coin flip (2 receivers)</td>
+        <td>0.500</td>
+      </tr>
+      <tr>
+        <td>Uniform guess (4 players)</td>
+        <td>0.250</td>
+      </tr>
+      <tr>
+        <td>Reported E12 GNN</td>
+        <td>0.846 (edge = 0.346)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The strongest baselines are not coin flips; they are trivial heuristics. Per shot-type priors, a large share of pickleball shots go cross-court, so "always predict the cross-court receiver" might score well above 0.50. In rugby league, a model that predicts the next play-the-ball will be a hit-up is right roughly 60–70% of the time simply because most tackle outcomes are hit-ups. Any novel predictor must be compared against the situational baseline, not a 50/50 coin.</p>
+
+  <h2 class="section-title"><span class="section-num">20.6</span> Multiple Comparisons: Try 20 Models, Report the Best?</h2>
+  <p>The lab simulates it exactly. True accuracy 0.70, 20 model variants with noise ±0.08:</p>
+
+  <ul>
+    <li>The best of 20 reports <strong>0.862</strong>.</li>
+    <li>Across 2,000 repeated experiments, the expected maximum of 20 is <strong>0.848</strong>.</li>
+  </ul>
+
+  <p>So "our best model scored 0.862" — when the true accuracy is 0.70 — is the normal consequence of selection, not a discovery. Fixes: hold out a test set you touch exactly once; report all 20 results; use Bonferroni or Benjamini–Hochberg; prefer model families that share pretrained backbones so the comparison is structural. The book's E01–E14 series is a 14-model family — every "best" result must state how many were tried.</p>
+
+  <p>The same selection bias appears on a live dashboard. If 20 metrics are tracked and any metric that moves by more than two standard deviations triggers an alert, the false-alarm rate is uncontrolled. A good report chooses 3–5 pre-specified indicators and reports them with correction-aware intervals.</p>
+
+  <h2 class="section-title"><span class="section-num">20.7</span> Shrinkage and Regression to the Mean</h2>
+  <p>The single most expensive mistake in talent evaluation: seeing a player have a great month and concluding they got better. Regression to the mean guarantees that any extreme observation is partly luck, and the further it is from the average, the more of it is. The Bayesian fix is <em>shrinkage</em>: pull every estimate toward the population mean by an amount proportional to the noise in its estimate.</p>
+
+  <ul>
+    <li><strong>Beta-binomial</strong> for binary rates (serve success, third-drop execution): true rate ≈ (hits + prior_α) / (attempts + prior_α + prior_β). With 5 attempts and a prior centered at 0.5, the estimate stays near 0.5 — and correctly so.</li>
+    <li><strong>Hierarchical models</strong> for team strength: each team's rating is informed by all other teams' ratings; a team with 4 games is pulled hard toward the league mean, one with 20 games gets far more credit. This is the difference between "NRL ladder after round 5" and a credible rating.</li>
+  </ul>
+
+  <p><strong>Pickleball and rugby league examples.</strong> A junior goes 8/10 on third-shot drops; the raw estimate is 0.80, but a Beta(2, 2) prior gives a posterior mean near 0.71 and a wide interval. A kicker makes 12/15 goals in five rounds (0.80); shrinkage toward the NRL career average near 0.75 [verify] pulls the estimate toward 0.76. After five rounds the estimate is noisy; after twenty rounds the data dominates. Rule of thumb: never state a rate for a player below ~20 attempts without the shrinkage-adjusted band.</p>
+
+  <h2 class="section-title"><span class="section-num">20.7b</span> Bayesian Approaches: the Uncertainty Quantification</h2>
+  <p>Bayesian methods are the honest way to handle small data. For a binary rate, the beta-binomial update gives a posterior distribution: a Beta(α, β) prior plus k successes in n trials gives a Beta(α + k, β + n − k) posterior. The posterior mean is the shrunken estimate, and the 95% credible interval is the range in which the parameter lies with 95% posterior probability, given the model and the data.</p>
+
+  <p>The strength of the prior is the strength of your accumulated evidence. With 10 attempts, the prior still matters; with 500 attempts, the data dominates. Hierarchical models generalize this: each team or player has their own rate, but all rates are drawn from a league-level distribution. The model learns how much to shrink. This is the engine behind credible team ratings, power rankings, and the EPV models in chapter 22.</p>
+
+  <p>Bayesian reports can answer coach-facing questions directly — "What is the probability that the left-edge defence is below the league average?" — using Kruschke's HDI+ROPE framework: act only if the credible interval lies outside a region of practical equivalence.</p>
+
+  <figure id="fig-20-06" class="full">
+    <img src="shared/images/ch20-bayes-posterior.png" alt="Bayesian updating diagram: three curves on shared axes labelled 'success rate'. A wide flat grey curve labelled 'prior', a narrower black curve labelled 'data', and a burnt-orange filled curve labelled 'posterior'. Vertical dashed line at the posterior mean with a shaded credible interval. Small pickleball paddle and rugby league ball icons below the x-axis." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.6</span>: Prior, Data, and Posterior. The posterior is the compromise between what we knew before and what the data tells us.</figcaption>
+  </figure>
+
+  <h2 class="section-title"><span class="section-num">20.8</span> Calibration: Is Your Probability Model Honest?</h2>
+  <p>A threat model that predicts "0.80 chance the opponent attacks the middle" is useful only if, across all the times it said 0.8, about 80% were attacks. That property is calibration. Metrics:</p>
+
+  <ul>
+    <li><strong>Brier score</strong>: mean squared error of your probabilities against outcomes (0 = perfect, 0.25 = coin). Lower is better, and it decomposes into calibration + refinement.</li>
+    <li><strong>ECE</strong> (expected calibration error): bin the predictions, compare mean predicted prob vs empirical frequency; a well-calibrated model has a near-45° reliability line.</li>
+    <li><strong>Log loss</strong>: penalizes confident mistakes harshly — the metric you should use when a coach will act on the number.</li>
+  </ul>
+
+  <p><strong>Pickleball and rugby league examples.</strong> A receiver predictor that says 0.80 should be right 80% of the time at that level; if it is only 55% right when it says 0.65, a coach reading it as "two-to-one" will be systematically wrong. A tackle-risk model that overestimates injury probability on high-impact tackles will waste medical resources. The fix is a reliability curve and, if needed, temperature scaling.</p>
+
+  <figure id="fig-20-08" class="full">
+    <img src="shared/images/stats-calibration.png" alt="Calibration reliability curve: diagonal perfect line black, model curve sagging below at high confidence with overconfident callout and Brier score annotation. Style: white background, black diagonal, burnt-orange model curve." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.8</span>: Calibration Curve. A model can be accurate at ranking yet overconfident at a probability of 0.8 — the gap is where coaches get burned.</figcaption>
+  </figure>
+
+  <p>Every probability-emitting component in this book (threat scores, receiver probabilities, expected points in chapter 22, tackle-risk estimates) MUST report a calibration curve with its headline number. An EPV model can have great AUC and be badly miscalibrated; calibration is the discipline that makes a model usable for decision-making rather than just ranking.</p>
+
+  <h2 class="section-title"><span class="section-num">20.9</span> The Honesty Contract</h2>
+  <p>Every quantitative claim in the book carries five fields:</p>
+
+  <ol>
+    <li><strong>n</strong> — the number of independent units (clips, matches, athletes, windows).</li>
+    <li><strong>CI</strong> — the uncertainty interval and the unit it was resampled over.</li>
+    <li><strong>Baseline</strong> — what a trivial heuristic scores on the same data.</li>
+    <li><strong>Failure case</strong> — the input on which the model breaks.</li>
+    <li><strong>Evidence tier</strong> — measured / source-backed / concept-transfer / proposed / unknown.</li>
+  </ol>
+
+  <p>This is what the claims register (chapter 2 / appendix D) enforces mechanically: a claim without an artifact path, a unit statement, and a baseline is not accepted into the manuscript.</p>
+
+  <h2 class="section-title"><span class="section-num">20.9b</span> Honest Limits: Correlation Is Not Causation</h2>
+  <p>The most dangerous word in a sport report is "because." A regression shows that teams with more line breaks win more games. A dashboard shows that players with higher third-shot drop success win more rallies. A GPS report shows that higher load is associated with more injuries. None of these are causal statements unless the study was designed to be causal.</p>
+
+  <p><strong>The NRL RWA "playing style" claims [verify].</strong> Published analyses of NRL playing style sometimes correlate high running metres, offload counts, or tackle breaks with a label like "tough footy" or "free-flowing attack" and imply that adopting the style causes success. The honest reading is that style labels and outcomes are jointly determined by talent, scoreboard, opposition, and game state. A team behind by 20 takes more risks, produces more offloads, and loses more often; the correlation is real, but the causal arrow is not from style to winning. The specific publication and wording need to be checked before this is cited as a flaw.</p>
+
+  <p>Use different verbs for different evidence: <strong>"is associated with"</strong> for regression or observational data; <strong>"predicts"</strong> for a model evaluated on held-out data; <strong>"causes"</strong> only for a randomized experiment, natural experiment, or causal inference design with identifiable assumptions. If your evidence is at the first level, your prose must stay at the first level.</p>
+
+  <p><strong>Pickleball and rugby league examples.</strong> A club notices that its best doubles pairs have a higher dink-to-drive ratio; the honest statement is that winning pairs also dink more, not that increasing dinking causes winning. A rugby league club finds wins correlate with low penalty counts; the honest statement is association, not that eliminating penalties causes wins without a controlled intervention.</p>
+
+  <h2 class="section-title"><span class="section-num">20.10</span> The Honest-Report Recipe (Copy This)</h2>
+  <ol>
+    <li>State the claim in one sentence: "X improves HOTA by 0.17."</li>
+    <li>Name the unit: "on 4 players, 1 clip."</li>
+    <li>Compute the honest CI: <code>bootstrap_ci(values=[per-window scores], stat_fn=mean, n_boot=5000)</code>, resampling the unit of the claim.</li>
+    <li>Compute a baseline: trivial heuristic score on the same data (not just coin-flip).</li>
+    <li>Ask the p-hacking question: how many configurations were tried? If &gt;1, apply a correction or state the max.</li>
+    <li>If the metric is a probability: report Brier/log-loss + calibration curve.</li>
+    <li>If the estimate is a rate: apply shrinkage (beta-binomial) before quoting it.</li>
+    <li>Fill the evidence tier: measured / source-backed / concept-transfer / proposed / unknown.</li>
+    <li>Ship the block to the claims register (chapter 2, appendix D).</li>
+  </ol>
+
+  <h2 class="section-title"><span class="section-num">20.10b</span> The 10 Use Cases: Statistical Practice in the Two Sports</h2>
+  <p>The use cases below are the applied bridge from the methods above to the weekly work of a performance department. They follow four quadrants: <strong>Q-I Describing Without Lying (01-02)</strong>, <strong>Q-II The Small-n Reality (03-04)</strong>, <strong>Q-III Deciding Under Uncertainty (05-08)</strong>, and <strong>Q-IV Reporting That Survives Scrutiny (09-10)</strong>. Each case states the practical problem, the mechanism with its math, a figure, both sports, and the payoff — and each carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established).</p>
+
+  <h3 class="sub-heading">Quadrant I: Describing Without Lying (01-02)</h3>
+
+  <h3 class="sub-heading">UC 01 — Shot Distribution With Conditional n</h3>
+  <p>A coach asks "what does our shot mix look like?" and the dashboard answers with percentages that read as truth. The mechanism is a <em>conditional</em> frequency estimate: partition the corpus by the condition that matters (score, court position, rally length), then report each cell's rate with a Wilson score interval, p̂ with 95% limits from <code>proportion_confint(method='wilson')</code> (source-backed: Cumming 2014; statsmodels docs). The discipline is that the n of each cell is the number of rallies satisfying the condition — not the rows in the corpus. The pklmart Kaggle corpus (300k+ shot records, ~1,000 matches; CC BY-NC-SA [verify]) supplies the prior; the club's own tagged rallies supply the estimate; a cell with n = 9 rallies gets an interval too wide to act on, and the dashboard must say so.</p>
+
+  <figure id="fig-20-09" class="full">
+    <img src="shared/images/ch20-uc01-shot-mix.png" alt="Pickleball court with shot-landing density zones beside a shot-mix bar chart with confidence-interval whiskers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.9</span>: UC 01 — Shot Mix With Intervals. Every bar carries its Wilson whisker; cells under ~20 rallies are description, not estimate. <strong>Pickleball</strong>: third-shot choice (drop vs drive) by score state on the pklmart corpus. <strong>Rugby league</strong>: play-the-ball location mix by tackle number, each cell with its conditional n.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (coaching):</strong> shot-selection review grounded in what the data can actually support — no more rewriting the game plan over a 9-rally cell.</p>
+
+  <h3 class="sub-heading">UC 02 — Line-Break Frequency as a Season Estimate</h3>
+  <p>"We break the line left 43% of the time" is a season description dressed as a tactical fact. The mechanism: treat the line-break rate as a proportion estimated from 24 clustered draws (matches), not 7,200 play-the-balls, and attach a match-level cluster-bootstrap interval (resample whole matches: <code>rng.choice(match_ids, replace=True)</code>). A typical NRL match produces on the order of 5-10 line breaks [verify]; over 24 rounds a club accumulates 120-180 of them, but opponent, weather, and game state move together within a match. At n = 24 matches the standard error of a proportion is about √(p(1−p)/24) ≈ 0.10, so a single season resolves differences no finer than roughly ±20 percentage points (derived in 20.2).</p>
+
+  <figure id="fig-20-10" class="full">
+    <img src="shared/images/ch20-uc02-linebreak-ci.png" alt="Rugby league pitch with line-break frequency bars by zone, each with wide match-level confidence whiskers." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.10</span>: UC 02 — Line-Break Rate, Honest Interval. Zone shares with match-level cluster-bootstrap whiskers; n = 24 means the whiskers are wide. <strong>Rugby league</strong>: left/middle/right edge break share across 24 rounds. <strong>Pickleball</strong>: side-out conversion rate per match across a club season, resampled by match.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (tactical):</strong> edge-defence investment decided on a two-season interval, not a one-season leaderboard position.</p>
+
+  <h3 class="sub-heading">Quadrant II: The Small-n Reality (03-04)</h3>
+
+  <h3 class="sub-heading">UC 03 — The 15-Rally Match Is Not a 15-Sample Study</h3>
+  <p>A singles match produces about 15 rallies; the post-match report treats them as 15 independent measurements. They are not: a player down 2-8 plays differently than at 8-8, so rallies within a match are correlated draws from one matchup. The mechanism is the design effect from 20.4: n_eff = n / (1 + (m − 1)·ρ), with m the cluster size and ρ the intraclass correlation. At n = 15 even perfectly independent rallies give a proportion interval of roughly ±25 points; with realistic score-state correlation the effective n is smaller still. The honest sentence is "we observed 15 correlated draws from this matchup" — a screening observation, not a measurement of the player.</p>
+
+  <figure id="fig-20-11" class="full">
+    <img src="shared/images/ch20-uc03-fifteen-rallies.png" alt="Interval width decaying with independent rally count, the one-match zone from 1 to 15 rallies shaded." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.11</span>: UC 03 — What One Match Buys. Interval width falls as 1/√n; the entire first match lives inside the noisy band. <strong>Pickleball</strong>: a 15-rally match read as ±25 points, not as a rate. <strong>Rugby league</strong>: one match = ~24 sets-of-six as the resampling unit, so a single-match tackle-efficiency number is one draw.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (coaching):</strong> kills the post-match overreaction — the single most expensive habit in a review meeting.</p>
+
+  <h3 class="sub-heading">UC 04 — The 24-Round Season Is Still Small</h3>
+  <p>A season feels like a lot of data. At the unit where team claims live — the match — it is 24 draws. The mechanism: model the season rate as a proportion (or count rate) over 24 clustered matches, and apply hierarchical shrinkage toward the league mean for any per-team claim (source-backed: McElreath 2020, multilevel partial pooling). With 24 matches a binomial proportion carries a standard error near 0.10; resolving a true 5-point edge between two clubs needs multiple seasons. This is why the ladder after round 5 is noise, why "best left-edge defence in the league" needs a shrinkage-adjusted band, and why the chapter's rule stands: team-level claims need two seasons to stabilize.</p>
+
+  <figure id="fig-20-12" class="full">
+    <img src="shared/images/ch20-uc04-season-length.png" alt="A 24-round season timeline with a wide one-season interval bar and a narrow two-season interval bar." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.12</span>: UC 04 — Season-Length Resolution. One NRL season resolves ±20 points at team level; the second season is what narrows the bar. <strong>Rugby league</strong>: 24 rounds = 24 match-level draws. <strong>Pickleball</strong>: a ~12-match club season ladder, where every team's rate needs shrinkage toward the league mean before ranking.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (recruitment/selection):</strong> stops a club buying or cutting a player on one season of noisy team-level numbers.</p>
+
+  <h3 class="sub-heading">Quadrant III: Deciding Under Uncertainty (05-08)</h3>
+
+  <h3 class="sub-heading">UC 05 — The p &lt; 0.05 Triage Gate (E22)</h3>
+  <p>An analyst cannot review 1,000 sensor events a day; a gate must decide what reaches a human. The mechanism is the hypothesis test used as a screen: each event is scored against a null distribution of "normal", and only events in the extreme tail (conventionally p &lt; 0.05) surface as alerts. The E22 "Humans Above the Loop" engine does exactly this — 1,000 raw events in, 119 alerts out, 88.1% noise suppression (measured, E22). The ASA's 2016 statement is the guardrail: the p-value is not the probability the alert is real, and 0.05 is a triage convention, not a law (source-backed: Wasserstein &amp; Lazar 2016). The gate claims "unusual enough to review", never "this happened".</p>
+
+  <figure id="fig-20-13" class="full">
+    <img src="shared/images/ch20-uc05-alert-triage.png" alt="Alert triage funnel from 1000 events to 119 alerts beside a null curve with the p &lt; 0.05 tail shaded." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.13</span>: UC 05 — The Triage Gate. E22 surfaces 119 of 1,000 events; each alert carries its tail probability. <strong>Pickleball</strong>: NVZ foot-fault alert at p = 0.012 routed to video review. <strong>Rugby league</strong>: middle-seam exposure alert at p = 0.034 routed to the defence coach.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (officiating/analyst time):</strong> an 88.1% reduction in human review load with the statistical claim stated at the right strength.</p>
+
+  <h3 class="sub-heading">UC 06 — Load-Injury Regression, Used Honestly</h3>
+  <p>The sports-science question "does high load cause injury?" meets the tool everyone reaches for: regress next-week injury on this-week GPS load, logit P(injury) = β₀ + β₁·(high-speed metres). The honest use stops at association: β₁ &gt; 0 means load and injury covary <em>under the current schedule</em> — durable athletes are selected into higher loads, fatigued ones into lower, and the coefficient absorbs all of it. The mechanism worth teaching is the confound, not the fit: report the odds ratio with its interval, state the selection-bias caveat in the same sentence, and name the design that would earn a causal verb (a randomized load-prescription trial or an explicit causal-inference design). The blanket rule "cut high-speed running" is exactly the move this chapter exists to block.</p>
+
+  <figure id="fig-20-14" class="full">
+    <img src="shared/images/ch20-uc06-load-injury.png" alt="Scatter of weekly load against injury risk with an upward regression line and a selection-bias loopback arrow." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.14</span>: UC 06 — Association With Its Caveat Attached. The fitted line is real; the causal arrow is not earned by the regression. <strong>Rugby league</strong>: GPS high-speed metres vs next-week soft-tissue injury across a season. <strong>Pickleball</strong>: overhead-shot volume vs shoulder complaints in a senior league [verify — practitioner surveillance, no published cohort].</figcaption>
+  </figure>
+
+  <p><strong>Payoff (injury prevention):</strong> load policy argued from an honest association, with the causal claim reserved for the trial that earns it.</p>
+
+  <h3 class="sub-heading">UC 07 — Bayesian Updating for Small Samples</h3>
+  <p>A junior trial gives you 10 attempts; a season gives you 300. The beta-binomial update handles both in closed form: a Beta(α, β) prior plus k successes in n trials yields a Beta(α + k, β + n − k) posterior — the posterior mean is the shrunken estimate, and the 95% credible interval is the honest band (source-backed: Kruschke 2015; McElreath 2020). At n = 10 the prior still shapes the answer; at n = 500 the data dominates. The coach-facing question becomes answerable directly: "what is the probability this player's true rate is above the squad mean?" — and Kruschke's HDI+ROPE rule says act only when the interval clears a region of practical equivalence.</p>
+
+  <figure id="fig-20-15" class="full">
+    <img src="shared/images/ch20-uc07-bayes-small-n.png" alt="Two panels showing prior and posterior curves at n = 10 and n = 500, the posterior narrowing as data dominates." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.15</span>: UC 07 — The Posterior at Two Sample Sizes. Wide and prior-shaped at n = 10; narrow and data-shaped at n = 500. <strong>Pickleball</strong>: a junior's 8/10 on third-shot drops → posterior mean ≈ 0.71 under a Beta(2, 2) prior, wide band. <strong>Rugby league</strong>: a kicker at 12/15 shrunk toward the league goal-kicking average near 0.75 [verify].</figcaption>
+  </figure>
+
+  <p><strong>Payoff (talent evaluation):</strong> trial decisions made on a shrunken estimate with a band, not on the raw 0.800 that luck inflated.</p>
+
+  <h3 class="sub-heading">UC 08 — The 20-Metric HUD and the False-Alarm Budget</h3>
+  <p>The live dashboard shows 20 metrics per match and flags anything crossing p &lt; 0.05. The arithmetic is unforgiving: under the null, the probability of at least one flag is 1 − (1 − 0.05)²⁰ ≈ 0.64 — most match nights produce a false alarm by design. The mechanism has two halves: pre-specify the 3-5 indicators that matter before the season (the practitioner's Bonferroni — fix the protocol, not the p-value), and when many claims really are tested at once, apply Benjamini-Hochberg false-discovery control (source-backed: Benjamini &amp; Hochberg 1995). The same discipline governs model selection: the lab's 20-variant simulation shows the best-of-20 reporting 0.862 when true accuracy is 0.70 (measured, W1.4 lab) — the winner's curse, not a discovery.</p>
+
+  <figure id="fig-20-16" class="full">
+    <img src="shared/images/ch20-uc08-multi-comparisons.png" alt="Twenty metric p-values plotted against a naive 0.05 line and a sloped Benjamini-Hochberg threshold, three false alarms highlighted." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.16</span>: UC 08 — Twenty Metrics, One Budget. The naive 0.05 line flags three by chance; the BH slope spends the false-alarm budget deliberately. <strong>Pickleball</strong>: a 20-metric rally HUD (dink depth, drop height, NVZ position, …) pre-specified to 4 indicators. <strong>Rugby league</strong>: 20 team metrics per round with BH control before any "concern" reaches the head coach.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (analyst credibility):</strong> the coach learns that when this dashboard flags something, it is worth a meeting.</p>
+
+  <h3 class="sub-heading">Quadrant IV: Reporting That Survives Scrutiny (09-10)</h3>
+
+  <h3 class="sub-heading">UC 09 — Confidence Intervals in the Report Feed</h3>
+  <p>The chapter 26 narrative pipeline turns numbers into prose for coaches; whatever it says must already carry its uncertainty, because prose strips qualifiers. The mechanism is the honesty contract (20.9) applied at the tile level: every metric ships as estimate + interval + n + baseline, with the interval computed at the claim's unit — Wilson for a proportion on truly independent trials, cluster bootstrap when the trials nest inside rallies, sets, or matches. The worked example is E12: 84.6% reads as [0.834, 0.858] if rows were independent (they are not), [0.779, 0.815] resampled by rally, and "unknown — one clip" at the footage level (measured, W1.4 lab). The tile that ships "0.846" bare is the tile that gets quoted wrong.</p>
+
+  <figure id="fig-20-17" class="full">
+    <img src="shared/images/ch20-uc09-ci-report-tile.png" alt="Three dashboard tiles: a bare percentage crossed out, an estimate with interval and n, and the same with a baseline marker." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.17</span>: UC 09 — The Tile That Survives Being Quoted. Estimate, interval, n, and baseline travel together into the C26 feed. <strong>Pickleball</strong>: receiver-accuracy tile reading "0.846 [0.78, 0.82], n = 1 clip, baseline 0.50". <strong>Rugby league</strong>: set-completion tile with a match-bootstrapped interval and the league-average baseline marker.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (coaching communication):</strong> the narrative layer (chapter 26) cannot overstate what the number already hedged.</p>
+
+  <h3 class="sub-heading">UC 10 — The Correlation-Not-Causation Trap</h3>
+  <p>The most dangerous word in a sport report is "because". The mechanism to teach is the confound: a third variable driving both sides of an association. Teams behind on the scoreboard take more risks, produce more offloads, and lose more often — so offloads correlate with losing without causing it; winning doubles pairs dink more, but winning also produces the rally states where dinking is right. The discipline is verbal: <strong>"is associated with"</strong> for observational data, <strong>"predicts"</strong> for a model evaluated on held-out data, <strong>"causes"</strong> only for a randomized or natural experiment with identifiable assumptions (source-backed: ASA 2016; Gelman &amp; Loken's forking-paths argument [verify primary URL]). The NRL "playing style" genre — correlating running metres or offload counts with a success label — is the canonical offender [verify].</p>
+
+  <figure id="fig-20-18" class="full">
+    <img src="shared/images/ch20-uc10-correlation-trap.png" alt="Causal diagram: style and winning boxes joined by a correlation arrow, with a scoreboard confound box above feeding both." loading="lazy"/>
+    <figcaption><span class="fig-num">Figure 20.18</span>: UC 10 — The Confound Diagram. The correlation arrow is earned; the causal arrow is crossed out until the design earns it. <strong>Rugby league</strong>: offload count vs wins, confounded by scoreboard and game state. <strong>Pickleball</strong>: dink-to-drive ratio vs rally wins in winning pairs — association, not instruction.</figcaption>
+  </figure>
+
+  <p><strong>Payoff (tactical):</strong> the club stops copying "winning styles" and starts testing interventions — the difference between a fashion cycle and a program.</p>
+
+  <h2 class="section-title"><span class="section-num">20.10c</span> The Toolkit, the Skeleton, and the Pipeline</h2>
+  <p>Every use case above runs on five tools, all native on the book's M4 lab:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>What it does here</th>
+        <th>Sport use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>NumPy (<code>rng.choice</code>)</td>
+        <td>Cluster/block bootstrap by resampling ids, not rows</td>
+        <td>Rally-level CIs for E12; match-level CIs for line-break rates</td>
+      </tr>
+      <tr>
+        <td>statsmodels <code>proportion_confint</code></td>
+        <td>Wilson score intervals for proportions</td>
+        <td>Shot-mix cells (UC 01); side-out rates</td>
+      </tr>
+      <tr>
+        <td>scipy <code>stats.bootstrap</code></td>
+        <td>Generic interval machinery with an axis/cluster wrapper</td>
+        <td>Per-clip ΔHOTA intervals for the E09 tracker bake-off</td>
+      </tr>
+      <tr>
+        <td>scikit-learn calibration</td>
+        <td>Reliability curves, Brier score, Platt/isotonic fixes</td>
+        <td>Threat-model and EPV calibration (chapters 22, 28)</td>
+      </tr>
+      <tr>
+        <td>PyMC + ArviZ</td>
+        <td>Beta-binomial and hierarchical posteriors, HDI+ROPE</td>
+        <td>Shrunken player rates (UC 07); team strength priors for chapter 22</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>The runnable skeleton is the one script every use case shares — a cluster bootstrap that takes events with a cluster column and resamples the right unit:</p>
+
+  <pre><code class="language-python">import numpy as np
+
+def cluster_bootstrap(df, cluster_col, stat_fn, n_boot=5000, seed=42):
+    """Interval at the claim's unit: resample clusters, never rows."""
+    rng = np.random.default_rng(seed)
+    clusters = df[cluster_col].unique()
+    stats = []
+    for _ in range(n_boot):
+        picked = rng.choice(clusters, size=len(clusters), replace=True)
+        sample = df[df[cluster_col].isin(picked)]
+        stats.append(stat_fn(sample))
+    lo, hi = np.percentile(stats, [2.5, 97.5])
+    return stat_fn(df), lo, hi
+
+# pickleball:  cluster_col="rally_id"   — accuracy per rally
+# rugby league: cluster_col="match_id"  — line-break rate per match</code></pre>
+
+  <p><strong>What this adds to the pipeline.</strong> UC 01-02 feed the chapter 28 cockpit: every dashboard tile inherits the interval-and-n contract. UC 05 is the statistical screen inside E22's alert engine and the chapter 19 eventing queue. UC 07's posteriors are the priors for chapter 22's EPV and team-strength models. UC 09 is the input contract for chapter 26's narrative feed. And all ten are enforced mechanically by the chapter 2 claims register: a claim without n, interval, baseline, and evidence tier does not enter the manuscript.</p>
+
+  <h2 class="section-title"><span class="section-num">20.11</span> What I Would Measure Next</h2>
+  <ul>
+    <li>Per-rally accuracy for E12: label 50 rallies, report accuracy by rally, and get the honest CI.</li>
+    <li>Calibration curve for the E12 threat model (it already emits probability-like scores — Brier them).</li>
+    <li>Bootstrap CI for the tracker bake-off difference, resampled by play-window.</li>
+  </ul>
+
+  <h2 class="section-title"><span class="section-num">20.12</span> Sources</h2>
+  <ul>
+    <li>Brier (1950); Cumming (2014) <em>Understanding The New Statistics</em>; Kruschke (2014) <em>Doing Bayesian Data Analysis</em>; McElreath (2020) <em>Statistical Rethinking</em>.</li>
+    <li>ASA statement on p-values: Wasserstein &amp; Lazar (2016), <em>The American Statistician</em> 70(2), DOI: <a href="https://doi.org/10.1080/00031305.2016.1154108">10.1080/00031305.2016.1154108</a>.</li>
+    <li>Guo et al. (2017) "On Calibration of Modern Neural Networks", ICML, arXiv: <a href="https://arxiv.org/abs/1706.04599">1706.04599</a>.</li>
+    <li>Benjamini &amp; Hochberg (1995) "Controlling the False Discovery Rate", JRSS-B 57(1), DOI: <a href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x">10.1111/j.2517-6161.1995.tb02031.x</a>.</li>
+    <li>Intraclass correlation / cluster-robust SE: standard design-of-experiments material (e.g. Donner &amp; Klar); sign test for paired small-n comparisons.</li>
+    <li>Lab: <code>lab/w1_lab_statistics.py</code> → <code>experiments/c20-stats/outputs/statistics.json</code>.</li>
+  </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="chapter-stack border-t border-black">
+    <div class="page-shell py-16">
+      <div class="flex flex-col gap-4 sm:flex-row">
+    <a href="19.html" class="group relative flex-1 overflow-hidden border border-black p-6">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 19</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 19</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</p>
+        </div>
+      </div>
+    </a>
+    <a href="21.html" class="group relative flex-1 overflow-hidden border border-black p-6 text-right">
+      <span class="bg-slide pointer-events-none group-hover:-translate-x-1/2">
+        <span class="bg-slide-secondary bg-white"></span>
+        <span class="bg-slide-primary"></span>
+      </span>
+      <div class="relative z-10 overflow-hidden">
+        <div class="transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 21</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</p>
+        </div>
+        <div class="absolute top-full left-0 w-full transition-transform duration-400 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:-translate-y-full">
+          <p class="font-mono text-[13px] uppercase tracking-wider text-black/30 mb-3 transition-colors">Chapter 21</p>
+          <p class="font-sans text-xl font-semibold tracking-tight transition-colors">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</p>
+        </div>
+      </div>
+    </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Next Chapter CTA -->
+  <section class="chapter-stack bg-black text-white">
+    <div class="page-shell py-16 md:py-24">
+      <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div>
+          <p class="font-mono text-[13px] uppercase tracking-wider text-white/30 mb-4">Next Chapter</p>
+          <h2 class="font-sans text-4xl font-bold leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h2>
+          <p class="mt-4 max-w-md font-sans text-base text-white/40">The rating math, the three rival systems, and the honest truth about small samples</p>
+        </div>
+        <a href="21.html" class="flex items-center gap-2 px-6 py-3 text-sm font-medium text-black font-mono" style="background-color: #C2410C;">
+          Continue Reading
+          <i data-lucide="arrow-right" class="size-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Index -->
+  <div class="chapter-stack border-t border-black bg-white">
+    <div class="page-shell py-16">
+      <div class="flex flex-col justify-between gap-12 md:flex-row md:items-start">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="flex h-10 items-center bg-black px-3">
+              <span class="font-sans text-base font-bold tracking-tight text-white">AS</span>
+              <span class="ml-0.5 font-mono text-xs font-medium leading-none text-white">'26</span>
+            </div>
+          </div>
+          <p class="text-2xl font-bold leading-[0.95] tracking-tight" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport Analytics</p>
+          <p class="mt-3 font-sans text-sm text-black/40">A practitioner's field guide to automated sport analytics: watching, tagging, modelling, interpreting, and acting with AI, LLMs, computer vision, and agent harnesses. Measured on pickleball and Australian rugby league. By Mehran Mozaffari. First Edition, August 2026.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 md:grid-cols-3 flex-1">
+          <a href="preface.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Preface</h3>
+          </a>
+          <a href="copyright.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Front Matter</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Copyright & License</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Build the Lab, Not the Manuscript</h3>
+          </a>
+          <a href="01.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 01</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 01 — Why This Book Exists: The Five Verbs of Sport Analytics</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="02.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 02</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 02 — The Evidence Contract & Data Provenance</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Calibrating the World: Homography & Court Geometry</h3>
+          </a>
+          <a href="03.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 03</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 03 — Sport Rules as Formal Systems</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Finding & Tracking the Actors: From ByteTrack to Meta SAM 2/3</h3>
+          </a>
+          <a href="04.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 04</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 04 — Capture: Cameras, Lenses, Shutter, Placement</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — The Body in Motion: 2D Keypoints to Meta SAM 3D Body</h3>
+          </a>
+          <a href="05.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 05</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 05 — Data Engineering for Sport Video</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery & SAM 2/3 Equipment Segmentation</h3>
+          </a>
+          <a href="06.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 06</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 06 — Calibration I: Homography, Intrinsics, Distortion</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — The Structured Representation: PBN & State Machines</h3>
+          </a>
+          <a href="07.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 07</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 07 — Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Reading Space & Pressure: Geometric Deep Learning</h3>
+          </a>
+          <a href="08.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 08</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 08 — Detection: YOLO, RF-DETR, and the AGPL Decision</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Generative Replay & Counterfactual Simulation</h3>
+          </a>
+          <a href="09.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 09</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 09 — Tracking & Identity: Metrics, ReID, and Role Priors</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="10.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 10</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 10 — Segmentation & Foundation Models: SAM 2/3, DINOv3</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — Building the Live Coaching Cockpit on Apple Silicon</h3>
+          </a>
+          <a href="11.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 11</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 11 — The Body in Motion: 2D Keypoints to 3D Biomechanics</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Complex Motion & Field Sport Scaling</h3>
+          </a>
+          <a href="12.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 12</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 12 — Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Evaluation, Rights, and the Next 10 Runs</h3>
+          </a>
+          <a href="13.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 13</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 13 — Identity: Who Is Who</h3>
+          </a>
+          <a href="14.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 14</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 14 — Multi-Camera Geometry, Line Calls, 3D Reconstruction</h3>
+          </a>
+          <a href="15.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 15</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 15 — Audio & Multimodal Cues: The Free Sensor</h3>
+          </a>
+          <a href="16.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 16</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 16 — Video Understanding: Action Recognition, Spatio-Temporal</h3>
+          </a>
+          <a href="17.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 17</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 17 — Event Data &amp; the Common Representation</h3>
+          </a>
+          <a href="18.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 18</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 18 — Annotation: The Ground-Truth Workflow</h3>
+          </a>
+          <a href="19.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 19</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 19 — Automatic Eventing: State Machines, Confidence, Review Queues</h3>
+          </a>
+          <a href="20.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 20</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 20 — Statistics for Sport Practitioners</h3>
+          </a>
+          <a href="21.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 21</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 21 — Rating Systems: DUPR, ELO, Glicko, and Skill</h3>
+          </a>
+          <a href="22.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 22</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 22 — Expected Value: xG, VAEP, EPV, and Their Sport Transplants</h3>
+          </a>
+          <a href="23.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 23</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 23 — Tactical ML: Graphs, Equivariance, and Honest Forecasting</h3>
+          </a>
+          <a href="24.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 24</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 24 — Simulation & Counterfactuals: The Honest Rebuild</h3>
+          </a>
+          <a href="25.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 25</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 25 — Where Vision-Language Models Help, and Where They Lie</h3>
+          </a>
+          <a href="26.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 26</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 26 — From Numbers to Narrative: Reports, Scouting, Coach UX</h3>
+          </a>
+          <a href="27.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 27</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 27 — The Agent Harness for Sport Analytics</h3>
+          </a>
+          <a href="28.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 28</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 28 — The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</h3>
+          </a>
+          <a href="29.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 29</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 29 — Practice Design & Interventions: The Acting Loop</h3>
+          </a>
+          <a href="30.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 30</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 30 — Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</h3>
+          </a>
+          <a href="31.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 31</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 31 — Deployment, Licensing, Rights & Ethics</h3>
+          </a>
+          <a href="32.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 32</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 32 — The Laboratory: Reproducing the Book's Claims</h3>
+          </a>
+          <a href="33.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 33</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 33 — The Frontier: What's Changing in 2025-2026</h3>
+          </a>
+          <a href="34.html" class="group border-b border-black pb-4">
+            <p class="font-mono text-[10px] uppercase tracking-wider text-black/40">Chapter 34</p>
+            <h3 class="font-sans text-sm font-medium group-hover:underline" style="font-family: 'Beausite Classic Medium', sans-serif">Chapter 34 — The Book as a System: How to Use It (Human + Agent)</h3>
+          </a>
+        </div>
+      </div>
+      <div class="flex flex-col items-start justify-between gap-4 border-t border-black pt-8 mt-12 md:flex-row md:items-center">
+        <p class="font-mono text-xs text-black/30">&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+        <div class="flex gap-6">
+          <a href="../" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Home</a>
+          <a href="../about.html" class="font-mono text-xs text-black/30 hover:text-black transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-xs text-black/30 hover:text-black transition-colors">Chapters</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="relative z-40 bg-black text-white">
+    <div class="w-full px-6 md:px-12 lg:px-20 py-24 md:py-36">
+      <h2 class="font-bold leading-[0.85] tracking-[-0.03em] text-[18vw] md:text-[13vw]" style="font-family: 'Beausite Classic Medium', Inter, sans-serif">Agentic Sport<br>Analytics</h2>
+      <div class="mt-8 flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+        <p class="font-sans text-lg md:text-xl text-white">The Evidence-Contract Field Guide: building automated sport analytics from capture to coaching, measured on pickleball and rugby league</p>
+        <p class="font-mono text-[13px] text-white/70">By Mehran Mozaffari</p>
+      </div>
+    </div>
+    <div class="border-t border-white">
+      <div class="w-full px-6 md:px-12 lg:px-20 py-4 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div class="font-mono text-[11px] text-white/60 leading-relaxed">
+          <p>&copy;2026 Mehran Mozaffari. Free for personal/noncommercial use (CC BY-NC-ND 4.0); commercial license required for business use.</p>
+          <p class="mt-1">First edition. Published August 2026. Prose: CC BY-NC-ND 4.0 (personal/noncommercial); commercial license available. Code samples Apache-2.0 as noted.</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="../about.html" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">About</a>
+          <a href="../index.html#chapters" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">Chapters</a>
+          <a href="https://github.com/imehr/agentic-sport-analysis" class="font-mono text-[11px] text-white/40 hover:text-white transition-colors">GitHub</a>
+          <span class="font-mono text-[11px] text-white/40">mehranmozaffari.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="../assets/chapter-sidebar.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+<script src="../assets/menu.js"></script>
+</body>
+</html>
