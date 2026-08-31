@@ -529,7 +529,7 @@
   </ol>
 
   <figure id="fig-12-01" class="full">
-    <img src="shared/images/ball-blur-gallery.png" alt="Blur streak gallery across six shutter speeds: 83px at 1/60s down to 2.5px at 1/2000s, usable from 1/1000s highlighted. Recreate: white background, black trajectories, burnt-orange usable panels." loading="lazy"/>
+    <img src="../images/ball-blur-gallery.png" alt="Blur streak gallery across six shutter speeds: 83px at 1/60s down to 2.5px at 1/2000s, usable from 1/1000s highlighted. Recreate: white background, black trajectories, burnt-orange usable panels." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.1</span>: Shutter vs Blur, Measured. The streak length IS the detection failure: at 1/60s the ball is a 83px line; at 1/1000s it is a 5px point.</figcaption>
   </figure>
 
@@ -546,7 +546,7 @@
   </ul>
 
   <figure id="fig-12-02" class="full">
-    <img src="shared/images/c12-rugby-ruck-trajectory.png" alt="Top-down rugby league pitch with a ruck cluster, a dashed burnt-orange ball path emerging from the occlusion zone to the halfback and on as a spiral pass to the winger. Recreate: white background, black linework, grey occlusion zone over the tackle pile." loading="lazy"/>
+    <img src="../images/c12-rugby-ruck-trajectory.png" alt="Top-down rugby league pitch with a ruck cluster, a dashed burnt-orange ball path emerging from the occlusion zone to the halfback and on as a spiral pass to the winger. Recreate: white background, black linework, grey occlusion zone over the tackle pile." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.2</span>: The Rugby Ball's Real Trajectory. Most of the path is possession, not flight: the ball vanishes into the ruck's occlusion zone, re-emerges at the play-the-ball, and only the spiral pass gives a ballistic prior anything to fit.</figcaption>
   </figure>
 
@@ -564,7 +564,7 @@
   <p>The TrackNet lineage's move (Huang et al. 2019) is to label a 2D Gaussian $G(x,y) = \exp(-((x-x_0)^2 + (y-y_0)^2)/2\sigma^2)$ at the ball center, train a fully-convolutional network with a per-pixel loss, and read the center as the soft-argmax — the weighted centroid above a threshold: $x^* = \sum x\,\hat{H}(x,y) \,/\, \sum \hat{H}(x,y)$. Four properties follow that a box+score cannot give you. Label tolerance is built in: a Gaussian degrades gracefully under 1–2px annotation error instead of cliff-edging on IoU. Sub-pixel centers come free: E10's temporal pipeline already exploits this (centroid RMSE 1.42px against manual review). The whole heatmap is a <em>confidence surface</em> — secondary peaks are visible evidence of ambiguity, which a box score hides — and that is what makes a candidate-plus-physics-gate pipeline debuggable. And occlusion has a representation: "no detection" becomes a low, flat heatmap, which is information that gates trajectory rectification instead of fabricating a box.</p>
 
   <figure id="fig-12-03" class="full">
-    <img src="shared/images/c12-heatmap-detection.png" alt="Two panels: a crossed-out bounding box around a blurred ball streak labeled box fails, and concentric burnt-orange Gaussian heatmap rings with a crosshair centroid labeled heatmap. Recreate: white background, black linework, burnt-orange contours." loading="lazy"/>
+    <img src="../images/c12-heatmap-detection.png" alt="Two panels: a crossed-out bounding box around a blurred ball streak labeled box fails, and concentric burnt-orange Gaussian heatmap rings with a crosshair centroid labeled heatmap. Recreate: white background, black linework, burnt-orange contours." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.3</span>: Box vs Heatmap on the Same Blurred Ball. Left: the box regressor's four failure modes in one image. Right: the Gaussian target absorbs blur and annotation jitter, and the soft-argmax centroid recovers a sub-pixel center.</figcaption>
   </figure>
 
@@ -632,7 +632,7 @@
   </ul>
 
   <figure id="fig-12-04" class="full">
-    <img src="shared/images/c12-tracknetv4-architecture.png" alt="TrackNetV4 architecture: five frame chips t-2 to t+2 feeding motion fusion, heatmap head emitting a burnt-orange Gaussian blob over a pickleball court, then a smooth trajectory. Recreate: white background, black linework, burnt-orange heatmap." loading="lazy"/>
+    <img src="../images/c12-tracknetv4-architecture.png" alt="TrackNetV4 architecture: five frame chips t-2 to t+2 feeding motion fusion, heatmap head emitting a burnt-orange Gaussian blob over a pickleball court, then a smooth trajectory. Recreate: white background, black linework, burnt-orange heatmap." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.4</span>: TrackNetV4 Data Path. A 5-frame window → frame differencing → motion prompt layer → motion-aware fusion with visual features → per-frame Gaussian heatmap → soft-argmax centers → trajectory. Motion is an input channel, not a preprocessing hack.</figcaption>
   </figure>
 
@@ -674,7 +674,7 @@
   </ol>
 
   <figure id="fig-12-05" class="full">
-    <img src="shared/images/c12-pickleball-trajectory.png" alt="Top-down pickleball court with a burnt-orange fitted trajectory arc from baseline drive over the net to a kitchen dink, grey noisy detection points around the true path. Recreate: white background, black court linework, burnt-orange trajectory." loading="lazy"/>
+    <img src="../images/c12-pickleball-trajectory.png" alt="Top-down pickleball court with a burnt-orange fitted trajectory arc from baseline drive over the net to a kitchen dink, grey noisy detection points around the true path. Recreate: white background, black court linework, burnt-orange trajectory." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.5</span>: Rectification on the Court. Grey: the raw E10 point process, noisy and sparse. Burnt-orange: the gravity-plus-drag fit that bridges gaps, vetoes outliers, and turns points into a trajectory a PBN event row can consume.</figcaption>
   </figure>
 
@@ -684,7 +684,7 @@
   <p>Occlusion is where tracking systems go to die quietly, so name the gaps and their durations. In pickleball the occlusion inventory is short and violent: the net tape crossing (1–2 frames from a low end-cam), the body block when a player at the kitchen line screens the ball from a same-side camera (2–10 frames), and the contact merge where paddle and ball occupy one blob (2–3 frames — exactly E10's worst window). The physics prior handles all three because the ball's state across a 3-frame gap is almost fully determined by its state before it: integrate forward, grow the ellipse, gate resumption at 95%. The failure mode to guard is the <em>bounce inside the gap</em> — a hidden model switch — which is why the resumption gate must also check whether the post-gap trajectory requires an implausible pre-gap velocity.</p>
 
   <figure id="fig-12-06" class="full">
-    <img src="shared/images/c12-occlusion-gap.png" alt="Timeline of a ball trajectory as burnt-orange dots fading through a gap behind a player silhouette, grey uncertainty ellipses growing across the gap, resumption inside the final ellipse, a vetoed stray detection outside it. Recreate: white background, black linework, burnt-orange dots." loading="lazy"/>
+    <img src="../images/c12-occlusion-gap.png" alt="Timeline of a ball trajectory as burnt-orange dots fading through a gap behind a player silhouette, grey uncertainty ellipses growing across the gap, resumption inside the final ellipse, a vetoed stray detection outside it. Recreate: white background, black linework, burnt-orange dots." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.6</span>: The Occlusion Contract. Forward-integrate the ballistic model through the gap, grow the uncertainty ellipse, accept resumption only inside it, veto everything outside. The ellipse is the tracker's honesty rendered visible.</figcaption>
   </figure>
 
@@ -733,7 +733,7 @@
   <p>Everything in §12.8 is a symptom of monocular capture: one camera gives you a bearing, not a position, and the physics prior is the cheapest substitute for the missing view. MonoTrack (2022) demonstrated the template for badminton — constrain the ill-posed Z with court geometry plus the physics model instead of a second camera. Pickleball has an unusually strong version of this constraint: every shot must thread the net plane, a known height (0.86m center / 0.92m posts) at a known court position, so a 1-parameter Z-family fit per rally segment is plausible [unproven for pickleball — §12.11 lab produces the first numbers]. The book's standing rule stays C06's: players get homography coordinates; the ball gets pixels plus a fitted Z-band until C14.</p>
 
   <figure id="fig-12-07" class="full">
-    <img src="shared/images/c12-single-vs-multi-camera.png" alt="Two panels of a court side elevation: one camera with a single viewing ray and unknown ball height, versus two cameras whose crossing rays triangulate the ball. Recreate: white background, black linework, burnt-orange triangulation point." loading="lazy"/>
+    <img src="../images/c12-single-vs-multi-camera.png" alt="Two panels of a court side elevation: one camera with a single viewing ray and unknown ball height, versus two cameras whose crossing rays triangulate the ball. Recreate: white background, black linework, burnt-orange triangulation point." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.7</span>: The Z Question. One camera: a bearing, a Z-band, and a physics prior holding the two together. Two cameras: triangulation, a bounce point, and true 3D speed — at the price of sync, calibration, and twice the capture pipeline.</figcaption>
   </figure>
 
@@ -755,7 +755,7 @@
   <p>The third-shot drop is the highest-leverage shot in pickleball — C22's ΔEPV boundary values it at +0.142 against the drive's -0.188 [verify — practitioner model] — and its quality is two numbers: did the arc peak on the hitter's side, and by how much did it clear the 0.86m net? The mechanism: take the physics-rectified trajectory of §12.6, fit the ballistic segment from contact to bounce, and read the apex $z^* = z_0 + v_z^2/2g$ plus the net clearance $c = z(x_{\text{net}}) - 0.86$ m. Both come from the fitted curve rather than any single noisy frame — the fit is the metrology. An attackable drop is one with $c &gt; 15$ cm or an apex drifting to the kitchen side; an unattackable one peaks early and dies into the kitchen.</p>
 
   <figure id="fig-12-08" class="full">
-    <img src="shared/images/c12-uc01-third-shot-apex.png" alt="Side elevation of a pickleball third-shot drop arc peaking before the net and dipping into the kitchen, apex and net-clearance arrow marked. Recreate: white background, black linework, burnt-orange arc." loading="lazy"/>
+    <img src="../images/c12-uc01-third-shot-apex.png" alt="Side elevation of a pickleball third-shot drop arc peaking before the net and dipping into the kitchen, apex and net-clearance arrow marked. Recreate: white background, black linework, burnt-orange arc." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.8</span>: UC 01 — Third-Shot Drop Apex. The fitted arc yields apex side and net clearance as the two drop-quality numbers. <strong>Pickleball</strong>: flags attackable drops clearing &gt;15 cm; feeds C22's ΔEPV valuation. <strong>Rugby league</strong>: the same apex/clearance readout measures conversion kicks over the 3m crossbar.</figcaption>
   </figure>
 
@@ -765,7 +765,7 @@
   <p>The 40/20 is rugby league's highest-skill territorial play: kicked from behind the team's own 40m line, the ball must bounce in-field and cross the touchline inside the opponent's 20m zone, earning the kicking team the scrum feed. It is a trajectory problem end to end: exit speed, launch angle, spiral stability, and — because the ball must bounce <em>before</em> going out — the bounce cone of §12.2b. The mechanism: classify spiral vs tumble from the ball mask's aspect-ratio oscillation (SAM 2, C09), then fit the matching drag regime — a spiral flies the $C_d \approx 0.18$ curve ($k \approx 0.008$ m⁻¹, six times lower than a pickleball's), a tumble flies $C_d \approx 0.55$ and wanders. The landing prediction is reported as a cone, and the call reduces to whether any in-cone path exits touch inside the 20m window.</p>
 
   <figure id="fig-12-09" class="full">
-    <img src="shared/images/c12-uc02-4020-kick-arc.png" alt="Top-down rugby pitch with a spiral kick arc from behind the 40m line bouncing in-field and exiting touch inside the 20m zone, bounce cone at landing. Recreate: white background, black linework, burnt-orange arc." loading="lazy"/>
+    <img src="../images/c12-uc02-4020-kick-arc.png" alt="Top-down rugby pitch with a spiral kick arc from behind the 40m line bouncing in-field and exiting touch inside the 20m zone, bounce cone at landing. Recreate: white background, black linework, burnt-orange arc." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.9</span>: UC 02 — The 40/20 Arc. Spiral classification selects the drag regime; the bounce cone intersects the 20m window. <strong>Rugby league</strong>: objective 40/20 adjudication and kicker scouting. <strong>Pickleball</strong>: the lob — high arc over a poaching pair, must bounce before the baseline, same cone logic at kitchen scale.</figcaption>
   </figure>
 
@@ -775,7 +775,7 @@
   <p>Ball speed is the number every broadcast wants and the number monocular video most often gets wrong. The honest method: speed is the derivative of the <em>fitted</em> trajectory, $v = |\dot{\mathbf{x}}|$ in court coordinates, reported at named instants — at contact and at the bounce — with error bars from the fit, not the frame-to-frame pixel hop that the Z-limit (§12.8) inflates whenever the ball is airborne. On pb-003 that means serve-class figures around 112 km/h (31 m/s) at contact decaying to ~74 km/h by the bounce under $k \approx 0.045$ m⁻¹. The cross-check is a Pocket-Radar-class spot reading on ten drives [verify — hardware lab scheduled, §12.11]. For rugby the same machinery grades the kicking game: torpedo punt exit speed against hang time $t = 2v_z/g$ — the 4.5-5s bomb that lets the chase arrive is a tradeoff curve, not a single number.</p>
 
   <figure id="fig-12-10" class="full">
-    <img src="shared/images/c12-uc03-serve-speed.png" alt="TrackNetV4 five-frame stack feeding a heatmap, then a pickleball serve trajectory with speed callouts at contact and bounce. Recreate: white background, black linework, burnt-orange trajectory." loading="lazy"/>
+    <img src="../images/c12-uc03-serve-speed.png" alt="TrackNetV4 five-frame stack feeding a heatmap, then a pickleball serve trajectory with speed callouts at contact and bounce. Recreate: white background, black linework, burnt-orange trajectory." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.10</span>: UC 03 — Speed-Gun Metrics. TrackNetV4 points → physics fit → speed at named instants, with decay under the measured drag. <strong>Pickleball</strong>: serve and drive km/h with honest error bars. <strong>Rugby league</strong>: punt exit speed vs hang time for the bomb, spiral pass velocity for the cutout.</figcaption>
   </figure>
 
@@ -785,7 +785,7 @@
   <p>§12.9's verdict stands: spin from 60fps footage is excluded by the sampling theorem. But spin is not invisible — it is encoded in trajectory <em>shape</em>. Lindsey's anomalies (topspin lift systematically stronger than backspin at equal spin; backspin $C_L$ clustering near 0.2) mean a topspin serve dives measurably harder than symmetric Magnus predicts. The mechanism: per shot, fit $v_0$, launch angle, $C_d$, and an <em>effective</em> $C_L = C_L^{Magnus} + C_L^{gravity} + C_L^{internal}$ to the rectified trajectory; the residual lift term is the spin proxy. Publish it as "effective lift" with fit error bars — never as RPM. For rugby the analogue is observable directly: the ball is large, so spiral rate and axis wobble are measurable from the mask, and the tumble classification of UC 02 is itself the spin readout that matters for bounce prediction.</p>
 
   <figure id="fig-12-11" class="full">
-    <img src="shared/images/c12-uc04-spin-proxy.png" alt="Two pickleball arcs compared over the net: a steep-diving topspin arc and a floating backspin arc, with a lift-coefficient fit inset. Recreate: white background, black linework, burnt-orange topspin arc." loading="lazy"/>
+    <img src="../images/c12-uc04-spin-proxy.png" alt="Two pickleball arcs compared over the net: a steep-diving topspin arc and a floating backspin arc, with a lift-coefficient fit inset. Recreate: white background, black linework, burnt-orange topspin arc." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.11</span>: UC 04 — Spin as Trajectory Shape. Topspin dives harder than vanilla Magnus allows; the fitted $C_L$ residual is the proxy. <strong>Pickleball</strong>: topspin-serve detection for return positioning. <strong>Rugby league</strong>: spiral rate and wobble measured directly from the ball mask at broadcast resolution.</figcaption>
   </figure>
 
@@ -797,7 +797,7 @@
   <p>Every downstream number — speed at bounce, apex, ΔEPV feed — inherits the drag coefficient, and §12.7's erratum showed what a wrong one does. So measure it instead of trusting a table. The mechanism: along a clean flight segment, sample fitted speeds $v_i$ at distances $x_i$; under $v(x) = v_0 e^{-kx}$ the regression $\ln v_i = \ln v_0 - k x_i$ is linear, and $C_d = 2mk/\rho A$ follows. That is Lindsey's RK4 method reduced to a least-squares line, and the acceptance check is the literature band: indoor $C_d \approx 0.45 \pm 0.09$, outdoor $0.33 \pm 0.08$ (86 free-flight trajectories, 300fps; self-published, corroborated by Steyn 2025). For rugby the same regression runs <em>per attitude regime</em>: gate spiral vs tumble first (UC 02), because pooling them fits a fiction — the two populations differ by 3×.</p>
 
   <figure id="fig-12-12" class="full">
-    <img src="shared/images/c12-uc05-drag-decay.png" alt="Velocity decay chart: steep burnt-orange pickleball curve from 25 m/s with marker at 21 m/s over 4m, nearly flat grey rugby spiral curve. Recreate: white background, black axes, burnt-orange series." loading="lazy"/>
+    <img src="../images/c12-uc05-drag-decay.png" alt="Velocity decay chart: steep burnt-orange pickleball curve from 25 m/s with marker at 21 m/s over 4m, nearly flat grey rugby spiral curve. Recreate: white background, black axes, burnt-orange series." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.12</span>: UC 05 — Drag Decay, Measured. Log-speed vs distance is a line; its slope is $k$, and $C_d$ follows. <strong>Pickleball</strong>: venue- and ball-specific $C_d$ (indoor 0.45 vs outdoor 0.33). <strong>Rugby league</strong>: per-regime $C_d$ — 0.18 spiral, 0.55 tumble — never pooled.</figcaption>
   </figure>
 
@@ -807,7 +807,7 @@
   <p>Predicting the bounce is the highest-value short-horizon forecast in both sports: it is where players move before the ball arrives. The mechanism is a bounce model appended to the ballistic integrator: at court-plane intersection, reflect with restitution $v_z^+ = -e\,v_z^-$ and horizontal retention $v_x^+ = \alpha v_x^- + \beta\omega$ — topspin kicks forward, backspin checks. The USA Pickleball ball spec (30-34 inches from a 78-inch drop) bounds $e \approx 0.62\text{–}0.66$ [verify — equipment spec]; the prediction is a point with a fitted uncertainty ellipse. Rugby inverts the honesty: a tumbling prolate spheroid has no bounce point, so the prediction is a <em>cone</em> whose half-angle is estimated from the tumble rate, and the honest output is a fielding zone, not a spot.</p>
 
   <figure id="fig-12-13" class="full">
-    <img src="shared/images/c12-uc06-bounce-prediction.png" alt="Two panels: pickleball arc with tight predicted bounce circle; end-over-end rugby ball with wide bounce cone of diverging dashed paths. Recreate: white background, black linework, burnt-orange bounce marker." loading="lazy"/>
+    <img src="../images/c12-uc06-bounce-prediction.png" alt="Two panels: pickleball arc with tight predicted bounce circle; end-over-end rugby ball with wide bounce cone of diverging dashed paths. Recreate: white background, black linework, burnt-orange bounce marker." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.13</span>: UC 06 — Bounce Prediction. Restitution reflection gives a point with an ellipse; tumble gives a cone. <strong>Pickleball</strong>: early read on drop-shot landing for kitchen positioning. <strong>Rugby league</strong>: fullback fielding zone on end-over-end bombs.</figcaption>
   </figure>
 
@@ -819,7 +819,7 @@
   <p>The kitchen-line call, the sideline, the baseline — every line call is a distance measurement with an uncertainty, and should be reported as one. The mechanism exploits §12.8's inversion: at the bounce frame the homography is exactly right, so project the bounce point, compute the signed distance to the line $d = |ax + by + c|/\sqrt{a^2+b^2}$, and propagate the uncertainty — centroid RMSE (1.42px, E10) through the calibration Jacobian gives $\sigma_d$ in centimeters. The adjudication rule: call IN or OUT only when $|d| &gt; 3\sigma_d$; inside that band the honest output is "too close to call," which is what the 68%/84% Bath-grade humility (§12.8) looks like applied to geometry. Rugby's versions are the touchline on kicks (UC 02's 40/20 exit) and the try-line grounding.</p>
 
   <figure id="fig-12-14" class="full">
-    <img src="shared/images/c12-uc07-line-call.png" alt="Top-down pickleball kitchen corner zoom: bounce point with grey uncertainty ellipse 2.1 cm inside the line, verdict chip IN. Recreate: white background, black court lines, burnt-orange verdict." loading="lazy"/>
+    <img src="../images/c12-uc07-line-call.png" alt="Top-down pickleball kitchen corner zoom: bounce point with grey uncertainty ellipse 2.1 cm inside the line, verdict chip IN. Recreate: white background, black court lines, burnt-orange verdict." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.14</span>: UC 07 — The Line Call as a Measurement. Bounce point, signed distance, 3σ decision band. <strong>Pickleball</strong>: kitchen-line and sideline calls with a stated uncertainty. <strong>Rugby league</strong>: touchline exit on the 40/20 and touch-in-goal adjudication.</figcaption>
   </figure>
 
@@ -829,7 +829,7 @@
   <p>Rugby's defining ball problem is a 40-80 frame hole in which the ball is not ballistic but buried. No physics prior spans that; the mechanism is a state machine alongside the track: <em>carried</em> (ball bound to the carrier's torso region), <em>contested</em> (bound to the ruck centroid while bodies pile over it), <em>in flight</em> (ballistic prior active), with hand-off events at the play-the-ball, the dummy-half pickup, and every pass or kick. The play-the-ball clock — the ruck-speed number rugby analytics runs on — falls out of the state transitions for free: tackle-state entry to dummy-half release. Pickleball's version is the same machinery at 2-10 frame scale: the body block at the kitchen line and the contact merge, both bridged by the §12.6b ellipse contract instead of a state machine.</p>
 
   <figure id="fig-12-15" class="full">
-    <img src="shared/images/c12-uc08-ruck-occlusion.png" alt="Rugby ruck from above with the ball hidden under bodies, a timeline showing the occlusion window and state tokens carried, contested, flight as the ball emerges to the dummy-half. Recreate: white background, black linework, burnt-orange state tokens." loading="lazy"/>
+    <img src="../images/c12-uc08-ruck-occlusion.png" alt="Rugby ruck from above with the ball hidden under bodies, a timeline showing the occlusion window and state tokens carried, contested, flight as the ball emerges to the dummy-half. Recreate: white background, black linework, burnt-orange state tokens." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.15</span>: UC 08 — The Carry State Machine. The ball's state, not its physics, carries the track through the ruck. <strong>Rugby league</strong>: ruck-speed clocking and possession continuity. <strong>Pickleball</strong>: the same hand-off logic at 2-10 frame scale for body blocks and contact merges.</figcaption>
   </figure>
 
@@ -839,7 +839,7 @@
   <p>§12.8b's ladder ends here: two calibrated views turn the ball from a bearing into a point. The mechanism: detect heatmap peaks independently per view, match candidates by epipolar constraint — a true ball detection in view A must lie on the epipolar line of its view-B partner, so E10's residual false positives (net flutter, paddle tips) die unmatched — then triangulate $X^* = \arg\min_X \sum_i \|\pi_i(X) - x_i\|^2$. Three purchases follow at once: true 3D position (the Z-limit dissolves), bounce points as geometry instead of inference (UC 06/07 upgrade from fitted to measured), and true 3D speed replacing the UC 03 proxy. The budget version for pickleball: one added side camera covering the kitchen plane solves the calls that matter. For broadcast rugby there is no second view; replay angles are the only fusion you will get.</p>
 
   <figure id="fig-12-16" class="full">
-    <img src="shared/images/c12-uc09-multicam-fusion.png" alt="Pickleball court with two corner cameras whose viewing rays cross at the ball above the net, inset showing two heatmaps fusing to one 3D point. Recreate: white background, black linework, burnt-orange triangulation point." loading="lazy"/>
+    <img src="../images/c12-uc09-multicam-fusion.png" alt="Pickleball court with two corner cameras whose viewing rays cross at the ball above the net, inset showing two heatmaps fusing to one 3D point. Recreate: white background, black linework, burnt-orange triangulation point." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.16</span>: UC 09 — Two Views, One Point. Epipolar gating kills unmatched false positives; triangulation dissolves the Z-limit. <strong>Pickleball</strong>: one side camera solves kitchen-plane adjudication. <strong>Rugby league</strong>: broadcast replay angles fused for post-hoc try-line review.</figcaption>
   </figure>
 
@@ -849,7 +849,7 @@
   <p>Every filter drifts: integration error, calibration wobble (C07), and the unidentifiable drag interaction of §12.6 accumulate until the fitted trajectory silently departs from the true one. The correction uses the chapter's own event layer: bounces and contacts are innovation spikes where the physics <em>resets</em> — at a bounce the ball is at z = 0 with a reflected velocity, a hard state constraint no integration error survives. The mechanism: run the constant-acceleration filter forward, but at each detected anchor re-initialize the state (position pinned to the homography-valid bounce point, velocity re-seeded by the restitution model of UC 06), and smooth the whole segment with an RTS backward pass so corrections propagate both ways. Uncertainty grows between anchors and collapses at them — the sawtooth error profile is the signature of a healthy track.</p>
 
   <figure id="fig-12-17" class="full">
-    <img src="shared/images/c12-uc10-drift-correction.png" alt="A drifting grey raw track diverging from the true path, a burnt-orange corrected trajectory snapped back at bounce anchors, residual error strip resetting at each anchor. Recreate: white background, black linework, burnt-orange corrected path." loading="lazy"/>
+    <img src="../images/c12-uc10-drift-correction.png" alt="A drifting grey raw track diverging from the true path, a burnt-orange corrected trajectory snapped back at bounce anchors, residual error strip resetting at each anchor. Recreate: white background, black linework, burnt-orange corrected path." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 12.17</span>: UC 10 — Drift Correction. Anchors pin the state; error grows between bounces and collapses at them. <strong>Pickleball</strong>: long rallies stay calibrated through 10+ shots. <strong>Rugby league</strong>: play-the-ball and pass events anchor the track across an entire set of six.</figcaption>
   </figure>
 

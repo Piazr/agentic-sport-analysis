@@ -519,7 +519,7 @@
   <p>The worked sports throughout this chapter are the same two the book has trained on: <strong>pickleball</strong> (fixed camera, 13.41 m × 6.10 m, doubles, 26-player interactions reduced to four on the court at once) and <strong>rugby league</strong> (broadcast pan-tilt-zoom cameras, 100 m × 68 m, 26 players, high contact, frequent occlusion). If a frontier item does not help one of those two sports, we say so explicitly. When we extrapolate beyond verified fact, we label the sentence as <span class="speculation">[SPECULATION]</span>. The goal is not to be comprehensive; it is to be honest about what a practitioner can build on today versus what is still a conference headline.</p>
 
   <figure id="fig-33-01" class="full">
-    <img src="shared/images/frontier-timeline.png" alt="Recreate in book style: horizontal timeline from Jan 2025 to Sep 2026, white background, black linework, burnt-orange dots marking releases, color-coded layer badges for detection, segmentation, tracking, 3D, video FM, tactical, benchmark." loading="lazy"/>
+    <img src="../images/frontier-timeline.png" alt="Recreate in book style: horizontal timeline from Jan 2025 to Sep 2026, white background, black linework, burnt-orange dots marking releases, color-coded layer badges for detection, segmentation, tracking, 3D, video FM, tactical, benchmark." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.1</span>: The 2025-2026 Frontier Timeline. Checked 2026-08-30. Major release points: RF-DETR (Mar 2025), D-FINE (ICLR 2025), DEIM (CVPR 2025), VGGT (CVPR 2025), SAM 3 (Nov 2025), V-JEPA 2 (Jun 2025), TrackNetV5 (Dec 2025), RF-DETR+ (Jan 2026), SAM 3.1 (Mar 2026), V-JEPA 2.1 (Mar 2026), SportD/SportR (Aug 2026), MCP 2026-07-28 stateless spec.</figcaption>
   </figure>
 
@@ -541,7 +541,7 @@
   <p><strong>DEIMv2</strong> (September 2025, non-commercial custom license verified in the repository LICENSE.md) swaps in a DINOv3 backbone and a Spatial Tuning Adapter. DEIMv2-S hits 50.9 AP under 10 million parameters, and DEIMv2-X reaches 57.8 AP. That is the 2026 accuracy ceiling, but the non-commercial license bars use in commercial coaching products, so the book's default product path remains RF-DETR / D-FINE / DEIM. <strong>[verify]</strong> the EdgeCrafter (TMLR 2026) license and its exact relation to DEIMv2.</p>
 
   <figure id="fig-33-02" class="full">
-    <img src="shared/images/frontier-detector-pareto.png" alt="Recreate in book style: flat scatter chart, x-axis latency ms on T4, y-axis COCO AP, burnt-orange polyline for RF-DETR N/S/M/L/XL/2XL, grey competitor points, PML license warning on XL/2XL, white background." loading="lazy"/>
+    <img src="../images/frontier-detector-pareto.png" alt="Recreate in book style: flat scatter chart, x-axis latency ms on T4, y-axis COCO AP, burnt-orange polyline for RF-DETR N/S/M/L/XL/2XL, grey competitor points, PML license warning on XL/2XL, white background." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.2</span>: Detector latency-vs-AP Pareto (checked 2026-08-30). RF-DETR N/S/M/L are Apache 2.0 and the recommended open path; RF-DETR+ XL/2XL are PML-gated. D-FINE/DEIM and DEIMv2 provide the fully-open and non-commercial accuracy ceilings respectively.</figcaption>
   </figure>
 
@@ -556,7 +556,7 @@
   <p><strong>Theiner CVSports 2026</strong> (CVPR 2026 Workshop on Computer Vision in Sports) introduced <strong>Unified Sports Field Registration with Lens Distortion Modeling</strong>. It jointly estimates camera pose, intrinsics, and lens distortion from minimal point-on-segment annotation. This matters because consumer cameras, GoPros, and phones used in amateur pickleball setups introduce barrel distortion that a pure homography pipeline silently ignores. The paper is on CVF Open Access; the code release status and license remain <strong>[verify]</strong>. If the code is released, this becomes the 2026 calibration baseline for both sports.</p>
 
   <figure id="fig-33-03" class="full">
-    <img src="shared/images/frontier-vggt-3d.png" alt="Recreate in book style: row of sports-frame thumbnails feeding one transformer block, fanning out to four labeled output heads: cameras, depth map, point cloud, point tracks; one arrow, no iteration loop, burnt-orange accents on white." loading="lazy"/>
+    <img src="../images/frontier-vggt-3d.png" alt="Recreate in book style: row of sports-frame thumbnails feeding one transformer block, fanning out to four labeled output heads: cameras, depth map, point cloud, point tracks; one arrow, no iteration loop, burnt-orange accents on white." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.3</span>: VGGT feed-forward 3D reconstruction (checked 2026-08-30). The single-pass replacement for SfM/COLMAP; the MPS community port is the local path, while the official CUDA path is the Colab default.</figcaption>
   </figure>
 
@@ -590,7 +590,7 @@
   <p><strong>Owl AI</strong> is a software-only solution that uses existing standard broadcast cameras and generative AI/computer vision to analyze ball placement and line calls. MLP announced a partnership with Owl AI in December 2025 for the 2026 season, with a debut also targeted at the Greater Zion Cup in March 2026. The stated goal was to reduce challenge time and subjective calls without installing extra hardware. The field implementation story in 2026 points to PlayReplay, while the league partnership announcement points to Owl AI. This discrepancy is common in sports-technology rollouts: leagues test multiple vendors and transition as they scale. <strong>[verify]</strong> exact product names, pricing, and accuracy claims before citing either as the definitive 2026 MLP system. No hardware-only or software-only line-calling product has yet published a public benchmark that would let us compare it to human referees.</p>
 
   <figure id="fig-33-04" class="full">
-    <img src="shared/images/frontier-hardware-progression.png" alt="Recreate in book style: horizontal hardware progression from 2024 to 2026, four tiers: T0 phone/SwingVision, T1 360° camera + AVP, T2 smart court / PlayReplay, T3 stadium UWB + Hawk-Eye; burnt-orange arrows showing price and capability curves; white background." loading="lazy"/>
+    <img src="../images/frontier-hardware-progression.png" alt="Recreate in book style: horizontal hardware progression from 2024 to 2026, four tiers: T0 phone/SwingVision, T1 360° camera + AVP, T2 smart court / PlayReplay, T3 stadium UWB + Hawk-Eye; burnt-orange arrows showing price and capability curves; white background." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.4</span>: Edge hardware progression 2024-2026 (checked 2026-08-30). Tiers run from phone/SwingVision (T0) through 360°-headset review (T1) and smart-court line-calling (T2) to stadium UWB and Hawk-Eye SkeleTRACK (T3). Pickleball currently spans T0-T2; rugby league remains T2-T3.</figcaption>
   </figure>
 
@@ -615,7 +615,7 @@
   <p>No public large-scale rugby league tracking dataset exists. The CEA Rugby Sevens Tracking Dataset (R7) provides three 40-second 1080p clips with tracking ground truth and is available through a non-commercial research request. NRL player tracking data is proprietary to the league and clubs. Generic MOT fails on rugby league because of dense contact, occlusion, and PTZ motion. The book's rugby league lane — annotate your own broadcast corpus — is a forced move, not a pedagogical choice. Public event statistics are available on NRL.com and via community scrapers, but raw X,Y coordinates are not. The open EPV reference for rugby league is Sawczuk et al. (2024), a Bayesian mixture model over field position and tackle count.</p>
 
   <figure id="fig-33-05" class="full">
-    <img src="shared/images/frontier-data-gaps.png" alt="Recreate in book style: two empty rectangular panels labeled 'Pickleball: no public video benchmark' and 'Rugby League: no public tracking benchmark', with small inset icons for Roboflow scraps, pklmart CSV, and CEA R7 clips; burnt-orange accents on white." loading="lazy"/>
+    <img src="../images/frontier-data-gaps.png" alt="Recreate in book style: two empty rectangular panels labeled 'Pickleball: no public video benchmark' and 'Rugby League: no public tracking benchmark', with small inset icons for Roboflow scraps, pklmart CSV, and CEA R7 clips; burnt-orange accents on white." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.5</span>: The two public-data gaps that justify the book's own contributions (checked 2026-08-30). Left: pickleball has pklmart tabular data and Roboflow image scraps, but no video benchmark. Right: rugby league has only the CEA R7 sevens clips and NRL.com event stats, but no public tracking corpus.</figcaption>
   </figure>
 
@@ -634,7 +634,7 @@
   <p>The phrase "autonomous match twin" is not yet a standardized industry term. It describes the synthesis of two technologies: a digital twin (a live virtual replica of the match, players, or venue) and agentic AI (autonomous systems that reason, plan, and act without constant human intervention). In 2026, major sporting events such as the FIFA World Cup showcased integrated digital twins and AI agents for stadium operations, referee support, and fan engagement. The LALIGA / Globant AI Pods ecosystem, announced at NVIDIA GTC 2026, reportedly orchestrates hundreds of models across scouting, analytics, broadcast production, and fan experience. <span class="speculation">[SPECULATION]</span> For a rugby league or pickleball practitioner, the honest projection is that a fully autonomous match twin — an agent that can independently plan tactics, call fouls, and run counterfactual simulations in real time — is not a 2026 product. It is a 2026-2027 research frontier. The pieces exist (perception, value models, LLM orchestration, MCP tools), but the integration, safety, and auditable decision loop do not. This book positions the match twin as the unbuilt frontier: build the deterministic pipeline first, then wrap it as tools, then let agents operate it, never the other way around.</p>
 
   <figure id="fig-33-06" class="full">
-    <img src="shared/images/frontier-agentic-twin.png" alt="Recreate in book style: three-tier diagram. Top: 'Agent host (LLM)' box. Middle: MCP client connectors with JSON-RPC labels. Bottom: three server boxes labeled Tracking-DB, Whisper-Transcriber, Stats-API. Dashed arrow to a future 'Autonomous match twin' cloud with question mark. Burnt-orange accents on white." loading="lazy"/>
+    <img src="../images/frontier-agentic-twin.png" alt="Recreate in book style: three-tier diagram. Top: 'Agent host (LLM)' box. Middle: MCP client connectors with JSON-RPC labels. Bottom: three server boxes labeled Tracking-DB, Whisper-Transcriber, Stats-API. Dashed arrow to a future 'Autonomous match twin' cloud with question mark. Burnt-orange accents on white." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.6</span>: The agentic front-runner architecture (checked 2026-08-30). Today the stack is deterministic pipeline → MCP tools → LLM orchestrator. The autonomous match twin is the unbuilt frontier beyond the dashed line.</figcaption>
   </figure>
 
@@ -664,7 +664,7 @@
   <p class="section-intro">The quarterly watchlist converts the frontier into a set of verifiable checks. A practitioner should run through this list before claiming the chapter is current.</p>
 
   <figure id="fig-33-07" class="full">
-    <img src="shared/images/frontier-watchlist-cards.png" alt="Recreate in book style: four cards labeled Models, Hardware, Benchmarks, Agents, each with three bullet items and a checked-date box; burnt-orange headers, white background." loading="lazy"/>
+    <img src="../images/frontier-watchlist-cards.png" alt="Recreate in book style: four cards labeled Models, Hardware, Benchmarks, Agents, each with three bullet items and a checked-date box; burnt-orange headers, white background." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.7</span>: What To Watch cards for the 2026-27 season (checked 2026-08-30). Each card lists concrete items to re-verify before the next major chapter revision.</figcaption>
   </figure>
 
@@ -707,7 +707,7 @@
   <p><strong>The frontier:</strong> SAM 3's Promptable Concept Segmentation — one text prompt ("the yellow ball", "both paddles", "every player in white") detects, segments, and tracks all instances of a concept across video with stable IDs. <strong>What it would unlock:</strong> bootstrapping the Chapter 08/09 detector-tracker stack without training a custom detector first — a natural-language front end over the whole perception pipeline. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span> for this lab. The official repository is CUDA/Triton-first; local MPS use depends on Ultralytics or Hugging Face Transformers patches, and the custom CUDA NMS kernels remain the friction point <strong>[verify]</strong>. <strong>Watch item:</strong> a clean HF Transformers MPS port that removes the custom-CUDA NMS blocker.</p>
 
   <figure id="fig-33-08" class="full">
-    <img src="shared/images/ch33-ucf01-sam3-lab.png" alt="Text prompt feeding SAM 3 to segment ball, paddles, and players on a pickleball court, run on the local MPS lab." loading="lazy"/>
+    <img src="../images/ch33-ucf01-sam3-lab.png" alt="Text prompt feeding SAM 3 to segment ball, paddles, and players on a pickleball court, run on the local MPS lab." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.8</span>: UC F01 — SAM 3 in the Lab (speculative). One prompt segments and tracks ball, paddles, and players with stable IDs. <strong>Pickleball</strong>: "the yellow ball" bootstraps the C12 tracker without a trained detector. <strong>Rugby league</strong>: "every player in white" replaces 26 per-object box prompts on a broadcast frame.</figcaption>
   </figure>
 
@@ -715,7 +715,7 @@
   <p><strong>The frontier:</strong> single-view recovery of a full SMPL-X parametric body mesh (10,475 vertices) from one ordinary broadcast frame, DINOv3 backbone. <strong>What it would unlock:</strong> 3D biomechanics from match footage with no mocap rig — shoulder external rotation on a pickleball drive, true 3D body orientation and contact height in a rugby league tackle. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span>. The model is announced by Meta (2025-26); the book has not validated it on sport footage. C10 UC07 states the claim; C11 documents the monocular 2D-to-3D lifting limits this specific model targets. <strong>Watch item:</strong> an open checkpoint plus a sport-footage evaluation against the FIFA Skeletal Tracking Light benchmark.</p>
 
   <figure id="fig-33-09" class="full">
-    <img src="shared/images/ch33-ucf02-sam3d-sport.png" alt="Single broadcast view of a rugby league tackle reconstructed into a 3D wireframe body mesh with skeleton joints." loading="lazy"/>
+    <img src="../images/ch33-ucf02-sam3d-sport.png" alt="Single broadcast view of a rugby league tackle reconstructed into a 3D wireframe body mesh with skeleton joints." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.9</span>: UC F02 — Single-View 3D Mesh (speculative). One broadcast frame becomes a full SMPL-X mesh. <strong>Rugby league</strong>: 3D contact height in the tackle, feeding the officiating frontier (UC F09). <strong>Pickleball</strong>: 3D shoulder and hip rotation on drives from a single fixed camera.</figcaption>
   </figure>
 
@@ -723,7 +723,7 @@
   <p><strong>The frontier:</strong> open-vocabulary role detection — the coach types arbitrary role queries and DART's shared O(1) backbone decodes all of them in one pass, claimed at 15.8 FPS. <strong>What it would unlock:</strong> role-aware tactical telemetry ("server", "returner", "kitchen poacher", "dummy half", "marker defender") without a custom labeling campaign, feeding C23 tactical ML directly. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span>. The AP/FPS figures are the paper's (arXiv 2603.11441); the book has not run DART on the pb-003 corpus <strong>[verify]</strong>. <strong>Watch item:</strong> an open DART checkpoint, then a first measured run on pb-003 with M4 Max latency numbers.</p>
 
   <figure id="fig-33-10" class="full">
-    <img src="shared/images/ch33-ucf03-dart-pb003.png" alt="Pickleball frame pb-003 with four players role-labeled by a DART open-vocabulary detector at 15.8 FPS." loading="lazy"/>
+    <img src="../images/ch33-ucf03-dart-pb003.png" alt="Pickleball frame pb-003 with four players role-labeled by a DART open-vocabulary detector at 15.8 FPS." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.10</span>: UC F03 — DART Role Detection (speculative). Text queries decode sports roles in a single pass. <strong>Pickleball</strong>: server, returner, poacher, resetter on pb-003. <strong>Rugby league</strong>: A-defender, B-defender, sweeper fullback, ball carrier in one frame.</figcaption>
   </figure>
 
@@ -731,7 +731,7 @@
   <p><strong>The frontier:</strong> a live digital twin of the match plus an agentic layer that plans tactics, runs counterfactual simulations, and proposes in-match adjustments without constant human steering. <strong>What it would unlock:</strong> C24 simulation moves from post-session analysis to live decision support; the C27 MCP tool wrap is the enabling contract that keeps every agent action auditable. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span>. The 2026 showcases (FIFA World Cup stadium twins, the LALIGA/Globant AI Pods orchestration) are operations- and fan-facing; no auditable on-field decision twin exists. The book's ordering holds: build the deterministic pipeline, wrap it as tools, then let agents operate it — never the reverse. <strong>Watch item:</strong> a narrow-domain twin (set-piece simulation, line-call review, highlight generation) shipped with a published audit trail.</p>
 
   <figure id="fig-33-11" class="full">
-    <img src="shared/images/ch33-ucf04-agentic-twin.png" alt="Live match feed into a digital twin pitch replica with an agent planning counterfactuals, beyond a dashed unbuilt-frontier boundary." loading="lazy"/>
+    <img src="../images/ch33-ucf04-agentic-twin.png" alt="Live match feed into a digital twin pitch replica with an agent planning counterfactuals, beyond a dashed unbuilt-frontier boundary." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.11</span>: UC F04 — The Agentic Match Twin (speculative). The twin sits beyond the dashed line: pipeline first, tools second, agents third. <strong>Rugby league</strong>: counterfactual defensive-line resets between tackles. <strong>Pickleball</strong>: live stacking and poach suggestions from the twin's rally model.</figcaption>
   </figure>
 
@@ -739,7 +739,7 @@
   <p><strong>The frontier:</strong> the Kinexon sensor package — a 500 Hz IMU plus UWB, mechanically counter-balanced inside the ball — deployed in the Adidas Trionda at the 2026 FIFA World Cup, reporting the exact millisecond of every touch, plus speed, trajectory, and spin. <strong>What it would unlock:</strong> ground-truth contact events against which the optical pipeline calibrates — C12's ball-tracking error bars become measurable against a physical reference rather than estimated. <strong>Honest status:</strong> real hardware, but league-bundled; no retail or dev-kit version exists <strong>[verify]</strong>. For pickleball there is no credible smart ball at all, so this is a watch, not a build. <strong>Watch item:</strong> any retail/dev-kit connected ball, or the first pickleball smart-ball prototype.</p>
 
   <figure id="fig-33-12" class="full">
-    <img src="shared/images/ch33-ucf05-smart-ball.png" alt="Cutaway of a smart ball with a 500 Hz IMU chip signaling a referee watch, beside a plain pickleball with no product available." loading="lazy"/>
+    <img src="../images/ch33-ucf05-smart-ball.png" alt="Cutaway of a smart ball with a 500 Hz IMU chip signaling a referee watch, beside a plain pickleball with no product available." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.12</span>: UC F05 — The Smart Ball (hardware watch). The 500 Hz IMU gives kick-point truth to the officiating stack. <strong>Rugby league</strong>: touch-and-strip adjudication, kick launch telemetry. <strong>Pickleball</strong>: nothing to buy — the dashed outline is the honest state of the market.</figcaption>
   </figure>
 
@@ -747,7 +747,7 @@
   <p><strong>The frontier:</strong> the grounding gate that plates VLM commentary against coordinate truth before it reaches a coach — describe-then-verify, never describe-then-trust. <strong>What it would unlock:</strong> auditable VLM match reports. SportD's finding — frontier VLMs pick the optimal on-ball action roughly 30% of the time versus roughly 39% for professionals <strong>[verify]</strong> final numbers — means VLMs must be constrained to narration over verified events, not decision-making. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span> as a product. The components exist in the book — the C25 grounding gate, the C10 UC17 adversarial critic, the measured E07 66.7% baseline hallucination error — but the end-to-end grounded plate has not been measured. <strong>Watch item:</strong> whether any 2026-27 VLM closes the SportD gap, and the first published grounded-critic error rate below the E07 baseline.</p>
 
   <figure id="fig-33-13" class="full">
-    <img src="shared/images/ch33-ucf06-vlm-plate.png" alt="VLM commentary sentence checked against a coordinate database at a grounding gate, with a describe-versus-decide bar chart." loading="lazy"/>
+    <img src="../images/ch33-ucf06-vlm-plate.png" alt="VLM commentary sentence checked against a coordinate database at a grounding gate, with a describe-versus-decide bar chart." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.13</span>: UC F06 — The VLM Plate (speculative). Every generated sentence is verified against the tracking database before it ships. <strong>Pickleball</strong>: rally narration grounded in pb-003 coordinates. <strong>Rugby league</strong>: tackle-call commentary falsified when it contradicts the contact log.</figcaption>
   </figure>
 
@@ -755,7 +755,7 @@
   <p><strong>The frontier:</strong> the local-lab ceiling moves. The M5 Ultra (announced 2026-08-25, availability 2026-09-22) brings up to 512 GB unified memory at 1.2 TB/s, a 32-core Neural Engine, Neural Accelerators in every GPU core, and a claimed 4.3× peak AI uplift over the M3 Ultra. <strong>What it would unlock:</strong> local VGGT-1B, V-JEPA 2.1 2B, and 27-30B-class VLMs without the 4-bit quantization trade-off — a fully offline, privacy-preserving club lab, which is also the technical half of C31's consent answer. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span> for workloads. The hardware is announced, not benchmarked; Apple has not published an M5 Ultra Neural Engine TOPS figure <strong>[verify]</strong>. <strong>Watch item:</strong> reproducible MLX benchmarks of the book's exact stack on M5 Ultra.</p>
 
   <figure id="fig-33-14" class="full">
-    <img src="shared/images/ch33-ucf07-edge-neural.png" alt="M4 Max and M5 Ultra chips compared, with VGGT, V-JEPA, and local VLM models fitting into a 512 GB unified memory bar." loading="lazy"/>
+    <img src="../images/ch33-ucf07-edge-neural.png" alt="M4 Max and M5 Ultra chips compared, with VGGT, V-JEPA, and local VLM models fitting into a 512 GB unified memory bar." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.14</span>: UC F07 — Edge Neural (speculative). Memory, not TOPS, is the unlock: 512 GB fits the models that 64 GB forces into 4-bit. <strong>Pickleball</strong>: offline club analysis, no footage leaves the building. <strong>Rugby league</strong>: local video-FM probes on broadcast captures.</figcaption>
   </figure>
 
@@ -763,7 +763,7 @@
   <p><strong>The frontier:</strong> pklmart — over 300,000 shot-level records from nearly 1,000 competitive matches at 4.0 through professional level, loadable into pandas via <code>pklshop</code> — the first scale-grade analytical corpus for pickleball, albeit tabular rather than video. <strong>What it would unlock:</strong> priors for the C22 value models, shot-type distributions to validate against, and a public comparison point for the book's own G0.5 dataset. <strong>Honest status:</strong> real and downloadable on Kaggle today; the video gap persists. <span class="speculation">[SPECULATION]</span> a public pickleball video benchmark likely appears within 12-18 months — when it does, G0.5 becomes a comparison point rather than the first. <strong>Watch item:</strong> any public pickleball video tracking benchmark; any NRL, Super League, or expanded R7 release that closes the rugby league tracking gap.</p>
 
   <figure id="fig-33-15" class="full">
-    <img src="shared/images/ch33-ucf08-new-datasets.png" alt="pklmart table of 300K shots feeding an analytics chart, beside dashed empty outlines for the missing video and rugby tracking corpora." loading="lazy"/>
+    <img src="../images/ch33-ucf08-new-datasets.png" alt="pklmart table of 300K shots feeding an analytics chart, beside dashed empty outlines for the missing video and rugby tracking corpora." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.15</span>: UC F08 — The New Datasets. pklmart fills the tabular gap; the video and rugby-league tracking gaps stay dashed. <strong>Pickleball</strong>: shot priors for C22 EPV-style models. <strong>Rugby league</strong>: still waiting — self-annotation remains the forced move.</figcaption>
   </figure>
 
@@ -771,7 +771,7 @@
   <p><strong>The frontier:</strong> AI adjudication arriving from both ends of the book. In pickleball, PlayReplay's net-post cameras debuted at the PPA Finals on 2026-05-04 under the UPA partnership while Owl AI's software-only route holds the MLP partnership; in rugby league, the Bunker stands to gain skeletal telemetry (Hawk-Eye SkeleTRACK's 29-point skeletons) and the C10 UC08 route to objective 3D contact height on high tackles. <strong>What it would unlock:</strong> objective line calls, shorter challenges, and evidence-grade high-tackle review. <strong>Honest status:</strong> pilots are deployed, but no vendor has published a public accuracy benchmark against human officials <strong>[verify]</strong> — the officiating frontier is real, the evidence is not yet public. <strong>Watch item:</strong> published accuracy numbers and pricing from PlayReplay or Owl AI; FIFA Skeletal Tracking Light code and weights.</p>
 
   <figure id="fig-33-16" class="full">
-    <img src="shared/images/ch33-ucf09-officiating-ai.png" alt="Split diagram of pickleball net-post line-calling cameras and a rugby league Bunker room with a skeleton overlay on a tackle frame." loading="lazy"/>
+    <img src="../images/ch33-ucf09-officiating-ai.png" alt="Split diagram of pickleball net-post line-calling cameras and a rugby league Bunker room with a skeleton overlay on a tackle frame." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.16</span>: UC F09 — The Officiating Frontier (speculative). <strong>Pickleball</strong>: net-post cameras and audible calls, vendor unsettled. <strong>Rugby league</strong>: the Bunker plus 29-point skeletons and 3D contact height.</figcaption>
   </figure>
 
@@ -779,7 +779,7 @@
   <p><strong>The frontier:</strong> the same ReID and foundation features that track a player can identify a face. Amateur sport has no consent framework for this, minors are on court, and biometric-privacy law treats faceprints as regulated data. <strong>What it would unlock:</strong> a governance pattern — consent capture, on-device processing (UC F07), face blurring at ingestion, retention limits — that lets a club adopt the entire stack without the liability. <strong>Honest status:</strong> <span class="speculation">[SPECULATION]</span> as a resolved practice. C31 defines the deployment contract; no amateur-sport biometric standard exists <strong>[verify]</strong>. <strong>Watch item:</strong> the first amateur league — pickleball or rugby league — to publish a biometric and consent policy for AI video analysis. That document becomes the template every club copies.</p>
 
   <figure id="fig-33-17" class="full">
-    <img src="shared/images/ch33-ucf10-ethics-frontier.png" alt="Camera capturing player faces with a consent shield blocking the face-recognition pipeline, a biometric-risk warning, and a governance gavel." loading="lazy"/>
+    <img src="../images/ch33-ucf10-ethics-frontier.png" alt="Camera capturing player faces with a consent shield blocking the face-recognition pipeline, a biometric-risk warning, and a governance gavel." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 33.17</span>: UC F10 — The Ethics Frontier (speculative). The consent shield sits between capture and identification. <strong>Pickleball</strong>: club ladders with juniors on court. <strong>Rugby league</strong>: community-grade broadcast captures under biometric-privacy law.</figcaption>
   </figure>
 

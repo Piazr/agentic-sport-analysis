@@ -523,14 +523,14 @@
   <p>The rugby league instance is the same idea at six times the node count. On a 100 m × 68 m pitch, a defensive set is thirteen nodes strung across the field in a line, plus the ball carrier and his support runners. The edges with tactical meaning are the <em>line-spacing edges</em> between adjacent defenders: compress them and the line folds inward; stretch one and a running channel opens. The classic failure is the dog-leg — one defender lagging a half-metre behind the line, turning a straight adjacency edge into a diagonal one and handing the attack an angled gap at exactly the moment the play-the-ball speeds up. Marker and A-defender edges around the ruck carry the short-side threat; edge-back-rower to centre edges carry the wide threat. Same mathematics, different scale, different failure modes.</p>
 
   <figure id="fig-23-04" class="full">
-    <img src="shared/images/c23-sport-as-graph.png" alt="Sport as a graph: pickleball doubles court with four player nodes and a ball node beside a rugby league pitch with thirteen defensive nodes linked by line-spacing edges." loading="lazy"/>
+    <img src="../images/c23-sport-as-graph.png" alt="Sport as a graph: pickleball doubles court with four player nodes and a ball node beside a rugby league pitch with thirteen defensive nodes linked by line-spacing edges." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.1</span>: Sport Is a Graph. Left: the pickleball doubles court as a five-node graph (4 players + ball), edges as spacing and pass lanes. Right: the rugby league defensive line as thirteen nodes, with a burnt-orange edge marking the stretched gap.</figcaption>
   </figure>
 
   <p>TacticAI facts are <strong>source-backed</strong> (the paper, 2024) or [verify]-marked (the Palmeiras/CBF live deployment, secondary sources only); E12 values are <strong>measured</strong> (the artifact, corrected from the v1 transcripts).</p>
 
   <figure id="fig-23-01" class="full">
-    <img src="shared/images/c23-tacticai-architecture.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c23-tacticai-architecture.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.2</span>: TacticAI Architecture. Equivariant message passing feeds a predictive head (receiver, shot probability) and a generative head (counterfactual positions).</figcaption>
   </figure>
 
@@ -550,7 +550,7 @@
   <p>Transfer is the point of the architecture, not an afterthought. The E12 pickleball adaptation shrinks the graph to 5 nodes (4 players + a real ball node with position, velocity and height — pickleball rallies are short enough that the ball is cheap to track) and forecasts the receiver at t+1.5s. The rugby league adaptation grows it: 13 defenders + ball carrier for a team-centric 14-node view, or 26 + 1 for full play, at which point the complete graph's 351 edges stop being a feature and start being an overfitting surface — section 23.9 covers the sparsification options.</p>
 
   <figure id="fig-23-05" class="full">
-    <img src="shared/images/c23-message-passing.png" alt="Message passing on a five-node pickleball graph: one highlighted player node aggregates messages from its neighbours across two layers." loading="lazy"/>
+    <img src="../images/c23-message-passing.png" alt="Message passing on a five-node pickleball graph: one highlighted player node aggregates messages from its neighbours across two layers." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.3</span>: Message Passing. A player node aggregates edge-feature-weighted messages from its neighbours; each layer widens the receptive field by one hop. Two layers on the doubles graph already see the whole court — on the 14-node rugby graph they see the whole defensive line.</figcaption>
   </figure>
 
@@ -573,7 +573,7 @@
   <p><strong>The equivalence guarantee is an architectural property, not a training property.</strong> Data augmentation can teach a model to be <em>approximately</em> invariant on the training distribution; group convolutions make it <em>exactly</em> equivariant everywhere, including on inputs nothing like the training set. The difference is testable in ten lines of code, which is the next section.</p>
 
   <figure id="fig-23-02" class="full">
-    <img src="shared/images/c23-rotation-test-grid.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c23-rotation-test-grid.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.4</span>: The Rotation Test. Six orientations of one formation: receiver and threat predictions must rotate with the court. A raw MLP fails this test; an equivariant model passes by construction.</figcaption>
   </figure>
 
@@ -640,7 +640,7 @@
   </ul>
 
   <figure id="fig-23-06" class="full">
-    <img src="shared/images/c23-pickleball-court-graph.png" alt="A pickleball doubles court drawn as a graph: four player nodes, a ball node, partner-spacing and cross-court diagonal edges, and the middle seam highlighted." loading="lazy"/>
+    <img src="../images/c23-pickleball-court-graph.png" alt="A pickleball doubles court drawn as a graph: four player nodes, a ball node, partner-spacing and cross-court diagonal edges, and the middle seam highlighted." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.6</span>: The Pickleball Court as a Graph. Five nodes on the 13.41 m × 6.10 m court; the partner-spacing edge controls the middle seam, the diagonal edges control the dink lanes, and the ball node's edges decide the next touch. The dink-drop-drive decision structure is a policy over exactly these edge weights.</figcaption>
   </figure>
 
@@ -663,7 +663,7 @@
   <p>The principle that survives every sport: the further ahead you forecast, the more the output is a <em>distribution of scenarios</em> rather than a prediction. At t+1.5s on the pickleball court the receiver distribution is usually peaked — one player is clearly taking the dink. At t+8s on a rugby league set the honest output is four or five modal shapes with attached probabilities, and presenting the argmax as "the prediction" is fabrication by rounding. The C22 value model should consume the full forecast distribution, never a point estimate.</p>
 
   <figure id="fig-23-07" class="full">
-    <img src="shared/images/c23-horizon-decay.png" alt="Forecast horizon decay curve: accuracy against horizon from 0.5 to 8 seconds, with a confidence band and a flat baseline." loading="lazy"/>
+    <img src="../images/c23-horizon-decay.png" alt="Forecast horizon decay curve: accuracy against horizon from 0.5 to 8 seconds, with a confidence band and a flat baseline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.7</span>: The Horizon-Decay Curve (schematic). Accuracy decays with forecast horizon; the confidence band widens with it; the flat baseline is the trivial heuristic every tactical model must beat at <em>its</em> horizon. Measure this curve for your sport before quoting any single number.</figcaption>
   </figure>
 
@@ -673,7 +673,7 @@
   <p><strong>Interpretation</strong>: what does the graph attention highlight? Node attention names the players the model is watching (the poacher, the late-arriving defender); edge attention names the relationships driving the call (the gap between B1 and B2, A2's closing speed); head diversity often specializes — one head on ball pressure, one on court coverage. Rendered as position heat on the court, this is the coach's view, and the honest phrasing is a template: <em>"the model expects A2 to take the next touch because it is attending to the B1-B2 spacing edge (0.31) and A2's closing speed (0.24)."</em> It is an explanation, not a claim. Never present attention weights as causal — attention records where the model looked, not why the outcome happened; the C24 counterfactual framing applies, and confusing the two is how plausible dashboards become wrong coaching.</p>
 
   <figure id="fig-23-03" class="full">
-    <img src="shared/images/c23-pickleball-vs-rugby-graph.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c23-pickleball-vs-rugby-graph.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.9</span>: Graph Topologies at Scale. The doubles court is a complete graph; the rugby defense is a line lattice with ruck clusters.</figcaption>
   </figure>
 
@@ -728,7 +728,7 @@
   <p>Two structural options keep the rugby graph tractable. The <em>team-centric graph</em> models one team's 13 players plus the ball and 1-2 nearest defenders — 14-16 nodes, the right size for attack-shape forecasting off the play-the-ball. The <em>hierarchical graph</em> pools player nodes into cluster nodes (forward pack, halves, back line) and runs message passing at both levels, matching how rugby league is actually coached. Both are preferable to the naive 27-node complete graph, whose edge count exceeds the number of training possessions in any realistic nrl-001-derived dataset. The rugby lab anchor stays the Kempton (2016) and Sawczuk (2021, 2024) EPV line — expected-possession-value surfaces from hundreds of matches — with the explicit caveat that none of it has been re-estimated for the six-again era; that is a reader project, not a solved problem.</p>
 
   <figure id="fig-23-08" class="full">
-    <img src="shared/images/c23-rugby-graph.png" alt="A rugby league pitch drawn as a graph: thirteen defensive nodes in a line with adjacency edges, one lagging defender creating a burnt-orange dog-leg gap, and a ruck cluster near the ball carrier." loading="lazy"/>
+    <img src="../images/c23-rugby-graph.png" alt="A rugby league pitch drawn as a graph: thirteen defensive nodes in a line with adjacency edges, one lagging defender creating a burnt-orange dog-leg gap, and a ruck cluster near the ball carrier." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.10</span>: The Rugby League Pitch as a Graph. Thirteen defensive nodes linked by line-spacing edges; the dog-leg — one defender lagging behind the line — turns a straight adjacency edge into a diagonal running channel. The ruck cluster carries the short-side edges.</figcaption>
   </figure>
 
@@ -741,7 +741,7 @@
   <p>After the play-the-ball, the defensive line has roughly 1.5 seconds to guess which support runner receives — guess wrong and the line slides the wrong way. The receiver head is node classification over the graph: $p(y = i \mid G) = \exp(z_i) / \sum_j \exp(z_j)$, where the logits $\mathbf{z}$ come from the equivariant encoder, so the distribution is guaranteed identical under any legal rotation or reflection of the pitch. The edge attention around the ruck names which dummy-half-to-runner relationship is driving the call. TacticAI's published receiver top-3 accuracy of 0.782 ± 0.039 over 7,176 corners is <strong>source-backed</strong>; the E12 doubles receiver accuracy of 0.846 is <strong>measured</strong> on one clip — a hypothesis, per section 23.5, until the rally-boundary CV run lands. <strong>The payoff is defensive pre-loading: the marker and A-defender shift before the pass, not after — and the full receiver distribution (never the argmax) is the direct input to the C22 value model.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-pass-network.png" alt="A rugby league ruck drawn as a graph: ball node, dummy-half, and support-runner nodes with burnt-orange probability arrows to each candidate receiver." loading="lazy"/>
+    <img src="../images/c23-uc-pass-network.png" alt="A rugby league ruck drawn as a graph: ball node, dummy-half, and support-runner nodes with burnt-orange probability arrows to each candidate receiver." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.11</span>: UC 01 — Pass-Network Receiver Prediction. The ruck as a graph; softmax arrows over candidate receivers. <strong>Rugby league</strong>: which support runner takes the first pass off the ruck. <strong>Pickleball</strong>: which opponent takes the next dink at the kitchen line.</figcaption>
   </figure>
 
@@ -749,7 +749,7 @@
   <p>Doubles partners at the kitchen line defend as a tethered pair: drift too far apart and the middle seam — the highest-value target in the sport — opens between them. In graph terms this is one edge, watched over time: the partner-spacing edge $d_t = \|\mathbf{p}_{A1} - \mathbf{p}_{A2}\|$, fed to the model as both a current feature and a <em>historical edge weight</em> (how long the pair has held its corridor), which is what separates a settled kitchen-line pair from two players still scrambling forward. The coaching corridor of ~2.4 m and the split-seam alarm past ~3.2 m are <strong>[verify]</strong> practitioner thresholds, consistent with the tandem-spacing case in chapter 10; the edge-as-time-series mechanism itself is <strong>source-backed</strong> graph practice. <strong>The payoff is kitchen synchrony made measurable: the seam-exposure alert this edge drives is exactly the metric the C28 live cockpit surfaces.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-doubles-partnership.png" alt="A pickleball kitchen line with two partner nodes joined by a burnt-orange spacing edge, contrasted with a drifted pair and a highlighted middle seam." loading="lazy"/>
+    <img src="../images/c23-uc-doubles-partnership.png" alt="A pickleball kitchen line with two partner nodes joined by a burnt-orange spacing edge, contrasted with a drifted pair and a highlighted middle seam." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.12</span>: UC 02 — The Partnership Edge. The ~2.4 m corridor versus the drifted pair with the burnt-orange middle seam exposed. <strong>Pickleball</strong>: the tether rule at the kitchen line. <strong>Rugby league</strong>: halves-pairing lateral spacing behind the ruck.</figcaption>
   </figure>
 
@@ -757,7 +757,7 @@
   <p>The dink-drop-drive decision is the highest-leverage choice in a pickleball rally, and it is a graph-level read: the right shot is a function of all five nodes, not the hitter alone. The head is a graph classification over the action set {dink, drop, drive, lob, speed-up}: $p(a \mid G) = \mathrm{softmax}(\mathrm{MLP}(\mathrm{pool}(\mathbf{h})))$, where pooling is permutation-invariant so the answer never depends on player ordering. The output that matters is the <em>distribution</em>: it is handed whole to the C22 ΔEPV value model, which prices each candidate action rather than blessing the argmax. There is no public pickleball tactical dataset, so this head is a <strong>proposed</strong> architecture to be trained on lab-labelled clips — the mechanism is <strong>source-backed</strong>, the pickleball accuracy is <strong>[verify]</strong> until the E12 multi-clip run exists. <strong>The payoff is a shot-quality dashboard grounded in geometry: every rally tagged with what the graph thought the options were worth.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-shot-selection-graph.png" alt="A five-node pickleball graph feeding a small decision panel with dink, drop, and drive options shown as burnt-orange probability bars." loading="lazy"/>
+    <img src="../images/c23-uc-shot-selection-graph.png" alt="A five-node pickleball graph feeding a small decision panel with dink, drop, and drive options shown as burnt-orange probability bars." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.13</span>: UC 03 — The Shot-Selection Graph. Graph state to action distribution; the full distribution feeds the C22 value model. <strong>Pickleball</strong>: dink vs drop vs drive pricing per rally state. <strong>Rugby league</strong>: run vs short-pass vs kick on tackle five.</figcaption>
   </figure>
 
@@ -767,7 +767,7 @@
   <p>A rugby league defensive set is thirteen nodes strung across the pitch, and its failures are edge failures: the dog-leg (one defender a half-metre behind the line, turning a straight adjacency edge diagonal) and the fold (compressed interior edges stretching the exterior ones). The mechanism is a line-adjacency graph with edge features of length and angle; a line-break probability head reads the stretched edges, and the dog-leg detector is an angle-deviation threshold on adjacency edges. The 3.5 m edge-stretch and 2.5 m dog-leg thresholds are <strong>[verify]</strong> practitioner values inherited from the chapter 10 line-compression case; the graph mechanism is <strong>source-backed</strong>. <strong>The payoff is direct: this graph's edge-length monitor is the DLSM dog-leg metric the C28 cockpit renders live — chapter 23 supplies the model, chapter 28 supplies the screen.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-defensive-line-graph.png" alt="A rugby league defensive line of thirteen nodes with adjacency edges, one lagging defender forming a burnt-orange dog-leg and an angled running channel." loading="lazy"/>
+    <img src="../images/c23-uc-defensive-line-graph.png" alt="A rugby league defensive line of thirteen nodes with adjacency edges, one lagging defender forming a burnt-orange dog-leg and an angled running channel." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.14</span>: UC 04 — The Defensive-Line Graph. Thirteen nodes, adjacency edges, one burnt-orange dog-leg opening an angled channel. <strong>Rugby league</strong>: dog-leg and fold detection feeding C28's DLSM. <strong>Pickleball</strong>: the two-node kitchen line as the degenerate case — one spacing edge, one seam.</figcaption>
   </figure>
 
@@ -775,7 +775,7 @@
   <p>"Who owns which patch of court right now" is the territorial question underneath every tactic. From the graph's node positions, compute a velocity-weighted Voronoi partition: player $i$ owns the cell $\{x : \|\,x - \mathbf{p}_i\,\| / s_i \le \|\,x - \mathbf{p}_j\,\| / s_j \ \forall j\}$, where $s_i$ scales reach by current speed. Team area share $A_{\text{team}} / A_{\text{total}}$ is then appended to the graph as a global feature, and per-node cell area becomes a node feature that tells the GNN who is actually covering ground. The pitch-control lineage in soccer (Spearman's physics-based model; Fernández &amp; Bornn's dominant regions) is <strong>source-backed</strong>; the pickleball and rugby league calibrations are <strong>[verify]</strong> practitioner transfers — chapter 10's UC 12 grounds the same tessellation in foot polygons from the vision layer. <strong>The payoff: a tracking feed becomes a territorial statement a coach can act on — "we own 38% of the attacking half on tackle four" is a sentence that changes a game plan.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-voronoi-ownership.png" alt="Split panel: a pickleball court divided into four Voronoi cells beside a rugby league pitch segment tessellated between attackers and a defensive line, with contested cells in burnt-orange." loading="lazy"/>
+    <img src="../images/c23-uc-voronoi-ownership.png" alt="Split panel: a pickleball court divided into four Voronoi cells beside a rugby league pitch segment tessellated between attackers and a defensive line, with contested cells in burnt-orange." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.15</span>: UC 05 — Voronoi Space Ownership. Velocity-weighted cells per player; contested space in burnt-orange. <strong>Pickleball</strong>: middle-seam ownership between the two partnerships. <strong>Rugby league</strong>: defensive territory control across the line.</figcaption>
   </figure>
 
@@ -783,7 +783,7 @@
   <p>Attackers do not need the whole graph; they need to know where the seam is <em>this</em> second. The identification mechanism reuses the trained model's own attention: edge attention $\alpha_{ij}$ on opponent–opponent spacing edges names the gap the model is watching, and a channel score — spacing-edge stretch multiplied by the ball carrier's closing speed along that edge's normal — ranks the available lanes. The discipline of section 23.8 applies with full force: the attention map is an explanation of where the model looked, <strong>not a causal claim</strong> about why the channel exists. Mechanism <strong>source-backed</strong> (attention interpretability); channel-score thresholds <strong>[verify]</strong>. <strong>The payoff is play-calling at game speed: the third-shot drive target down the stretched seam in pickleball, the edge back-rower's channel off the spread in rugby league.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-attacking-channels.png" alt="Two panels: a pickleball court with a burnt-orange corridor between two defenders, and a rugby pitch segment with three numbered running channels, one highlighted." loading="lazy"/>
+    <img src="../images/c23-uc-attacking-channels.png" alt="Two panels: a pickleball court with a burnt-orange corridor between two defenders, and a rugby pitch segment with three numbered running channels, one highlighted." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.16</span>: UC 06 — Attacking Channels. Edge attention names the gap; the burnt-orange corridor is the ranked target. <strong>Pickleball</strong>: the middle seam between kitchen-line partners. <strong>Rugby league</strong>: numbered running channels along the defensive line.</figcaption>
   </figure>
 
@@ -793,7 +793,7 @@
   <p>The most valuable tactical adjustment is usually the one the coaching staff did not consider. The discovery loop is a shotgun, not a scalpel: the conditional-VAE generative head samples K = 50 counterfactual formations from one real setup, the predictive threat head ranks all fifty, and the top three are presented to the coach with their before/after threat scores. TacticAI's validation is <strong>source-backed</strong> and unusually strong: generated setups were indistinguishable from real corners by an MLP classifier (F1 0.53 ± 0.05, chance level), and Liverpool FC experts preferred the model's suggestions to the original setups 90% of the time across 50 blind held-out corners. Transfer of that preference rate to pickleball or rugby league is <strong>[verify]</strong> — the architecture transfers, the expert study does not. <strong>The payoff is a tactic-discovery assistant: fifty sampled answers to "what if we shifted the seam defender?" before the video session ends.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-pattern-discovery.png" alt="Before and after panels of the same pickleball formation: a threat glow around a receiver in the before panel, one player shifted with an arrow in the after panel, and the glow reduced." loading="lazy"/>
+    <img src="../images/c23-uc-pattern-discovery.png" alt="Before and after panels of the same pickleball formation: a threat glow around a receiver in the before panel, one player shifted with an arrow in the after panel, and the glow reduced." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.17</span>: UC 07 — The Generative Shotgun. One real formation, K counterfactual samples, the threat head ranks them. <strong>Pickleball</strong>: counterfactual partner positions against a speed-up. <strong>Rugby league</strong>: counterfactual defensive spacing against a shape the team has never drilled.</figcaption>
   </figure>
 
@@ -801,7 +801,7 @@
   <p>Training data is biased: pickleball clips over-represent right-side stacks, rugby footage over-represent plays run to the open side. A model without built-in symmetry will silently misbehave the first time it sees a left-handed stack or a short-side raid. The guarantee is architectural: group convolutions enforce $y(W, g \cdot x) = g \cdot y(W, x)$ for every transform $g$ in the group, exactly, on every input — not approximately, on the training distribution, the way augmentation does. The verification is the six-cell test grid of section 23.4 — identity, 90°, 180°, horizontal mirror, vertical mirror, diagonal reflection — runnable in ten lines; the lab result is <strong>measured</strong>: the naive linear layer fails the grid (<code>linear_layer_passes: false</code> in <code>experiments/c23-tactical-ml/outputs/metrics.json</code>), and no amount of training would fix it. <strong>The payoff is a certificate: equivariance is the difference between a model you trust on orientations never seen in training and a model you merely hope generalizes.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-equivariance-rotation.png" alt="A two-by-three grid showing the same five-node pickleball graph under six transformations, with the highlighted receiver rotating consistently in every cell." loading="lazy"/>
+    <img src="../images/c23-uc-equivariance-rotation.png" alt="A two-by-three grid showing the same five-node pickleball graph under six transformations, with the highlighted receiver rotating consistently in every cell." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.18</span>: UC 08 — The Six-Transform Grid. Identity, 90°, 180°, horizontal mirror, vertical mirror, diagonal reflection; invariant outputs must not change, equivariant outputs must transform. <strong>Pickleball</strong>: left-handed stacks and mirror-court coaching. <strong>Rugby league</strong>: short-side plays and mirrored attacking shapes.</figcaption>
   </figure>
 
@@ -809,7 +809,7 @@
   <p>How many GNN layers is a topology question, not a hyperparameter superstition. Each layer extends a node's receptive field by one hop, so the right depth tracks the graph's diameter: the complete five-node doubles graph has diameter 1 — two layers already see the whole court, and additional layers only risk over-smoothing, where repeated neighbourhood averaging collapses every node's embedding toward the same vector. The rugby line-adjacency lattice has diameter ~12 along the line, so depth 3–4 with residual connections is the working range, and edge sparsification matters more than raw depth. The measured anchor is latency: E12's shallow model runs a forward pass in 3.4 ms on the M4 Max (<strong>measured</strong>), so depth is a latency budget as much as an accuracy one; the optimal depth per topology is a sweep result, <strong>[verify]</strong>, not a law. <strong>The payoff is a right-sized model: deep enough to see the tactic, shallow enough to run live on the sideline laptop.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-message-depth.png" alt="Three panels showing one player node with an expanding receptive field: layer one highlights direct neighbours, layer two the whole five-node pickleball graph, layer three faded nodes labelled over-smoothed." loading="lazy"/>
+    <img src="../images/c23-uc-message-depth.png" alt="Three panels showing one player node with an expanding receptive field: layer one highlights direct neighbours, layer two the whole five-node pickleball graph, layer three faded nodes labelled over-smoothed." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.19</span>: UC 09 — Depth and the Receptive Field. One hop sees neighbours; two hops see the doubles court; three hops over-smooth it. <strong>Pickleball</strong>: two layers suffice on K5. <strong>Rugby league</strong>: depth 3–4 with residuals on the line lattice.</figcaption>
   </figure>
 
@@ -817,7 +817,7 @@
   <p>A coach on a sideline does not want a probability; they want "move A2 half a metre toward the middle." The suggestion head closes that gap: the generative decoder outputs a per-node position delta $\Delta \mathbf{p}_i$ plus the predicted threat change, and the output contract handed downstream is the tuple $(\Delta \mathbf{p}, \Delta \text{threat}, \Sigma)$ — action, expected effect, and the ensemble covariance that tells the consumer how much to trust it. The E12 artifact is the <strong>measured</strong> instance: shift A2 +0.35 m toward the centreline, threat 0.64 → 0.22, a 65.6% reduction at 3.4 ms latency — on one clip, so per section 23.5 it is a hypothesis with a pulse, not a product spec. C22 consumes the tuple as value input; C28 renders it as the live suggestion card. <strong>The payoff is the only tactical output a sideline can use at speed: an action, a number, and an honest error bar.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c23-uc-graph-to-action.png" alt="A pickleball doubles court with an overlaid five-node graph, one player node carrying a burnt-orange movement arrow toward the centreline and a small output chip reading threat 0.64 to 0.22." loading="lazy"/>
+    <img src="../images/c23-uc-graph-to-action.png" alt="A pickleball doubles court with an overlaid five-node graph, one player node carrying a burnt-orange movement arrow toward the centreline and a small output chip reading threat 0.64 to 0.22." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 23.20</span>: UC 10 — Graph-to-Action. The model's output is a move, a threat delta, and a covariance. <strong>Pickleball</strong>: "shift A2 +0.35 m" with threat 0.64 → 0.22 (measured, n = 1 clip). <strong>Rugby league</strong>: "fold the edge defender in 0.5 m" with the line-break probability delta.</figcaption>
   </figure>
 

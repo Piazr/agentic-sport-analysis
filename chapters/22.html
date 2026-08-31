@@ -521,7 +521,7 @@
   <p>Every claim in this chapter carries one of three labels. <strong>Source-backed</strong>: a published method with a citable paper (xG, xT, VAEP, the Sawczuk rugby EPV family). <strong>Measured</strong>: our lab's own experiment output, cited by its experiment ID (the C22-lab calibration report). <strong>[verify]</strong>: a practitioner-model number that TacticalVerify could not find in the literature — real enough to teach with, not real enough to cite as established. The Delta-EPV decision boundary of §22.4 is the chapter's one [verify] artifact, and it is labeled as such every time it appears.</p>
 
   <figure id="fig-22-01" class="full">
-    <img src="shared/images/value-xt-heatgrid.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/value-xt-heatgrid.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.1</span>: The xT Heat Grid (transferred). Value of location: the kitchen is darkest (highest threat), the baseline lightest. The grid is the value model's visual.</figcaption>
   </figure>
 
@@ -565,12 +565,12 @@
   <p>The accounting transfer is the point: socceraction's SPADL→VAEP pipeline is the <em>mechanism</em>, and the mechanism ports to any rally sport with a defined state. Pickleball's state is (court zone, shot phase, player positions) — small enough that a logistic or Markov is the honest first cut — and the shot-decision question (drive vs drop on the third shot) is exactly where value models answer coaching questions. The pklmart corpus (300k+ shots, ~1,000 matches, CC BY-NC-SA 4.0) is the first statistical prior; the book's model is the first-of-kind validation. Rugby's equivalent prior is the published record: 768 NRL matches in Kempton 2016 and 99,966 possessions in Sawczuk 2024.</p>
 
   <figure id="fig-22-02" class="full">
-    <img src="shared/images/value-vaep-states.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/value-vaep-states.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.2</span>: VAEP State Accounting. S_before and S_after, the action between them, and the delta as the value. Every rally-sport model is this accounting with a sport-specific state.</figcaption>
   </figure>
 
   <figure id="fig-22-03" class="full">
-    <img src="shared/images/value-ladder.png" alt="Four-rung ladder comparing xG, xT, VAEP, and EPV with an icon per rung." loading="lazy"/>
+    <img src="../images/value-ladder.png" alt="Four-rung ladder comparing xG, xT, VAEP, and EPV with an icon per rung." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.3</span>: The Ladder in One View. Each rung trades data appetite for granularity: xG needs only shot rows; EPV wants tracking. Pick the rung that matches the decision and the data you actually have.</figcaption>
   </figure>
 
@@ -601,7 +601,7 @@
   <p>Basketball EPV is the closest published analogue to what our two sports need, because all three are point-based, possession-limited, and spatially continuous. The transplant recipe: swap the court for the pickleball court or the 100×68 m rugby league field; swap the possession-ending events (shot, turnover) for the sport's outcomes (rally won/lost; try, penalty, dropout, handover); swap the macro decision vocabulary for drive/drop/dink or run/pass/kick. In <strong>rugby league</strong> the possession is the set of six, and the EPV line through the set is a coaching visual in its own right: value climbs with each tackle that gains metres, spikes on a line break, and collapses on a forced error. In <strong>pickleball</strong> the possession is the rally, and the EPV line is nearly binary at the serve (low, symmetric) but widens dramatically after the third shot — the moment the value model earns its keep, because that is where the drive/drop choice sets the trajectory.</p>
 
   <figure id="fig-22-04" class="full">
-    <img src="shared/images/value-epv-possession-line.png" alt="EPV line rising across a rugby league set of six tackles, with tackle markers T1 through T6." loading="lazy"/>
+    <img src="../images/value-epv-possession-line.png" alt="EPV line rising across a rugby league set of six tackles, with tackle markers T1 through T6." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.4</span>: EPV Through the Set. Expected possession value climbing across six rugby league tackles; each tackle's gain moves the line. The pickleball analogue is the rally: flat through serve and return, decisive at the third shot.</figcaption>
   </figure>
 
@@ -646,7 +646,7 @@
   <p><strong>Rugby mirror.</strong> Rugby league has the same conditioned-decision shape at fifth tackle: kick early from deep in your half (low EPV either way, so take the territory) versus run the shape inside the opposition twenty (high EPV, keep the ball alive). The difference is that rugby's boundary has forty years of event data behind it; pickleball's has one practitioner table and a corpus waiting to be fitted.</p>
 
   <figure id="fig-22-05" class="full">
-    <img src="shared/images/value-pb-delta-epv-tree.png" alt="Decision tree for the pickleball third shot: deep return leads to drop (+0.142), short high return leads to drive (−0.188)." loading="lazy"/>
+    <img src="../images/value-pb-delta-epv-tree.png" alt="Decision tree for the pickleball third shot: deep return leads to drop (+0.142), short high return leads to drive (−0.188)." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.5</span>: The Delta-EPV Decision Tree. Third-shot call conditioned on return depth and bounce height. Values are the practitioner model [verify]; the tree structure is the deliverable — refit the leaves on pklmart.</figcaption>
   </figure>
 
@@ -660,7 +660,7 @@
   <p><strong>Pickleball mirror.</strong> Note what rugby did <em>not</em> wait for: tracking data. The Bayesian EPV runs on coded events with field position — the same data class pklmart already provides for pickleball. The rugby anchor is the proof of concept that the pickleball gap of §22.4 is fillable with the data that exists today.</p>
 
   <figure id="fig-22-06" class="full">
-    <img src="shared/images/value-rugby-epv-surface.png" alt="Smooth EPV contour surface over a rugby league field, darkest at the attacking try line." loading="lazy"/>
+    <img src="../images/value-rugby-epv-surface.png" alt="Smooth EPV contour surface over a rugby league field, darkest at the attacking try line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.6</span>: The Rugby Field-Position Value Map. Smooth EPV over the 100×68 m field in the Sawczuk style: value concentrates at the attacking try line and decays toward your own. Kempton's monotonicity finding, made visual.</figcaption>
   </figure>
 
@@ -672,7 +672,7 @@
   <p><strong>Pickleball case.</strong> The kitchen is the highest-value zone and the middle seam is its weakest-control corridor — the chapter-8 finding, restated in value language. The Forehand Alpha convention (left-side player owns the central corridor) is a control-allocation rule: it assigns the seam to the player whose forehand reaches it fastest, maximizing team control over the highest-EPV strip of court. <strong>Rugby case.</strong> The defensive line is a control surface problem: when adjacent defenders drift more than ~2.5 m apart (the dog-leg), the attacker owns the gap and line-break probability jumps sharply [verify] — the control surface tearing, in Spearman's terms. Both sports teach the same lesson: value without control is a wish; control without value is a sweat.</p>
 
   <figure id="fig-22-07" class="full">
-    <img src="shared/images/value-pitch-control.png" alt="Pickleball court with overlaid control regions around four players and a value contour at the kitchen line." loading="lazy"/>
+    <img src="../images/value-pitch-control.png" alt="Pickleball court with overlaid control regions around four players and a value contour at the kitchen line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.7</span>: Control × Value, One Surface. Doubles control regions (grey) overlaid with the point-value contour (burnt orange, peaked at the kitchen). The middle seam is where high value meets contested control — aim there.</figcaption>
   </figure>
 
@@ -716,7 +716,7 @@
   <p><strong>Brier score 0.1728; the bins track within ~0.05.</strong> That is an honest, calibrated toy — and it demonstrates the report every value model must ship: Brier + per-bin reliability, never AUC alone (chapter 20). When a model fails the bins, the first fix is temperature scaling (Guo et al. 2017, arXiv 1706.04599): one scalar fitted on a validation set, ~20 lines of PyTorch, which routinely fixes overconfident neural value models. Isotonic regression (sklearn's CalibratedClassifierCV) is the non-parametric alternative when the miscalibration is not monotone-uniform. The known soccer failure modes translate directly: location-only xG models overrate open looks and underrate crowded-box chances — the pickleball equivalent is a zone-only model that overrates kitchen-line dinks and underrates the speed-up from the same zone. Both sports' audits must exist from day one, and both must resample uncertainty at the <em>match</em> level, not the row level — 300k pklmart shots are ~1,000 independent matches, not 300k independent observations.</p>
 
   <figure id="fig-22-08" class="full">
-    <img src="shared/images/value-calibration-curve.png" alt="Reliability diagram with a diagonal perfect-calibration line and four bin points hugging it." loading="lazy"/>
+    <img src="../images/value-calibration-curve.png" alt="Reliability diagram with a diagonal perfect-calibration line and four bin points hugging it." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.8</span>: The Reliability Diagram. Predicted probability against observed frequency for the C22-lab bins; the diagonal is perfect calibration. This figure — not an AUC number — is the trust certificate for any value model.</figcaption>
   </figure>
 
@@ -739,7 +739,7 @@
   <p>The canonical pickleball decision: serving team, third shot, the return has come back deep with backspin. The problem is that neither event counts nor winner totals answer it — "he drops 60% of his third shots" describes a habit, not a value. The mechanism is the one-step expected-value model of §22.4: EPV = P(win now)·(+1) + P(lose now)·(−1) + P(continue)·V(next_state), and the decision rule is the sign of ΔEPV(S) = E[Y | drop, x] − E[Y | drive, x]. The practitioner boundary — deep backspin return: drop by +0.142; short high return: drive by −0.188 — is [verify]: a coaching-belief table the pklmart fit must test, per the lab plan in §22.9.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc01-third-shot-tree.png" alt="Pickleball third-shot decision tree: deep backspin return branches to the drop, short high return to the drive." loading="lazy"/>
+    <img src="../images/ch22-uc01-third-shot-tree.png" alt="Pickleball third-shot decision tree: deep backspin return branches to the drop, short high return to the drive." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.9</span>: UC 01 — The Third-Shot Tree, Expanded. The §22.4 decision boundary with both branches' value tags visible. <strong>Pickleball</strong>: drop when the return is deep with backspin (+0.142 [verify]); drive when it sits up short and high (−0.188 [verify]). <strong>Rugby league</strong>: the fifth-tackle mirror — kick for territory from deep in your half, keep the ball alive inside the opposition twenty.</figcaption>
   </figure>
 
@@ -749,7 +749,7 @@
   <p>The serve is the only fully controlled shot in pickleball, and the serving team starts the rally at a structural disadvantage — both opponents are already set at the kitchen. The problem: is a hard, deep, corner serve worth more than a safe spin serve to the middle? The mechanism values the serve by what it produces, not by what it is: V(serve_t) = Σ_r P(return r | serve_t)·V(state after return r) − P(fault | serve_t)·V(side-out). A serve whose only effect is a neutral return has near-zero value even at 100 km/h; a serve that buys a short, attackable return has value equal to the third-shot boundary it unlocks (UC 01). Component probabilities are [verify] until the pklmart fit; the accounting shape is source-backed (the VAEP action-value identity, §22.3).</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc02-serve-selection.png" alt="Overhead pickleball court with three serve target zones: deep corner, body, and short wide." loading="lazy"/>
+    <img src="../images/ch22-uc02-serve-selection.png" alt="Overhead pickleball court with three serve target zones: deep corner, body, and short wide." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.10</span>: UC 02 — Serve-Selection Values. Three serve targets valued by the return state they induce. <strong>Pickleball</strong>: deep corner serve to the weaker backhand; body serve to jam the returner; short wide serve only when the opponent cheats back. <strong>Rugby league</strong>: kick-off selection — a short contestable kick-off versus a deep kick values exactly the same way: the field position of the first tackle it produces.</figcaption>
   </figure>
 
@@ -759,7 +759,7 @@
   <p>The dink rally is where recreational players get impatient and professionals get paid. The problem: when do you keep dinking, and when do you speed up? The mechanism is the concede term of the VAEP identity: a cross-court dink barely moves P(win) but steadily suppresses the opponent's P(win now) by keeping the ball below net height; a speed-up is a high-variance action whose value is P(attack wins)·reward − P(counterattack)·risk. The math says the speed-up is positive only after the dink has already created the attack state — ball above net height, opponent stretched wide — which is why value models reward patience sequences that winner counts call passive. Component rates are [verify]; the reward/risk split is source-backed (Overmeer et al. 2025, §22.3).</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc03-dink-exchange.png" alt="Side view of a pickleball dink exchange: safe cross-court arc versus risky down-the-line arc." loading="lazy"/>
+    <img src="../images/ch22-uc03-dink-exchange.png" alt="Side view of a pickleball dink exchange: safe cross-court arc versus risky down-the-line arc." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.11</span>: UC 03 — The Dink Exchange. Cross-court (long net distance, low risk) versus down-the-line (short, attacks the seam) with the clearance margin marked. <strong>Pickleball</strong>: the cross-court dink's value is in the concede term — denial, not winners. <strong>Rugby league</strong>: the one-out hit-up in your own half — a low-variance action whose value is field position and ruck speed, not line breaks.</figcaption>
   </figure>
 
@@ -771,7 +771,7 @@
   <p>How much is ten metres worth? Every rugby league coach acts on the answer; the lineage of §22.5 is the published attempt to measure it. The mechanism is a possession-outcome model over field position: EPV(x) = Σ_o P(outcome o | position x)·points(o), over the five outcomes of Sawczuk 2024 — converted try, unconverted try, penalty goal, drop goal, no points. Kempton 2016 (768 NRL matches, source-backed) established the monotonicity: value climbs toward the opposition try line, and possessions after an opposition error or dropout out-value possessions after a completed set. Sawczuk 2024 (99,966 Super League possessions, source-backed) made the surface smooth with a 33-centre Bayesian mixture — no tracking data required.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc04-field-position-map.png" alt="Rugby league field with possession-value zones climbing toward the attacking try line." loading="lazy"/>
+    <img src="../images/ch22-uc04-field-position-map.png" alt="Rugby league field with possession-value zones climbing toward the attacking try line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.12</span>: UC 04 — The Field-Position Value Map. Zonal EPV over the 100×68 m field, darkest at the attacking try line (Kempton monotonicity, source-backed). <strong>Rugby league</strong>: the number behind "winning the territory battle". <strong>Pickleball</strong>: court-position value — baseline, transition zone, kitchen line — is the same map on a 13.41×6.10 m court, and the reason the drop shot exists at all.</figcaption>
   </figure>
 
@@ -781,7 +781,7 @@
   <p>The counterintuitive rugby league decision: sometimes the right tackle is the one you don't contest. The problem — defenders fight for a dominant, slow play-the-ball on every tackle, but against a spread attack a surrendered quick play-the-ball can keep the line set and be worth more. The mechanism values the tackle by its effect on the rest of the set: VAEP(tackle) = ΔP_concede over the remaining tackles, where a slow ruck lowers the attack's EPV on tackles two and three but a quick one preserves the defensive line's shape. The six-again era sharpens the question: an infringement now costs an extra tackle instead of a penalty, which should raise the value of ruck control — but every published value predates the rule, so the magnitude is [verify] until the §22.5 re-estimation lands.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc05-tackle-value.png" alt="Rugby league tackle with two branches: dominant slow play-the-ball versus conceded quick play-the-ball." loading="lazy"/>
+    <img src="../images/ch22-uc05-tackle-value.png" alt="Rugby league tackle with two branches: dominant slow play-the-ball versus conceded quick play-the-ball." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.13</span>: UC 05 — The Tackle Value Fork. Dominant tackle (slow PTB, lower attack EPV next tackles) versus conceded tackle (quick PTB, defensive line stays set). <strong>Rugby league</strong>: surrender the ruck when the line's shape is worth more than the ruck's speed. <strong>Pickleball</strong>: the reset dink — deliberately conceding pace to neutralize an attack state is the same trade, one shot at a time.</figcaption>
   </figure>
 
@@ -791,7 +791,7 @@
   <p>Fifth tackle, own forty, nothing on. The problem: attempt the 40/20 for the scrum feed and an attacking set, or kick long and safe and trust the defence? The mechanism is the reward/risk split of the 2025 U-Net EPV recipe (source-backed, §22.3): Net(kick) = P(success)·EPV(after 40/20) + P(touch, no 40/20)·EPV(opposition set) + P(out on the full or returned)·EPV(counter-attack). The 40/20's reward is large — possession near halfway with a set of six — but its failure modes hand the opponent either seven tackles or a broken-field return. The safe kick's value is boring and positive: it trades a small reward for a collapsed risk term. Component probabilities from the Sawczuk surface; the exact NRL magnitudes are [verify] on closed data.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc06-kick-value.png" alt="Rugby league kicker with three fifth-tackle options: 40/20 touchline kick, grubber into the in-goal, bomb to the corner." loading="lazy"/>
+    <img src="../images/ch22-uc06-kick-value.png" alt="Rugby league kicker with three fifth-tackle options: 40/20 touchline kick, grubber into the in-goal, bomb to the corner." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.14</span>: UC 06 — The Fifth-Tackle Kick Fork. 40/20, grubber, and bomb valued as reward × P(success) − risk × P(failure). <strong>Rugby league</strong>: the 40/20 attempt pays only when the kicker's success rate clears the risk-adjusted threshold. <strong>Pickleball</strong>: the lob — high reward (both opponents pinned at the kitchen), high risk (a short lob is a smash) — is the identical reward/risk shape.</figcaption>
   </figure>
 
@@ -803,7 +803,7 @@
   <p>Every pickleball analyst gets asked for "xG for pickleball". The honest answer: it does not transplant, and knowing why is worth a use case. The problem is structural — xG values a shot because soccer has a shot-to-goal terminal event; pickleball's terminal event (the rally) is one to three shots away and opponent-dependent, so there is no clean binary to regress. The mechanism that survives the transplant is the conditioning, not the target: a point-probability model P(server wins rally | shot type, zone, phase) fitted on pklmart rows (§22.4). The math gap is selection bias: xG conditions on "a shot was attempted", and soccer shots are nearly all genuine attempts; pickleball's attempt set is endogenous — players only drive when the state flatters the drive — so naive per-shot success rates overstate the aggressive option (§22.8). Source-backed in soccer; concept-transfer in pickleball.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc07-xg-transplant.png" alt="Soccer pitch with a shot-to-goal arc on the left, pickleball court with a rally exchange on the right, and a gap bridge between them." loading="lazy"/>
+    <img src="../images/ch22-uc07-xg-transplant.png" alt="Soccer pitch with a shot-to-goal arc on the left, pickleball court with a rally exchange on the right, and a gap bridge between them." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.15</span>: UC 07 — The Transplant Gap. xG's shot-to-goal arc (left) versus pickleball's rally exchange (right); the bridge is the missing terminal event. <strong>Pickleball</strong>: what a pickleball xP needs — pklmart priors plus PBN v2 coordinates, not a soccer model with the goal painted over. <strong>Rugby league</strong>: try probability from field position on tackle five is rugby's working xG — it transplants because the set structure defines the shot.</figcaption>
   </figure>
 
@@ -813,7 +813,7 @@
   <p>A value model that lives in a notebook helps no one at courtside. The problem: the coach needs a per-event value at the moment of decision, in the same glance as the score. The mechanism is a schema append, not a new pipeline: every PBN/NRLSheet event row (chapter 17) gets a ΔEPV/VAEP column written at ingest time, and the cockpit (chapter 28) renders it — value heat on the court minimap, a value-per-shot-type bar chart, the running EPV line through the rally or set. The math is streaming inference: XGBoost on ~20 state features is sub-frame on an M4 [verify — the lab has not yet benchmarked the fitted model; the synthetic C22-lab logistic runs in microseconds]. The real latency is upstream event detection (chapters 8-12, 19), not the value model.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc08-value-dashboard.png" alt="Coach dashboard with a court value minimap, a value-per-shot-type bar chart, a running EPV line, and a calibration gauge." loading="lazy"/>
+    <img src="../images/ch22-uc08-value-dashboard.png" alt="Coach dashboard with a court value minimap, a value-per-shot-type bar chart, a running EPV line, and a calibration gauge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.16</span>: UC 08 — The Value Dashboard. The four panels chapter 28 renders from the ΔEPV column. <strong>Pickleball</strong>: a live third-shot value feed in practice sessions — the drop/drive boundary visible as it is trained. <strong>Rugby league</strong>: a set-of-six EPV ticker on the broadcast or the coach's box, one number per tackle.</figcaption>
   </figure>
 
@@ -823,7 +823,7 @@
   <p>A value model with good ranking and bad calibration is worse than no model, because decisions consume the numbers, not the ordering. The problem: "the drive is worth 0.65 and the drop 0.50" is actionable advice; if the true rates are 0.52 and 0.50 it is noise with confidence. The mechanism is the chapter-20 discipline applied to value outputs: Brier score as the teaching default, log loss when probabilities feed downstream decisions, and the reliability diagram as the trust certificate. The math: Brier = (1/N)Σ(p_i − y_i)², reported against a base-rate Brier skill score, with a fixed, disclosed binning protocol so figures compare across models (§8 of the dossier). The lab's toy logistic (C22-lab, measured: Brier 0.1728, bins within ~0.05) is the shape of the report every value model must ship; temperature scaling (Guo et al. 2017) is the first fix when the bins fail.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc09-calibration-plot.png" alt="Reliability diagram: predicted probability against observed frequency, four bin points hugging the diagonal." loading="lazy"/>
+    <img src="../images/ch22-uc09-calibration-plot.png" alt="Reliability diagram: predicted probability against observed frequency, four bin points hugging the diagonal." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.17</span>: UC 09 — The Reliability Diagram as Scoring Rule. C22-lab bins against the perfect-calibration diagonal (measured, C22-lab). <strong>Pickleball</strong>: bootstrap confidence intervals over matches, not rally rows — rallies within a match are correlated, and row-wise CIs lie. <strong>Rugby league</strong>: the Sawczuk surface must ship with per-zone reliability, not just a smooth map — a pretty contour with unknown calibration is decoration.</figcaption>
   </figure>
 
@@ -833,7 +833,7 @@
   <p>The same third-shot drop is worth different amounts at 10-2 and at 10-10, and a value model that ignores it gives wrong advice precisely when the match is on the line. The problem: EPV as defined in §22.2-22.4 values the rally, but the decision target is the match. The mechanism is a state extension — score differential and time enter the feature vector — and an objective correction: the right maximand is P(win match), which decomposes over future rallies and diverges from rally-EPV when variance itself has option value. The math: trailing late, a team should prefer higher-variance actions even at lower mean EPV, because it needs the tails of the distribution, not the middle. The variance-seeking principle is source-backed in game theory; its pickleball quantification is [verify] — no fitted model exists. Rugby league's version is the clock: trailing by eight with ten minutes left, the completion-rate grind is worth less than the kick-chase, and any EPV that can't see the scoreboard will recommend the grind.</p>
 
   <figure class="full">
-    <img src="shared/images/ch22-uc10-game-state.png" alt="Two pickleball rally panels, one at 10-2 and one at 10-10, with different value bars under the identical third-shot drop." loading="lazy"/>
+    <img src="../images/ch22-uc10-game-state.png" alt="Two pickleball rally panels, one at 10-2 and one at 10-10, with different value bars under the identical third-shot drop." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 22.18</span>: UC 10 — Context Changes Value. The identical third-shot drop valued at 10-2 and at 10-10; the bars differ because the objective is the match, not the rally. <strong>Pickleball</strong>: at 10-10 the drop's low variance is the point; at 2-10 down the drive's variance is the point. <strong>Rugby league</strong>: trailing by eight with ten to play — the kick-chase out-values the grind even when its per-set EPV is lower.</figcaption>
   </figure>
 

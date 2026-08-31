@@ -529,7 +529,7 @@
   <p><strong>Practitioner limit:</strong> 2D CNN + temporal pooling is cheap, fast, and easy to deploy, but it cannot model the order of sub-actions or the motion between frames. It is a useful baseline for clip-level classification when the action is visually obvious and the camera is fixed, but it is not a spotting model and it is not a decision model.</p>
 
   <figure id="fig-16-01" class="full">
-    <img src="shared/images/ch16-action-pipeline.png" alt="Action recognition pipeline: a strip of video frames feeds a frozen encoder, then a feature bank, then three small heads for spotting, classification, and retrieval." loading="lazy"/>
+    <img src="../images/ch16-action-pipeline.png" alt="Action recognition pipeline: a strip of video frames feeds a frozen encoder, then a feature bank, then three small heads for spotting, classification, and retrieval." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.1</span>: Action recognition pipeline. The same frozen encoder can feed a spotting head, a classification head, and a retrieval index. The head is the product; the backbone is frozen.</figcaption>
   </figure>
 
@@ -548,7 +548,7 @@
   <p>SlowFast is the canonical demonstration that sport action recognition is a spatio-temporal problem, not a frame-recognition problem. The slow/fast split is also the ancestor of the 2026 recipe: V-JEPA 2.1's dense features preserve both spatial structure and temporal coherence in a single frozen encoder, but the design intuition — separate the stable scene from the fast motion — remains the same.</p>
 
   <figure id="fig-16-02" class="full">
-    <img src="shared/images/ch16-slowfast-i3d.png" alt="I3D inflated 3D convolutions and SlowFast dual-pathway architecture side by side." loading="lazy"/>
+    <img src="../images/ch16-slowfast-i3d.png" alt="I3D inflated 3D convolutions and SlowFast dual-pathway architecture side by side." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.2</span>: I3D inflates 2D kernels into 3D tubes; SlowFast keeps a slow semantic pathway and a fast motion pathway. Both are history; the 2026 recipe freezes the encoder and trains a small head.</figcaption>
   </figure>
 
@@ -639,7 +639,7 @@
   <p>The implicit 13th class is <strong>unknown</strong>: between contacts, during body movements that are not shots, and in ambiguous cases, the model must say "I don't know" rather than force a guess. Unknown is not a missing label; it is the honest bucket that the review queue (chapter 19) consumes. A taxonomy without an unknown class is a taxonomy that will hallucinate.</p>
 
   <figure id="fig-16-03" class="full">
-    <img src="shared/images/ch16-pb-taxonomy.png" alt="Pickleball action taxonomy: twelve spokes grouped by phase around a central contact hub, with an unknown hatched segment." loading="lazy"/>
+    <img src="../images/ch16-pb-taxonomy.png" alt="Pickleball action taxonomy: twelve spokes grouped by phase around a central contact hub, with an unknown hatched segment." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.3</span>: Pickleball action taxonomy: 12 events anchored to contact, grouped by phase, plus an explicit unknown class. Phase × type, not flat labels.</figcaption>
   </figure>
 
@@ -670,7 +670,7 @@
   <p>PTB timing is also a performance feature: ruck speed (PTB duration) is a standard league metric, so the spotting head's per-frame outputs feed a duration statistic directly. The taxonomy exists so that high-risk events can be surfaced, counted, and reviewed, and so that routine events can be turned into numbers coaches already consume.</p>
 
   <figure id="fig-16-04" class="full">
-    <img src="shared/images/ch16-rl-taxonomy.png" alt="Rugby league action taxonomy: a six-tackle cycle from PTB through carry, pass, tackle, and kick on the sixth tackle." loading="lazy"/>
+    <img src="../images/ch16-rl-taxonomy.png" alt="Rugby league action taxonomy: a six-tackle cycle from PTB through carry, pass, tackle, and kick on the sixth tackle." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.4</span>: Rugby league action taxonomy: a six-tackle cycle plus branching kick, strip, and try events. PTB is the metronome.</figcaption>
   </figure>
 
@@ -689,7 +689,7 @@
   <p>Spotting uses overlapping windows with 50% stride to avoid missing a boundary. The SoccerNet mAP@1s tolerance then scores a prediction as correct if its timestamp falls within 1 second of a ground-truth contact. That tolerance is generous for a PTB but tight for a serve contact. The window design and the tolerance design must be chosen together.</p>
 
   <figure id="fig-16-05" class="full">
-    <img src="shared/images/ch16-temporal-window.png" alt="A timeline of a pickleball rally with sliding windows highlighting a 2-4 second span around a volley contact." loading="lazy"/>
+    <img src="../images/ch16-temporal-window.png" alt="A timeline of a pickleball rally with sliding windows highlighting a 2-4 second span around a volley contact." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.5</span>: Temporal window design. A 2–4 second window with 50% overlap captures the wind-up and follow-through without mixing multiple actions. Tolerance is chosen separately.</figcaption>
   </figure>
 
@@ -701,7 +701,7 @@
   <p>The boundary is quantified by two source-backed benchmarks. <strong>SportD</strong> (Aug 2026, arXiv:2607.14616) found that frontier VLMs pick the optimal on-ball action in 31.4% of decisions versus 38.9% for professional players. <strong>HourVideo</strong> found that Gemini 1.5 Pro scores 37.3% on hour-scale video understanding versus 85.0% for human experts. The gap is not a small calibration issue; it is a structural limit on description-versus-decision.</p>
 
   <figure id="fig-16-06" class="full">
-    <img src="shared/images/describe-vs-decide.png" alt="Paired bar chart comparing model and human performance on SportD and HourVideo benchmarks, with a human-parity dashed line." loading="lazy"/>
+    <img src="../images/describe-vs-decide.png" alt="Paired bar chart comparing model and human performance on SportD and HourVideo benchmarks, with a human-parity dashed line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.6</span>: The Describe-vs-Decide Gap. Frontier models describe at 31–37%; humans decide at 39–85%. The deterministic pipeline must decide.</figcaption>
   </figure>
 
@@ -738,7 +738,7 @@
   <p>The same measured failure transfers to rugby league. A query like "a dominant tackle in the defensive line" would return a narrow cosine band because all broadcast frames share the same grass, posts, and player shapes. The embedding sees the scene, not the action.</p>
 
   <figure id="fig-16-07" class="full">
-    <img src="shared/images/ch16-benchmark-spread.png" alt="Dot chart showing CLIP cosine similarities for six frames cluster in a tight band from 0.23 to 0.30 for both a serve query and a dink exchange query, annotated as no separation." loading="lazy"/>
+    <img src="../images/ch16-benchmark-spread.png" alt="Dot chart showing CLIP cosine similarities for six frames cluster in a tight band from 0.23 to 0.30 for both a serve query and a dink exchange query, annotated as no separation." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.7</span>: C16 lab measured result. Zero-shot CLIP cosine similarities for six pb-003 frames cluster in a tight band for both "a serve" and "a dink exchange" — no discriminative separation.</figcaption>
   </figure>
 
@@ -821,7 +821,7 @@
   <p>The serve is the only closed-skill event in either sport: same start position, same cue sequence, every point. That makes it the cheapest classification win in the book and the natural first head to train. The problem a coach actually has: which serve type is a player hitting under pressure (drive, lob, drop serve), and is the motion legal — contact below the waist, paddle head below the wrist, feet behind the baseline.</p>
   <p>Mechanism: contact-anchored 2-second windows (the §16.5e design) are encoded by the frozen V-JEPA 2 features <em>f<sub>1</sub></em>...<em>f<sub>T</sub></em>, pooled to <em>z</em> = mean<sub><em>t</em></sub>(<em>f<sub>t</sub></em>), and classified by a linear probe P(<em>y</em> | clip) = softmax(<em>Wz</em>) over {drive, lob, drop serve, fault, unknown}. Legality is <em>not</em> the softmax's job: it is a geometric predicate — contact height &lt; waist, computed from the C06 homography feet and the C11 pose wrist/hip keypoints — attached to the classified row. E10's temporal-difference contact heuristic (0.814 precision, measured) supplies the anchor instants the windows are centered on.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc01-serve-classification.png" alt="Pickleball serve classification pipeline from contact-anchored clip through frozen encoder and probe head to serve-type and fault outputs." loading="lazy"/>
+    <img src="../images/ch16-uc01-serve-classification.png" alt="Pickleball serve classification pipeline from contact-anchored clip through frozen encoder and probe head to serve-type and fault outputs." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.8</span>: UC 01 — Serve Classification. Contact-anchored 2s window → frozen encoder → linear probe over serve types; legality stays a geometric predicate. <strong>Pickleball</strong>: drive/lob/drop-serve profiling per player per session. <strong>Rugby league</strong>: the same head pattern classifies kick-offs (short, deep, out-on-the-full) — the sport's only comparably closed skill.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> coaching — a serve-type distribution per player replaces anecdote; officiating — legality clips surface for review instead of being adjudicated blind.</p>
@@ -830,7 +830,7 @@
   <p>Rally shots are the volume events of pickleball, and their labels are the input to everything downstream — the ΔEPV value model of chapter 22, the drill design of chapter 29, the retrieval index of §16.6. The problem: a frame-level model conflates the soft shots (§16.5d); the label lives in the arc before contact.</p>
   <p>Mechanism: the head scores the <em>phase × type</em> conjunction from §16.5b rather than a flat label list: P(phase, type | clip) = P(phase | clip) · P(type | clip, phase), which shrinks the hypothesis space before the type decision. The type head consumes trajectory-arc features — pre-contact ball rise/fall and net clearance from the C12 ball track where visible (E04's ball wall: median confidence 0.1125, so pose and paddle motion carry the load when the ball is invisible) — resolving the drop-versus-dink confusion by the arc's origin zone. The implicit 13th class, <strong>unknown</strong>, absorbs between-contact frames.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc02-shot-classes.png" alt="Pickleball court with four shot archetype trajectories: flat drive, soft dink at the kitchen line, arcing drop from baseline, steep smash." loading="lazy"/>
+    <img src="../images/ch16-uc02-shot-classes.png" alt="Pickleball court with four shot archetype trajectories: flat drive, soft dink at the kitchen line, arcing drop from baseline, steep smash." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.9</span>: UC 02 — Shot Classification. Four archetype trajectories on the court; the phase × type head scores the conjunction, never a flat label. <strong>Pickleball</strong>: per-shot labels feed C22 ΔEPV (drop +0.142 vs drive -0.188 [verify]). <strong>Rugby league</strong>: the same conjunction pattern separates pass types (flat, cut-out, offload) by phase (inside contact vs open play).</figcaption>
   </figure>
   <p><strong>Payoff:</strong> tactical — shot distributions per rally phase are the raw material of the value model; every labeled contact compounds into C22 and C29.</p>
@@ -839,7 +839,7 @@
   <p>The NVZ foot fault is pickleball's highest-stakes adjudication target: a volley contacted while any part of the foot touches the kitchen line or zone. The practical problem is not calling it live — the book's single fixed camera cannot see every angle — but surfacing the right clips for review instead of asking a referee to scrub a full match.</p>
   <p>Mechanism: a two-stage sieve. Stage one is the spotting head from UC 02 flagging volley contacts near the NVZ. Stage two is geometric: the C06 homography (E05/E11, 3.82–4.65 cm RMSE, measured) maps the contact-frame foot keypoints to court coordinates, and the predicate foot_y &lt; NVZ_line scores the violation margin. The output row is a review candidate with the margin attached — never a call. This is the single-view analogue of MVFoul's VARS aggregation (§16.4): multi-view foul classification adjudicates; single-view foul classification <em>triages</em>.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc03-kitchen-fault.png" alt="Pickleball non-volley zone close-up with a foot on the kitchen line during a volley, homography grid overlay, and a review-only badge." loading="lazy"/>
+    <img src="../images/ch16-uc03-kitchen-fault.png" alt="Pickleball non-volley zone close-up with a foot on the kitchen line during a volley, homography grid overlay, and a review-only badge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.10</span>: UC 03 — Kitchen-Fault Triage. Volley contacts near the NVZ are surfaced with a calibrated foot-to-line margin. <strong>Pickleball</strong>: review queue for NVZ foot faults, margin in cm attached. <strong>Rugby league</strong>: the same sieve pattern triages high-tackle candidates — Bath 2025's 68% sensitivity / 84% specificity (source-backed; primary citation [verify before print]) screens for human review, never adjudicates.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> officiating — referee time spent on the 2% of contacts that matter; the review queue (chapter 19) consumes what this head emits.</p>
@@ -850,7 +850,7 @@
   <p>The tackle is rugby league's atomic event: it ends the carry, starts the ruck, resets the six-tackle count, and anchors the welfare screen. Missing tackles breaks every downstream statistic; hallucinating them poisons the count. The problem is that a tackle is a 1–2 second contact interval in dense occlusion, not a visible instant.</p>
   <p>Mechanism: per-frame discriminability. The frozen features give a per-frame logit p<sub><em>t</em></sub> = σ(<em>w</em> · <em>f<sub>t</sub></em>) for "tackle in progress"; an event is proposed where p<sub><em>t</em></sub> crosses a calibrated threshold, and temporal non-maximum suppression merges adjacent crossings into one timestamped interval. Scoring is mAP@1s (§16.3): a prediction is correct if its contact timestamp lands within 1 second of ground truth. The spotting cues the head learns — closing angle, contact deceleration, carrier to ground or held — are exactly the §16.2c flow-stream signals, now carried by the frozen encoder.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc04-tackle-detection.png" alt="Rugby league tackle detection: ball-carrier tackled by two defenders above a per-frame probability timeline peaking at the contact instant." loading="lazy"/>
+    <img src="../images/ch16-uc04-tackle-detection.png" alt="Rugby league tackle detection: ball-carrier tackled by two defenders above a per-frame probability timeline peaking at the contact instant." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.11</span>: UC 04 — Tackle Detection. Per-frame tackle probability with threshold crossing and temporal NMS, scored at mAP@1s. <strong>Rugby league</strong>: the six-tackle count, tackle-burden stats, and the welfare screen of UC 03 all consume this head. <strong>Pickleball</strong>: the identical mechanism spots paddle-ball contacts — the event that anchors every pickleball label.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> statistical — the tackle count and burden numbers coaches already consume, produced without a human spotter; welfare — the contact rows UC 03's screen reads.</p>
@@ -859,7 +859,7 @@
   <p>Between the tackle and the next play-the-ball completion sits the ruck: bodies over the ball, marker pressure, the carrier rising and heeling it back. Coaches measure this interval obsessively, and chapter 28's cockpit renders it live. The problem: neither its start nor its end has a clean visual instant — the ruck is a state, entered and left gradually.</p>
   <p>Mechanism: change-point detection over the per-frame state probabilities. UC 04's head emits p<sub><em>t</em></sub>(ruck); the interval [<em>t<sub>s</sub></em>, <em>t<sub>e</sub></em>] is the maximum-posterior binary segmentation of that sequence — the same penalty formulation as classic change-point detection, argmin over segmentations of the within-segment cost plus λ per boundary. The output is a start row and an end row with the duration Δ<em>t</em> = <em>t<sub>e</sub></em> − <em>t<sub>s</sub></em>, which is the PTB-timing statistic of UC 06 and the band input of C28.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc05-ruck-boundary.png" alt="Rugby league ruck boundary detection: players over the play-the-ball area above a step-function timeline marking ruck start and ruck end with a duration bracket." loading="lazy"/>
+    <img src="../images/ch16-uc05-ruck-boundary.png" alt="Rugby league ruck boundary detection: players over the play-the-ball area above a step-function timeline marking ruck start and ruck end with a duration bracket." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.12</span>: UC 05 — Ruck Boundaries. Binary segmentation over per-frame ruck-state probabilities yields start, end, and duration. <strong>Rugby league</strong>: feeds C28's live PTB band directly. <strong>Pickleball</strong>: the same state-boundary machinery segments rally phases — kitchen exchange start/end — from per-frame phase probabilities.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> tactical and live — the ruck-speed number arrives during the match, not after the video session; extends C28 without duplicating it.</p>
@@ -868,7 +868,7 @@
   <p>Ruck speed — the duration from tackle completion to dummy-half collection — is one of the few statistics that predicts attacking success in league, and it is traditionally coded by hand. The problem is pure throughput: a season of matches is thousands of PTBs, and manual coding lags the fixture by days.</p>
   <p>Mechanism: the duration statistic is read directly off UC 05's boundaries: PTB speed = Δ<em>t</em> per event, aggregated per team, per ruck position, per tackle number. The practitioner playbook bands it green &lt; 3.2s, amber, red &gt; 4.0s [verify — coaching-standard bands, not a published benchmark]. Because the statistic is a difference of two spotted timestamps, its error is the sum of two spotting errors — which is why the mAP@1s tolerance of §16.3 propagates: at 1s tolerance per boundary, a duration is honest to roughly ±2s worst case, tight enough for band assignment, too loose for sub-second claims. Cluster-bootstrap by match (C20) gives the confidence intervals.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc06-ptb-speed.png" alt="Rugby league play-the-ball speed: three-phase sequence of carrier rising, heeling the ball, dummy-half collecting, with a band gauge from green under 3.2 seconds to red over 4.0 seconds." loading="lazy"/>
+    <img src="../images/ch16-uc06-ptb-speed.png" alt="Rugby league play-the-ball speed: three-phase sequence of carrier rising, heeling the ball, dummy-half collecting, with a band gauge from green under 3.2 seconds to red over 4.0 seconds." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.13</span>: UC 06 — PTB Speed. Duration read off spotted boundaries, banded green &lt; 3.2s / red &gt; 4.0s [verify]. <strong>Rugby league</strong>: per-team ruck-speed distributions per match and season. <strong>Pickleball</strong>: the analogue statistic is rally tempo — mean inter-contact interval in kitchen exchanges — read off UC 04's contact timestamps the same way.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> performance — a hand-coded statistic becomes automatic and immediate; the band assignment is the number the coaching staff already speaks in.</p>
@@ -877,7 +877,7 @@
   <p>The pass is league's connective event: it moves the ball laterally and backward, and its count and direction structure the attack. The problem is that a pass and an offload are visually identical at release (§16.5d), and a forward pass is a rule violation — so the label must carry direction, not just occurrence.</p>
   <p>Mechanism: the head pairs a spotting logit with a geometric direction test. Spotting proposes the release instant; the C12 ball track then gives the velocity vector <em>v</em> = (<em>v<sub>x</sub></em>, <em>v<sub>y</sub></em>) in the pitch frame, and the legality predicate is the sign of the play-direction component: <em>v<sub>x</sub></em> ≤ 0 is backward or lateral, <em>v<sub>x</sub></em> &gt; 0 is a forward-pass candidate for review. Type (flat, cut-out, offload) is the phase × type conjunction of UC 02 conditioned on tackle pressure in the preceding window — the UC 04 head's output reused as a feature. Where the ball is lost (E04's wall applies to an oval ball too), hand-velocity from pose is the fallback signal.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc07-pass-detection.png" alt="Rugby league pass detection: top-down pitch with a lateral backward pass arc and velocity vector decomposition against the play direction." loading="lazy"/>
+    <img src="../images/ch16-uc07-pass-detection.png" alt="Rugby league pass detection: top-down pitch with a lateral backward pass arc and velocity vector decomposition against the play direction." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.14</span>: UC 07 — Pass Detection. Release spotting plus a geometric direction test on the ball-velocity vector; offload separated by preceding tackle pressure. <strong>Rugby league</strong>: pass counts, direction audit, forward-pass review candidates. <strong>Pickleball</strong>: the direction test transfers as shot-direction classification — crosscourt vs down-the-line — the landing-zone column the retrieval index filters on.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> tactical and officiating — attack shape statistics for coaches; forward-pass clips triaged for review with the direction margin attached.</p>
@@ -888,7 +888,7 @@
   <p>Every downstream consumer — coach review, recruitment reels, the chapter 19 cards — wants the two minutes that matter from ninety minutes of footage. The problem is that "highlight" is a budget problem, not a detection problem: the events are already spotted; the question is which windows earn the reel.</p>
   <p>Mechanism: score each spotted event window by rarity-weighted density, S(<em>w</em>) = Σ<sub><em>e ∈ w</em></sub> −log P(class(<em>e</em>)) over the events in the window, then select the budgeted set: max Σ S(<em>w<sub>i</sub></em>) subject to Σ duration(<em>w<sub>i</sub></em>) ≤ <em>B</em> and non-overlap — a knapsack solved greedily or exactly at this scale. Rarity comes from the class priors the UC 01–07 heads themselves emit, so a speed-up off a dink pattern outranks a routine dink, and a try-scoring kick return outranks a midfield PTB. Unreviewed events are excluded by the chapter 5 evidence rule: retrieval is discovery, review is judgement.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc08-highlight-extraction.png" alt="Highlight extraction: a match timeline with an event-density curve, selected highlight windows, and ranked clip cards." loading="lazy"/>
+    <img src="../images/ch16-uc08-highlight-extraction.png" alt="Highlight extraction: a match timeline with an event-density curve, selected highlight windows, and ranked clip cards." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.15</span>: UC 08 — Highlight Extraction. Rarity-weighted event density with a budgeted, non-overlapping selection. <strong>Pickleball</strong>: a match reel of speed-ups, Erne attempts, and third-shot battles under a 90-second budget. <strong>Rugby league</strong>: tries, line breaks, and big contacts selected against the same budget.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> analyst time — the review session starts at the reel, not at minute zero; every downstream consumer inherits ranked, evidence-linked clips.</p>
@@ -897,7 +897,7 @@
   <p>Section 16.5e set the default — 2–4 seconds, 50% stride — as a design principle. The applied problem is that the default is wrong per class: a serve is contained in 2 seconds, a third-shot drop is not, and a tackle sits in between. Training one window length for all classes bakes the mismatch into every head.</p>
   <p>Mechanism: an ablation, not an architecture. For each action class, train the probe head at window <em>w</em> ∈ {1, 2, 4} s with the stride fixed at 50%, and score mAP@1s(<em>w</em>) per class on the labeled contacts, with leave-one-rally-out splits and C20's cluster bootstrap so the comparison is honest. The deliverable is a per-class window table — serve 2s, third-shot drop 3–4s, tackle 1–2s, PTB 2–3s (the §16.5e numbers, measured per sport rather than asserted) — and the deployment rule that the window is a class-level hyperparameter, not a model-level one. Overlapping windows with 50% stride keep boundary events detectable throughout.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc09-window-tuning.png" alt="Temporal window tuning ablation: mAP at 1-second tolerance versus window length for a pickleball serve and a rugby tackle, with sliding overlapping windows below." loading="lazy"/>
+    <img src="../images/ch16-uc09-window-tuning.png" alt="Temporal window tuning ablation: mAP at 1-second tolerance versus window length for a pickleball serve and a rugby tackle, with sliding overlapping windows below." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.16</span>: UC 09 — Window Tuning. mAP@1s versus window length per class; the optimum is class-specific. <strong>Pickleball</strong>: serve windows at 2s, third-shot drops at 3–4s. <strong>Rugby league</strong>: tackles at 1–2s, PTBs at 2–3s. Ablation protocol measured per the §16.9 measurement plan.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> model quality — per-class windows recover the accuracy a single global window throws away, at the cost of one extra ablation run.</p>
@@ -906,7 +906,7 @@
   <p>SlowFast (§16.2d) is history as a training recipe, but its insight — semantics change slowly, motion changes quickly — is permanent. The applied problem: the frozen-encoder pipeline must still answer both kinds of question, "what is the scene" (court position, team shape) and "what just moved" (paddle flick, ball transfer), without paying for a second backbone.</p>
   <p>Mechanism: sample the frozen features at two temporal rates over the same clip — a slow stream at frame stride α and a fast stream at full rate with a reduced feature width β — then fuse by the lateral connection pattern: <em>z</em> = <em>z</em><sub>slow</sub> + <em>W</em> · <em>z</em><sub>fast</sub>, with one head on the fused representation. This is SlowFast's lateral fusion (source-backed, arXiv:1812.03982) re-implemented as a <em>feature-sampling</em> choice on a frozen encoder rather than a two-branch network — V-JEPA 2.1's dense temporally consistent features are exactly what makes the cheap version possible. The speed-up-versus-dink case of §16.2d is the canonical test: identical slow stream, different fast stream.</p>
   <figure class="full">
-    <img src="shared/images/ch16-uc10-slowfast-fusion.png" alt="SlowFast two-pathway diagram: slow semantic stream and fast motion stream with lateral fusion into a shared classification head, with pickleball and rugby insets." loading="lazy"/>
+    <img src="../images/ch16-uc10-slowfast-fusion.png" alt="SlowFast two-pathway diagram: slow semantic stream and fast motion stream with lateral fusion into a shared classification head, with pickleball and rugby insets." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 16.17</span>: UC 10 — Slow-Fast Fusion. Two sampling rates over frozen features, lateral fusion, one head. <strong>Pickleball</strong>: the fast stream separates speed-up from dink at identical stances. <strong>Rugby league</strong>: the fast stream separates offload from pass by the arriving defender a quarter-second before release.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> deployment — one frozen encoder, one head, and the motion sensitivity of a two-branch network for the price of a second feature sampler.</p>

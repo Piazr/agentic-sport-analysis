@@ -521,7 +521,7 @@
   <p>The book's own Pickleball Notation (PBN) schema is the reference implementation. Its 31-field data dictionary (written 2026-06-29, validated 2026-09-01) is a real, enforceable contract — and it carries the field's most important convention: <strong>"unknown" is a legal value</strong>. The schema does not force a shot label; it forces honesty. A PBN row is a structured evidence object: what is known, what is candidate, what is missing, and what a human must correct before it becomes stronger evidence.</p>
 
   <figure id="fig-17-01" class="full">
-    <img src="shared/images/pbn-row-anatomy.png" alt="PBN event row anatomy: contract bar with event_id rally_id source_clip frame_id timestamp player_slot shot_type contact_state confidence evidence_refs, shot_type unknown badge. Recreate: white background, burnt-orange underline." loading="lazy"/>
+    <img src="../images/pbn-row-anatomy.png" alt="PBN event row anatomy: contract bar with event_id rally_id source_clip frame_id timestamp player_slot shot_type contact_state confidence evidence_refs, shot_type unknown badge. Recreate: white background, burnt-orange underline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.1</span>: The PBN Row as a Contract. Eleven of the thirty-one fields, with the honesty clause visible: shot_type carries an "unknown" badge, and that is legal.</figcaption>
   </figure>
 
@@ -578,12 +578,12 @@
   <p>The join key is <code>(clip_id, frame_idx, pts_s)</code> — everything joins on it; nothing is matched on fuzzy timestamps. The triplet, not a pair, because the E06 review windows are <em>time intervals</em> but the review UI and dataset schema key <em>frames</em>. <code>pts_s</code> bridges the analyst's clock and the pipeline's frame index, and both must come from one authoritative <code>frame_map.csv</code> — never recomputed downstream. Spine rules: meters canonical, pixels evidence, feet presentation; every event row's <code>evidence_refs</code> resolves to existing <code>(clip_id, frame_idx)</code> pairs; MOTChallenge export is a projection (drop spine columns, fill <code>x,y,z=-1</code>), so TrackEval/HOTA is one SQL query away.</p>
 
   <figure id="fig-17-02" class="full">
-    <img src="shared/images/event-standards-stack.png" alt="One-spine stack: kloppy SPADL EPTS MOTChallenge GSR chips converging into a DuckDB cylinder. Recreate: white background, burnt-orange converging arrows." loading="lazy"/>
+    <img src="../images/event-standards-stack.png" alt="One-spine stack: kloppy SPADL EPTS MOTChallenge GSR chips converging into a DuckDB cylinder. Recreate: white background, burnt-orange converging arrows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.2</span>: The One Spine and Its Standards. Five open formats feed one track+event table; the join key is (clip_id, frame_idx, pts_s).</figcaption>
   </figure>
 
   <figure id="fig-17-03" class="full">
-    <img src="shared/images/ch17-spine-er-diagram.png" alt="Entity-relationship diagram: clip manifest, frame map, track rows, event rows, annotators, corrections all joined to a burnt-orange spine bar labeled with the join key (clip_id, frame_idx, pts_s)." loading="lazy"/>
+    <img src="../images/ch17-spine-er-diagram.png" alt="Entity-relationship diagram: clip manifest, frame map, track rows, event rows, annotators, corrections all joined to a burnt-orange spine bar labeled with the join key (clip_id, frame_idx, pts_s)." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.3</span>: The Spine as an Entity Graph. Six tables — clip manifest, frame map, track rows, PBN event rows, annotators, and the correction layer — each carrying the join key. The correction layer is first-class: first-pass generated rows are never overwritten in place; human corrections live alongside until a regeneration pass supersedes them.</figcaption>
   </figure>
 
@@ -630,7 +630,7 @@
   <p>The book's choice is <strong>metric everywhere, declared on the row</strong>: pickleball on the 13.41 × 6.10 m court, NVZ 2.13 m (C03-verified); rugby league on the 100 × 68 m field, 6–11 m in-goal (C03-verified). Three sport-specific consequences. First, <strong>all bounding lines are part of the NVZ</strong>, so zone-membership predicates use <code>&lt;=</code>/<code>&gt;=</code> on the line, never <code>&lt;</code> — an off-by-one-pixel bug becomes a foot-fault mislabel. Second, the NVZ governs <em>contact</em>, not airspace, so a volley label needs foot position at contact. Third, rugby's 10 m stripes are a calibration gift: broken lines every ten metres make broadcast homography easier than soccer's sparse markings, which puts pitch-meter coordinates within reach for nrl-001. Every other space — pixels, feet, normalized — is a deterministic projection declared in the manifest. Never mix: the coordinate column declares its space and every query filters on it.</p>
 
   <figure id="fig-17-04" class="full">
-    <img src="shared/images/ch17-coordinate-conventions.png" alt="Four panels of the same pickleball court with a player and ball dot mapped through normalized, corner-metric, center-metric, and pixel coordinate systems; the center-metric panel highlighted as canonical." loading="lazy"/>
+    <img src="../images/ch17-coordinate-conventions.png" alt="Four panels of the same pickleball court with a player and ball dot mapped through normalized, corner-metric, center-metric, and pixel coordinate systems; the center-metric panel highlighted as canonical." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.4</span>: One Point, Four Spaces. The same pickleball court position expressed in the four conventions a practitioner actually meets. The canonical store is court meters; the other three are projections with declared parameters.</figcaption>
   </figure>
 
@@ -673,7 +673,7 @@
   <p>The action vocabulary is the pinned 12-event taxonomy from the dataset schema (E06, ch07 v1): <code>serve, return, third_shot_drop, third_shot_drive, dink, speedup, lob, volley, fault, let, kitchen_foot_fault, contact</code>, with <code>actor ∈ {A1, A2, B1, B2, null}</code>. Notice what the taxonomy encodes about the sport: the third shot gets <em>two</em> types (drop and drive) because it is pickleball's decisive tactical fork; the kitchen foot fault is an event type of its own because the NVZ rule (17.3) makes it detectable from foot-at-contact geometry; and <code>contact</code> exists as a bare type so the pipeline can log a confirmed contact before anyone commits to a shot label. That last entry is the honesty clause operating at the vocabulary level.</p>
 
   <figure id="fig-17-05" class="full">
-    <img src="shared/images/ch17-pbn-taxonomy.png" alt="Pickleball court from above with twelve event-type chips (serve, return, third shot drop, third shot drive, dink, speedup, lob, volley, fault, let, NVZ fault, contact) pointing at the court locations where each occurs." loading="lazy"/>
+    <img src="../images/ch17-pbn-taxonomy.png" alt="Pickleball court from above with twelve event-type chips (serve, return, third shot drop, third shot drive, dink, speedup, lob, volley, fault, let, NVZ fault, contact) pointing at the court locations where each occurs." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.5</span>: The PBN 12-Event Taxonomy on the Court. Each event type placed where it lives: serves and returns at the baseline, dinks and NVZ faults at the kitchen line, the third-shot fork in the transition zone. The taxonomy is sport-specific; the row structure carrying it is not.</figcaption>
   </figure>
 
@@ -694,7 +694,7 @@
   <p>The honest boundary: NRLSheet v1 codifies what <em>event data</em> can say. Tracking data (per-frame positions) stays a separate table under MOTChallenge/EPTS conventions, joined by <code>(clip_id, pts_s)</code>. Events reference the track-level evidence that produced them, and the evidence-tier column carries the same four labels as PBN.</p>
 
   <figure id="fig-17-06" class="full">
-    <img src="shared/images/ch17-nrl-set-of-six.png" alt="Rugby league field strip marked in 10m bands with six tackle-event markers stepping toward the try line, play-the-ball icons between them, each marker carrying a small data chip such as set 3, tackle 2, x_m 68, ptb 2.9s." loading="lazy"/>
+    <img src="../images/ch17-nrl-set-of-six.png" alt="Rugby league field strip marked in 10m bands with six tackle-event markers stepping toward the try line, play-the-ball icons between them, each marker carrying a small data chip such as set 3, tackle 2, x_m 68, ptb 2.9s." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.6</span>: NRLSheet Row Anatomy — a Set of Six. Rugby addressing is set:tackle, not clock time. Each tackle marker carries its data chip: field position in metres from the attacking team's own line, and PTB (play-the-ball) speed — the ruck-speed metric CV must infer from the PTB frame to first touch.</figcaption>
   </figure>
 
@@ -753,7 +753,7 @@
   <p>The evidence row is where the schemas diverge from their ancestors on purpose. SPADL rows trust the provider; PBN and NRLSheet rows carry provenance because they are produced by a CV pipeline that can be wrong, corrected by a human layer, and versioned by a schema that evolves. The taxonomies stay sport-specific — nobody needs <code>dink</code> in rugby or <code>six_again</code> in pickleball — but the skeleton and the evidence layer are shared verbatim. "Common representation" means one <em>shape</em> for the fact, with the vocabulary as a pluggable enum. The payoff: C18, C19, and C20 each read one row shape; the sport-specific code is the enum and the geometry, nothing else.</p>
 
   <figure id="fig-17-07" class="full">
-    <img src="shared/images/ch17-common-representation.png" alt="Pickleball rally panel and rugby league tackle panel both converging via arrows into one shared row of five boxes: athlete, action, time, location, outcome, with an evidence bar beneath." loading="lazy"/>
+    <img src="../images/ch17-common-representation.png" alt="Pickleball rally panel and rugby league tackle panel both converging via arrows into one shared row of five boxes: athlete, action, time, location, outcome, with an evidence bar beneath." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.7</span>: The Common Representation. A pickleball rally and a rugby league set produce the same five-field fact plus an evidence layer. The sport lives in the taxonomy and the geometry; the row shape is shared.</figcaption>
   </figure>
 
@@ -772,7 +772,7 @@
   <p>Two further rules deserve emphasis. <strong>Annotation quality is schema-level</strong>: the pb003 schema carries an <code>annotators</code> block with role, agreement metric (<code>cohen_kappa, iou, distance_px</code>), and value — inter-rater reliability is part of the dataset, not a paper afterthought, and C18 and C20 read it. <strong>License travels with the data</strong>: the <code>license</code> object is required, not metadata-by-convention — pb-003 labels can ship while PPA frames stay non-redistributable, and NRLSheet rows scraped via nrlR inherit their sources' terms. The lesson generalizes from C16's licensing landmines.</p>
 
   <figure id="fig-17-08" class="full">
-    <img src="shared/images/ch17-event-json-schema.png" alt="JSON schema drawn as an indented tree: event root with event_id, clip_id, frame_idx, pts_s, actor, action, x_m, y_m, outcome children; the evidence_refs subtree highlighted in burnt orange expanding into clip, frame, det_id, conf; small type tags on leaves." loading="lazy"/>
+    <img src="../images/ch17-event-json-schema.png" alt="JSON schema drawn as an indented tree: event root with event_id, clip_id, frame_idx, pts_s, actor, action, x_m, y_m, outcome children; the evidence_refs subtree highlighted in burnt orange expanding into clip, frame, det_id, conf; small type tags on leaves." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.8</span>: The Event Row as a Machine Contract. The v2 event object: spine key fields first, the five-question skeleton in the middle, and the evidence_refs subtree — structured so the spine rule "every reference resolves in the manifest" is checkable in CI rather than enforced by hope.</figcaption>
   </figure>
 
@@ -785,7 +785,7 @@
   <p>A coach asks "what happened on the third shot?" and the honest answer is a row, not a paragraph. The mechanism is the five-block read: identity &amp; spine fields resolve the row against <code>frame_map.csv</code>; actor fields give the slot, never a guessed name; action fields say what is confirmed versus candidate; context fields state visibility honestly; evidence fields point at disk artifacts. Formally the row is a tuple over the 31-field dictionary with enum domains — <code>contact_state ∈ {confirmed, candidate, not_visible, not_contact, unknown}</code> — and the compliance test is: every claim the row makes is licensed by a field whose value supports it. <strong>Measured: the canonical 11-row pb-003 set passes this read with 0 violations (W4.1).</strong></p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc01-pbn-row-read.png" alt="One PBN event row exploded into labeled field chips, with the shot_type chip carrying an unknown-OK badge." loading="lazy"/>
+    <img src="../images/ch17-uc01-pbn-row-read.png" alt="One PBN event row exploded into labeled field chips, with the shot_type chip carrying an unknown-OK badge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.9</span>: UC 01 — PBN Row Read. The five blocks of one shot row, with the honesty badge visible. <strong>Pickleball</strong>: a third-shot row with <code>shot_type=unknown</code>, <code>contact_state=candidate</code> — a review target, not a verdict. <strong>Rugby league</strong>: the same read discipline applied to a tackle row whose <code>ptb_speed_s</code> is still provisional.</figcaption>
   </figure>
 
@@ -795,7 +795,7 @@
   <p>A rugby league possession is not a timestamp range — it is a numbered set of up to six tackles, and the tackle count is the conditioning variable. The mechanism: address every event by <code>(half, clock_s, set_no, tackle_no)</code>, store <code>field_position_m</code> as metres from the attacking team's own try line with an orientation flag, and compute ruck speed as <code>ptb_speed_s = t(first_touch) − t(ptb_frame)</code>. The schema is validated by a published model's appetite: Kempton, Kennedy &amp; Coutts (2016) need exactly set, tackle, field position, and outcome for expected possession value — 768 matches, source-backed.</p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc02-nrl-set-row.png" alt="Rugby league field strip with one event row exploded into chips: set 3, tackle 2, x_m 68, ptb 2.9s." loading="lazy"/>
+    <img src="../images/ch17-uc02-nrl-set-row.png" alt="Rugby league field strip with one event row exploded into chips: set 3, tackle 2, x_m 68, ptb 2.9s." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.10</span>: UC 02 — NRL-Set Row Read. Rugby addressing is set:tackle, not clock time. <strong>Rugby league</strong>: a tackle-2 row at 68 m with a 2.9 s PTB — a fast ruck in attacking territory. <strong>Pickleball</strong>: the equivalent addressing is rally:shot_index, with the third shot as the tactical fork.</figcaption>
   </figure>
 
@@ -805,7 +805,7 @@
   <p>The test of a common representation is not a diagram — it is whether one SQL query runs unchanged against both sports' rows. The mechanism: one row shape (the five questions plus the evidence layer), the sport isolated in the taxonomy enum and the geometry. A query like <code>SELECT actor, event, x_m, outcome FROM events WHERE evidence_level = 'real-experiment-output'</code> reads PBN rows and NRLSheet rows identically; swapping sports means swapping the enum, not the schema. <strong>Source-backed design (SPADL/kloppy); measured on the PBN side (11 rows); NRLSheet side is the proposed sibling [verify] until its v1 validator runs (17.8).</strong></p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc03-common-representation-query.png" alt="Pickleball shot row and rugby tackle row converging into one shared five-box row with an evidence bar and a query chip." loading="lazy"/>
+    <img src="../images/ch17-uc03-common-representation-query.png" alt="Pickleball shot row and rugby tackle row converging into one shared five-box row with an evidence bar and a query chip." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.11</span>: UC 03 — One Shape, Two Sports. The row skeleton is shared; the vocabulary is a pluggable enum. <strong>Pickleball</strong>: shot rows with the 12-event taxonomy. <strong>Rugby league</strong>: tackle rows with set:tackle addressing — same skeleton, different enum.</figcaption>
   </figure>
 
@@ -817,7 +817,7 @@
   <p>The analyst thinks in seconds; the pipeline thinks in frames; the review UI scrubs frames while the review windows are time intervals. The mechanism is the spine triplet <code>(clip_id, frame_idx, pts_s)</code> with the rule that <code>pts_s = frame_idx / fps</code> is computed <em>once</em>, in the ingest <code>frame_map.csv</code>, and never recomputed downstream — every recomputation is a drift opportunity. <strong>Measured context: E06's review windows (8.33 s / 12.83 s) are time intervals, but the dataset schema keys frames (<code>^pb-003-frame-[0-9]{3}$</code>) — the triplet is what makes both addressable from one row.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc04-timestamp-alignment.png" alt="Frame timeline aligned to a seconds axis through burnt-orange ticks rooted in a frame_map.csv table chip." loading="lazy"/>
+    <img src="../images/ch17-uc04-timestamp-alignment.png" alt="Frame timeline aligned to a seconds axis through burnt-orange ticks rooted in a frame_map.csv table chip." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.12</span>: UC 04 — One Clock, One Map. Frames and seconds join only through the authoritative frame map. <strong>Pickleball</strong>: a contact frame pinned to pts_s for the review scrubber. <strong>Rugby league</strong>: broadcast 25 fps aligned to the match clock for PTB timing.</figcaption>
   </figure>
 
@@ -827,7 +827,7 @@
   <p>An event row without provenance is an assertion; with provenance it is evidence. The mechanism: <code>evidence_refs</code> is structured, not free text — <code>{clip_id, frame_idx, det_id, model, model_version, conf}</code> — and <code>evidence_level</code> carries the four provenance tiers (<code>real-experiment-output → concept-transfer</code>). Confidence is a pinned enum (<code>high, medium, medium-low, low</code>), not a float that invites false precision. The canonical rows already smuggle this in text (<code>det_id=1; yolo_conf=0.8713</code>); v2 makes it queryable and makes the spine rule "every reference resolves in the manifest" checkable in CI.</p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc05-event-metadata.png" alt="Event row chip with a provenance ribbon showing model, version, confidence, evidence tier, and a human review tick." loading="lazy"/>
+    <img src="../images/ch17-uc05-event-metadata.png" alt="Event row chip with a provenance ribbon showing model, version, confidence, evidence tier, and a human review tick." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.13</span>: UC 05 — Provenance on the Row. Every claim carries its producing artifact and its honesty tier. <strong>Pickleball</strong>: a dink row traced to det_id=1 at yolo_conf=0.8713. <strong>Rugby league</strong>: a tackle row traced to the CV tackle candidate that proposed it, tier-labeled until human-confirmed.</figcaption>
   </figure>
 
@@ -837,7 +837,7 @@
   <p>The most expensive silent bug in sport analytics is merging two feeds with different corner origins and watching every player teleport 6 metres. The mechanism is kloppy's formalization — every coordinate carries <code>(Origin, VerticalOrientation, PitchDimensions)</code> plus an orientation flag, and transform is a pure function between tagged spaces — with the book's storage rule on top: meters canonical, pixels evidence, feet presentation. Sport geometry rides the same rule: NVZ membership is <code>&lt;=</code> on the line because all bounding lines are part of the zone (C03-verified); rugby's <code>field_position_m</code> is meaningless without the orientation flag saying which end they attack.</p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc06-coordinate-tag.png" alt="Pickleball court with one ball dot and four axis tags — pixels, court meters, feet, normalized — meters highlighted as canonical." loading="lazy"/>
+    <img src="../images/ch17-uc06-coordinate-tag.png" alt="Pickleball court with one ball dot and four axis tags — pixels, court meters, feet, normalized — meters highlighted as canonical." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.14</span>: UC 06 — One Point, Tagged Four Ways. Every coordinate carries its space tag; the canonical store is court/field meters. <strong>Pickleball</strong>: NVZ predicates in meters on the 13.41 × 6.10 m court. <strong>Rugby league</strong>: metres from own try line on the 100 × 68 m field, orientation flag attached.</figcaption>
   </figure>
 
@@ -847,7 +847,7 @@
   <p>A schema nobody runs is a suggestion. The mechanism: JSON Schema draft 2020-12 with a versioned <code>$id</code>, <code>const</code> pins on identity fields (<code>dataset_id</code>, clip path, <code>fps: 25</code>), regex patterns on frame IDs, and enums on every categorical — validated by the <code>jsonschema</code> library in CI on every commit, plus the 30-line dictionary validator that checks the rules the schema cannot express. <strong>Measured: the pb-003 schema validates the canonical 11 rows × 31 fields with 0 violations and 100% mandatory-field coverage (experiments/c17-event-data/outputs/metrics.json, 2026-09-01).</strong></p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc07-json-schema-ci.png" alt="JSON tree flowing through a burnt-orange CI gate into a database cylinder, with a PASS shield and one FAIL cross." loading="lazy"/>
+    <img src="../images/ch17-uc07-json-schema-ci.png" alt="JSON tree flowing through a burnt-orange CI gate into a database cylinder, with a PASS shield and one FAIL cross." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.15</span>: UC 07 — The Schema with Teeth. Rows that violate the contract fail the build; rows that pass land in the spine. <strong>Pickleball</strong>: the pb003 v1 schema gating every label batch. <strong>Rugby league</strong>: the same CI pattern reserved for the NRLSheet v1 schema (17.8).</figcaption>
   </figure>
 
@@ -859,7 +859,7 @@
   <p>Event rows are write-once, read-many: the CV pipeline and the correction layer write them; annotation (C18), automatic eventing (C19), and statistics (C20) read them. The mechanism: event rows land in Parquet beside the track rows, both keyed by the spine triplet, with DuckDB as the SQL layer — and the standards projections are views, not copies: MOTChallenge export is one query (drop spine columns, fill <code>x,y,z=-1</code>), so TrackEval/HOTA evaluation of any tracking change is one SQL statement away. The correction layer is first-class storage: first-pass generated rows are never overwritten in place; human corrections live alongside until a regeneration pass supersedes them.</p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc08-event-storage-feed.png" alt="Pipeline from video clip through detector and event rows into Parquet and a database cylinder, branching to review, eventing, and stats consumers." loading="lazy"/>
+    <img src="../images/ch17-uc08-event-storage-feed.png" alt="Pipeline from video clip through detector and event rows into Parquet and a database cylinder, branching to review, eventing, and stats consumers." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.16</span>: UC 08 — One Store, Three Readers. The spine feeds annotation, eventing, and statistics from one Parquet store. <strong>Pickleball</strong>: pb-003 rows feeding the E06 review UI. <strong>Rugby league</strong>: scraped nrlR rows and CV tackle rows sharing the same store, tier-labeled apart.</figcaption>
   </figure>
 
@@ -869,7 +869,7 @@
   <p>Every annotation program picks a granularity and pays for it twice — once in labeling time, once in error surface. Fine events (12 shot types per rally) maximize tactical resolution but multiply the rows a human must review; coarse events (rally spans with outcomes) are cheap and robust but cannot answer "was the third shot a drop or a drive?" The mechanism is the honest rule: <strong>record at the finest granularity you can validate, publish at the coarsest granularity that answers the question</strong> — the fine rows carry <code>review_required=yes</code>, the coarse aggregates carry only what survived review. E06's rally spans (8.33 s / 12.83 s) are the measured coarse layer; the 12-event taxonomy is the pinned fine layer.</p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc09-fine-vs-coarse.png" alt="Two timelines of the same rally: a dense fine timeline of twelve shot ticks and a coarse timeline of two rally-span brackets." loading="lazy"/>
+    <img src="../images/ch17-uc09-fine-vs-coarse.png" alt="Two timelines of the same rally: a dense fine timeline of twelve shot ticks and a coarse timeline of two rally-span brackets." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.17</span>: UC 09 — The Granularity Tradeoff. Fine rows for review, coarse rows for publishing. <strong>Pickleball</strong>: shot-level rows beneath rally-level spans. <strong>Rugby league</strong>: tackle-level rows beneath set-level summaries (completion, meters gained) — the NRL headline stats are the coarse projection.</figcaption>
   </figure>
 
@@ -879,7 +879,7 @@
   <p>An event dataset without a measured disagreement rate is an unaudited claim. The mechanism is schema-level: the <code>annotators</code> block carries <code>role</code> and an agreement metric (<code>cohen_kappa</code>, <code>iou</code>, or <code>distance_px</code>) with its value, so inter-rater reliability ships inside the dataset — C18 and C20 read it directly, with Landis-Koch interpretation on record. The audit loop closes against C16's lesson: any generated sentence about a match is falsifiable against the rows (E07 measured a 66.7% ungrounded-claim error baseline), and every correction lands in the correction layer, never as a silent overwrite. <strong>[verify] for the rugby side: no public tackle-by-tackle corpus exists to audit against — the audit discipline is what NRLSheet v1 must be born with.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/ch17-uc10-quality-audit.png" alt="Magnifier over an event table, two annotator icons joined by a kappa symbol, agreeing rows checked and one disputed row flagged." loading="lazy"/>
+    <img src="../images/ch17-uc10-quality-audit.png" alt="Magnifier over an event table, two annotator icons joined by a kappa symbol, agreeing rows checked and one disputed row flagged." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 17.18</span>: UC 10 — Agreement as Data. Inter-rater reliability is a schema field, not a paper afterthought. <strong>Pickleball</strong>: kappa over the 12-event taxonomy on pb-003 review windows. <strong>Rugby league</strong>: the same block reserved for NRLSheet annotators — CV model versus human coder.</figcaption>
   </figure>
 

@@ -519,7 +519,7 @@
   <p>Global Motion Compensation (GMC) is the standard patch. Estimate the frame-to-frame transform induced by the camera, undo it, and let the tracker work in a quasi-static image space. The estimator our lab implemented is the same one BoT-SORT ships upstream (<code>tracker/gmc.py</code>, MIT, verified at source): <code>goodFeaturesToTrack</code> finds 500 corners on the previous frame, pyramidal Lucas-Kanade (window 15, two pyramid levels) tracks them into the current frame, and <code>estimateAffinePartial2D</code> with RANSAC fits a <strong>4-DOF similarity</strong> — translation (tx, ty), rotation θ, and uniform scale s — to the flow field. RANSAC's job is to find the background consensus and reject the players as outliers. That pipeline is not a toy; it is what production trackers actually run.</p>
 
   <figure id="fig-07-01" class="full">
-    <img src="shared/images/c07-gmc-pipeline.png" alt="Block diagram of global motion compensation: frame to corner detection to optical flow to RANSAC similarity fit to shifted player boxes, with an orange arrow showing drift error accumulating across frames." loading="lazy"/>
+    <img src="../images/c07-gmc-pipeline.png" alt="Block diagram of global motion compensation: frame to corner detection to optical flow to RANSAC similarity fit to shifted player boxes, with an orange arrow showing drift error accumulating across frames." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.1</span>: The GMC pipeline. Corners, LK flow, RANSAC similarity — the same three stages BoT-SORT runs internally. The burnt-orange arrow is the structural flaw: error compounds frame to frame and nothing anchors the chain to reality.</figcaption>
   </figure>
 
@@ -561,7 +561,7 @@
   </table>
 
   <figure id="fig-07-02" class="full">
-    <img src="shared/images/c07-e14-results.png" alt="Grouped bar chart of the E14 experiment: baseline 295 IDs, boxshift 306, framewarp 286, framewarp bar accented orange with a plus 3.1 percent annotation." loading="lazy"/>
+    <img src="../images/c07-e14-results.png" alt="Grouped bar chart of the E14 experiment: baseline 295 IDs, boxshift 306, framewarp 286, framewarp bar accented orange with a plus 3.1 percent annotation." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.2</span>: E14 measured. Box-shift actively hurt (306 IDs, more fragmentation); frame-warp gained 3.1%. That 3.1% is the whole prize for translation-only GMC on this footage.</figcaption>
   </figure>
 
@@ -628,7 +628,7 @@
   </table>
 
   <figure id="fig-07-03" class="full">
-    <img src="shared/images/c07-camera-motion-taxonomy.png" alt="Five camera motion glyphs in a row: pan, tilt, zoom, roll, and cut, each with its axis arrow over a rugby pitch view." loading="lazy"/>
+    <img src="../images/c07-camera-motion-taxonomy.png" alt="Five camera motion glyphs in a row: pan, tilt, zoom, roll, and cut, each with its axis arrow over a rugby pitch view." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.3</span>: The five broadcast motions. Only roll is exactly a similarity; pan/tilt are homographies; zoom changes the projective map itself; a cut is not a motion at all — it is a state reset.</figcaption>
   </figure>
 
@@ -637,7 +637,7 @@
   <p>The two sports sit at opposite ends of the taxonomy's difficulty axis. <strong>Pickleball broadcast</strong> is the kind case: the court is a fixed planar rectangle (13.41 × 6.10 m), so pure camera rotation about the gantry makes the frame-to-frame relation an exact homography, and a zoomed frame still usually shows four or more of the seven court lines. <strong>Rugby league broadcast</strong> is the hostile case: the main gantry camera pans across a 100 m pitch, zooms from a wide defensive-line view into a tackle close-up where perhaps one transverse line survives, and the parallax term is real because the camera sits tens of metres from the near touchline and over a hundred from the far one.</p>
 
   <figure id="fig-07-04" class="full">
-    <img src="shared/images/calibration-gmc-vs-ht.png" alt="Two-panel: GMC drift chain accumulating error frame-to-frame vs per-frame H_t anchoring directly to a 100x68m pitch template. Recreate: white background, black frames, burnt-orange arrows." loading="lazy"/>
+    <img src="../images/calibration-gmc-vs-ht.png" alt="Two-panel: GMC drift chain accumulating error frame-to-frame vs per-frame H_t anchoring directly to a 100x68m pitch template. Recreate: white background, black frames, burnt-orange arrows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.4</span>: GMC vs Per-Frame H_t. GMC chains a 4-DOF correction frame-to-frame and the error accumulates; per-frame H_t re-anchors each frame to the fixed pitch template with a checkable reprojection error.</figcaption>
   </figure>
 
@@ -681,7 +681,7 @@
   </table>
 
   <figure id="fig-07-05" class="full">
-    <img src="shared/images/c07-static-vs-broadcast-error.png" alt="Bar chart comparing calibration error: pickleball static 3.82cm, pickleball dynamic 4.65cm, rugby single-homography tall hatched failure bar, rugby per-frame short orange bar." loading="lazy"/>
+    <img src="../images/c07-static-vs-broadcast-error.png" alt="Bar chart comparing calibration error: pickleball static 3.82cm, pickleball dynamic 4.65cm, rugby single-homography tall hatched failure bar, rugby per-frame short orange bar." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.5</span>: The tradeoff in one chart. Static calibration is more accurate when it applies and inapplicable the moment the camera moves; dynamic calibration costs 500× the compute, loses 1.6% of frames, and survives the pan.</figcaption>
   </figure>
 
@@ -690,7 +690,7 @@
   <p><strong>The pickleball broadcast case</strong> shows the mildest version of the loop: the court is static, only the camera moves. Between rallies the director pans from a wide court view to a player close-up; each pan invalidates the previous homography, so the pipeline re-estimates H at every frame during the sweep — but because the court is planar and small, the re-solve is well-conditioned whenever the kitchen line, a baseline, and one sideline are visible. Per-pan re-estimation on pickleball is nearly a solved problem at E11's 98.4% valid rate.</p>
 
   <figure id="fig-07-06" class="full">
-    <img src="shared/images/c07-pickleball-perpan.png" alt="Three camera view frustums sweeping across a pickleball court, each labelled with its own homography H_t, pinned to the same court outline with kitchen line and baselines." loading="lazy"/>
+    <img src="../images/c07-pickleball-perpan.png" alt="Three camera view frustums sweeping across a pickleball court, each labelled with its own homography H_t, pinned to the same court outline with kitchen line and baselines." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.6</span>: Pickleball broadcast: static court, dynamic camera. Each pan position gets its own H_t, all anchored to the same 13.41 × 6.10 m court template — no drift chain, per-frame error check.</figcaption>
   </figure>
 
@@ -739,7 +739,7 @@
   <p><strong>Nearly half the clip exceeds 5 px/frame of flow-level drift</strong> — yet the tracker-level median was 0.0. The tail is where panning and zooming live, and the single-H assumption fails there. The honest conclusion: a fixed homography is valid for maybe half of a rugby broadcast; the rest needs per-frame work.</p>
 
   <figure id="fig-07-07" class="full">
-    <img src="shared/images/c07-rugby-pan-drift.png" alt="Rugby league pitch with 10-metre transverse lines, sideline camera sweeping a long pan, drift arrows growing along the pan, an orange error curve rising with pan distance." loading="lazy"/>
+    <img src="../images/c07-rugby-pan-drift.png" alt="Rugby league pitch with 10-metre transverse lines, sideline camera sweeping a long pan, drift arrows growing along the pan, an orange error curve rising with pan distance." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.7</span>: The 100 m pan. As the gantry camera sweeps goal-line to goal-line, per-frame drift compounds; a homography solved at the first frame is worthless by the last. GMC patches translation per frame but accumulates its own error curve.</figcaption>
   </figure>
 
@@ -849,7 +849,7 @@
   </table>
 
   <figure id="fig-07-08" class="full">
-    <img src="shared/images/c07-rugby-pitch-template.png" alt="Top-down dimensioned plan of a rugby league pitch, transverse markings every 10 metres, orange dots at calibration anchors, callout for the 10 metre retreat." loading="lazy"/>
+    <img src="../images/c07-rugby-pitch-template.png" alt="Top-down dimensioned plan of a rugby league pitch, transverse markings every 10 metres, orange dots at calibration anchors, callout for the 10 metre retreat." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.8</span>: The 116 × 68 m rugby template. Thirteen transverse lines, scrum markers, and post bases are the anchors; the 15 cm paint width is the tolerance floor; the 10 m retreat is the pitch-space measurement broadcast analytics actually wants.</figcaption>
   </figure>
 
@@ -1020,7 +1020,7 @@
   <p>A broadcast director's camera never holds still, and the first question a calibration pipeline must answer on every frame is "what did the camera just do?" The mechanism: a gantry camera rotating about its optical centre induces an exact <em>homography</em> between frames, H = K·R_t·R_{t−1}⁻¹·K⁻¹; a zoom changes the focal length f inside K, which rewrites the projective map itself rather than rescaling it; roll is an in-plane rotation. The 4-DOF similarity that BoT-SORT's GMC fits (source-backed: <code>tracker/gmc.py</code>, verified at source) is the small-angle approximation of the rotation case and a crude stand-in for zoom. <strong>Payoff: choosing the right model per motion is the difference between a solvable frame and a silently wrong one.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc01-pzt-model.png" alt="Broadcast gantry camera with pan, tilt and zoom arrows and the homography equation H equals K R K-inverse above a rugby pitch outline." loading="lazy"/>
+    <img src="../images/c07-uc01-pzt-model.png" alt="Broadcast gantry camera with pan, tilt and zoom arrows and the homography equation H equals K R K-inverse above a rugby pitch outline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.9</span>: UC 01 — The PTZ Model. Pan and tilt are exact homographies about the optical centre; zoom rewrites the projective map; roll is the one motion a similarity captures exactly. <strong>Pickleball</strong>: high-mast pan between rallies over a planar court — rotation-only, exact. <strong>Rugby league</strong>: gantry pan across 100 m, with real parallax from the far touchline.</figcaption>
   </figure>
 
@@ -1028,7 +1028,7 @@
   <p>A zoomed frame shows fewer markings, and a similarity's scale term cannot distinguish zoom from translation toward the plane — this is the failure mode no (tx, ty, θ, s) fit escapes. The mechanism: the template supplies absolute scale. Any two visible transverse lines plus their known physical spacing — 10 m apart on a rugby league field; baseline-to-kitchen 4.57 m on a pickleball court — pin the scale absolutely, so f is recovered inside the H_t solve rather than guessed (source-backed: §7.5 template; TVCalib solves pan/tilt/roll/focal jointly). <strong>Payoff: serve-zooms and tackle close-ups become calibratable frames instead of skipped ones.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc02-zoom-tracking.png" alt="Wide rugby pitch frame versus zoomed frame showing two transverse lines with a 10 metre spacing arrow pinning the zoom scale." loading="lazy"/>
+    <img src="../images/c07-uc02-zoom-tracking.png" alt="Wide rugby pitch frame versus zoomed frame showing two transverse lines with a 10 metre spacing arrow pinning the zoom scale." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.10</span>: UC 02 — Zoom Tracking. Known line spacing disambiguates zoom: two visible lines at a known physical distance pin scale absolutely. <strong>Rugby league</strong>: the 10 m transverse ruler. <strong>Pickleball</strong>: baseline-to-kitchen 4.57 m.</figcaption>
   </figure>
 
@@ -1036,7 +1036,7 @@
   <p>Any H solved at the start of a pan is stale by mid-sweep: measured flow-level drift on nrl-001 reached 29.9 px/frame, so a pitch-line intersection moves tens of pixels within a second of panning. The mechanism is the per-frame loop — detect markings, match to the template, DLT + RANSAC solve, validate by reprojection RMSE — then Kalman-smooth the camera <em>parameters</em> (pan, tilt, roll, f), never the raw H entries, because element-wise filtering mixes projective terms and produces matrices that are not homographies of any real camera. Measured (E11): 98.4% valid frames at 4.65 cm RMSE, 11.2 ms/frame against a 40 ms broadcast budget. <strong>Payoff: no drift chain, and every frame carries its own checkable error — the SLA downstream analytics can trust.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc03-homography-reest.png" alt="Four frames along a panning sweep, each with its own H_t arrow to the same pitch template, per-frame error bars, one stale-H arrow crossed out." loading="lazy"/>
+    <img src="../images/c07-uc03-homography-reest.png" alt="Four frames along a panning sweep, each with its own H_t arrow to the same pitch template, per-frame error bars, one stale-H arrow crossed out." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.11</span>: UC 03 — Per-Pan Re-estimation. Each pan position gets its own H_t anchored to the same template; a stale H is discarded, not propagated. <strong>Pickleball</strong>: the re-solve is well-conditioned whenever the kitchen line, a baseline and a sideline are visible. <strong>Rugby league</strong>: sparser evidence; the parameter-Kalman carries the gap.</figcaption>
   </figure>
 
@@ -1046,7 +1046,7 @@
   <p>Rec-play and high-mast pickleball footage pans between rallies and zooms on the serve, breaking chapter 6's fixed-camera assumption. The mechanism is the same <code>goodFeaturesToTrack</code> → LK flow → <code>estimateAffinePartial2D</code> similarity pipeline; on a small, line-rich court with at most four players, the background consensus is strong and foreground contamination is low — the friendly case for GMC. Honest label [verify]: E14's GMC numbers are measured on rugby broadcast; pickleball broadcast GMC is not yet measured in the lab, and the fixed-camera E09 bake-off (ByteTrack 26 IDs → BoT-SORT 6, HOTA 0.642 → 0.814, measured) shows appearance ReID is the bigger lever while the camera holds still. <strong>Payoff: a cheap stabilization layer that ships free inside BoT-SORT (MIT) — as long as nobody mistakes its output for a calibrated view.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc04-pb-gmc.png" alt="Elevated pickleball court view with corner keypoints, optical flow arrows on court lines, and player boxes shifted by an inverse translation arrow." loading="lazy"/>
+    <img src="../images/c07-uc04-pb-gmc.png" alt="Elevated pickleball court view with corner keypoints, optical flow arrows on court lines, and player boxes shifted by an inverse translation arrow." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.12</span>: UC 04 — GMC on Pickleball. A line-rich, four-player court gives RANSAC a strong background consensus — the friendly case. <strong>Pickleball</strong>: serve-zoom and between-rally pan stabilization for high-mast rigs. <strong>Rugby league</strong>: the same mechanism fails harder — see UC 05.</figcaption>
   </figure>
 
@@ -1054,7 +1054,7 @@
   <p>The main gantry sweeps with every line break — 50 m pans are routine, and the E14 clip is exactly this regime. The mechanism, measured: GMC-framewarp bought <strong>+3.1%</strong> fewer unique IDs (295→286) with median track length 0.96→1.08 s; GMC-boxshift went backwards at <strong>−3.7%</strong> (306 IDs). The four caps from §7.1 bind here: mild median motion (tracker-level median drift 0.0 px/frame, E08 measured), the homography-vs-similarity model mismatch, translation-only downstream use, and foreground contamination from 13.2 detected persons per frame. <strong>Payoff: keep GMC inside the tracker when it is free; never present it as calibration — the metres come from H_t.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc05-rl-gmc-pan.png" alt="Rugby pitch from the main gantry with a long 50 metre pan arrow, three frame windows along the sweep, and a rising orange drift curve." loading="lazy"/>
+    <img src="../images/c07-uc05-rl-gmc-pan.png" alt="Rugby pitch from the main gantry with a long 50 metre pan arrow, three frame windows along the sweep, and a rising orange drift curve." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.13</span>: UC 05 — The 50 m Pan. The gantry sweeps goal-line to goal-line; GMC patches each hop and accumulates its own error curve. <strong>Rugby league</strong>: line-break chase pans are the dominant camera regime. <strong>Pickleball</strong>: the same sweep is 13.41 m — smaller drift, identical structure.</figcaption>
   </figure>
 
@@ -1062,7 +1062,7 @@
   <p>LK corners land on moving players; in ruck phases up to 24 bodies per frame (E08, measured) make the "background" the minority class, and RANSAC's consensus fit degrades exactly where IoU association is tightest — the book's working hypothesis for boxshift's −3.7% [book hypothesis; E14 did not ablate this]. The mechanism arrives from chapter 10's UC 20: SAM 2 binary athlete masks zero out the movers, the flow field is computed on static turf and line features only, and the similarity fit sees pure camera motion. <strong>Payoff: a structured error source removed at the tracker's most sensitive point, for the cost of masks the pipeline already computes.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc06-athlete-masking.png" alt="Two panels of a rugby broadcast frame: players masked in orange, then players cut out with flow keypoints only on turf and pitch lines." loading="lazy"/>
+    <img src="../images/c07-uc06-athlete-masking.png" alt="Two panels of a rugby broadcast frame: players masked in orange, then players cut out with flow keypoints only on turf and pitch lines." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.14</span>: UC 06 — Athlete Masking. SAM 2 masks (chapter 10) remove movers so LK flow sees only static turf and paint. <strong>Rugby league</strong>: ruck-phase frames with 24 bodies are the case this rescues. <strong>Pickleball</strong>: kitchen-line firefights put both players' legs across the best court-line corners.</figcaption>
   </figure>
 
@@ -1070,7 +1070,7 @@
   <p>GMC anchors each frame to the previous frame, and nothing in the chain anchors to reality: the chained estimate H_chain = ∏ H_{t,t−1} accumulates every hop's RANSAC residual, the chain cannot detect its own accumulated error, and validity is unverifiable frame by frame. This is the structural failure per-frame H_t eliminates — independent solves against a fixed template, each carrying its own reprojection error. The measured contrast: GMC's best arm gained 3.1% on nrl-001 while E11's per-frame registration held 98.4% of frames at 4.65 cm under PTZ. <strong>Payoff: the honest SLA is valid_frames% at a stated RMSE — never stabilization smoothness.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc07-drift-problem.png" alt="Chain of five frames linked by warp arrows bending away from a pitch template, with a growing orange drift curve and one direct H_t arrow." loading="lazy"/>
+    <img src="../images/c07-uc07-drift-problem.png" alt="Chain of five frames linked by warp arrows bending away from a pitch template, with a growing orange drift curve and one direct H_t arrow." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.15</span>: UC 07 — Drift. Chained frame-to-frame warps bend away from the template; a direct per-frame H_t cannot drift. <strong>Rugby league</strong>: long pans turn small per-hop residuals into metres of pitch-space error. <strong>Pickleball</strong>: slow between-rally pans drift silently because nothing ever checks the chain.</figcaption>
   </figure>
 
@@ -1080,7 +1080,7 @@
   <p>A cut is not a motion — no frame-to-frame relation exists across one, and <code>estimateAffinePartial2D</code> will still return a RANSAC "fit" across the boundary if ungated. The mechanism: a shot-boundary gate runs <em>before</em> calibration (PySceneDetect, BSD-3, pure CPU; or TransNetV2 via the MIT PyTorch port for the dissolves and wipes heuristics miss — both source-backed). On a cut, the pipeline invalidates the LK prior and the Kalman camera prior and cold-starts H_t from the new shot's first stable lines; gradual transitions are marked low-confidence and demoted by the §7.8 validator. [verify]: TransNetV2's published F1 is measured on general broadcast; the rugby-highlights false-positive rate on replay wipes and animated scorebugs is unmeasured — that is the E15 cut-gate audit. <strong>Payoff: the gate is cheap, and the ungated cut silently poisons every downstream number.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc08-cut-handling.png" alt="Timeline of frames with a scissors cut, the flow prior across the cut crossed out, a cut-gate box, and a cold-start arrow to the pitch template." loading="lazy"/>
+    <img src="../images/c07-uc08-cut-handling.png" alt="Timeline of frames with a scissors cut, the flow prior across the cut crossed out, a cut-gate box, and a cold-start arrow to the pitch template." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.16</span>: UC 08 — The Cut Gate. Invalidate both priors at the boundary; cold-start H_t on the new shot. <strong>Rugby league</strong>: cut-dense highlights with replay wipes — cold-start frequency is high. <strong>Pickleball</strong>: cuts cluster between rallies; the real hazard is the slow pan inside one shot.</figcaption>
   </figure>
 
@@ -1088,7 +1088,7 @@
   <p>When is the dynamic loop worth its cost? The mechanism is the side-by-side measurement: manual static homography at 3.82 cm, 100% valid, 0.02 ms/frame (E05) versus dynamic keypoint calibration at 4.65 cm, 98.4% valid, 11.2 ms/frame (E11) — 0.83 cm of accuracy and 1.6% of frames buy survival under PTZ. And the broadcast tax is mandatory once the camera moves: 49.1% of the nrl-001 sample exceeded 5 px/frame of flow-level drift (measured, C07 lab), so a single H is invalid on roughly half the frames of a real rugby broadcast. <strong>Payoff: spend the tax only where the camera actually moves — fixed rigs keep the cheaper, more accurate win.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc09-static-vs-broadcast.png" alt="Two panels: fixed tripod over pickleball court with one homography arrow at 3.82 cm, versus panning gantry over rugby pitch with per-frame arrows at 4.65 cm and 98.4 percent valid." loading="lazy"/>
+    <img src="../images/c07-uc09-static-vs-broadcast.png" alt="Two panels: fixed tripod over pickleball court with one homography arrow at 3.82 cm, versus panning gantry over rugby pitch with per-frame arrows at 4.65 cm and 98.4 percent valid." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.17</span>: UC 09 — Static vs Broadcast, Measured. One H for the fixed court; per-frame H_t for the moving gantry. <strong>Pickleball</strong>: the fixed-camera win (3.82 cm, 0.02 ms) is real — keep it where it applies. <strong>Rugby league</strong>: the single-H arm fails on ~half the frames; per-frame is the only honest regime.</figcaption>
   </figure>
 
@@ -1096,7 +1096,7 @@
   <p>Before a club invests in broadcast analytics, the practical question is whether its feed can yield calibration-grade output at all — a high fixed gantry (the grandstand-level / high-tower positions, GL3/HT in broadcast camera plans) versus a low sideline handheld. The mechanism is a one-afternoon audit: sample dense optical flow for the drift profile (measured on nrl-001, 701 frames: mean 7.97, p90 21.24, max 29.9 px/frame) and run a line-evidence census (measured: 6/6 open-play frames calibratable by classical Hough, the marginal frame at 2 usable lines). High fixed gantries with the pitch in view pass; low moving handhelds fail the markings-per-frame floor of §7.8. [verify]: the camera-position → valid% mapping is a practitioner model; the audit instruments themselves are measured. <strong>Payoff: a cheap audit replaces a season-long failed deployment — and tells the coach which numbers to trust before a single model is trained.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/c07-uc10-broadcast-quality.png" alt="Stadium cross-section with a high gantry camera ticked calibratable and a low sideline handheld crossed skip, with valid-percent and RMSE readout boxes." loading="lazy"/>
+    <img src="../images/c07-uc10-broadcast-quality.png" alt="Stadium cross-section with a high gantry camera ticked calibratable and a low sideline handheld crossed skip, with valid-percent and RMSE readout boxes." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 7.18</span>: UC 10 — The Feed Audit. Two instruments — drift sampling and a line census — decide whether a camera position is calibratable. <strong>Rugby league</strong>: the main gantry passes; sideline handhelds do not. <strong>Pickleball</strong>: a fixed high-mast rig passes; a phone at the fence fails the markings floor.</figcaption>
   </figure>
 

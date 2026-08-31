@@ -528,7 +528,7 @@
   <p>where $\mathbf{K}$ is the intrinsics (focal fx/fy, principal point cx/cy = 4 parameters), $\mathbf{R}|\mathbf{t}$ the extrinsics (6 parameters), and the total is 10 degrees of freedom. A planar homography $\mathbf{H}$ is the 8-parameter special case when every world point lies on one plane ($Z=0$): it is <em>not</em> a camera model, it is a plane-to-plane map. That distinction is everything: homography answers "where on the floor", never "where in the room".</p>
 
   <figure id="fig-06-04" class="full">
-    <img src="shared/images/c06-pinhole-model.png" alt="Pinhole camera model: a 3D scene point projects through the pinhole aperture onto the image plane, inverted; the focal length arrow connects pinhole to image plane. White background, black engineering linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c06-pinhole-model.png" alt="Pinhole camera model: a 3D scene point projects through the pinhole aperture onto the image plane, inverted; the focal length arrow connects pinhole to image plane. White background, black engineering linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.4</span>: The Pinhole Model. Every pixel is the intersection of a light ray with the image plane; the model has no notion of how far along the ray the scene point sat. That missing depth is the root of every limitation in this chapter.</figcaption>
   </figure>
 
@@ -576,7 +576,7 @@
   <p>A homography <em>is</em> the intrinsics-and-extrinsics chain restricted to $Z=0$: setting the world Z column of $[\mathbf{R}|\mathbf{t}]$ aside, $\mathbf{H} = \mathbf{K}[\mathbf{r}_1\ \mathbf{r}_2\ \mathbf{t}]$ — 3×3, defined up to scale, 8 degrees of freedom. For the fixed pickleball rig we never solve $\mathbf{K}$, $\mathbf{R}$, $\mathbf{t}$ separately; we solve $\mathbf{H}$ directly and, when Chapter 14 needs it, decompose it back.</p>
 
   <figure id="fig-06-05" class="full">
-    <img src="shared/images/c06-projection-chain.png" alt="Block diagram: world point flows through extrinsics R|t (6 dof) then intrinsics K (4 dof) to pixel; a burnt-orange shortcut arrow from court plane Z=0 goes directly to pixel labeled H, 8 dof. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-projection-chain.png" alt="Block diagram: world point flows through extrinsics R|t (6 dof) then intrinsics K (4 dof) to pixel; a burnt-orange shortcut arrow from court plane Z=0 goes directly to pixel labeled H, 8 dof. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.5</span>: The Projection Chain and Its Shortcut. The full camera model (top path) needs 10 parameters and still cannot recover depth. Restricting the world to the court plane (bottom path) collapses the chain into the 8-parameter homography — which is solvable from four visible corners.</figcaption>
   </figure>
 
@@ -638,7 +638,7 @@
   <p>Convert to court error on the C04 rig (6.4 mm/px at the far baseline, ~2200 px half-diagonal): at $r=0.5$ a $k_1=-0.30$ lens shifts a pixel by ~41 px ≈ <strong>26 cm at court scale</strong>. Against that, E05's 3.82 cm homography RMSE is noise — and E05's 3.82cm was measured at the court <em>center</em>, where distortion displacement is smallest. A foot-fault call at the far corner lives at the edge, exactly where the uncorrected lens is worst.</p>
 
   <figure id="fig-06-03" class="full">
-    <img src="shared/images/calibration-distortion.png" alt="Barrel distortion plan view of the pickleball court with true grid vs bowed grid, displacement arrows, k1xr3 callout, -12.8% at edge. Recreate: white background, black true grid, burnt-orange distorted grid." loading="lazy"/>
+    <img src="../images/calibration-distortion.png" alt="Barrel distortion plan view of the pickleball court with true grid vs bowed grid, displacement arrows, k1xr3 callout, -12.8% at edge. Recreate: white background, black true grid, burnt-orange distorted grid." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.3</span>: Distortion on the Court. The true grid (black) vs the lens-warped grid (burnt-orange): the kitchen line moves by 12.8% of the half-width at the frame edge — far beyond any 5cm calibration tolerance.</figcaption>
   </figure>
 
@@ -647,7 +647,7 @@
   <p>Our lab quantifies it. With a typical compact-camera barrel distortion ($k_1 = -0.15$), the frame corners move <strong>130px</strong> under undistortion. A homography fitted with 3.82cm error at the center can misproject the court edges by that margin — exactly where the kitchen line is.</p>
 
   <figure id="fig-06-06" class="full">
-    <img src="shared/images/c06-distortion-before-after.png" alt="Two-panel distortion correction: left 'before' shows the pickleball court grid bowed outward with barrel distortion and burnt-orange edge displacement arrows; right 'after' shows the same grid corrected to straight lines. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-distortion-before-after.png" alt="Two-panel distortion correction: left 'before' shows the pickleball court grid bowed outward with barrel distortion and burnt-orange edge displacement arrows; right 'after' shows the same grid corrected to straight lines. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.6</span>: Undistortion, Before and After. The same pickleball court grid through a $k_1=-0.15$ lens (left) and after correction (right). The straightening is invisible at the center and dramatic at the mid-edges — which is where the lines you care about are.</figcaption>
   </figure>
 
@@ -656,7 +656,7 @@
   <p>Rugby adds a second twist: broadcast zoom lenses at long focal lengths drift toward pincushion, and the distortion changes <em>with zoom</em>. A distortion estimate made at one zoom stop does not transfer to another — one more reason the per-frame joint-estimation methods exist. The honest budget for both sports is the same shape: correct what the chessboard measured, then let the homography absorb only what remains.</p>
 
   <figure id="fig-06-01" class="full">
-    <img src="shared/images/cam-fov-placement.png" alt="Camera FOV and placement geometry side elevation with 4.5m pole and 13.41m court length. Recreate in book style: white background, black engineering lines, burnt-orange frustum." loading="lazy"/>
+    <img src="../images/cam-fov-placement.png" alt="Camera FOV and placement geometry side elevation with 4.5m pole and 13.41m court length. Recreate in book style: white background, black engineering lines, burnt-orange frustum." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.1</span>: Placement Geometry (from Chapter 4). The calibration rig is also the distortion question: the lens that covers the court is the lens you must undistort.</figcaption>
   </figure>
 
@@ -668,7 +668,7 @@
   <p>Stacking $N \ge 4$ pairs yields $A\mathbf{h} = 0$ with $A$ of shape $2N \times 9$; the solution is the right singular vector of $A$ with the smallest singular value, reshaped to 3×3. With exactly 4 points the system is determined and the fit is <em>exact</em>; with more, SVD gives the least-squares solution and RANSAC rejects the outliers.</p>
 
   <figure id="fig-06-07" class="full">
-    <img src="shared/images/c06-dlt-pickleball.png" alt="4-point DLT for the pickleball court: plan view of the 13.4 by 6.1 metre court with four burnt-orange corner dots on the left, the skewed perspective quadrilateral video view with matching corner dots on the right, correspondence arrows between them. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-dlt-pickleball.png" alt="4-point DLT for the pickleball court: plan view of the 13.4 by 6.1 metre court with four burnt-orange corner dots on the left, the skewed perspective quadrilateral video view with matching corner dots on the right, correspondence arrows between them. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.7</span>: The 4-Point Fit on pb-003. Four rulebook corners — (0,0), (13.41,0), (13.41,6.10), (0,6.10) metres — clicked in the frame give 8 equations for the homography's 8 unknowns. Exact, and exactly as fragile as the clicking.</figcaption>
   </figure>
 
@@ -698,7 +698,7 @@
   <p>So "a few hundred iterations" is the computed cost of surviving a 50–70%-outlier keypoint detector — a foot on the kitchen line classified as a corner, a shadow edge as a junction. Set <code>ransacReprojThreshold</code> in <em>pixels</em> from your measured click or detector noise (~3 px for the 4K end-cam), not from vibes.</p>
 
   <figure id="fig-06-08" class="full">
-    <img src="shared/images/c06-reprojection-error.png" alt="Reprojection error: true court corner as a black cross, reprojected corner as a burnt-orange circle slightly offset, double-headed error arrow between them, and a scale annotation converting pixels to metres. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-reprojection-error.png" alt="Reprojection error: true court corner as a black cross, reprojected corner as a burnt-orange circle slightly offset, double-headed error arrow between them, and a scale annotation converting pixels to metres. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.8</span>: The Reprojection Error. Project the court point through $\mathbf{H}$, measure the pixel distance to the observation, convert to metres with the local mm/px scale. The number is only meaningful together with <em>where</em> on the court it was measured.</figcaption>
   </figure>
 
@@ -850,7 +850,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   </ol>
 
   <figure id="fig-06-09" class="full">
-    <img src="shared/images/c06-dlt-rugby.png" alt="Line-based homography for a rugby league pitch: plan view of the 100 by 68 metre field with transverse lines every 10 metres, two transverse segments and one touch line highlighted in burnt-orange, mapped by correspondence arrows to a skewed broadcast-camera quadrilateral showing only those lines. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-dlt-rugby.png" alt="Line-based homography for a rugby league pitch: plan view of the 100 by 68 metre field with transverse lines every 10 metres, two transverse segments and one touch line highlighted in burnt-orange, mapped by correspondence arrows to a skewed broadcast-camera quadrilateral showing only those lines. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.9</span>: Lines, Not Points, on the Rugby Pitch. Broadcast framing rarely shows four clean corners; it shows line segments. Segment-to-model correspondences still constrain the homography — that is the whole trick behind the points-and-lines and segment-annotation methods.</figcaption>
   </figure>
 
@@ -858,7 +858,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>This is the chapter's deep lesson, and the lab proves it numerically. A ball flying 0.9m above the court is <em>not</em> on the plane the homography maps. Project the ball's pixel through the ground-plane homography and you get the wrong court coordinate. The error grows with height: on the 4.5m rig, the mislocalization is <strong>1.0m at z=0.5m, 2.3m at z=1.0m, 7.6m at z=2.2m</strong> — and it diverges as the ball approaches camera height.</p>
 
   <figure id="fig-06-02" class="full">
-    <img src="shared/images/calibration-z-limit.png" alt="The Z-limit: ball at 0.5m and 1.0m height projecting 1.0m and 2.3m away from true position from a 4.5m end-camera. Recreate: white background, black court line, burnt-orange rays." loading="lazy"/>
+    <img src="../images/calibration-z-limit.png" alt="The Z-limit: ball at 0.5m and 1.0m height projecting 1.0m and 2.3m away from true position from a 4.5m end-camera. Recreate: white background, black court line, burnt-orange rays." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.2</span>: The Z-Limit. A ball above the court projects through the ground-plane homography to a wrong ground point; the error grows with height. Line calls need Z — and Z needs multi-view (Chapter 14).</figcaption>
   </figure>
 
@@ -879,7 +879,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>A fixed end-cam over a pickleball court must turn pixels into metres exactly once, before any analytics run — and the four-corner hand-clicked fit is the baseline every club can afford. The mechanism is §6.4 made concrete: click the four rulebook corners (0,0), (13.41,0), (13.41,6.10), (0,6.10) metres on an undistorted frame; Hartley-normalized DLT solves $A\mathbf{h}=0$ with 8 equations for the homography's 8 unknowns; the fit is exact by construction. E05 measured 3.82cm RMSE at court center — 0.285% of court length, ~6 px at the far baseline's 6.4 mm/px — which is click noise, not algorithm error (measured, E05). The fragility is the clicking, not the algebra: with zero redundancy, a 3-px misclick on one corner redistributes silently across the whole map.</p>
 
   <figure id="fig-06-10" class="full">
-    <img src="shared/images/c06-uc01-dlt-pickleball-4pt.png" alt="Four-point DLT on the pickleball court: plan-view court model with four burnt-orange corner dots beside the skewed perspective video frame with matching dots, correspondence arrows between them. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c06-uc01-dlt-pickleball-4pt.png" alt="Four-point DLT on the pickleball court: plan-view court model with four burnt-orange corner dots beside the skewed perspective video frame with matching dots, correspondence arrows between them. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.10</span>: UC 01 — The 4-Point Fit, Expanded. Four rulebook corners give an exact homography; the error budget is entirely in the ±few-pixel click precision. <strong>Pickleball</strong>: one-time setup for any fixed phone or pole rig; every spacing and kitchen metric in chapters 22-23 inherits this map. <strong>Rugby league</strong>: the identical recipe on a fixed training-ground camera — click four line junctions instead of court corners.</figcaption>
   </figure>
 
@@ -889,7 +889,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Club and training footage comes from a fixed elevated camera — a grandstand rail or an anchored pole — over a 100 × 68m field, and it needs the same pixel-to-metre map at 7.5× the court's length. The DLT is identical; the anchors change: goal-line/touch-line junctions and transverse-line intersections from the NRL field model. The scale punishes minimality: at ~30 mm/px a 3-px misclick costs ~9cm, so the fixed-camera rugby fit should never run the minimal 4 points — use 6-8 junctions, let the $2N \times 9$ stack go over-determined, take the SVD least-squares solution, and finish with Levenberg-Marquardt refinement on geometric reprojection error (source-backed, Hartley &amp; Zisserman §4.4; OpenCV findHomography).</p>
 
   <figure id="fig-06-11" class="full">
-    <img src="shared/images/c06-uc02-dlt-rugby-4pt.png" alt="Six-point DLT on a rugby league pitch: plan-view field model with transverse lines every ten metres and six burnt-orange junction dots beside the skewed elevated-camera view with matching dots and correspondence arrows. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-uc02-dlt-rugby-4pt.png" alt="Six-point DLT on a rugby league pitch: plan-view field model with transverse lines every ten metres and six burnt-orange junction dots beside the skewed elevated-camera view with matching dots and correspondence arrows. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.11</span>: UC 02 — Over-Determined DLT on the Pitch. Six junctions give 12 equations for 8 unknowns; the residual finally has signal to detect a bad click. <strong>Rugby league</strong>: fixed-camera training analysis with an honest per-point error table. <strong>Pickleball</strong>: the same over-determination is what E11 exploits — 12.4 keypoints per frame, 3× redundancy, RANSAC-visible mistakes (measured, E11).</figcaption>
   </figure>
 
@@ -899,7 +899,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Broadcast rugby framing shows 2-3 transverse lines, one touch line, and zero clean junctions — four-point DLT is impossible on most frames of nrl-001. The escape is a different primitive: lines transform under a homography as $\mathbf{l} \sim \mathbf{H}^{-\top}\mathbf{L}$, so every line correspondence constrains $\mathbf{H}$ without any junction being visible. Points-and-lines solvers mix both primitives (PnLCalib, CVIU 2026 — source-backed); the calibration-as-optimization line (TVCalib, WACV 2023; Theiner et al. 2026 joint registration + distortion — source-backed) fits pose and focal against a differentiable segment-reprojection loss. This is the standard broadcast case, not an exotic one.</p>
 
   <figure id="fig-06-12" class="full">
-    <img src="shared/images/c06-uc03-line-calibration.png" alt="Line-based calibration: rugby pitch plan view with three burnt-orange transverse lines beside a skewed broadcast frame showing only those line segments and no corners, with correspondence arrows. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-uc03-line-calibration.png" alt="Line-based calibration: rugby pitch plan view with three burnt-orange transverse lines beside a skewed broadcast frame showing only those line segments and no corners, with correspondence arrows. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.12</span>: UC 03 — Lines, Not Points. Segment correspondences constrain the homography where junctions do not exist. <strong>Rugby league</strong>: per-frame line fitting keeps the nrl-001 feed calibrated through every pan. <strong>Pickleball</strong>: kitchen-line and sideline segments stabilize the fit on frames where players occlude the corners — lines survive partial occlusion that kills a corner detector.</figcaption>
   </figure>
 
@@ -911,7 +911,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Uncorrected barrel distortion moves mid-edge pixels by centimetres at court scale — more than any homography fit error in this book — and the kitchen line lives at the edge. The mechanism is Brown-Conrady (§6.3): radial displacement grows cubically as $k_1 r^3$, so the phone-main class ($k_1 \approx -0.05$) costs ~2% at $r=0.75$ while the action-cam wide class ($k_1 \approx -0.30$) costs 12.8% — ~26cm at court scale on the C04 rig [verify — representative lens-class values, not yet measured on the lab's own units; §6.10 schedules the chessboard runs]. The fix is the §6.5 chessboard workflow: measure the real coefficients once, then <code>cv2.undistortPoints</code> on reference points before DLT — microseconds on the M4 Max, and a one-way door: undistort first, homography second.</p>
 
   <figure id="fig-06-13" class="full">
-    <img src="shared/images/c06-uc04-distortion-classes.png" alt="Two-panel lens distortion comparison on a pickleball court grid: phone class with nearly straight lines versus action-cam class with strong barrel bow and outward displacement arrows at the mid-edges. White background, black linework, burnt-orange distorted lines." loading="lazy"/>
+    <img src="../images/c06-uc04-distortion-classes.png" alt="Two-panel lens distortion comparison on a pickleball court grid: phone class with nearly straight lines versus action-cam class with strong barrel bow and outward displacement arrows at the mid-edges. White background, black linework, burnt-orange distorted lines." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.13</span>: UC 04 — Two Lens Classes, Two Error Budgets. The court grid through $k_1=-0.05$ (left) and $k_1=-0.30$ (right): the action cam's mid-edge displacement dwarfs E05's 3.82cm. <strong>Pickleball</strong>: foot-fault calls at the far corner sit at $r \approx 0.7$-$1.0$, exactly where the uncorrected lens is worst. <strong>Rugby league</strong>: broadcast zoom lenses drift pincushion at long focal and distortion changes with zoom — the truck usually pre-corrects [verify for nrl-001].</figcaption>
   </figure>
 
@@ -921,7 +921,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>The broadcast camera pans, tilts, and zooms every play; E08 measured 9.76 px/frame of drift on nrl-001 (measured), which means any static homography expires continuously. The mechanism is per-frame calibration: $\mathbf{H}_t$ with focal length as a free parameter per frame, solved as optimization against the field model rather than one-shot DLT — the TVCalib/Theiner formulation (source-backed). The honest ladder from chapter 7's territory: global-motion compensation (E14: 295→286 IDs, +3.1% IDF1-class gain — measured) stabilizes tracking without solving registration at all; per-frame homography solves the map; full joint calibration solves map and lens together. Buy the rung that pays for your metric.</p>
 
   <figure id="fig-06-14" class="full">
-    <img src="shared/images/c06-uc05-ptz-recalibration.png" alt="Broadcast PTZ re-calibration timeline: four skewed rugby pitch quadrilaterals in a row as the camera pans and zooms, each topped with a burnt-orange homography icon, drift arrows between frames. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-uc05-ptz-recalibration.png" alt="Broadcast PTZ re-calibration timeline: four skewed rugby pitch quadrilaterals in a row as the camera pans and zooms, each topped with a burnt-orange homography icon, drift arrows between frames. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.14</span>: UC 05 — The Map That Expires. Every pan and zoom invalidates $\mathbf{H}$; the per-frame fit re-derives it from whatever lines are visible. <strong>Rugby league</strong>: the nrl-001 feed needs $\mathbf{H}_t$ per frame before any spacing metric is legal. <strong>Pickleball</strong>: the fixed rig's quieter version of the same problem — wind or a bumped pole invalidates the map, and the §6.4 sanity check (project the four corners back) catches it on revalidation.</figcaption>
   </figure>
 
@@ -933,7 +933,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>A planar homography assumes the world is flat at $Z=0$. Players' feet qualify; the ball never does; and even the ground is only approximately planar (grass crown, court slope). The mechanism is the §6.8 ray geometry: $D' = D \cdot H/(H - z)$, which on the 4.5m end-cam rig mislocalizes by 1.0m at $z=0.5$m, 2.3m at $z=1.0$m, and 7.6m at smash-contact height 2.2m, diverging entirely as $z \to H$ (measured, lab W2.1). This is a dimensional failure, not a statistical one — no RMSE discipline, RANSAC, or distortion correction shrinks it, which is why it earns its own use case: the most expensive calibration errors are the ones no residual can see.</p>
 
   <figure id="fig-06-15" class="full">
-    <img src="shared/images/c06-uc06-plane-error.png" alt="Side-elevation Z-limit diagram: camera at 4.5 metres, rays to a ball on the ground, a ball one metre up projecting 2.3 metres wrong, and a dashed ray to a lob near camera height diverging. White background, black linework, burnt-orange error markers." loading="lazy"/>
+    <img src="../images/c06-uc06-plane-error.png" alt="Side-elevation Z-limit diagram: camera at 4.5 metres, rays to a ball on the ground, a ball one metre up projecting 2.3 metres wrong, and a dashed ray to a lob near camera height diverging. White background, black linework, burnt-orange error markers." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.15</span>: UC 06 — Where the Map Is Valid. Feet on the plane project true; anything above it projects wrong by a height-proportional margin. <strong>Pickleball</strong>: players get homography coordinates, the ball stays in pixels until chapter 14's multi-view. <strong>Rugby league</strong>: a bomb hanging above the 20m line projects metres from its true position, and a kick landing in touch reports in-field on a ground-plane map.</figcaption>
   </figure>
 
@@ -943,7 +943,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Papers quote pixels; pipelines quote a single global RMSE; the coach needs metres at a named court region. The mechanism is a conversion and a reporting discipline: per-point error $d_i = \lVert \mathbf{x}_i - \mathbf{H}\mathbf{X}_i \rVert$ in pixels multiplied by the local mm/px scale, then reported as a per-corner table with median and 95th percentile, a named evaluation region (center vs edge), and a held-out validation split — fit on points 1-4, validate on 5-8, because a fitting residual is not a validation error. Global RMSE lies by averaging, and squared loss skews: one 20cm outlier contributes as much as twenty-seven 3.8cm inliers (§6.4).</p>
 
   <figure id="fig-06-16" class="full">
-    <img src="shared/images/c06-uc07-reprojection-metres.png" alt="Reprojection error in metres: true court corner as black cross, reprojected corner as burnt-orange circle, six-pixel offset arrow converting through 6.4 millimetres per pixel to 3.8 centimetres, with a small per-corner error table. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-uc07-reprojection-metres.png" alt="Reprojection error in metres: true court corner as black cross, reprojected corner as burnt-orange circle, six-pixel offset arrow converting through 6.4 millimetres per pixel to 3.8 centimetres, with a small per-corner error table. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.16</span>: UC 07 — Pixels Become Metres, Then Become a Table. The only honest calibration number names its point, its region, and its split. <strong>Pickleball</strong>: 3.82cm is 0.285% of court length — and foot-fault tolerance demands the edge-region number, not the center one (measured, E05). <strong>Rugby league</strong>: error is extrapolation-dominated across 30+ metres outside the anchor hull — name the region or the number is marketing.</figcaption>
   </figure>
 
@@ -955,7 +955,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Hand-clicking four corners per fixture does not scale to a season of footage; correspondence automation is the production path. The mechanism stacks the detector layer of §6.6 on the solver layer of §6.4: a court-keypoint model (the E11 pipeline; roboflow/sports-class YOLO keypoint heads — MIT; DART-class detectors feeding corner proposals [verify — detector naming for court corners]) emits junction proposals per frame, and RANSAC-DLT with the computed iteration count — 72 iterations at a 50% inlier fraction, 561 at 30% — discards the foot-on-the-kitchen-line outliers. E11's numbers are the reference: 12.4 keypoints/frame, 24.8 equations for 8 unknowns, 4.65cm RMSE, 98.4% valid frames, 11.2 ms/frame (measured, E11).</p>
 
   <figure id="fig-06-17" class="full">
-    <img src="shared/images/c06-uc08-corner-detection.png" alt="Automated court keypoint detection: perspective pickleball court frame with burnt-orange inlier dots at true junctions, black X marks at false detections, and a RANSAC funnel discarding outliers. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-uc08-corner-detection.png" alt="Automated court keypoint detection: perspective pickleball court frame with burnt-orange inlier dots at true junctions, black X marks at false detections, and a RANSAC funnel discarding outliers. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.17</span>: UC 08 — The Detector Feeds the Solver. Learned keypoints propose; RANSAC disposes. <strong>Pickleball</strong>: per-frame revalidation comes free — a bumped rig is caught the day it happens. <strong>Rugby league</strong>: junction scarcity pushes the fit to UC 03's line primitives, but the detector still supplies touch-line and goal-line junctions whenever they enter frame.</figcaption>
   </figure>
 
@@ -965,7 +965,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Conversion quality and bomb apex are height questions, and the ground-plane map cannot answer them — but the goal posts define a second plane. The mechanism: the two uprights and the crossbar lie in a single vertical plane at the goal line, so a second homography $\mathbf{H}_v$ maps that plane from four known points (crossbar junctions, upright tips; 3.05m crossbar height [verify upright geometry against current NRL specs]); ball pixels near the goal line project through $\mathbf{H}_v$ into height above the crossbar. The honest limit: the construction is valid only in the goal-line plane — parallax corrupts kicks judged away from the line [verify — practitioner construction, no published sport benchmark].</p>
 
   <figure id="fig-06-18" class="full">
-    <img src="shared/images/c06-uc09-uprights-vertical.png" alt="Rugby league goal posts with the uprights-and-crossbar vertical plane shaded faint burnt-orange, four calibration dots at crossbar junctions and upright tips, a kick arc over the crossbar with a height callout. White background, black linework." loading="lazy"/>
+    <img src="../images/c06-uc09-uprights-vertical.png" alt="Rugby league goal posts with the uprights-and-crossbar vertical plane shaded faint burnt-orange, four calibration dots at crossbar junctions and upright tips, a kick arc over the crossbar with a height callout. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.18</span>: UC 09 — A Homography Standing Up. Four known points on the posts calibrate the vertical plane the same way four corners calibrate the ground. <strong>Rugby league</strong>: conversion clearance margins and bomb apex near the posts. <strong>Pickleball</strong>: the net is the pickleball vertical plane — the same trick maps net-tape height (0.86m at center) for the clearance margins that chapter 10's net-margin use case needs.</figcaption>
   </figure>
 
@@ -975,7 +975,7 @@ def calibrate_from_chessboard(pattern_size, square_size_m, images):
   <p>Clubs cannot afford broadcast infrastructure; the realistic deployment is a fixed PoE network camera (~US$100-300 class [verify pricing]) permanently mounted over the court. The mechanism amortizes everything in this chapter: calibrate once — chessboard for $\mathbf{K}$ and distortion, 4+ court points for $\mathbf{H}$ — store the result as YAML per (device, mode) in the capture manifest (chapter 4), and auto-revalidate each session by re-projecting the stored anchors; drift beyond threshold raises an alert and a re-click. The honest caveats: consumer network cameras add H.264 compression artifacts and rolling shutter that a chessboard cannot fix [verify per unit — measure on the actual hardware].</p>
 
   <figure id="fig-06-19" class="full">
-    <img src="shared/images/c06-uc10-network-camera.png" alt="Low-cost network camera rig: a small bullet camera on a pole overlooking a pickleball court in perspective, with a dashed calibration flow below from chessboard to court corners to a stored config file. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c06-uc10-network-camera.png" alt="Low-cost network camera rig: a small bullet camera on a pole overlooking a pickleball court in perspective, with a dashed calibration flow below from chessboard to court corners to a stored config file. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 6.19</span>: UC 10 — Calibrate Once, Re-Check Forever. The fixed mount collapses this chapter's workflow into a one-time cost plus an automated revalidation. <strong>Pickleball</strong>: the permanent club rig feeding the chapter 28 cockpit nightly. <strong>Rugby league</strong>: fixed training-ground cameras — several cheap fixed cams beat one expensive movable one for coverage, precisely because none of them ever needs UC 05's per-frame fit.</figcaption>
   </figure>
 

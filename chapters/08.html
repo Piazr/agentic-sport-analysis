@@ -524,7 +524,7 @@
   <p>Three families define the 2026 landscape, and they differ less in accuracy than in <em>governance</em>. The <strong>YOLO line</strong> (YOLO11 through YOLO26, plus YOLOE-26) is the best-teaching family: the smoothest MPS training and CoreML export story on Apple Silicon, NMS-free from YOLO26 onward, with small-target-aware label assignment aimed at the ball problem. The <strong>RF-DETR line</strong> (Roboflow, ICLR 2026) is a DINOv2-backbone transformer detector, NMS-free by design, NAS-tuned for small custom datasets — the sport fine-tuning case. The <strong>D-FINE/DEIM line</strong> (ICLR/CVPR 2025) is the fully-open accuracy ceiling at 640px; DEIMv2 rides the DINOv3 backbone to 57.8 AP but carries a <strong>non-commercial license</strong> — a paper reference, never a shipped dependency. Also mentioned: RT-DETR (Apache, but Paddle-first tooling is dead weight on a Mac) and LW-DETR (Apache, CUDA-flavored training).</p>
 
   <figure id="fig-08-06" class="full">
-    <img src="shared/images/c08-detector-landscape-map.png" alt="Landscape map of the 2026 detector families: YOLO lane tagged AGPL, RF-DETR lane with XL/2XL hatched under the PML gate, DINOv3 lane with DEIMv2 tagged non-commercial." loading="lazy"/>
+    <img src="../images/c08-detector-landscape-map.png" alt="Landscape map of the 2026 detector families: YOLO lane tagged AGPL, RF-DETR lane with XL/2XL hatched under the PML gate, DINOv3 lane with DEIMv2 tagged non-commercial." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.6</span>: The 2026 Detector Landscape. Three families, three governance regimes. The license tag under each lane — AGPL, Apache with a PML-gated top end, Apache with a non-commercial frontier — matters more to a shipping practitioner than the AP spread between them.</figcaption>
   </figure>
 
@@ -588,7 +588,7 @@
   <p>Two traps catch sport builders. First, the <strong>SaaS trap</strong>: a coaching API that never ships a binary still triggers §13 — wrapping YOLO in a microservice does not launder the license. Second, the <strong>contagion trap</strong>: the tracker layer is not exempt. The E09 winner, BoT-SORT, is AGPL upstream (as is BoxMOT), so a commercial ship needs the tracker decision too (chapter 9). The safe glues are <code>supervision</code> (MIT), ByteTrack upstream (MIT), and SAHI (MIT).</p>
 
   <figure id="fig-08-07" class="full">
-    <img src="shared/images/c08-agpl-license-risk.png" alt="AGPL license risk decision diagram: shipping a product leads to open-source, pay enterprise, or swap to the Apache lane; SaaS triggers the network clause." loading="lazy"/>
+    <img src="../images/c08-agpl-license-risk.png" alt="AGPL license risk decision diagram: shipping a product leads to open-source, pay enterprise, or swap to the Apache lane; SaaS triggers the network clause." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.7</span>: The AGPL Decision Tree. Three exits from the YOLO lane — open-source your entire application, pay the annual Enterprise fee, or swap to an Apache detector. "We only serve it as an API" is not a fourth exit; §13 was written to close it.</figcaption>
   </figure>
 
@@ -610,7 +610,7 @@
   <p>The latency tradeoff spans an order of magnitude across lanes. On the vendor T4 protocol, YOLO26 runs 1.7–11.8ms and RF-DETR 2.3–6.8ms — near-parity. On the M4 Max MPS lane, RF-DETR's transformer stack is inference-fine but slower on MPS — in the ~140ms-class at default settings [verify]. The accuracy difference (54.7 vs 52.5 AP at M-size) buys little on players; the license difference buys everything at shipping time.</p>
 
   <figure id="fig-08-08" class="full">
-    <img src="shared/images/c08-speed-accuracy-benchmark.png" alt="Speed versus accuracy benchmark chart: RF-DETR, YOLO26 and D-FINE family curves of COCO AP against latency in ms, with the MPS lane point flagged far to the right." loading="lazy"/>
+    <img src="../images/c08-speed-accuracy-benchmark.png" alt="Speed versus accuracy benchmark chart: RF-DETR, YOLO26 and D-FINE family curves of COCO AP against latency in ms, with the MPS lane point flagged far to the right." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.8</span>: Speed vs Accuracy Is a Lane Statement. Family curves on the T4 TensorRT protocol cluster within a few AP and a few ms; the M4 Max MPS lane (flagged, [verify]) sits an order of magnitude right. Publish (hardware, precision, harness) with every number.</figcaption>
   </figure>
 
@@ -622,7 +622,7 @@
   <p>This is the chapter's metrics-discipline story: <strong>detection results are test-condition statements.</strong> Always publish: model version, conf threshold, imgsz, device, and the exact frame set.</p>
 
   <figure id="fig-08-01" class="full">
-    <img src="shared/images/spine-one-data-model.png" alt="Detection feeds the one-spine: detector outputs become track rows. Recreate in book style: white background, black outlines, burnt-orange flows." loading="lazy"/>
+    <img src="../images/spine-one-data-model.png" alt="Detection feeds the one-spine: detector outputs become track rows. Recreate in book style: white background, black outlines, burnt-orange flows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.1</span>: Detection → Track Rows. The detector's output is worthless until it is a row with a coordinate space and a provenance hash (Chapter 5).</figcaption>
   </figure>
   <h2 class="section-title"><span class="section-num">8.6b</span> The Pickleball Object Set: A 3-Class Problem</h2>
@@ -634,7 +634,7 @@
   </ul>
 
   <figure id="fig-08-09" class="full">
-    <img src="shared/images/c08-pickleball-3class.png" alt="Pickleball court with three detection classes: player boxes, a paddle box, and the ball marked with a dashed uncertain box; spectator boxes crossed out by the court filter." loading="lazy"/>
+    <img src="../images/c08-pickleball-3class.png" alt="Pickleball court with three detection classes: player boxes, a paddle box, and the ball marked with a dashed uncertain box; spectator boxes crossed out by the court filter." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.9</span>: The Pickleball 3-Class Problem. Players come free from COCO weights; the paddle is one fine-tune away; the ball (dashed) is a temporal-model handoff, not a detector class. The court polygon (E01/E05) strikes the spectator boxes before they become track noise.</figcaption>
   </figure>
 
@@ -643,7 +643,7 @@
   <p>The pragmatic rugby set is <strong>3–4 classes</strong>: <code>person</code> (COCO-sufficient at 13.2 persons/frame, E08 measured), <code>ball</code> (a genuine fine-tune candidate here — at broadcast zoom the rugby ball is medium-sized and occluded rather than tiny, the opposite regime from pickleball), <code>referee</code> only if the downstream logic needs to exclude the referee from formation analysis, and <code>goalpost</code> only as a calibration landmark (chapter 7's TVCalib lane uses field lines, not posts). Team split comes from jersey color histograms or ReID embeddings downstream, not from a <code>team_a</code>/<code>team_b</code> class that collapses under alternate strips and wet weather.</p>
 
   <figure id="fig-08-10" class="full">
-    <img src="shared/images/c08-rugby-28class.png" alt="Rugby league pitch with many player bounding boxes in two team clusters, a referee box, a ball box and goalposts; a ruck cluster shows merged overlapping boxes." loading="lazy"/>
+    <img src="../images/c08-rugby-28class.png" alt="Rugby league pitch with many player bounding boxes in two team clusters, a referee box, a ball box and goalposts; a ruck cluster shows merged overlapping boxes." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.10</span>: The Rugby Object Set. Twenty-six-plus boxes per frame, but the honest class list is short: person, ball, and calibration landmarks. The ruck's merged boxes are the detector's crowd ceiling — association, not detection, absorbs it (chapter 9).</figcaption>
   </figure>
 
@@ -678,7 +678,7 @@
   <p>Fine-tuning answers a different question: "this class is confirmed valuable and must run at production latency, forever." The 2026 economics favor it — RF-DETR was NAS-designed for small custom datasets (its RF100-VL column is 100-shot-scale transfer), and the DEIM matching recipe halves convergence time, so 300–1,000 annotated frames is the practical range for one new sport class. The bootstrap loop closes the circuit: prompt to draft labels, human-verify into a frozen 500-frame golden set, fine-tune the Apache model, and keep the prompt lane as the discovery sensor. One legal subtlety: whether AGPL reaches auto-labeler outputs (annotate with YOLOE-26, train an Apache model on the labels) is untested — the conservative rule is to bootstrap commercial projects with the API/open lanes (T-Rex2, OWLv2, SAM 3) [verify with counsel].</p>
 
   <figure id="fig-08-11" class="full">
-    <img src="shared/images/c08-finetune-vs-zeroshot.png" alt="Decision tree: no labels leads to zero-shot prompting and auto-labeling; 500 labeled frames lead to fine-tuning and shipping an Apache checkpoint; a bootstrap loop arrow connects them." loading="lazy"/>
+    <img src="../images/c08-finetune-vs-zeroshot.png" alt="Decision tree: no labels leads to zero-shot prompting and auto-labeling; 500 labeled frames lead to fine-tuning and shipping an Apache checkpoint; a bootstrap loop arrow connects them." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.11</span>: Fine-Tune vs Zero-Shot. Prompting is the discovery sensor; fine-tuning is the ship lane; the bootstrap loop turns one into the other. Both the pickleball paddle class and the rugby ball class enter through the same loop — only the fine-tune verdict differs.</figcaption>
   </figure>
 
@@ -712,7 +712,7 @@
   <p>The closed-set detector needs labels and training. The frontier question: can the open-vocabulary foundation models (SAM 3-class, Grounding DINO-class) run in real time? The 2026 answer is <strong>yes — with one architectural trick</strong>: DART (Detect Anything in Real Time, arXiv 2603.11441, March 2026) exploits the fact that the visual backbone is <em>class-agnostic</em> and computes it once, batching the prompt decoder across all classes.</p>
 
   <figure id="fig-08-02" class="full">
-    <img src="shared/images/c08-dart-latency.png" alt="DART latency comparison: conventional O(N) scaling rises steeply with class count, while DART keeps a flat O(1) profile." loading="lazy"/>
+    <img src="../images/c08-dart-latency.png" alt="DART latency comparison: conventional O(N) scaling rises steeply with class count, while DART keeps a flat O(1) profile." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.2</span>: The O(N) Bottleneck, Quantified. Conventional open-vocabulary detectors scale latency linearly with class count; DART holds a flat profile by sharing one backbone pass across all prompts. The 25× and 15.8 FPS claims are source-backed from the DART paper and not yet re-run by the book.</figcaption>
   </figure>
 
@@ -820,7 +820,7 @@
   <p>The live cockpit (C28) needs on-court person boxes inside a 16.6 ms frame budget; anything slower drops the overlay behind the rally. The mechanism is a budget equation, not a model name: t<sub>detect</sub> + t<sub>track</sub> + t<sub>render</sub> ≤ 1000/60 ms. The measured anchor is E02's yolo11n at 74.9 fps (~13.3 ms) at imgsz 960 on the M4 Max [measured] — inside budget with headroom for the tracker; RF-DETR-M posts 4.4 ms on the T4 TensorRT protocol [source-backed]. Scene filtering is part of detection quality, not post-processing: the court-polygon gate took 69→11 raw boxes (E01) and 80→23 in the c08 re-run [measured] — the "errors" were spectators, and they were free to remove.</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc01-player-60fps.png" alt="Pickleball doubles court from a fixed elevated camera with four player bounding boxes, one paddle box, and a dashed uncertain ball circle, tagged 60 fps." loading="lazy"/>
+    <img src="../images/c08-uc01-player-60fps.png" alt="Pickleball doubles court from a fixed elevated camera with four player bounding boxes, one paddle box, and a dashed uncertain ball circle, tagged 60 fps." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.12</span>: UC 01 — Player Detection at 60 fps. Four player boxes, one paddle box, one honestly-uncertain ball circle, all inside the 16.6 ms budget. <strong>Pickleball</strong>: fixed 4K camera, 3.8 on-court persons/frame vs 4 ground truth (E02, measured). <strong>Rugby league</strong>: 13.2 persons/frame in broadcast (E08, measured) — far-end players are a SAHI tiling problem, not a model problem.</figcaption>
   </figure>
 
@@ -830,7 +830,7 @@
   <p>The ball is the highest-value object in both sports and the worst-detected in both — but for opposite reasons. The 74 mm perforated pickleball is ~40×25 px in a 4K fixed frame; its discriminative texture (the holes) has a spatial period below 2 px, under the Nyquist limit (f<sub>texture</sub> &gt; 1/(2Δ)), and serve-speed motion blur smears what remains. E04 measured the consequence: 1,082 candidate "ball" boxes over 900 frames at median confidence 0.11 [measured] — a noise floor, not a track. The 280 mm oval rugby ball is medium-sized at broadcast zoom and <em>occluded</em>, not tiny — a fine-tunable regime. COCO's AP<sub>S</sub> bucket is the closest published proxy for the pickleball regime, and every family drops 20-30 points from headline AP to AP<sub>S</sub> [verify per-model AP<sub>S</sub> in the RF-DETR supplementary].</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc02-ball-two-regimes.png" alt="Two panels: a tiny motion-blurred pickleball in a dashed box labeled noise, and an oval rugby ball half-occluded by hands in a solid box labeled occluded." loading="lazy"/>
+    <img src="../images/c08-uc02-ball-two-regimes.png" alt="Two panels: a tiny motion-blurred pickleball in a dashed box labeled noise, and an oval rugby ball half-occluded by hands in a solid box labeled occluded." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.13</span>: UC 02 — Ball Detection in Two Regimes. <strong>Pickleball</strong>: sub-Nyquist texture plus motion blur — exit the detector lane into the temporal model (C12's TrackNet family broke the wall at 87.2% recall, E10). <strong>Rugby league</strong>: medium-sized and occluded — a genuine fine-tune class on the 500-frame unit (§8.7).</figcaption>
   </figure>
 
@@ -840,7 +840,7 @@
   <p>Equipment classes are absent from COCO, and loose or duplicated boxes corrupt everything downstream that takes geometry from them. The math that governs "loose" and "duplicate": intersection-over-union, IoU = |A∩B| / |A∪B|, and classic NMS — keep the argmax-score box, suppress any box with IoU &gt; θ (θ ≈ 0.45-0.7). AP averages precision over IoU thresholds 0.50:0.05:0.95; for line-call and face-angle geometry, AP75 is the first threshold that punishes the boxes you actually care about. The 2026 NMS-free families (RF-DETR, D-FINE, YOLO26) replace suppression with one-to-one Hungarian-style assignment — one stage fewer, and the classic CoreML/ONNX NMS-op export-bug class gone with it. The paddle itself follows the §8.7 loop: visual-prompt bootstrap, human verify, fine-tune into the Apache checkpoint on 500 frames [source-backed recipe].</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc03-paddle-nms-iou.png" alt="A pickleball paddle with two overlapping candidate boxes, an IoU equation inset, and an NMS funnel keeping one box and dropping the duplicate." loading="lazy"/>
+    <img src="../images/c08-uc03-paddle-nms-iou.png" alt="A pickleball paddle with two overlapping candidate boxes, an IoU equation inset, and an NMS funnel keeping one box and dropping the duplicate." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.14</span>: UC 03 — Paddle Detection and the NMS Discipline. Two candidate boxes, IoU = 0.83, one survives. <strong>Pickleball</strong>: the paddle box is the precursor to C10's face-angle pipeline — a box twice the blade's size passes AP50 and fails the angle. <strong>Rugby league</strong>: goalposts and the kicking tee as calibration landmarks (C07), not tactical classes.</figcaption>
   </figure>
 
@@ -852,7 +852,7 @@
   <p>The referee is a person-shaped pollutant: formation metrics, defensive-line distances, and tracker ID budgets all degrade when officials count as players. The mechanism is a set difference, D<sub>players</sub> = D<sub>persons</sub> \ D<sub>officials</sub>, where the official class comes from a one-class fine-tune (the kit is visually distinct) or a zero-shot "referee" prompt for discovery. The contamination cost compounds: each false person per frame adds an expected extra track and corrupts the downstream Voronoi and offside computations (C23) that assume the person set is the player set. Pickleball's version is the E01 lesson — most of the 84% polygon rejection was exactly this class of error: spectators, benches, the referee stand.</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc04-referee-exclusion.png" alt="Rugby league broadcast view with player boxes in two team clusters, one referee box crossed out and labeled exclude, and a ball box." loading="lazy"/>
+    <img src="../images/c08-uc04-referee-exclusion.png" alt="Rugby league broadcast view with player boxes in two team clusters, one referee box crossed out and labeled exclude, and a ball box." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.15</span>: UC 04 — Referee Detection for Exclusion. The official is found precisely so it can be subtracted. <strong>Rugby league</strong>: referee plus two touch judges excluded before the 10 m offside computation — the distinct kit makes this a tractable one-class fine-tune [verify — practitioner recipe]. <strong>Pickleball</strong>: line judges and the referee stand leave via the court polygon; no referee class needed at all.</figcaption>
   </figure>
 
@@ -862,7 +862,7 @@
   <p>Tactical models need roles — server, returner, ruck, dummy half — but roles are too rare and too shifting to justify per-role annotation and training runs. Conventional open-vocabulary detectors run the full pipeline per class, so latency scales O(N<sub>classes</sub>). DART (arXiv 2603.11441) exploits the class-agnostic backbone: compute it once, batch the prompt decoder across all prompts — t ≈ t<sub>backbone</sub> + 0.15 ms × N [source-backed; the 25× speedup claim stands un-re-run by the book, on the §8.15 measure list]. The practical consequence: "detect the ball" and "detect the ball, paddle, NVZ line, ruck point, defensive line, and referee" cost nearly the same per frame.</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc05-dart-roles.png" alt="One shared backbone block fanning out to prompt chips labeled server, returner, ruck, and referee, each pointing to a role-tagged box on a split pickleball and rugby scene." loading="lazy"/>
+    <img src="../images/c08-uc05-dart-roles.png" alt="One shared backbone block fanning out to prompt chips labeled server, returner, ruck, and referee, each pointing to a role-tagged box on a split pickleball and rugby scene." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.16</span>: UC 05 — Role Detection in One Pass. The backbone is paid once; roles cost ~0.15 ms each. <strong>Pickleball</strong>: server, returner, kitchen resetter, poaching attacker. <strong>Rugby league</strong>: ruck point, dummy half, marker defenders, advancing line — the promptable input layer for C23's tactical ML.</figcaption>
   </figure>
 
@@ -872,7 +872,7 @@
   <p>The highest-leverage moments are the most occluded: two bodies converging at the NVZ line in a dink firefight; five bodies bound in a ruck. The detector's crowd ceiling is structural — when the true boxes' pairwise overlap exceeds the suppression or assignment threshold, N players merge into M &lt; N boxes, and lowering the NMS θ trades duplicates for merges without escaping the tension; the NMS-free one-to-one matching hits the same ceiling inside the assignment solver. The discipline is to document the ceiling and hand the burst to the layers built for it: tracking (C09) and ReID (C13). E14's negative result is the caution [measured]: detector-side motion compensation made identity <em>worse</em> — more machinery at this layer is not more signal.</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc06-occlusion.png" alt="Two panels: two pickleball players overlapping at the kitchen line with a merged box splitting into two, and a five-player rugby ruck collapsing to three boxes." loading="lazy"/>
+    <img src="../images/c08-uc06-occlusion.png" alt="Two panels: two pickleball players overlapping at the kitchen line with a merged box splitting into two, and a five-player rugby ruck collapsing to three boxes." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.17</span>: UC 06 — The Occlusion Ceiling. <strong>Pickleball</strong>: the kitchen firefight merges two players at the exact frame the foot-fault check wants them separate — flag low-confidence frames for the multi-view lane (C14). <strong>Rugby league</strong>: the ruck merges five into three; the merged-box event itself is the ruck detector's most reliable signal.</figcaption>
   </figure>
 
@@ -882,7 +882,7 @@
   <p>A detector tuned at one venue silently degrades at the next; the failure arrives as confidence drift, not an error message. The mechanism is the train/test distribution gap: AP<sub>ood</sub> &lt; AP<sub>id</sub> whenever lighting temperature, background clutter, compression, or graphics overlays move between domains. The book's proxy discipline: hold out one venue or one day as a never-trained test set and report ΔAP alongside AP [verify — the book has not yet run a venue holdout; it is the first item this use case adds to the measure list]. The fixes are domain-matched: §8.8's augmentation sampled from the real domain (LED flat-light and wall clutter for indoor pickleball; floodlight color temperature, HEVC artifacts, letterboxed scorebugs for broadcast rugby), and per-frame registration before any polygon filter — E08 measured 9.76 px/frame broadcast drift [measured], which invalidates a fixed polygon outright.</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc07-domain-shift.png" alt="Two panels: an indoor pickleball court under flat ceiling lights and an outdoor rugby stadium under floodlights with long shadows, joined by a shift arrow with an AP drop inset." loading="lazy"/>
+    <img src="../images/c08-uc07-domain-shift.png" alt="Two panels: an indoor pickleball court under flat ceiling lights and an outdoor rugby stadium under floodlights with long shadows, joined by a shift arrow with an AP drop inset." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.18</span>: UC 07 — Domain Shift. <strong>Pickleball</strong>: a new venue's wall color and lighting move the confidence distribution; one held-out venue day is the regression test. <strong>Rugby league</strong>: the broadcast domain adds compression, scorebugs, and LED ads — augment from nrl-001's statistics, not COCO's.</figcaption>
   </figure>
 
@@ -894,7 +894,7 @@
   <p>The benchmark table is not the product; the product is one operating point chosen under a wall-clock budget. The mechanism: effective throughput = 1000 / (t<sub>det</sub> × n<sub>tiles</sub>) fps — SAHI 2×2 tiling quadruples inference calls per frame, so the paper-fastest detector can lose the wall-clock race once rugby's small-object density forces slicing. The Pareto rule: pick the highest-AP model still inside the frame budget at <em>your tile count on your hardware lane</em> — the T4 TensorRT protocol and the M4 Max MPS lane differ by an order of magnitude (§8.5b), so every operating point must be re-measured, not read from the vendor table [source-backed protocol; own tiling run on the measure list].</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc08-speed-accuracy-pareto.png" alt="Pareto chart of AP against latency with three family curves, 60fps and 30fps budget lines, and a circled ship operating point." loading="lazy"/>
+    <img src="../images/c08-uc08-speed-accuracy-pareto.png" alt="Pareto chart of AP against latency with three family curves, 60fps and 30fps budget lines, and a circled ship operating point." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.19</span>: UC 08 — Choosing the Operating Point. <strong>Pickleball</strong>: the live lane picks the fastest model inside 16.6 ms with no tiling — E02's 74.9 fps anchor says even the small sizes qualify [measured]. <strong>Rugby league</strong>: post-match batch analysis buys the L-size accuracy; the live HUD lane must price tiling before committing.</figcaption>
   </figure>
 
@@ -904,7 +904,7 @@
   <p>The same detector is free in one product and a liability in another; the decision belongs at selection time, per use case, in the C31 license matrix. The mechanism is §13: the network clause makes "we only serve it as an API" a non-exit, and Ultralytics' FAQ closes the "we trained our own weights" exit too. The economics: the Enterprise fee is quote-only (community-reported $5k-20k+/yr, [anecdotal]) against a weekend re-fine-tuning an Apache checkpoint on the frozen 500-frame set — for most sport products the swap costs less than the first invoice. The per-use-case verdicts: internal lab → any detector, AGPL fine; paid coaching app → Apache lane or Enterprise; SaaS → Apache lane (§13 forecloses the rest); broadcast analytics → Apache lane <em>plus the tracker audit</em> — BoT-SORT is AGPL upstream, so the C09 decision is part of this one.</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc09-agpl-decision.png" alt="License decision grid with rows lab, app, SaaS, broadcast and exits open-source, pay fee, Apache lane, with check marks in the Apache column." loading="lazy"/>
+    <img src="../images/c08-uc09-agpl-decision.png" alt="License decision grid with rows lab, app, SaaS, broadcast and exits open-source, pay fee, Apache lane, with check marks in the Apache column." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.20</span>: UC 09 — The AGPL Decision, Per Use Case. <strong>Pickleball</strong>: the fixed-camera coaching product ships RF-DETR-M (Apache) and keeps the YOLO lane for open coursework. <strong>Rugby league</strong>: the broadcast-analytics SaaS makes the same call at ten times the revenue exposure — and audits the tracker layer too.</figcaption>
   </figure>
 
@@ -914,7 +914,7 @@
   <p>"Should we train a model?" has a different answer for every (sport, class) pair, and the wrong default burns a season of annotation. The mechanism is the bootstrap loop's economics: zero-shot discovery costs an afternoon and zero labels; fine-tuning costs 300-1,000 verified frames and a Colab night; the loop turns one into the other only after a class proves valuable. The verdict matrix, applied: pickleball <em>player</em> → COCO zero-shot, solved (E02); pickleball <em>paddle</em> → prompt-bootstrap → fine-tune; pickleball <em>ball</em> → exit early to the temporal lane (UC 02); rugby <em>player</em> → COCO + SAHI, never enter the loop; rugby <em>ball</em> → fine-tune, the opposite regime; rugby <em>referee</em> → prompt for discovery, one-class fine-tune if the exclusion metric justifies it (UC 04).</p>
 
   <figure class="full">
-    <img src="shared/images/c08-uc10-finetune-zeroshot-sport.png" alt="Two-by-two matrix of pickleball and rugby rows against zero-shot and fine-tune columns, with check and cross marks and a bootstrap loop arrow." loading="lazy"/>
+    <img src="../images/c08-uc10-finetune-zeroshot-sport.png" alt="Two-by-two matrix of pickleball and rugby rows against zero-shot and fine-tune columns, with check and cross marks and a bootstrap loop arrow." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 8.21</span>: UC 10 — The Per-Sport Verdict Matrix. <strong>Pickleball</strong>: two of three classes never train a detector at all. <strong>Rugby league</strong>: the ball enters the loop the pickleball ball exits — scale and blur regime, not sport loyalty, decides.</figcaption>
   </figure>
 

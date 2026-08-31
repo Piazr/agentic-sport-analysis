@@ -523,12 +523,12 @@
   <p>Why is simulation still worth a chapter, given that wreckage? Because simulation is the honest frontier of the whole pipeline. Every upstream layer of this book — detection (c08), tracking (c09), calibration (c06), identity (c13), expected value (c22) — produces a description of what happened. A coach's actual question is never "what happened?" It is "what would happen if we changed one thing?" The moment you ask that question you need a model of the world's response, and the moment you build that model you either state your assumptions explicitly or you smuggle them in. Simulation is where analytical honesty is hardest and therefore where it matters most. The twin in this chapter is modest — two lanes, 10,000 rollouts, measured throughput — but every number in it can be re-derived by re-running one script (E21, formerly E16: <code>experiments/e21-match-digital-twin/</code>), and every number that cannot be re-derived is labeled as such.</p>
 
   <figure id="fig-24-01" class="full">
-    <img src="shared/images/simulation-honesty-ladder.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/simulation-honesty-ladder.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.1</span>: The Counterfactual Honesty Ladder. <em>Illustration</em> (concept diagram, no measured data). Manual perturbation is what this chapter executes; learned reaction and policy models are the frontier; the v1 claims sit above with a red X — illustration is not measurement.</figcaption>
   </figure>
 
   <figure id="fig-24-02" class="full">
-    <img src="shared/images/ch24-twin-truth-table.png" alt="Two-column truth table separating measured outputs from illustrated outputs." loading="lazy"/>
+    <img src="../images/ch24-twin-truth-table.png" alt="Two-column truth table separating measured outputs from illustrated outputs." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.2</span>: The twin truth table. <em>Illustration</em> of the chapter's honesty contract. Left column — what the E21 twin actually measures: ball flight distributions, position deltas, an assumed risk table. Right column — what the v1 prose illustrated without building: the -65% threat claim, the policy rollout, the win-rate. Anything in the right column that appears in this chapter carries an explicit "illustrated" or "unbuilt" tag.</figcaption>
   </figure>
 
@@ -549,7 +549,7 @@
   <p><strong>Rugby league example.</strong> "What if the defensive line compresses its second-rower-to-centre spacing by 1.2m against the sweep play?" is well-posed only because the response model is stated: a logistic risk curve over spacing, <em>assumed</em>, not fitted to tracking data. The E21 twin reports the delta the assumed curve produces. A coach reading that number is reading the shape of an assumption, and the chapter says so on the figure, in the table, and in the caption — three times, because once is how the v1 book got into trouble.</p>
 
   <figure id="fig-24-03" class="full">
-    <img src="shared/images/ch24-causal-response-model.png" alt="Causal diagram: observed state, do-intervention arrow, counterfactual state, with the response model box underneath." loading="lazy"/>
+    <img src="../images/ch24-causal-response-model.png" alt="Causal diagram: observed state, do-intervention arrow, counterfactual state, with the response model box underneath." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.3</span>: The causal minimum. <em>Illustration</em> (concept diagram). The do-operator moves one variable; the response model box is what makes the arrow honest. In this chapter the response model is "others fixed, ball physics, rules check" — anything richer is labeled unbuilt.</figcaption>
   </figure>
 
@@ -586,7 +586,7 @@ def step_ball(ball, dt):
   <p>The rugby league lane is a different animal and the chapter refuses to pretend otherwise. There is no projectile, no integrator, no mechanics. The state is one scalar — second-rower-to-centre spacing d — and the response model is an assumed logistic, p(break) = 1 / (1 + e^(−1.4(d − 6.2))), with 6.2m as the assumed critical gap. The "simulation" samples 5,000 spacings uniformly over 3.5–9.5m and evaluates the curve. This is a risk table with a sampling wrapper. It earns its place in the twin for one reason: it makes the shape of an assumption explicit and lets a coach see the counterfactual sensitivity to that assumption. It would become a measurement only when the curve is fitted to labeled line-break outcomes — which is future work, stated as future work.</p>
 
   <figure id="fig-24-04" class="full">
-    <img src="shared/images/ch24-deterministic-vs-learned.png" alt="Boundary diagram: deterministic physics above the line, learned policy below, marked unbuilt." loading="lazy"/>
+    <img src="../images/ch24-deterministic-vs-learned.png" alt="Boundary diagram: deterministic physics above the line, learned policy below, marked unbuilt." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.4</span>: The boundary. <em>Illustration</em> (concept diagram). Above the line: the deterministic lanes this chapter executes — projectile rollout, kinematic integrator — reproducible on a laptop in milliseconds. Below the line: learned policies and diffusion reaction models — <strong>unbuilt</strong>, GPU-requiring, and described in section 24.6 as a frontier, not a result.</figcaption>
   </figure>
 
@@ -656,7 +656,7 @@ def step_ball(ball, dt):
   <p><strong>The drop-vs-drive counterfactual.</strong> What if the same player, same contact point, hit a drive instead? The intervention is a wholesale swap of the launch distribution — a drive profile at 11.0 m/s and 18° (practitioner-set, [verify] against real launch data). Re-running the identical model under that intervention: 98.6% of drives land long past the kitchen, 1.4% hit the net, and the median landing point moves from 7.26m to 10.28m — a full three metres deeper, into the drive zone where the shot stops being a drop at all. The counterfactual is measured in the sense that the physics is exact and re-runnable; it is illustrated in the sense that the drive launch distribution is assumed, not fitted. Both facts belong in the caption, and here they are in the prose too: <em>the delta is real arithmetic on an assumed input.</em> That sentence, applied consistently, is the entire difference between this chapter and v1 chapter 9.</p>
 
   <figure id="fig-24-05" class="full">
-    <img src="shared/images/ch24-pb-drop-rollouts.png" alt="Side view of a pickleball court with a fan of parabolic third-shot trajectories, most ending in the net, one bold success arc landing in the drop zone." loading="lazy"/>
+    <img src="../images/ch24-pb-drop-rollouts.png" alt="Side view of a pickleball court with a fan of parabolic third-shot trajectories, most ending in the net, one bold success arc landing in the drop zone." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.5</span>: The third-shot drop rollout fan. <em>Illustration of measured results</em> — the outcome percentages are measured (E21: 24.8% success, 71.9% net fault over 5,000 rollouts); the drawn arcs are a stylized rendering of that distribution, not logged trajectory pixels.</figcaption>
   </figure>
 
@@ -696,7 +696,7 @@ def step_ball(ball, dt):
   <p>Three honest labels attach to this table. First, the −35.1% is a property of the assumed curve: compressing across the steep part of any sigmoid centred near the sample range will produce a large relative drop, and a different critical-gap assumption moves the number. Second, the 5.0m optimum is the curve's recommendation, not a fitted finding — no line-break outcomes were regressed to produce it. Third, the 40.1M evaluations per second is real but trivially so: it measures NumPy evaluating a logistic, and is reported only because throughput claims were part of the v1 fantasy vocabulary, and the honest version of a throughput claim is a boring one. What the lane genuinely delivers is sensitivity structure: a coach can see that risk is flat outside 4–8m and violent inside it, and that the compression intervention matters exactly where the line was already borderline. That is useful. It is not a win probability.</p>
 
   <figure id="fig-24-06" class="full">
-    <img src="shared/images/ch24-nrl-line-compression.png" alt="Top-down rugby league pitch with a 13-man defensive line, an attacking sweep toward a highlighted 6.2m edge gap, and a faded compressed line above." loading="lazy"/>
+    <img src="../images/ch24-nrl-line-compression.png" alt="Top-down rugby league pitch with a 13-man defensive line, an attacking sweep toward a highlighted 6.2m edge gap, and a faded compressed line above." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.6</span>: The defensive-line compression counterfactual. <em>Illustration of an assumed response model</em> — the −1.2m compression and the 54.2% → 35.2% risk shift are exact arithmetic on an assumed logistic curve (E21), not a fit to line-break outcomes. The diagram shows the geometry; the table above carries the numbers.</figcaption>
   </figure>
 
@@ -735,7 +735,7 @@ def step_ball(ball, dt):
   <p><strong>Rugby league transfer.</strong> Thirteen defending nodes plus ball carrier and support runners; the predictive head forecasts line-break risk within the next seconds of a set; the generative head would propose edge-spacing adjustments — the learned, multi-agent version of this chapter's single-scalar risk table. The E21 lane is what you get when that graph is replaced by one assumed sigmoid: useful sensitivity structure, honestly labeled, one rung below.</p>
 
   <figure id="fig-24-07" class="full">
-    <img src="shared/images/ch24-tacticai-graph-inference.png" alt="Player graph feeding equivariant GNN layers, branching to receiver-probability and position-shift outputs." loading="lazy"/>
+    <img src="../images/ch24-tacticai-graph-inference.png" alt="Player graph feeding equivariant GNN layers, branching to receiver-probability and position-shift outputs." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.7</span>: TacticAI-style graph inference. <em>Illustration</em> of the published architecture (Nature Communications 2024) — shown here as the unbuilt frontier. This book has no trained GNN; E12's numbers are hand-set and register-labeled RE-LABEL.</figcaption>
   </figure>
 
@@ -821,7 +821,7 @@ def step_ball(ball, dt):
   <p>The mechanism is the E21 analytic projectile lane (section 24.3): launch at (v₀, θ, h₀), closed-form time-to-ground and height-at-net per sample, Monte Carlo from the launch distribution. The drop profile is v₀ = 7.35 m/s, θ = 43.5°, h₀ = 0.85m with practitioner-set motor noise σ_v = 0.25 m/s, σ_θ = 1.8°. Over 5,000 samples the <strong>measured-sim</strong> distribution is 24.8% clean drop, 71.9% net fault, 3.2% attackable popup, optimal landing depth 7.45m. The drive intervention swaps the launch distribution to 11.0 m/s at 18° ([verify] — practitioner-set, not fitted to launch data): 98.6% land long past the kitchen, 1.4% hit the net, and the median landing point moves from 7.26m to 10.28m. The physics is exact and re-runnable; the launch distributions are assumed. Both facts are the label.</p>
 
   <figure id="fig-24-08" class="full">
-    <img src="shared/images/ch24-uc-third-shot-counterfactual.png" alt="Side view of a pickleball court with a fan of drop trajectories on one side and flat drive trajectories on the other." loading="lazy"/>
+    <img src="../images/ch24-uc-third-shot-counterfactual.png" alt="Side view of a pickleball court with a fan of drop trajectories on one side and flat drive trajectories on the other." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.8</span>: UC 01 — Drop vs Drive Counterfactual. <em>Illustration of measured-sim results</em> (E21: drop 24.8% clean / 71.9% net; drive 98.6% long under an assumed launch profile [verify]). <strong>Pickleball</strong>: the drop's difficulty is geometric — a centimetre-scale window over the tape. <strong>Rugby league</strong>: the same launch-swap structure applies to the chip kick versus the long punt on tackle five.</figcaption>
   </figure>
 
@@ -832,7 +832,7 @@ def step_ball(ball, dt):
   <p>The mechanism is the chapter's projectile integrator with quadratic drag, K = ½ρC<sub>d</sub>A/m ≈ 0.046 s²/m² using the verified constants (C<sub>d</sub> 0.45, 26g, 74mm), launched from 0.95m contact height. Computing the legal window across speeds (<strong>model output</strong> — deterministic, reproducible from the equations; [verify] against measured serve launch data): at 16 m/s the legal angle band is ≈11° wide; at 20 m/s, ≈6°; at 24 m/s, ≈3°; at 28 m/s, ≈1.5°. Post-bounce apex stays in the 0.4–0.6m band across the legal range because the drag-dominated descent steepens with speed. Every extra 4 m/s of pace roughly halves the window.</p>
 
   <figure id="fig-24-09" class="full">
-    <img src="shared/images/ch24-uc-serve-simulation.png" alt="Side view of a pickleball court with four serve trajectories at increasing speed and a shrinking legal angle wedge." loading="lazy"/>
+    <img src="../images/ch24-uc-serve-simulation.png" alt="Side view of a pickleball court with four serve trajectories at increasing speed and a shrinking legal angle wedge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.9</span>: UC 02 — Serve Speed vs Legal Window. <em>Illustration of model output</em> — the ≈11° → ≈1.5° window shrink from 16 to 28 m/s is computed from the chapter's drag model, not measured on real serves [verify]. <strong>Pickleball</strong>: pace is paid for in angle margin. <strong>Rugby league</strong>: the same window logic governs the kick-off — distance versus the 10m minimum and the touch-finding constraint.</figcaption>
   </figure>
 
@@ -843,7 +843,7 @@ def step_ball(ball, dt):
   <p>The mechanism models the oval ball as a point mass under quadratic drag (m = 0.43kg, C<sub>d</sub> ≈ 0.3, cross-section 0.19m → K ≈ 0.012 s²/m²; all three constants [verify] against measured rugby-ball aerodynamics). Kicked from the 40m line, the first bounce must land 40–58m downfield. The computed legal pace band at a 42° launch is ≈24.5–31.5 m/s (<strong>model output</strong>); at 27 m/s the ball hangs 3.2s and lands 45.8m out, mid-band. Slower than ≈24.5 m/s the first bounce falls short of the 20m zone and the kick is just a touch-finder; harder than ≈31.5 m/s the ball carries the try line on the second phase and risks the dead-ball line.</p>
 
   <figure id="fig-24-10" class="full">
-    <img src="shared/images/ch24-uc-kick-trajectory.png" alt="Side view of a rugby league pitch with a 40/20 kick arc landing in a highlighted band, with too-short and dead-ball failure arcs faded." loading="lazy"/>
+    <img src="../images/ch24-uc-kick-trajectory.png" alt="Side view of a rugby league pitch with a 40/20 kick arc landing in a highlighted band, with too-short and dead-ball failure arcs faded." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.10</span>: UC 03 — The 40/20 Launch Window. <em>Illustration of model output</em> — the ≈7 m/s pace band and 3.2s hang are computed from the stated drag model with [verify] ball constants. <strong>Rugby league</strong>: the 40/20 is a practiced launch window, not a hope. <strong>Pickleball</strong>: the lob over a poaching opponent is the same problem at one-fifth the scale — clear the reach, land in the 3m band behind the kitchen.</figcaption>
   </figure>
 
@@ -854,7 +854,7 @@ def step_ball(ball, dt):
   <p>Computing on the UC 03 kick (27 m/s at 42°): a 3 m/s headwind costs 4.6m of carry (45.8m → 41.2m), a 3 m/s tailwind adds 4.4m, and a 3 m/s crosswind drifts the landing point 2.75m laterally — the difference between finding touch and staying in play when aiming at the corner. On the pickleball drive (11.0 m/s at 18°), the same 3 m/s crosswind drifts the ball 0.44m — nearly a sixth of the court's 3.05m singles width, and enough to move a sideline drive from in to out (<strong>model output</strong>, same drag model, same [verify] constants).</p>
 
   <figure id="fig-24-11" class="full">
-    <img src="shared/images/ch24-uc-wind-drag.png" alt="Rugby kick arcs in still air versus headwind, plus a top-down crosswind drift panel and a small pickleball court inset." loading="lazy"/>
+    <img src="../images/ch24-uc-wind-drag.png" alt="Rugby kick arcs in still air versus headwind, plus a top-down crosswind drift panel and a small pickleball court inset." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.11</span>: UC 04 — Weather What-Ifs. <em>Illustration of model output</em> — ±3 m/s head/tail wind moves the kick −4.6/+4.4m; 3 m/s crosswind drifts it 2.75m (kick) and 0.44m (drive). <strong>Rugby league</strong>: re-aim the touch-finder by the drift, not by feel. <strong>Pickleball</strong>: outdoor venue wind readings belong in the scouting sheet (chapter 14's rig can measure them).</figcaption>
   </figure>
 
@@ -867,7 +867,7 @@ def step_ball(ball, dt):
   <p>The mechanism (section 24.4): state is one scalar d (edge spacing); response model is an assumed logistic, p(break) = 1 / (1 + e<sup>−1.4(d − 6.2)</sup>), with 6.2m the assumed critical gap. Sampling 5,000 spacings uniformly over 3.5–9.5m and compressing each by 1.2m (clipped to [3.0, 8.5]m) moves mean risk from 54.2% to 35.2% — a −35.1% reduction — with the curve's recommendation at 5.0m. This is measured arithmetic on assumed parameters: the −35.1% is a property of the sigmoid's steep region, and a different critical-gap assumption moves it. The durable output is the sensitivity structure: risk is flat outside the 4–8m band and steep inside it.</p>
 
   <figure id="fig-24-12" class="full">
-    <img src="shared/images/ch24-uc-line-break-counterfactual.png" alt="Top-down rugby league pitch with a defensive line, an attacker arrow piercing a highlighted edge gap, a faded compressed line, and a small risk curve inset." loading="lazy"/>
+    <img src="../images/ch24-uc-line-break-counterfactual.png" alt="Top-down rugby league pitch with a defensive line, an attacker arrow piercing a highlighted edge gap, a faded compressed line, and a small risk curve inset." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.12</span>: UC 05 — Line Compression Counterfactual. <em>Illustration of an assumed response model</em> — the 54.2% → 35.2% shift is exact arithmetic on an assumed logistic (E21), not a regression on line-break outcomes. <strong>Rugby league</strong>: edge spacing discipline against the sweep. <strong>Pickleball</strong>: the doubles middle-seam gap is the same scalar — partner spacing versus the speed-up down the middle (chapter 23's graph view).</figcaption>
   </figure>
 
@@ -878,7 +878,7 @@ def step_ball(ball, dt):
   <p>The mechanism is a frontier between two constraints (<strong>model output</strong>; athlete parameters [verify]): the deep threat is UC 03's corner bomb — 3.2s hang, landing 25m beyond the defensive line and 12m lateral; with a 0.5s read time and an 8 m/s sprint the fullback can cover 21.6m, which forces depth ≥ ≈7m. The short threat is a grubber landing 13m beyond the line and arriving in ≈1.5s; with a 0.3s reaction the same sprint reaches only ≈9.5m of forward travel, which forces depth ≤ ≈23m. The coverage frontier is ≈7m to ≈23m: deeper than 23m surrenders every modelled grubber, shallower than 7m surrenders the corner bomb.</p>
 
   <figure id="fig-24-13" class="full">
-    <img src="shared/images/ch24-uc-fullback-depth.png" alt="Top-down rugby pitch showing a fullback at two depths with coverage circles, a bomb arc to the corner, a grubber line behind the line, and a depth frontier bar." loading="lazy"/>
+    <img src="../images/ch24-uc-fullback-depth.png" alt="Top-down rugby pitch showing a fullback at two depths with coverage circles, a bomb arc to the corner, a grubber line behind the line, and a depth frontier bar." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.13</span>: UC 06 — Fullback Depth Frontier. <em>Illustration of model output</em> — the ≈7–23m frontier is computed from two stated threats with [verify] sprint and read-time parameters. <strong>Rugby league</strong>: "drop deeper" has a ceiling set by the grubber. <strong>Pickleball</strong>: baseline depth on the return trades the lob (deep threat) against the drop-shot (short threat) — the same two-constraint frontier at kitchen scale.</figcaption>
   </figure>
 
@@ -889,7 +889,7 @@ def step_ball(ball, dt):
   <p>Two lanes, both <strong>model output</strong> with assumed fatigue parameters [verify]. The kinematic lane degrades the chapter's verified constants — MAX_ACCEL 4.5 → 3.5 m/s², MAX_SPEED 6.0 → 5.0 m/s — and re-computes coverage: in a 1.0s window a fatigued player covers 1.75m against 2.25m fresh (−22%); over 3.0s, 11.4m against 14.0m (−18%). The shot-quality lane widens launch dispersion from σ_θ = 1.8° to 2.6° and applies it to UC 02's computed windows: serve legality at 24 m/s falls from ≈60% to ≈44% on the 3° window, while at 16 m/s (window ≈11°) it barely moves (≈100% → ≈97%). Fatigue taxes precision shots — the fast serve, the third-shot drop — far harder than high-margin shots.</p>
 
   <figure id="fig-24-14" class="full">
-    <img src="shared/images/ch24-uc-fatigue-simulation.png" alt="Two pickleball court diagrams side by side comparing fresh and fatigued coverage circles, with a small serve-legality bar chart inset." loading="lazy"/>
+    <img src="../images/ch24-uc-fatigue-simulation.png" alt="Two pickleball court diagrams side by side comparing fresh and fatigued coverage circles, with a small serve-legality bar chart inset." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.14</span>: UC 07 — Fatigue Counterfactual. <em>Illustration of model output</em> — coverage −22%/−18% and legality 60% → 44% are computed on the chapter's constants with assumed fatigue degradation [verify]. <strong>Pickleball</strong>: late-rally dinking survives fatigue; the 24 m/s serve does not. <strong>Rugby league</strong>: the 75th-minute edge sprint and the touchline conversion both live on the degraded envelope.</figcaption>
   </figure>
 
@@ -902,7 +902,7 @@ def step_ball(ball, dt):
   <p>The mechanism: each rally state gets a launch-window check from UC 02's geometry — is the player's current contact quality inside the drop's narrow success band or not? If yes, choose the shot with the higher expected value under the c22 ΔEPV table (drop +0.142 versus drive −0.188 [verify — practitioner EPV table, not yet fitted]); if no, reset softly and wait for a better ball. The simulation is the composition of two <strong>model outputs</strong>: measured-sim outcome distributions feeding an assumed value table. No policy is learned; the rule is stated, inspectable, and falsifiable — which is precisely what distinguishes it from the v1 fantasy, whose strategy layer was a scalar in a JSON file.</p>
 
   <figure id="fig-24-15" class="full">
-    <img src="shared/images/ch24-uc-strategy-third-shot.png" alt="Decision tree for the third shot with a window-check gauge at the root and drop versus drive branches." loading="lazy"/>
+    <img src="../images/ch24-uc-strategy-third-shot.png" alt="Decision tree for the third shot with a window-check gauge at the root and drop versus drive branches." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 24.15</span>: UC 08 — Third-Shot Decision Rule. <em>Illustration</em> — the tree composes E21's measured-sim distributions with c22's [verify] ΔEPV values. <strong>Pickleball</strong>: drop when the window is open, reset otherwise. <strong>Rugby league</strong>: the fifth-tackle menu is the same structure — kick long, kick short, or run, gated by field position and the UC 03/UC 04 windows.</figcaption>
   </figure>
 

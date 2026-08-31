@@ -519,7 +519,7 @@
     <p><strong>Descriptive aggregates are the start, not the end.</strong> A pickleball dashboard shows a player's shot mix and landing zones; a rugby league dashboard shows line-break frequency by left edge, middle, and right edge. The dashboard must carry the count of each cell, not just the percentage. A coach reads a percentage as truth; the honest tile shows the percentage, the count, and the interval (or shrinkage estimate) together.</p>
 
   <figure id="fig-20-01" class="full">
-    <img src="shared/images/ch20-descriptive-dashboard.png" alt="Descriptive statistics dashboard: left panel top-down pickleball court with shot-frequency histogram (dink, drive, drop, serve); right panel top-down rugby league pitch with tackle events and set-outcome histogram. Style: white background, black linework, burnt-orange accent bars." loading="lazy"/>
+    <img src="../images/ch20-descriptive-dashboard.png" alt="Descriptive statistics dashboard: left panel top-down pickleball court with shot-frequency histogram (dink, drive, drop, serve); right panel top-down rugby league pitch with tackle events and set-outcome histogram. Style: white background, black linework, burnt-orange accent bars." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.1</span>: The Descriptive Dashboard Done Right. Frequencies by zone and event type, with the n of each panel stated.</figcaption>
   </figure>
 
@@ -585,17 +585,17 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p><strong>Rugby league: line-break frequency by zone.</strong> A typical NRL match has on the order of 5–10 line breaks [verify]. Over 24 rounds a club accumulates 120–180 line breaks, but those are clustered within matches: opponent, injuries, weather, and home/away all move together. A dashboard showing 43% left edge, 31% middle, 26% right edge is a <em>description</em> of the season, not a stable estimate of attacking shape until a second season and a match-level interval are added.</p>
 
   <figure id="fig-20-02" class="full">
-    <img src="shared/images/ch20-sample-size-variance.png" alt="Sample-size versus uncertainty chart: x-axis 'independent matches' from 1 to 30, y-axis 'CI width'. Two decaying curves labelled 'rally rate' (pickleball) and 'season rate' (rugby league), with burnt-orange shaded bands. Vertical dashed line at match 5 annotated 'noisy zone'." loading="lazy"/>
+    <img src="../images/ch20-sample-size-variance.png" alt="Sample-size versus uncertainty chart: x-axis 'independent matches' from 1 to 30, y-axis 'CI width'. Two decaying curves labelled 'rally rate' (pickleball) and 'season rate' (rugby league), with burnt-orange shaded bands. Vertical dashed line at match 5 annotated 'noisy zone'." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.2</span>: What More n Buys. Interval width falls with the square root of independent units.</figcaption>
   </figure>
 
   <figure id="fig-20-03" class="full">
-    <img src="shared/images/ch20-pb-shot-distribution.png" alt="Top-down pickleball court with black engineering linework, baseline, NVZ, and net. Burnt-orange density zones showing where shots land, concentrated near NVZ corners. Beside the court a vertical bar chart of shot mix labelled dink, drive, drop, lob, serve." loading="lazy"/>
+    <img src="../images/ch20-pb-shot-distribution.png" alt="Top-down pickleball court with black engineering linework, baseline, NVZ, and net. Burnt-orange density zones showing where shots land, concentrated near NVZ corners. Beside the court a vertical bar chart of shot mix labelled dink, drive, drop, lob, serve." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.3</span>: Pickleball Shot Distribution. The pklmart corpus lets a club describe shot-type mix and landing zones, but every cell must be read with its conditional n.</figcaption>
   </figure>
 
   <figure id="fig-20-04" class="full">
-    <img src="shared/images/ch20-rl-linebreak-freq.png" alt="Top-down rugby league pitch with try lines, 40m and 20m markings, and goal posts. Horizontal bar chart in burnt-orange showing line-break frequency by field zone labelled left edge, middle, right edge. Small black tackle dots with burnt-orange burst markers where line breaks occur." loading="lazy"/>
+    <img src="../images/ch20-rl-linebreak-freq.png" alt="Top-down rugby league pitch with try lines, 40m and 20m markings, and goal posts. Horizontal bar chart in burnt-orange showing line-break frequency by field zone labelled left edge, middle, right edge. Small black tackle dots with burnt-orange burst markers where line breaks occur." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.4</span>: Rugby League Line-Break Frequency by Zone. A season description, not a stable estimate of attacking shape until the match-level interval is added.</figcaption>
   </figure>
 
@@ -650,7 +650,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p><strong>Pickleball and rugby league examples.</strong> A player switches paddle and goes 8/10 on third-shot drops; against a 60% historical rate the two-sided binomial p-value is about 0.06 — not significant. A club moves its best second-rower to the left edge and records four line breaks in two matches; n = 2 matches is too few for a rare event. In both cases the honest interim statement is "we do not know yet; collect more independent units."</p>
 
   <figure id="fig-20-05" class="full">
-    <img src="shared/images/ch20-hypothesis-gate.png" alt="Hypothesis-test gate diagram: black linework null-distribution bell curve with the right tail beyond a vertical dashed line shaded burnt-orange and labelled p < 0.05. Above, a funnel narrows from 1000 events to 119 alerts. Small pickleball and rugby league ball icons below the axis." loading="lazy"/>
+    <img src="../images/ch20-hypothesis-gate.png" alt="Hypothesis-test gate diagram: black linework null-distribution bell curve with the right tail beyond a vertical dashed line shaded burnt-orange and labelled p < 0.05. Above, a funnel narrows from 1000 events to 119 alerts. Small pickleball and rugby league ball icons below the axis." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.5</span>: The p-Value as a Triage Gate, Not a Verdict. E22 surfaces 119 of 1,000 events as alerts because the deviation is unusual under the null.</figcaption>
   </figure>
 
@@ -701,7 +701,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p><strong>Rugby league translation.</strong> A tackle-efficiency metric computed over 300 play-the-balls within a match is not n = 300; it is one match with perhaps 24 sets-of-six as the effective unit. If the within-match correlation is 0.10, the effective n for a single-match metric is closer to 27 than to 300. Aggregate a whole season (24 matches) and the effective n becomes 24, not 7,200. That is why team-level defensive claims need two seasons, not one, to stabilize.</p>
 
   <figure id="fig-20-07" class="full">
-    <img src="shared/images/stats-bootstrap-ci.png" alt="Confidence interval comparison: naive rows tight CI vs rally-cluster wide CI vs honest labelled, design effect annotation, point estimate 0.846. Style: white background, black axes, burnt-orange honest CI." loading="lazy"/>
+    <img src="../images/stats-bootstrap-ci.png" alt="Confidence interval comparison: naive rows tight CI vs rally-cluster wide CI vs honest labelled, design effect annotation, point estimate 0.846. Style: white background, black axes, burnt-orange honest CI." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.7</span>: The Design Effect in Action. Same point estimate, three different error bars. The honest interval is the widest because the rows are not independent.</figcaption>
   </figure>
 
@@ -763,7 +763,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>Bayesian reports can answer coach-facing questions directly — "What is the probability that the left-edge defence is below the league average?" — using Kruschke's HDI+ROPE framework: act only if the credible interval lies outside a region of practical equivalence.</p>
 
   <figure id="fig-20-06" class="full">
-    <img src="shared/images/ch20-bayes-posterior.png" alt="Bayesian updating diagram: three curves on shared axes labelled 'success rate'. A wide flat grey curve labelled 'prior', a narrower black curve labelled 'data', and a burnt-orange filled curve labelled 'posterior'. Vertical dashed line at the posterior mean with a shaded credible interval. Small pickleball paddle and rugby league ball icons below the x-axis." loading="lazy"/>
+    <img src="../images/ch20-bayes-posterior.png" alt="Bayesian updating diagram: three curves on shared axes labelled 'success rate'. A wide flat grey curve labelled 'prior', a narrower black curve labelled 'data', and a burnt-orange filled curve labelled 'posterior'. Vertical dashed line at the posterior mean with a shaded credible interval. Small pickleball paddle and rugby league ball icons below the x-axis." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.6</span>: Prior, Data, and Posterior. The posterior is the compromise between what we knew before and what the data tells us.</figcaption>
   </figure>
 
@@ -779,7 +779,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p><strong>Pickleball and rugby league examples.</strong> A receiver predictor that says 0.80 should be right 80% of the time at that level; if it is only 55% right when it says 0.65, a coach reading it as "two-to-one" will be systematically wrong. A tackle-risk model that overestimates injury probability on high-impact tackles will waste medical resources. The fix is a reliability curve and, if needed, temperature scaling.</p>
 
   <figure id="fig-20-08" class="full">
-    <img src="shared/images/stats-calibration.png" alt="Calibration reliability curve: diagonal perfect line black, model curve sagging below at high confidence with overconfident callout and Brier score annotation. Style: white background, black diagonal, burnt-orange model curve." loading="lazy"/>
+    <img src="../images/stats-calibration.png" alt="Calibration reliability curve: diagonal perfect line black, model curve sagging below at high confidence with overconfident callout and Brier score annotation. Style: white background, black diagonal, burnt-orange model curve." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.8</span>: Calibration Curve. A model can be accurate at ranking yet overconfident at a probability of 0.8 — the gap is where coaches get burned.</figcaption>
   </figure>
 
@@ -829,7 +829,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>A coach asks "what does our shot mix look like?" and the dashboard answers with percentages that read as truth. The mechanism is a <em>conditional</em> frequency estimate: partition the corpus by the condition that matters (score, court position, rally length), then report each cell's rate with a Wilson score interval, p̂ with 95% limits from <code>proportion_confint(method='wilson')</code> (source-backed: Cumming 2014; statsmodels docs). The discipline is that the n of each cell is the number of rallies satisfying the condition — not the rows in the corpus. The pklmart Kaggle corpus (300k+ shot records, ~1,000 matches; CC BY-NC-SA [verify]) supplies the prior; the club's own tagged rallies supply the estimate; a cell with n = 9 rallies gets an interval too wide to act on, and the dashboard must say so.</p>
 
   <figure id="fig-20-09" class="full">
-    <img src="shared/images/ch20-uc01-shot-mix.png" alt="Pickleball court with shot-landing density zones beside a shot-mix bar chart with confidence-interval whiskers." loading="lazy"/>
+    <img src="../images/ch20-uc01-shot-mix.png" alt="Pickleball court with shot-landing density zones beside a shot-mix bar chart with confidence-interval whiskers." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.9</span>: UC 01 — Shot Mix With Intervals. Every bar carries its Wilson whisker; cells under ~20 rallies are description, not estimate. <strong>Pickleball</strong>: third-shot choice (drop vs drive) by score state on the pklmart corpus. <strong>Rugby league</strong>: play-the-ball location mix by tackle number, each cell with its conditional n.</figcaption>
   </figure>
 
@@ -839,7 +839,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>"We break the line left 43% of the time" is a season description dressed as a tactical fact. The mechanism: treat the line-break rate as a proportion estimated from 24 clustered draws (matches), not 7,200 play-the-balls, and attach a match-level cluster-bootstrap interval (resample whole matches: <code>rng.choice(match_ids, replace=True)</code>). A typical NRL match produces on the order of 5-10 line breaks [verify]; over 24 rounds a club accumulates 120-180 of them, but opponent, weather, and game state move together within a match. At n = 24 matches the standard error of a proportion is about √(p(1−p)/24) ≈ 0.10, so a single season resolves differences no finer than roughly ±20 percentage points (derived in 20.2).</p>
 
   <figure id="fig-20-10" class="full">
-    <img src="shared/images/ch20-uc02-linebreak-ci.png" alt="Rugby league pitch with line-break frequency bars by zone, each with wide match-level confidence whiskers." loading="lazy"/>
+    <img src="../images/ch20-uc02-linebreak-ci.png" alt="Rugby league pitch with line-break frequency bars by zone, each with wide match-level confidence whiskers." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.10</span>: UC 02 — Line-Break Rate, Honest Interval. Zone shares with match-level cluster-bootstrap whiskers; n = 24 means the whiskers are wide. <strong>Rugby league</strong>: left/middle/right edge break share across 24 rounds. <strong>Pickleball</strong>: side-out conversion rate per match across a club season, resampled by match.</figcaption>
   </figure>
 
@@ -851,7 +851,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>A singles match produces about 15 rallies; the post-match report treats them as 15 independent measurements. They are not: a player down 2-8 plays differently than at 8-8, so rallies within a match are correlated draws from one matchup. The mechanism is the design effect from 20.4: n_eff = n / (1 + (m − 1)·ρ), with m the cluster size and ρ the intraclass correlation. At n = 15 even perfectly independent rallies give a proportion interval of roughly ±25 points; with realistic score-state correlation the effective n is smaller still. The honest sentence is "we observed 15 correlated draws from this matchup" — a screening observation, not a measurement of the player.</p>
 
   <figure id="fig-20-11" class="full">
-    <img src="shared/images/ch20-uc03-fifteen-rallies.png" alt="Interval width decaying with independent rally count, the one-match zone from 1 to 15 rallies shaded." loading="lazy"/>
+    <img src="../images/ch20-uc03-fifteen-rallies.png" alt="Interval width decaying with independent rally count, the one-match zone from 1 to 15 rallies shaded." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.11</span>: UC 03 — What One Match Buys. Interval width falls as 1/√n; the entire first match lives inside the noisy band. <strong>Pickleball</strong>: a 15-rally match read as ±25 points, not as a rate. <strong>Rugby league</strong>: one match = ~24 sets-of-six as the resampling unit, so a single-match tackle-efficiency number is one draw.</figcaption>
   </figure>
 
@@ -861,7 +861,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>A season feels like a lot of data. At the unit where team claims live — the match — it is 24 draws. The mechanism: model the season rate as a proportion (or count rate) over 24 clustered matches, and apply hierarchical shrinkage toward the league mean for any per-team claim (source-backed: McElreath 2020, multilevel partial pooling). With 24 matches a binomial proportion carries a standard error near 0.10; resolving a true 5-point edge between two clubs needs multiple seasons. This is why the ladder after round 5 is noise, why "best left-edge defence in the league" needs a shrinkage-adjusted band, and why the chapter's rule stands: team-level claims need two seasons to stabilize.</p>
 
   <figure id="fig-20-12" class="full">
-    <img src="shared/images/ch20-uc04-season-length.png" alt="A 24-round season timeline with a wide one-season interval bar and a narrow two-season interval bar." loading="lazy"/>
+    <img src="../images/ch20-uc04-season-length.png" alt="A 24-round season timeline with a wide one-season interval bar and a narrow two-season interval bar." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.12</span>: UC 04 — Season-Length Resolution. One NRL season resolves ±20 points at team level; the second season is what narrows the bar. <strong>Rugby league</strong>: 24 rounds = 24 match-level draws. <strong>Pickleball</strong>: a ~12-match club season ladder, where every team's rate needs shrinkage toward the league mean before ranking.</figcaption>
   </figure>
 
@@ -873,7 +873,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>An analyst cannot review 1,000 sensor events a day; a gate must decide what reaches a human. The mechanism is the hypothesis test used as a screen: each event is scored against a null distribution of "normal", and only events in the extreme tail (conventionally p &lt; 0.05) surface as alerts. The E22 "Humans Above the Loop" engine does exactly this — 1,000 raw events in, 119 alerts out, 88.1% noise suppression (measured, E22). The ASA's 2016 statement is the guardrail: the p-value is not the probability the alert is real, and 0.05 is a triage convention, not a law (source-backed: Wasserstein &amp; Lazar 2016). The gate claims "unusual enough to review", never "this happened".</p>
 
   <figure id="fig-20-13" class="full">
-    <img src="shared/images/ch20-uc05-alert-triage.png" alt="Alert triage funnel from 1000 events to 119 alerts beside a null curve with the p &lt; 0.05 tail shaded." loading="lazy"/>
+    <img src="../images/ch20-uc05-alert-triage.png" alt="Alert triage funnel from 1000 events to 119 alerts beside a null curve with the p &lt; 0.05 tail shaded." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.13</span>: UC 05 — The Triage Gate. E22 surfaces 119 of 1,000 events; each alert carries its tail probability. <strong>Pickleball</strong>: NVZ foot-fault alert at p = 0.012 routed to video review. <strong>Rugby league</strong>: middle-seam exposure alert at p = 0.034 routed to the defence coach.</figcaption>
   </figure>
 
@@ -883,7 +883,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>The sports-science question "does high load cause injury?" meets the tool everyone reaches for: regress next-week injury on this-week GPS load, logit P(injury) = β₀ + β₁·(high-speed metres). The honest use stops at association: β₁ &gt; 0 means load and injury covary <em>under the current schedule</em> — durable athletes are selected into higher loads, fatigued ones into lower, and the coefficient absorbs all of it. The mechanism worth teaching is the confound, not the fit: report the odds ratio with its interval, state the selection-bias caveat in the same sentence, and name the design that would earn a causal verb (a randomized load-prescription trial or an explicit causal-inference design). The blanket rule "cut high-speed running" is exactly the move this chapter exists to block.</p>
 
   <figure id="fig-20-14" class="full">
-    <img src="shared/images/ch20-uc06-load-injury.png" alt="Scatter of weekly load against injury risk with an upward regression line and a selection-bias loopback arrow." loading="lazy"/>
+    <img src="../images/ch20-uc06-load-injury.png" alt="Scatter of weekly load against injury risk with an upward regression line and a selection-bias loopback arrow." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.14</span>: UC 06 — Association With Its Caveat Attached. The fitted line is real; the causal arrow is not earned by the regression. <strong>Rugby league</strong>: GPS high-speed metres vs next-week soft-tissue injury across a season. <strong>Pickleball</strong>: overhead-shot volume vs shoulder complaints in a senior league [verify — practitioner surveillance, no published cohort].</figcaption>
   </figure>
 
@@ -893,7 +893,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>A junior trial gives you 10 attempts; a season gives you 300. The beta-binomial update handles both in closed form: a Beta(α, β) prior plus k successes in n trials yields a Beta(α + k, β + n − k) posterior — the posterior mean is the shrunken estimate, and the 95% credible interval is the honest band (source-backed: Kruschke 2015; McElreath 2020). At n = 10 the prior still shapes the answer; at n = 500 the data dominates. The coach-facing question becomes answerable directly: "what is the probability this player's true rate is above the squad mean?" — and Kruschke's HDI+ROPE rule says act only when the interval clears a region of practical equivalence.</p>
 
   <figure id="fig-20-15" class="full">
-    <img src="shared/images/ch20-uc07-bayes-small-n.png" alt="Two panels showing prior and posterior curves at n = 10 and n = 500, the posterior narrowing as data dominates." loading="lazy"/>
+    <img src="../images/ch20-uc07-bayes-small-n.png" alt="Two panels showing prior and posterior curves at n = 10 and n = 500, the posterior narrowing as data dominates." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.15</span>: UC 07 — The Posterior at Two Sample Sizes. Wide and prior-shaped at n = 10; narrow and data-shaped at n = 500. <strong>Pickleball</strong>: a junior's 8/10 on third-shot drops → posterior mean ≈ 0.71 under a Beta(2, 2) prior, wide band. <strong>Rugby league</strong>: a kicker at 12/15 shrunk toward the league goal-kicking average near 0.75 [verify].</figcaption>
   </figure>
 
@@ -903,7 +903,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>The live dashboard shows 20 metrics per match and flags anything crossing p &lt; 0.05. The arithmetic is unforgiving: under the null, the probability of at least one flag is 1 − (1 − 0.05)²⁰ ≈ 0.64 — most match nights produce a false alarm by design. The mechanism has two halves: pre-specify the 3-5 indicators that matter before the season (the practitioner's Bonferroni — fix the protocol, not the p-value), and when many claims really are tested at once, apply Benjamini-Hochberg false-discovery control (source-backed: Benjamini &amp; Hochberg 1995). The same discipline governs model selection: the lab's 20-variant simulation shows the best-of-20 reporting 0.862 when true accuracy is 0.70 (measured, W1.4 lab) — the winner's curse, not a discovery.</p>
 
   <figure id="fig-20-16" class="full">
-    <img src="shared/images/ch20-uc08-multi-comparisons.png" alt="Twenty metric p-values plotted against a naive 0.05 line and a sloped Benjamini-Hochberg threshold, three false alarms highlighted." loading="lazy"/>
+    <img src="../images/ch20-uc08-multi-comparisons.png" alt="Twenty metric p-values plotted against a naive 0.05 line and a sloped Benjamini-Hochberg threshold, three false alarms highlighted." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.16</span>: UC 08 — Twenty Metrics, One Budget. The naive 0.05 line flags three by chance; the BH slope spends the false-alarm budget deliberately. <strong>Pickleball</strong>: a 20-metric rally HUD (dink depth, drop height, NVZ position, …) pre-specified to 4 indicators. <strong>Rugby league</strong>: 20 team metrics per round with BH control before any "concern" reaches the head coach.</figcaption>
   </figure>
 
@@ -915,7 +915,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>The chapter 26 narrative pipeline turns numbers into prose for coaches; whatever it says must already carry its uncertainty, because prose strips qualifiers. The mechanism is the honesty contract (20.9) applied at the tile level: every metric ships as estimate + interval + n + baseline, with the interval computed at the claim's unit — Wilson for a proportion on truly independent trials, cluster bootstrap when the trials nest inside rallies, sets, or matches. The worked example is E12: 84.6% reads as [0.834, 0.858] if rows were independent (they are not), [0.779, 0.815] resampled by rally, and "unknown — one clip" at the footage level (measured, W1.4 lab). The tile that ships "0.846" bare is the tile that gets quoted wrong.</p>
 
   <figure id="fig-20-17" class="full">
-    <img src="shared/images/ch20-uc09-ci-report-tile.png" alt="Three dashboard tiles: a bare percentage crossed out, an estimate with interval and n, and the same with a baseline marker." loading="lazy"/>
+    <img src="../images/ch20-uc09-ci-report-tile.png" alt="Three dashboard tiles: a bare percentage crossed out, an estimate with interval and n, and the same with a baseline marker." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.17</span>: UC 09 — The Tile That Survives Being Quoted. Estimate, interval, n, and baseline travel together into the C26 feed. <strong>Pickleball</strong>: receiver-accuracy tile reading "0.846 [0.78, 0.82], n = 1 clip, baseline 0.50". <strong>Rugby league</strong>: set-completion tile with a match-bootstrapped interval and the league-average baseline marker.</figcaption>
   </figure>
 
@@ -925,7 +925,7 @@ rugby league:   team &gt; season &gt; match &gt; set-of-six &gt; play-the-ball &
   <p>The most dangerous word in a sport report is "because". The mechanism to teach is the confound: a third variable driving both sides of an association. Teams behind on the scoreboard take more risks, produce more offloads, and lose more often — so offloads correlate with losing without causing it; winning doubles pairs dink more, but winning also produces the rally states where dinking is right. The discipline is verbal: <strong>"is associated with"</strong> for observational data, <strong>"predicts"</strong> for a model evaluated on held-out data, <strong>"causes"</strong> only for a randomized or natural experiment with identifiable assumptions (source-backed: ASA 2016; Gelman &amp; Loken's forking-paths argument [verify primary URL]). The NRL "playing style" genre — correlating running metres or offload counts with a success label — is the canonical offender [verify].</p>
 
   <figure id="fig-20-18" class="full">
-    <img src="shared/images/ch20-uc10-correlation-trap.png" alt="Causal diagram: style and winning boxes joined by a correlation arrow, with a scoreboard confound box above feeding both." loading="lazy"/>
+    <img src="../images/ch20-uc10-correlation-trap.png" alt="Causal diagram: style and winning boxes joined by a correlation arrow, with a scoreboard confound box above feeding both." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 20.18</span>: UC 10 — The Confound Diagram. The correlation arrow is earned; the causal arrow is crossed out until the design earns it. <strong>Rugby league</strong>: offload count vs wins, confounded by scoreboard and game state. <strong>Pickleball</strong>: dink-to-drive ratio vs rally wins in winning pairs — association, not instruction.</figcaption>
   </figure>
 

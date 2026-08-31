@@ -521,7 +521,7 @@
   <p>Everything here is <strong>source-backed</strong> (the systems' own documentation, verified 2026-08-30) or <strong>measured</strong> (our lab's from-scratch implementation, E21).</p>
 
   <figure id="fig-21-01" class="full">
-    <img src="shared/images/rating-family-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/rating-family-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.1</span>: The Rating Family Tree. Elo roots a family of systems; Glicko adds uncertainty, TrueSkill multi-player; DUPR and UTR-P are the domain variants. The book contribution branches off the Glicko line.</figcaption>
   </figure>
 
@@ -560,7 +560,7 @@
   </table>
 
   <figure id="fig-21-02" class="full">
-    <img src="shared/images/rating-dupr-expectation.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/rating-dupr-expectation.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.2</span>: The DUPR Expectation Model. 3.5+3.5 vs 4.0+4.0: expected 11-5, actual 11-9 — every point moves the rating because the margin is the signal.</figcaption>
   </figure>
 
@@ -576,7 +576,7 @@
   <p>Three properties matter in practice. <strong>Logistic, not Gaussian</strong>: Elo implementations use the logistic because it has heavier tails and convenient arithmetic — a 200-point gap gives E ≈ 0.76, a 400-point gap E ≈ 0.91. <strong>K is the learning rate</strong>: FIDE historically used K=40 for new players, K=20 for most, K=10 for top players — converge novices fast, keep veterans stable. <strong>K is Elo's only uncertainty mechanism</strong>: it knows how fast to move, but not how sure to be.</p>
 
   <figure id="fig-21-03" class="full">
-    <img src="shared/images/elo-expected-score.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/elo-expected-score.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.3</span>: The Elo Machine. The logistic expectation curve (annotated at Δ=200 and Δ=400) and the update rule R_new = R_old + K(S−E). One curve, one surprise term — every system in this chapter is an elaboration of this diagram.</figcaption>
   </figure>
 
@@ -588,7 +588,7 @@
   <p>Lab example: a 1500-rated player with RD=120, σ=0.06 beats a 1700-rated opponent (RD=100) and a 1600-rated opponent (RD=50) in one rating period. The posterior lands at <strong>1567.5 with RD 108.2 — a 95% interval of roughly [1356, 1779]</strong>. The upset drags the mean up, but the pre-period uncertainty keeps the interval honest. Translation: a 4.0 DUPR with three verified matches in six months is not the same claim as a 4.0 with forty; likewise, an NRL club after two rounds has a provisional rating no matter what the ladder says.</p>
 
   <figure id="fig-21-04" class="full">
-    <img src="shared/images/glicko-uncertainty-band.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/glicko-uncertainty-band.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.4</span>: Glicko-2 Uncertainty Over Time. One player's rating trajectory: the confidence band widens during an inactivity gap, narrows after a cluster of matches, and steps upward on a single big upset. The band is the product.</figcaption>
   </figure>
 
@@ -620,7 +620,7 @@
   <p>The <strong>Reliability Score</strong> (1–100%) is DUPR's explicit uncertainty display based on volume, recency, opponent/partner variety, and match source, updated weekly. 60% or higher is a common tournament eligibility gate; it does not change the numeric rating. This is Glicko's RD translated into consumer language. DUPR pools singles and doubles outcomes separately (data pooling: the model pools every match within a format but not across formats), and recent results dominate through the recency weighting; a 4.0 singles player and a 4.0 doubles player are therefore not the same estimate. For builders, the structural fact is <strong>no public API</strong>: access is CSV exports and partner agreements; the rating data itself is the moat.</p>
 
   <figure id="fig-21-05" class="full">
-    <img src="shared/images/dupr-scale.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/dupr-scale.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.5</span>: The DUPR Scale. 2.000–8.000 with the five bands a tournament director actually uses, plus the separate Reliability Score gauge with its 60% gate — the number and the confidence in the number travel together.</figcaption>
   </figure>
 
@@ -658,7 +658,7 @@
   <p>The sharper public instrument is the <strong>betting market</strong>. A club-Elo fit to results — logistic expectation, a home-ground term, margin-aware variants — tracks the ladder loosely but tracks the bookmaker's closing line tightly. Reverse-engineering it is standard: assume P(A) = 1/(1+10^(−(R_A − R_B + H)/S)), then fit team ratings R_i, home advantage H, and scale S to minimize the distance between model probabilities and de-vigged closing probabilities. The result is a market-calibrated Elo that usually out-predicts the ladder; its parameters (S, H) are league-specific, the sport-transplant lesson of 21.4b measured rather than asserted.</p>
 
   <figure id="fig-21-06" class="full">
-    <img src="shared/images/nrl-ladder-vs-line.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/nrl-ladder-vs-line.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.6</span>: Two Instruments, One Question. The NRL ladder (points, differential tie-break) beside the betting market's implied probability with the de-vig step. The ladder ranks the season; the closing line prices the match.</figcaption>
   </figure>
 
@@ -704,7 +704,7 @@
   <p>And the deepest limit is sample size, measured rather than asserted: in E21, after 60 matches against known true skills, Elo's mean absolute error was still 87.6 points (max 139) and Glicko-2's mean RD was 99.8 — the system <em>knows</em> it does not yet know. Convergence to single-digit error takes hundreds of matches per player. 60 matches buys an estimate with an honest error bar; publishing the error bar — RD, reliability percentage, confidence interval — is the difference between a measurement and a vibe.</p>
 
   <figure id="fig-21-07" class="full">
-    <img src="shared/images/rating-convergence-curve.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/rating-convergence-curve.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
   </figure>
   <h2 class="section-title"><span class="section-num">21.9c</span> The 10 Use Cases: Applied Framework</h2>
   <p>The use cases below are the applied bridge from the rating math above to the decisions a club, a coach, or a selector actually faces. They follow three categories: <strong>A — Running the Systems in the Field (UC 01–04)</strong>, <strong>B — The Honest Limits (UC 05–07)</strong>, and <strong>C — Decisions Built on Ratings (UC 08–10)</strong>. Each case pairs a pickleball and a rugby league application so the machinery transfers, and each carries its evidence label: measured (book experiment E21), source-backed (system documentation or paper), or [verify] (practitioner convention, not yet established).</p>
@@ -716,7 +716,7 @@
   <p><strong>Payoff:</strong> tournament directors get seeding they can defend, and players get a ladder where every point matters, not just the W.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc01-dupr-ladder-practice.png" alt="DUPR club ladder night: expected versus actual score moving both teams' ratings." loading="lazy"/>
+    <img src="../images/ch21-uc01-dupr-ladder-practice.png" alt="DUPR club ladder night: expected versus actual score moving both teams' ratings." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.8</span>: UC 01 — DUPR Ladder Night. Expected 11-5, actual 11-9: the margin beats the expectation, so both teams gain. <strong>Pickleball</strong>: the weekly club ladder feeding tournament seeding through the 60% reliability gate. <strong>Rugby league</strong>: reserve-grade club grading nights, where the same expectation logic sorts social teams into divisions.</figcaption>
   </figure>
 
@@ -725,7 +725,7 @@
   <p><strong>Payoff:</strong> analysts get a weekly strength number that tracks the market instead of the narrative.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc02-elo-rl-team-ladder.png" alt="Club Elo trajectories across a rugby league season with home-ground term." loading="lazy"/>
+    <img src="../images/ch21-uc02-elo-rl-team-ladder.png" alt="Club Elo trajectories across a rugby league season with home-ground term." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.9</span>: UC 02 — The Club Elo Season. Three club trajectories across 27 rounds around a 1500 mean, with the home term annotated. <strong>Rugby league</strong>: the primary instrument — a per-round strength estimate calibrated to the closing line. <strong>Pickleball</strong>: inter-club pennant and league team ratings, where the same home-venue term applies to club nights.</figcaption>
   </figure>
 
@@ -734,7 +734,7 @@
   <p><strong>Payoff:</strong> coaches stop overreacting to two good weeks — and stop ignoring a genuine step-change when the band says it is real.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc03-glicko-form-band.png" alt="Player form trajectory with wide uncertainty band after few matches, narrow after many." loading="lazy"/>
+    <img src="../images/ch21-uc03-glicko-form-band.png" alt="Player form trajectory with wide uncertainty band after few matches, narrow after many." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.10</span>: UC 03 — The Form Band. One player's rating trajectory with the uncertainty band: wide after three matches, narrow after forty. <strong>Pickleball</strong>: a 4.0 DUPR with three verified matches is a different claim than a 4.0 with forty. <strong>Rugby league</strong>: a halfback's form after two rounds is provisional; after twenty, the band is the selection evidence.</figcaption>
   </figure>
 
@@ -743,7 +743,7 @@
   <p><strong>Payoff:</strong> the rating chapter hands chapter 22 its prior — the ΔEPV of a decision is measured against what the rating already expected.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc04-outcome-probability.png" alt="Logistic win probability curve from rating difference with annotated points." loading="lazy"/>
+    <img src="../images/ch21-uc04-outcome-probability.png" alt="Logistic win probability curve from rating difference with annotated points." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.11</span>: UC 04 — The Probability Machine. Win probability from rating gap: 0.5 → 69%, 1.0 → 83%, 2.0 → 96% on the DUPR-derived scale [verify]. <strong>Pickleball</strong>: bracket preview probabilities from DUPR gaps. <strong>Rugby league</strong>: the market-calibrated club Elo checked against the closing line, round by round.</figcaption>
   </figure>
 
@@ -754,7 +754,7 @@
   <p><strong>Payoff:</strong> recruiters and selectors treat the rating as the shortlist floor, never the whole file — the tactical file comes from C23.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc05-rating-vs-skill.png" alt="Two players with identical 4.5 ratings but different shot-quality profiles." loading="lazy"/>
+    <img src="../images/ch21-uc05-rating-vs-skill.png" alt="Two players with identical 4.5 ratings but different shot-quality profiles." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.12</span>: UC 05 — Same Number, Different Player. Two 4.5-rated players with different skill profiles: one even, one with a dented third-shot drop. <strong>Pickleball</strong>: the rating says who wins; the radar says how — and only the second is coachable. <strong>Rugby league</strong>: two 1600-Elo clubs with opposite defensive shapes; the number ties them, the edge metrics separate them.</figcaption>
   </figure>
 
@@ -763,7 +763,7 @@
   <p><strong>Payoff:</strong> the model stays calibrated because the scale is treated as a moving target, not a constant.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc06-season-drift.png" alt="Season timeline with recency weighting and a scale-correction break." loading="lazy"/>
+    <img src="../images/ch21-uc06-season-drift.png" alt="Season timeline with recency weighting and a scale-correction break." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.13</span>: UC 06 — The Moving Scale. Recency-weighted matches across a season, with the vertical break where a scale correction forces a refit. <strong>Pickleball</strong>: DUPR's July 2025 and UTR-P's April 2025 corrections as dated breaks in any training set. <strong>Rugby league</strong>: early-season Elo is prior plus noise; late-season Elo is measurement — weight accordingly.</figcaption>
   </figure>
 
@@ -772,7 +772,7 @@
   <p><strong>Payoff:</strong> honest provisional status replaces false precision at exactly the moment selection pressure is highest.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc07-injury-return-decay.png" alt="Rating uncertainty band ballooning during an injury gap then narrowing after comeback." loading="lazy"/>
+    <img src="../images/ch21-uc07-injury-return-decay.png" alt="Rating uncertainty band ballooning during an injury gap then narrowing after comeback." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.14</span>: UC 07 — The Comeback Band. The uncertainty band balloons across a six-month injury gap, then re-narrows as comeback matches land. <strong>Pickleball</strong>: the returning 4.5 is 4.5 ± a lot — seed on the band, not the point. <strong>Rugby league</strong>: the post-ACL fullback's first month back is a provisional rating no matter what the ladder says.</figcaption>
   </figure>
 
@@ -783,7 +783,7 @@
   <p><strong>Payoff:</strong> fair Tuesday nights, and individual ratings that survive a partner swap.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc08-pairing-fairness.png" alt="Doubles pairing matrix with synergy term between partners." loading="lazy"/>
+    <img src="../images/ch21-uc08-pairing-fairness.png" alt="Doubles pairing matrix with synergy term between partners." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.15</span>: UC 08 — The Pairing Matrix. Team strength = α × average + β × pair synergy, with the pairing graph the data fits. <strong>Pickleball</strong>: the primary application — partner-independent ratings from partner-dependent results. <strong>Rugby league</strong>: halves and edge combinations valued as pairs, not as two averaged individuals.</figcaption>
   </figure>
 
@@ -792,7 +792,7 @@
   <p><strong>Payoff:</strong> selection meetings argue about players, not about whose number is real.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc09-which-rating.png" alt="Decision flowchart for choosing ranking, rating, or market number per decision." loading="lazy"/>
+    <img src="../images/ch21-uc09-which-rating.png" alt="Decision flowchart for choosing ranking, rating, or market number per decision." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.16</span>: UC 09 — Which Number for Which Decision. Seeding wants a calibrated rating; the season story wants the ladder or WPR; a single match wants the market-implied probability. <strong>Pickleball</strong>: DUPR-with-reliability for entry, WPR for tour narrative. <strong>Rugby league</strong>: market-calibrated Elo for next Sunday, ladder for the season review.</figcaption>
   </figure>
 
@@ -801,7 +801,7 @@
   <p><strong>Payoff:</strong> the board rewards exactly the behavior a healthy competition wants — more verified matches against varied opposition.</p>
 
   <figure class="full">
-    <img src="shared/images/ch21-uc10-leaderboard-design.png" alt="Club leaderboard showing rating and reliability columns together." loading="lazy"/>
+    <img src="../images/ch21-uc10-leaderboard-design.png" alt="Club leaderboard showing rating and reliability columns together." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 21.17</span>: UC 10 — The Honest Leaderboard. Rating and trust displayed as paired columns; thin rows are flagged, not hidden. <strong>Pickleball</strong>: the club ladder board with the reliability gate visible. <strong>Rugby league</strong>: the club championship table with an Elo column beside the points column — narrative and measurement side by side.</figcaption>
   </figure>
 

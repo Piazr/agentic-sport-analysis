@@ -534,7 +534,7 @@
   <p>The scale gap between our two sports is the entire design problem in one number pair. Covering a pickleball court's 6.10m width from 12m behind the baseline needs a modest wide lens; covering a rugby league pitch's 68m width from a broadcast gantry 60–90m away needs a narrow telephoto. Our lab computed the broadcast case directly for an APS-C sensor (23.5mm wide): at 60m from the far sideline the required focal length is <strong>20.7mm</strong> (HFOV 59.1°); at 90m it is <strong>31.1mm</strong> (HFOV 41.4°). That is the optical envelope the NRL host feed is shot inside — and it is why the main match camera <em>zooms to follow play</em> rather than holding a static wide: at 21–31mm equivalent the ball (28cm) is a few dozen pixels, so the production tightens the shot for humans and your calibration inherits a different focal length on every frame.</p>
 
   <figure id="fig-04-04" class="full">
-    <img src="shared/images/c04-fov-court-vs-pitch.png" alt="Two-panel plan-view FOV comparison: pickleball court 13.4m x 6.1m with a narrow 24mm-equivalent frustum from behind the baseline vs rugby league pitch 100m x 68m with a wide frustum from a broadcast gantry 40m back at 21mm APS-C. Recreate: white background, black engineering lines, burnt-orange frustums." loading="lazy"/>
+    <img src="../images/c04-fov-court-vs-pitch.png" alt="Two-panel plan-view FOV comparison: pickleball court 13.4m x 6.1m with a narrow 24mm-equivalent frustum from behind the baseline vs rugby league pitch 100m x 68m with a wide frustum from a broadcast gantry 40m back at 21mm APS-C. Recreate: white background, black engineering lines, burnt-orange frustums." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.4</span>: FOV Math, Court vs Pitch. The same two formulas produce opposite rigs: a wide phone lens behind a 13.4m court, a 21–31mm (APS-C) telephoto envelope on a 100m pitch. Frustum width at the far line — not megapixels — is the first constraint.</figcaption>
   </figure>
 
@@ -573,7 +573,7 @@
   </table>
 
   <figure id="fig-04-01" class="full">
-    <img src="shared/images/cam-fov-placement.png" alt="Camera FOV and placement geometry side elevation: 4.5m pole at 3m setback, sight-line grazing net tape to far kitchen line, court 13.41m full length. Recreate: white background, black engineering lines, burnt-orange frustum." loading="lazy"/>
+    <img src="../images/cam-fov-placement.png" alt="Camera FOV and placement geometry side elevation: 4.5m pole at 3m setback, sight-line grazing net tape to far kitchen line, court 13.41m full length. Recreate: white background, black engineering lines, burnt-orange frustum." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.1</span>: Placement Geometry. A 4.5m pole at 3m setback keeps the far kitchen line visible past the net tape — the sight-line that makes foot-fault review possible.</figcaption>
   </figure>
 
@@ -659,7 +659,7 @@
   <p><strong>Case 3 — the broadcast gantry (the feed you ingest).</strong> The main NRL match camera is a manned PTZ on the halfway gantry, 20–30m high and 40–50m back, inside the 21–31mm (APS-C) envelope from section 4.2 — and it <em>zooms to follow play</em>. The consequence for the whole book: broadcast footage has a variable focal length per frame, so the homography chapters (6–7) must estimate calibration frame-by-frame rather than once per session. End cameras (18-yard and try-line positions) exist in the host production for exactly the geometry the gantry cannot see — low, near-axial views of the try line — but you receive only the one feed the director cuts to air.</p>
 
   <figure id="fig-04-05" class="full">
-    <img src="shared/images/c04-placement-both-sports.png" alt="Two-panel camera placement diagram: pickleball court with endline pole camera at 4.5m and sideline camera at 6m; rugby league pitch with grandstand gantry camera at 25m on halfway, end-on camera at 30m, and halfway sideline tripod. Recreate: white background, black linework, burnt-orange sight-lines." loading="lazy"/>
+    <img src="../images/c04-placement-both-sports.png" alt="Two-panel camera placement diagram: pickleball court with endline pole camera at 4.5m and sideline camera at 6m; rugby league pitch with grandstand gantry camera at 25m on halfway, end-on camera at 30m, and halfway sideline tripod. Recreate: white background, black linework, burnt-orange sight-lines." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.5</span>: Placement, Both Sports. Pickleball's choice is endline (full-court, line geometry) versus sideline (technique view). Rugby league's is gantry broadcast (follow-cam, variable focal), end-on high (shape), or halfway tripod (tactical pano) — three different questions, three different rigs.</figcaption>
   </figure>
 
@@ -696,7 +696,7 @@
   </table>
 
   <figure id="fig-04-03" class="full">
-    <img src="shared/images/cam-placement-poster.png" alt="Two-panel placement comparison: single end-camera with blind zone and 66mm parallax error vs 2-cam ELC with clean sight-lines. Recreate: white background, black linework, burnt-orange callouts." loading="lazy"/>
+    <img src="../images/cam-placement-poster.png" alt="Two-panel placement comparison: single end-camera with blind zone and 66mm parallax error vs 2-cam ELC with clean sight-lines. Recreate: white background, black linework, burnt-orange callouts." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.3</span>: Single Camera vs Two-Camera Line Calling. The single end-cam has a blind zone behind the net and a 66mm parallax bias; two net-post cameras (PlayReplay architecture) see the line plane directly.</figcaption>
   </figure>
 
@@ -747,7 +747,7 @@
   </table>
 
   <figure id="fig-04-02" class="full">
-    <img src="shared/images/cam-blur-chart.png" alt="Motion blur vs shutter speed log-log chart: three ball speeds 10 20 31 m/s, 37mm ball radius threshold dashed, SHOOT 1/1000s annotation. Recreate: white background, black axes, burnt-orange threshold line." loading="lazy"/>
+    <img src="../images/cam-blur-chart.png" alt="Motion blur vs shutter speed log-log chart: three ball speeds 10 20 31 m/s, 37mm ball radius threshold dashed, SHOOT 1/1000s annotation. Recreate: white background, black axes, burnt-orange threshold line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.2</span>: Blur vs Shutter. At 1/60s a 20m/s ball smears 83px — invisible. At 1/1000s it is 5px — a trackable point. The shutter is the first detector.</figcaption>
   </figure>
 
@@ -803,7 +803,7 @@
   </table>
 
   <figure id="fig-04-06" class="full">
-    <img src="shared/images/c04-shutter-blur-dual.png" alt="Motion blur comparison: pickleball serve at 31 m/s and rugby league kick at 27 m/s rendered as shrinking streaks at shutter speeds 1/60, 1/250, 1/1000, 1/2000. Recreate: white background, black ball outlines, burnt-orange streaks." loading="lazy"/>
+    <img src="../images/c04-shutter-blur-dual.png" alt="Motion blur comparison: pickleball serve at 31 m/s and rugby league kick at 27 m/s rendered as shrinking streaks at shutter speeds 1/60, 1/250, 1/1000, 1/2000. Recreate: white background, black ball outlines, burnt-orange streaks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.6</span>: The Blur Budget, Both Sports. A 31.3m/s pickleball serve and a ~27m/s RL kick smear almost identically — half a metre at 1/60s, one ball radius at 1/1000s. Player bodies (≤10m/s) are an order of magnitude cheaper to freeze than either ball.</figcaption>
   </figure>
 
@@ -938,7 +938,7 @@ ffmpeg -i master_dv.mov -vf zscale=t=bt709:m=bt709:tonemap=hable,format=yuv420p 
 ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</code></pre>
 
   <figure id="fig-04-08" class="full">
-    <img src="shared/images/c04-capture-ingest-pipeline.png" alt="Capture-to-ingest pipeline: five stages — capture 4K60 HEVC 10-bit, offload with checksum, transcode to ProRes 422, manifest, dataset — connected by burnt-orange arrows. Recreate: white background, black glyphs, burnt-orange connectors." loading="lazy"/>
+    <img src="../images/c04-capture-ingest-pipeline.png" alt="Capture-to-ingest pipeline: five stages — capture 4K60 HEVC 10-bit, offload with checksum, transcode to ProRes 422, manifest, dataset — connected by burnt-orange arrows. Recreate: white background, black glyphs, burnt-orange connectors." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.8</span>: Capture to Ingest. Every stage has exactly one job and one failure mode: checksums catch bad cards, manifests preserve rig metadata, and the All-Intra transcode is what makes frame <em>n</em> mean frame <em>n</em>.</figcaption>
   </figure>
 
@@ -961,7 +961,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p>Rugby League changes the capture contract in three ways, and all three are <em>measured</em> constraints of the domain: (1) <strong>you do not own the camera</strong> — the broadcast OB controls pan/zoom, which means capture parameters (shutter, FOV, height) are fixed by the production, and your calibration instead has to adapt per frame (chapters 6–7); (2) <strong>scale is 15× the pickleball court</strong> — the 100m × 68m pitch at 60–90m from the broadcast gantry needs 21–31mm (APS-C) focal equivalents to fill the frame with play, per our lab's math; (3) <strong>line calls are less demanding but offside is more demanding</strong> — the 10m retreat line tolerance (~30cm) is an order of magnitude looser than a pickleball line call, but the check is against a <em>moving</em> reference (the PTB point), which capture must resolve at 25fps with 26 players. The honest verdict: for rugby, capture is a <em>given</em> you must calibrate around; for pickleball, capture is a <em>free design parameter</em> you should optimize before the first model runs.</p>
 
   <figure id="fig-04-07" class="full">
-    <img src="shared/images/c04-broadcast-chain.png" alt="Rugby league broadcast chain: stadium cameras feed an OB truck, host feed 1080p at 50Hz leaves via SDI, capture card ingests, laptop transcodes to ProRes for analysis. Recreate: white background, black glyphs, burnt-orange flow arrows." loading="lazy"/>
+    <img src="../images/c04-broadcast-chain.png" alt="Rugby league broadcast chain: stadium cameras feed an OB truck, host feed 1080p at 50Hz leaves via SDI, capture card ingests, laptop transcodes to ProRes for analysis. Recreate: white background, black glyphs, burnt-orange flow arrows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.7</span>: The Broadcast Chain. Every upstream stage — cameras, OB truck, host feed — is optimized for television and outside your control. Your pipeline starts at the SDI ingest: the first point where capture decisions become yours again.</figcaption>
   </figure>
 
@@ -981,7 +981,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> A coach wants every rally on one court captured well enough that later chapters can track the ball, lift pose, and review kitchen foot faults — without a crew. <strong>The mechanism.</strong> One phone on a pole does it, but only inside a tight geometric envelope: pole height $H = 4.5$–$5$m clears the net-tape sight-line to the far kitchen line ($H_{\min} = 0.86(1 + L/2.13)$, section 4.4's inequality), a 3m setback keeps the vertical span inside a 24mm-equivalent lens (41.0° required vs 45.7° available), and a 48mm-equivalent crop puts $\ge 20$px on the ball at the far baseline (3.1mm/px, section 4.3). Frame rate is the last dial: 4K120 catches the ~4ms paddle–ball contact window in ~48% of rallies versus 12% at 30fps (measured math, section 4.6). <strong>The recipe: 4K120, 1/1000s, 48mm-eq, 4.5–5m pole, 3m setback, locked exposure.</strong></p>
 
   <figure id="fig-04-09" class="full">
-    <img src="shared/images/c04-uc01-endline-120fps.png" alt="Side-elevation diagram of a pickleball court with a 4.5m pole camera 3m behind the baseline, frustum covering the full court, 120fps ball trail. White background, black linework, burnt-orange frustum." loading="lazy"/>
+    <img src="../images/c04-uc01-endline-120fps.png" alt="Side-elevation diagram of a pickleball court with a 4.5m pole camera 3m behind the baseline, frustum covering the full court, 120fps ball trail. White background, black linework, burnt-orange frustum." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.9</span>: UC 01 — The Endline 120fps Rig. One pole, one phone, five dials: height, setback, focal crop, shutter, frame rate. <strong>Pickleball</strong>: the default coaching rig — full-court ball track plus far-kitchen-line visibility in a single take. <strong>Rugby league</strong>: the same recipe scaled — an end-on scaffold camera at a training ground, 35–50mm-eq, for shape drills the host feed never shows.</figcaption>
   </figure>
 
@@ -991,7 +991,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> A club analyst needs whole-pitch shape — line spacing, retreat speed, kick-chase coverage — from a training ground with no broadcast infrastructure and a sub-$2k budget. <strong>The mechanism.</strong> The pitch is 100m × 68m; no single rectilinear lens covers it at tactical resolution from ground level, so the answer is a dual-lens 180° panorama (Veo Cam 3 class, 7680px stitched width ≈ 42.7px/°) on a 3.8–7.3m tripod, 3–5m back from halfway. The pixels-on-target math (measured, section 4.3b) sets the honest promise: 866px on a player at the near sideline, 116px at the far sideline, 78px at the far corner — tactical-grade everywhere, ball degraded past ~30m. FOV here is the <em>product</em>: $W = D \cdot d / f$ with a stitched sensor means the constraint shifts from lens choice to tripod height and wind bracing.</p>
 
   <figure id="fig-04-10" class="full">
-    <img src="shared/images/c04-uc02-sideline-fov.png" alt="Plan view of a 100m by 68m rugby league pitch with a 180-degree panoramic camera at halfway, field-of-view arc covering the whole pitch with distance callouts. White background, black linework, burnt-orange arc." loading="lazy"/>
+    <img src="../images/c04-uc02-sideline-fov.png" alt="Plan view of a 100m by 68m rugby league pitch with a 180-degree panoramic camera at halfway, field-of-view arc covering the whole pitch with distance callouts. White background, black linework, burnt-orange arc." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.10</span>: UC 02 — The 100m Sideline Pano. One tripod at halfway replaces a camera crew; resolution, not coverage, is the limit. <strong>Rugby league</strong>: every-set shape, 10m retreat compliance, and kick-chase geometry from one file. <strong>Pickleball</strong>: the same pano thinking covers two adjacent courts at once at a club night — one device, two datasets.</figcaption>
   </figure>
 
@@ -1001,7 +1001,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> For NRL analysis the footage already exists — but it arrives as one cut program feed, and every upstream decision was made for television. <strong>The mechanism.</strong> The chain runs: stadium cameras (genlocked, 20–30m gantry plus end-on and try-line positions) → OB truck vision mixer → host feed (1080p, 50Hz family in Australia) → your SDI/HDMI capture (DeckLink/UltraStudio) → ProRes 422 HQ analysis master. The flow has roughly three dozen documented handoffs in a full host production [verify — production runbooks are quote-only and vendor-confidential]; the one that matters to you is the last. Two consequences are load-bearing for this book: the main camera <em>zooms to follow play</em>, so focal length varies per frame and chapters 6–7 must calibrate continuously; and HDMI/SDI capture adds 30–100ms of variable latency, fine for post-hoc analysis, useless as a sync reference.</p>
 
   <figure id="fig-04-11" class="full">
-    <img src="shared/images/c04-uc03-broadcast-flow.png" alt="Flow diagram: stadium cameras to OB truck to 1080p50 host feed to SDI capture card to analysis laptop, with the capture card marked as the first controlled stage. White background, black glyphs, burnt-orange arrows." loading="lazy"/>
+    <img src="../images/c04-uc03-broadcast-flow.png" alt="Flow diagram: stadium cameras to OB truck to 1080p50 host feed to SDI capture card to analysis laptop, with the capture card marked as the first controlled stage. White background, black glyphs, burnt-orange arrows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.11</span>: UC 03 — Where Your Pipeline Starts. Everything left of the capture card is optimized for television and outside your control. <strong>Rugby league</strong>: the NRL host feed, ingested once, becomes the analysis master for chapters 6–9 and 19. <strong>Pickleball</strong>: PPA/MLP broadcasts carry the same contract — one cut feed, director-chosen angles, 30/60Hz family in the US.</figcaption>
   </figure>
 
@@ -1011,7 +1011,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> The default pickleball filming setup at most clubs is a phone clipped to the fence at ~2.4m, or a parent holding it at chest height. Both feel adequate; both are structurally blind. <strong>The mechanism.</strong> The far kitchen line sits at grazing incidence from any low camera: from 2.4m the sight-line over the 0.86m net tape intersects the court <em>short</em> of the far NVZ line, so foot faults on the far side are geometrically invisible — not occluded by players, but absent from the image. The elevation inequality from section 4.4 is the whole story: $H_{\min} = h(1 + L/2.13)$ gives 3.57m even standing <em>on</em> the baseline, and 4.78–5.11m at a realistic 3m setback. Handheld adds a second failure: uncontrolled camera motion breaks the fixed-homography assumption every court-mapping chapter relies on. A $60 pole is the difference between footage that can answer foot-fault questions and footage that never will.</p>
 
   <figure id="fig-04-12" class="full">
-    <img src="shared/images/c04-uc04-handheld-vs-mast.png" alt="Two-panel pickleball side elevation: handheld phone at 1.5m with sight-line blocked by the net versus phone on a 4.5m mast with a clean sight-line to the far kitchen line. White background, black linework, burnt-orange sight-lines." loading="lazy"/>
+    <img src="../images/c04-uc04-handheld-vs-mast.png" alt="Two-panel pickleball side elevation: handheld phone at 1.5m with sight-line blocked by the net versus phone on a 4.5m mast with a clean sight-line to the far kitchen line. White background, black linework, burnt-orange sight-lines." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.12</span>: UC 04 — Height Is a Feature, Not a Preference. Below ~3.6m the far kitchen line does not exist in the image. <strong>Pickleball</strong>: mast mounting unlocks NVZ foot-fault review and stable calibration. <strong>Rugby league</strong>: the same inequality is why Veo's own guidance demands 3.8–7.3m tripods — a fence-height RL camera loses the far ruck to the near players' bodies.</figcaption>
   </figure>
 
@@ -1023,7 +1023,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> Night rugby league under floodlights is the RL analyst's bread and butter, and the first instinct — the lighting is dim, so open the shutter — is exactly wrong for analysis. <strong>The mechanism.</strong> Broadcast-grade stadium floodlights are engineered flicker-safe because the host production cannot tolerate banding on air, so when you ingest the host feed the lighting problem is already solved upstream; the broadcast shutter (1/250–1/500s) is a <em>look</em> decision, not a capture limit. For your own training-ground rig under club LEDs the math is the exposure triangle with a floor: holding 1/1000s at night costs roughly five stops versus 1/30s, which is paid in ISO noise — and 8-bit 4:2:0 chroma noise at distance is what degrades team-color classification first (section 4.7). The honest rule: at night, drop the ball work and shoot 1/500s for shape, or light the drill area properly.</p>
 
   <figure id="fig-04-13" class="full">
-    <img src="shared/images/c04-uc05-stadium-lighting.png" alt="Rugby league stadium at night with four floodlight towers, light cones onto the pitch, gantry camera on halfway, lux contours on the turf. White background, black linework, burnt-orange light cones." loading="lazy"/>
+    <img src="../images/c04-uc05-stadium-lighting.png" alt="Rugby league stadium at night with four floodlight towers, light cones onto the pitch, gantry camera on halfway, lux contours on the turf. White background, black linework, burnt-orange light cones." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.13</span>: UC 05 — Night Game, Two Regimes. Broadcast floodlights are flicker-safe by contract; club LEDs are not. <strong>Rugby league</strong>: the host feed arrives pre-solved; the training-ground rig must budget five stops or accept 1/500s shape-only footage. <strong>Pickleball</strong>: outdoor evening sessions under court floodlights sit in the same regime — test, then set the shutter floor.</figcaption>
   </figure>
 
@@ -1033,7 +1033,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> Most pickleball is played indoors under LED panels, and a rolling-shutter camera at 1/1000s turns mains-frequency LED flicker into moving dark bands that corrupt background subtraction and optical flow. <strong>The mechanism.</strong> LEDs on AC pulse at twice mains frequency — <strong>100Hz in Australia, 120Hz in the US</strong> — and PWM-dimmed fixtures flicker worst at low dim levels. The exposure must be an integer multiple of the flicker period to keep bands static: 1/1000s is exactly 10.0 cycles at 100Hz (benign in Australia) and 8.33 cycles at 120Hz (bands badly in the US). The mitigation ladder, in order: (1) ask the venue for full brightness — flicker-free by dimmer position; (2) lock shutter to a flicker multiple and stabilize the bands; (3) shoot 1/100–1/120s and give up ball blur, acceptable for pose and tactics only. The 60-second test: record 10s at 1/1000s under match lighting and scrub for bands.</p>
 
   <figure id="fig-04-14" class="full">
-    <img src="shared/images/c04-uc06-indoor-flicker.png" alt="Indoor pickleball court under LED panels with a video frame inset showing dark rolling bands and a 100Hz flicker waveform. White background, black linework, burnt-orange band highlights." loading="lazy"/>
+    <img src="../images/c04-uc06-indoor-flicker.png" alt="Indoor pickleball court under LED panels with a video frame inset showing dark rolling bands and a 100Hz flicker waveform. White background, black linework, burnt-orange band highlights." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.14</span>: UC 06 — Rolling Bands Are a Lighting Bug. The bands live in the venue, not the sensor. <strong>Pickleball</strong>: the AU/US mains split means a rig that is clean in Sydney can band in Austin — test every venue, log the lighting class in the manifest. <strong>Rugby league</strong>: indoor training centres and gym-based skills sessions inherit the identical test.</figcaption>
   </figure>
 
@@ -1043,7 +1043,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> A ball at serve speed crosses its own radius in about a millisecond; whether your footage contains a <em>ball</em> or a <em>streak</em> is decided entirely by the shutter dial. <strong>The mechanism.</strong> Blur is $b = v \cdot t$: a 31.3m/s serve smears 31mm at 1/1000s, 125mm at 1/250s, and 522mm at 1/60s — the last being seven ball diameters. The derived rule (measured inputs, section 4.5): keep smear under one ball radius (37mm), i.e. $t \le 37\text{mm}/v$, which forces ≥1/845s at serve speed → standardize on 1/1000s. In pixels on the lab's 48mm-eq rig (3.1mm/px) that is an 11px streak at 1/1000s versus 43px at 1/250s — the former keeps the centroid inside the ball, the latter smears it across a court line. The same budget governs RL: a ~27m/s kick [verify] smears 27mm at 1/1000s, and player bodies at ≤10m/s are an order of magnitude cheaper to freeze.</p>
 
   <figure id="fig-04-15" class="full">
-    <img src="shared/images/c04-uc07-shutter-blur.png" alt="Four rows showing a ball streak shrinking at shutter speeds 1/60, 1/250, 1/1000, 1/2000 with millimetre callouts and a ball-radius threshold. White background, black outlines, burnt-orange streaks." loading="lazy"/>
+    <img src="../images/c04-uc07-shutter-blur.png" alt="Four rows showing a ball streak shrinking at shutter speeds 1/60, 1/250, 1/1000, 1/2000 with millimetre callouts and a ball-radius threshold. White background, black outlines, burnt-orange streaks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.15</span>: UC 07 — The Smear Budget, Expanded. 522mm at 1/60s to 16mm at 1/2000s for a serve-class ball. <strong>Pickleball</strong>: 1/1000s is the floor for trajectory and contact work; 1/2000s if the light allows. <strong>Rugby league</strong>: broadcast 1/250s is why host-feed ball tracking is a streak-association problem (Chapter 12) rather than a detection problem.</figcaption>
   </figure>
 
@@ -1053,7 +1053,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> Frame rate is usually chosen by what the deliverable looks like; it should be chosen by the shortest event you must catch. <strong>The mechanism.</strong> Between-frame sampling is a Nyquist problem with a concrete window: paddle–ball contact lasts ~3–4ms, so the probability of catching a contact frame at all is $P \approx w \cdot f$ for window $w$ and frame rate $f$ — 12% at 30fps, 24% at 60fps, 48% at 120fps, 96% at 240fps (measured math, section 4.6). Displacement tells the same story in diameters: the 31.3m/s serve travels 14 ball diameters per frame at 30fps — track association becomes guesswork — versus 1.8 at 240fps. Australian broadcast heritage pins RL to the 50Hz family (25/50fps), and the 28cm RL ball tolerates it: 540mm per frame at 50fps is only 1.9 ball lengths. Choose by event window: 30fps tactics, 60fps ball work, 120fps contact, 240fps line-call grade.</p>
 
   <figure id="fig-04-16" class="full">
-    <img src="shared/images/c04-uc08-framerate-choice.png" alt="Chart of ball travel per frame in ball diameters versus frame rate 25 to 240 fps, falling curve crossing a one-diameter threshold with contact-catch probability annotations. White background, black axes, burnt-orange curve." loading="lazy"/>
+    <img src="../images/c04-uc08-framerate-choice.png" alt="Chart of ball travel per frame in ball diameters versus frame rate 25 to 240 fps, falling curve crossing a one-diameter threshold with contact-catch probability annotations. White background, black axes, burnt-orange curve." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.16</span>: UC 08 — Sampling the Event Window. The serve crosses 14 of its own diameters between 30fps frames. <strong>Pickleball</strong>: 4K120 (iPhone) is the coaching sweet spot; 240fps (GoPro 2.7K) is the officiating floor. <strong>Rugby league</strong>: the 50Hz host feed is adequate per-diameter for the bigger ball — the RL frame-rate constraint is inherited, not chosen.</figcaption>
   </figure>
 
@@ -1065,7 +1065,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> Chapter 14's triangulation needs two cameras looking at the same instant; two phones recording the same rally are not that, by default. <strong>The mechanism.</strong> Consumer clocks drift 10–20ppm ≈ <strong>1ms per minute</strong> — up to ~100ms (3 frames at 30fps) over an hour — so a clap sync at the start of a session is stale by the end. The honest ladder: (1) clap/flash sync at start <em>and</em> end, measure the drift rate, stretch one timeline (free, ±half frame); (2) re-clap every 15–20 minutes on long sessions; (3) audio-transient alignment — paddle–ball impact is a ~2kHz transient in every mic track, free ground truth; (4) genlock via iPhone 17 Pro + Blackmagic ProDock ($295, BNC) for true phase lock (source-backed, Sep 2025 release). What never works: HDMI latency as a sync reference — it is 30–100ms and variable. For line-call triangulation the error budget is brutal: at 31.3m/s a half-frame at 60fps is 260mm of disagreement between views.</p>
 
   <figure id="fig-04-17" class="full">
-    <img src="shared/images/c04-uc09-multicam-sync.png" alt="Two phone cameras on poles aimed at one pickleball court with aligned clap waveforms, a 1ms per minute drift arrow, and a genlock cable option. White background, black linework, burnt-orange sync pulses." loading="lazy"/>
+    <img src="../images/c04-uc09-multicam-sync.png" alt="Two phone cameras on poles aimed at one pickleball court with aligned clap waveforms, a 1ms per minute drift arrow, and a genlock cable option. White background, black linework, burnt-orange sync pulses." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.17</span>: UC 09 — Same Instant, Two Sensors. Clap at both ends, measure the drift, or buy genlock. <strong>Pickleball</strong>: endline plus net-post cameras become a triangulation rig for line calls (Chapter 14) once sync is honest. <strong>Rugby league</strong>: the broadcast truck is genlocked for you; your own two-camera training rig needs the clap protocol before any 3D pose work.</figcaption>
   </figure>
 
@@ -1075,7 +1075,7 @@ ffmpeg -i capture_hevc.mov -c:v prores_videotoolbox -profile:v 2 analysis.mov</c
   <p><strong>The problem.</strong> Capture ends at the card; the dataset chapter (5) begins at a folder of files — and everything in between is where footage silently rots. <strong>The mechanism.</strong> The lab path is five stages, each with one job and one failure mode: (1) <strong>offload with checksums</strong>, two copies before any card is wiped — a corrupt card found later is unrecoverable data loss; (2) <strong>manifest at capture time</strong> — filename <code>YYYY-MM-DD_venue_camA_fps_shutter_codec.ext</code> plus a metadata row (camera, equivalent mm, height, setback, fps, shutter, ISO, codec, color mode); (3) <strong>transcode for access pattern</strong> — long-GOP HEVC for archive, ProRes 422 or image sequences for anything frame-indexed, because random access on long-GOP files is the #1 cause of off-by-a-few-frames labels (measured cost: 1h 4K60 ProRes 422 HQ ≈ 793GB vs 9–14GB HEVC); (4) <strong>tone-map HDR masters to SDR BT.709</strong> before inference — iPhone Dolby Vision PQ frames fed raw to an sRGB-trained model apply an unknown per-frame tone curve [verify — the mAP delta is asserted, not yet benchmarked]; (5) <strong>hand off to Chapter 5</strong> with the manifest row as the join key.</p>
 
   <figure id="fig-04-18" class="full">
-    <img src="shared/images/c04-uc10-ingest-path.png" alt="Five-stage flow: SD card, checksum offload, manifest row, ProRes transcode, dataset folder, each with a failure-mode caption. White background, black glyphs, burnt-orange arrows." loading="lazy"/>
+    <img src="../images/c04-uc10-ingest-path.png" alt="Five-stage flow: SD card, checksum offload, manifest row, ProRes transcode, dataset folder, each with a failure-mode caption. White background, black glyphs, burnt-orange arrows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 4.18</span>: UC 10 — Five Stages, Five Failure Modes. Checksums catch bad cards; manifests preserve the rig; All-Intra makes frame <em>n</em> mean frame <em>n</em>. <strong>Pickleball</strong>: one afternoon of drills becomes a labeled, frame-accurate asset instead of a camera-roll graveyard. <strong>Rugby league</strong>: the SDI-ingested broadcast master enters the same five stages — the chain converges at the manifest.</figcaption>
   </figure>
 

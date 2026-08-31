@@ -550,7 +550,7 @@
   <p>FIFA's automated event-data initiative and Stats Perform's Opta pipeline both use this shape: machines resolve the bulk, humans handle the residue. The book's twist is making the queue a first-class output state — an uncertain event is emitted, marked, and queued, so uncertainty is visible as work-in-queue rather than hidden as silence.</p>
 
   <figure id="fig-19-01" class="full">
-    <img src="shared/images/eventing-pipeline.png" alt="Eventing pipeline: tracks to state machine to confidence scorer to review queue (8-12 cap) to corrected rows loop." loading="lazy"/>
+    <img src="../images/eventing-pipeline.png" alt="Eventing pipeline: tracks to state machine to confidence scorer to review queue (8-12 cap) to corrected rows loop." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.1</span>: The Eventing Pipeline. State machine, confidence scorer, review queue, corrected rows — with the loop that makes the next run better.</figcaption>
   </figure>
 
@@ -603,7 +603,7 @@
   <p>Each state carries a <code>ball_visible</code> flag. When it drops — and on pb-003 it often does, given E04's ball wall (1,082 detections, median confidence 0.1125, measured) — the automaton parks the segment as a review window rather than guessing the next transition.</p>
 
   <figure id="fig-19-03" class="full">
-    <img src="shared/images/ch19-pickleball-rally-automaton.png" alt="Pickleball rally state machine: serve, return, third shot, dink/volley loop, fault and point terminals, no-skip arrow, UNKNOWN diamond." loading="lazy"/>
+    <img src="../images/ch19-pickleball-rally-automaton.png" alt="Pickleball rally state machine: serve, return, third shot, dink/volley loop, fault and point terminals, no-skip arrow, UNKNOWN diamond." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.3</span>: The Pickleball Rally Automaton. Grammar owns sequence; classifier owns type; the struck-through arrow is a false positive the machine refuses to emit.</figcaption>
   </figure>
 
@@ -618,7 +618,7 @@
   <p>The layer boundary differs from pickleball: the automaton owns the count, PTB timing, retreat, and kick; the ML+queue layer concentrates on the head-contact welfare screen and try adjudication under bodies. The boundary is decided by epistemics, not by model availability.</p>
 
   <figure id="fig-19-04" class="full">
-    <img src="shared/images/ch19-rugby-set-automaton.png" alt="Rugby league set state machine: tackle count loop, PTB nodes, six-again reset, kick/try/turnover terminals, UNKNOWN diamond." loading="lazy"/>
+    <img src="../images/ch19-rugby-set-automaton.png" alt="Rugby league set state machine: tackle count loop, PTB nodes, six-again reset, kick/try/turnover terminals, UNKNOWN diamond." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.4</span>: The Rugby League Set Automaton. The sport is a counter with rules — the machine owns the count and the kick; the welfare screen and the try go to the queue.</figcaption>
   </figure>
 
@@ -627,7 +627,7 @@
   <p>Failure modes are table-shaped. <strong>Guard gaps</strong> fire UNKNOWN, never nearest-state — nearest-state fallback is how a tracker glitch at the kitchen line becomes a phantom dink. <strong>Guard overlap</strong> is resolved by explicit priority in the table header, with adjudication events outranking rally events. <strong>Evidence lag</strong> holds transitions pending for a bounded window; the pending state is visible in the queue.</p>
 
   <figure id="fig-19-05" class="full">
-    <img src="shared/images/ch19-transition-table.png" alt="Transition table grid: rows serve, return, dink, volley; columns ball-in, contact, feet-ok, ball-out; cells hold next-state names; dink to fault highlighted." loading="lazy"/>
+    <img src="../images/ch19-transition-table.png" alt="Transition table grid: rows serve, return, dink, volley; columns ball-in, contact, feet-ok, ball-out; cells hold next-state names; dink to fault highlighted." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.5</span>: The Transition Table. Every cell is an auditable answer to "why did the system say that?" — every empty cell is an owned gap.</figcaption>
   </figure>
 
@@ -636,7 +636,7 @@
   <p>Most suppression is structural, not statistical: the 881 silent events were grammar violations — a "speed-up" nominated in SERVE state, a "tackle seven," a contact with no legal predecessor. A pure per-window classifier must label everything it sees; the state machine rejects what the rules forbid. What does surface carries a p-value against the team's baseline, which is the difference between an alert a coach acts on and one they mute. Caveat: E22 is a constructed stream, not a season; 88.1% is a demonstrated ceiling, not a guaranteed rate.</p>
 
   <figure id="fig-19-08" class="full">
-    <img src="shared/images/ch19-false-positive-curve.png" alt="False-alarm curve descending as grammar constraints tighten; E22 operating point at 88.1 percent suppression, 1000 to 119 alerts, dashed p 0.05 line." loading="lazy"/>
+    <img src="../images/ch19-false-positive-curve.png" alt="False-alarm curve descending as grammar constraints tighten; E22 operating point at 88.1 percent suppression, 1000 to 119 alerts, dashed p 0.05 line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.8</span>: The False-Positive Reduction Curve. Grammar removes most noise structurally; the p &lt; 0.05 gate prices what remains. E22: 1,000 in, 119 out, 88.1% suppressed (measured, constructed stream).</figcaption>
   </figure>
 
@@ -677,14 +677,14 @@
   <p>E06's windows score 0.8 (high) — the ceiling for movement-only evidence; they cannot reach 1.0 because the ball is missing, and that is correct. Tiers: ≥0.8 high (auto-accept), 0.6–0.79 medium (review), 0.4–0.59 medium-low (review only), &lt;0.4 low (discard + log). C19's metrics.json reproduces this: two candidates at 0.8/high, both review-gated (measured).</p>
 
   <figure id="fig-19-02" class="full">
-    <img src="shared/images/confidence-histogram.png" alt="Confidence tier histogram: auto-accept, review, discard bands." loading="lazy"/>
+    <img src="../images/confidence-histogram.png" alt="Confidence tier histogram: auto-accept, review, discard bands." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.2</span>: Confidence as a Routing Decision. The histogram is the honest report of what the system knows — the queue boundary is where the human takes over.</figcaption>
   </figure>
 
   <p>ML heads need calibration. Temperature scaling (Guo et al., ICML 2017) fixes overconfidence on a held-out validation split. Selective prediction (Geifman &amp; El-Yaniv, NeurIPS 2017) gives the risk-coverage curve: the auto-accept fraction vs error on that fraction. Conformal prediction (Angelopoulos &amp; Bates, 2021) gives distribution-free coverage sets, though at ~500 labels the sets may be wide — and that width is itself the signal to queue [verify set sizes at this scale]. E22's p &lt; 0.05 gate is the same idea expressed as significance against a baseline. Confidence is per-field: a row can carry <code>contact_state=confirmed</code> (high, rule-fired) beside <code>shot_type=unknown</code> (queued, head uncertain), letting the season summary count confirmed facts and report unknowns as unknowns.</p>
 
   <figure id="fig-19-06" class="full">
-    <img src="shared/images/ch19-confidence-gate.png" alt="Confidence gate: axis 0-1 with t_lo and t_hi thresholds, discard/review/auto-accept bands, event tokens flowing through, human icon at review." loading="lazy"/>
+    <img src="../images/ch19-confidence-gate.png" alt="Confidence gate: axis 0-1 with t_lo and t_hi thresholds, discard/review/auto-accept bands, event tokens flowing through, human icon at review." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.6</span>: The Confidence Gate. Two thresholds, three bands — the edges are owned policy decisions (chapter 20), not model defaults.</figcaption>
   </figure>
 
@@ -758,7 +758,7 @@
   <p>Both vocabularies are phase-derived: third_shot_* is "shot 3 of the rally" exactly as tackle_3 is "containment 3 of the set." Both separate shots from calls (dink vs kitchen foot fault; run vs offside). Both carry unknown as a first-class label, the TTStroke-21 rejection class transplanted. What differs is instructive: pickleball's rally is unbounded (termination detection matters), while league's set is a hard counter (six-again reset detection is the fragile transition and leans on the audio lane).</p>
 
   <figure id="fig-19-07" class="full">
-    <img src="shared/images/ch19-event-vocabulary.png" alt="Dual-sport vocabulary comparison: pickleball column over court fragment; rugby league column over pitch fragment; shared contact/review/unknown center." loading="lazy"/>
+    <img src="../images/ch19-event-vocabulary.png" alt="Dual-sport vocabulary comparison: pickleball column over court fragment; rugby league column over pitch fragment; shared contact/review/unknown center." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.7</span>: One Skeleton, Two Vocabularies. The PBN and NRL-set dictionaries differ in words, not in grammar.</figcaption>
   </figure>
 
@@ -779,7 +779,7 @@
   <p>The mechanism is the contact-anchored extension of E06's state machine (19.2b). The automaton walks <code>IDLE → SERVE → RETURN → THIRD → RALLY → FAULT/POINT</code>; a segment is the maximal path from the SERVE transition to any terminal. Formally, with contact instants $c_1 &lt; c_2 &lt; \dots &lt; c_n$ from the E10 heuristic (0.814 precision, measured) intersected with chapter 15 audio onsets, the segment is $[t(c_1), t_{term}]$ where $t_{term}$ is the first frame a termination guard fires: ball-out polygon test, net-plane termination, double bounce, or kitchen foot fault. Each transition is one row of the 19.2d table: $\delta(s, g) = (s', \text{event}, \text{evidence})$, and a guard fires only when its evidence streams are present. Without the ball — E04's wall, 1,082 detections at median confidence 0.1125 (measured) — the automaton degrades exactly as E06 did: co-presence windows of 8.33 s and 12.83 s, <code>review_required=yes</code>, never a rally claim.</p>
 
   <figure id="fig-19-09" class="full">
-    <img src="shared/images/ch19-uc-rally-segmentation.png" alt="Pickleball rally segmentation timeline: serve, return, third, rally, fault state nodes over a court sketch." loading="lazy"/>
+    <img src="../images/ch19-uc-rally-segmentation.png" alt="Pickleball rally segmentation timeline: serve, return, third, rally, fault state nodes over a court sketch." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.9</span>: UC 01 — Rally Segmentation. Five states, one terminal, every arrow evidence-guarded. <strong>Pickleball</strong>: pb-003's 900 frames yield two honest windows instead of 900 pseudo-events. <strong>Rugby league</strong>: the set is the bounded version of the same walk.</figcaption>
   </figure>
 
@@ -792,7 +792,7 @@
   <p>The mechanism is the 19.2c automaton: <code>SET_START → TACKLE_k → PTB → TACKLE_(k+1) → … → KICK | TRY | TURNOVER</code>. Guards are geometric: carrier grounded plus held (tackle completion, UC 06), ball played backward with the foot (PTB, UC 05), defenders retreating to the 10 m line. The terminal guards differ in kind: KICK is near-rule from the ball track (UC 07), TRY is grounding in-goal and stays human-confirmed before print, TURNOVER is count expiry. The fragile transition is the six-again reset — the count restarts on the referee's call, so the whistle audio lane (chapter 15) proposes the reset and vision confirms it; neither is believed alone. The transition table's completeness rule applies: an unhandled fact in TACKLE_3 state emits UNKNOWN plus a queue entry, never a nearest-state guess.</p>
 
   <figure id="fig-19-10" class="full">
-    <img src="shared/images/ch19-uc-set-segmentation.png" alt="Rugby league set segmentation timeline: tackle one through six with PTB clocks, try, kick, turnover terminals." loading="lazy"/>
+    <img src="../images/ch19-uc-set-segmentation.png" alt="Rugby league set segmentation timeline: tackle one through six with PTB clocks, try, kick, turnover terminals." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.10</span>: UC 02 — Set Segmentation. The sport is a counter with rules; the machine owns the count, the human owns the try. <strong>Rugby league</strong>: nrl-001 grand-final footage. <strong>Pickleball</strong>: serve-to-fault is the same walk without the counter.</figcaption>
   </figure>
 
@@ -807,7 +807,7 @@
   <p>The mechanism splits ownership exactly as 19.4 prescribes. The automaton owns <em>that</em> the shot is third — it is a grammar fact, the position in the contact sequence, not a perception claim. The ML head owns <em>which kind</em>: at the contact frame, crop the striker window $[t-0.3\text{s}, t+0.3\text{s}]$, extract frozen features (chapter 16's recipe), and emit $P(\text{drive}), P(\text{drop})$ plus the margin between them. The margin is the routing variable: wide margin and $P \geq t_{hi}$ auto-accepts (audited), anything in the band goes to the queue. This is TTStroke-21's documented trap transplanted — drive/drop is a pace-arc continuum the sport discretizes, so expect the confusion mass there (source-backed, arXiv:2301.13576).</p>
 
   <figure id="fig-19-11" class="full">
-    <img src="shared/images/ch19-uc-third-shot.png" alt="Pickleball third-shot detection: baseline hitter, drop and drive trajectory arcs over net into kitchen." loading="lazy"/>
+    <img src="../images/ch19-uc-third-shot.png" alt="Pickleball third-shot detection: baseline hitter, drop and drive trajectory arcs over net into kitchen." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.11</span>: UC 03 — Third-Shot Detection. Grammar says it is shot three; the calibrated head says which kind; the margin decides who signs it off. <strong>Pickleball</strong>: drop vs drive from the contact crop. <strong>Rugby league</strong>: the fifth-tackle option is the analogue.</figcaption>
   </figure>
 
@@ -820,7 +820,7 @@
   <p>The mechanism is a sub-automaton nested inside RALLY state. A contact increments the dink counter when three guards hold: striker and contact point in NVZ-proximate zones (homography polygons, E05/E11 RMSE 3.82–4.65 cm, measured), soft arc signature from the ball track when visible, both teams pinned at the kitchen line. A speed-up, lob, or drive guard exits the exchange and logs the terminator type — the exchange's <em>ending</em> is the coaching-relevant event, not its length alone. The honesty constraint is TTStroke-21's low inter-class variability (source-backed): dink↔speed-up confusion will dominate the matrix (19.7), so the speed-up exit guard runs high-recall — queue the overcalls, because a coach forgives a false speed-up and never forgives a missed one.</p>
 
   <figure id="fig-19-12" class="full">
-    <img src="shared/images/ch19-uc-dink-exchange.png" alt="Dink exchange tracking: two players at the kitchen line trading soft arcs, dink counter badge." loading="lazy"/>
+    <img src="../images/ch19-uc-dink-exchange.png" alt="Dink exchange tracking: two players at the kitchen line trading soft arcs, dink counter badge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.12</span>: UC 04 — The Dink Exchange Tracker. A sub-automaton inside RALLY counts the soft game and names the shot that broke it. <strong>Pickleball</strong>: kitchen-line patience duels. <strong>Rugby league</strong>: the PTB metronome streak is the same counter shape.</figcaption>
   </figure>
 
@@ -833,7 +833,7 @@
   <p>The mechanism anchors both ends of the interval. Start: tackle completion (UC 06) — carrier grounded plus held, a containment signature from tracks and pose. End: the ball played backward with the foot — ball-track motion onset away from the carrier, with the dummy-half pickup as the fallback anchor when the ball is occluded. The event row is $\text{PTB}_k = t_\text{release} - t_\text{held}$ with both timestamps' evidence stacks attached. Chapter 28's green/red ruck bands are the practitioner play-calling thresholds [verify band values against measured distributions before print]; this use case supplies the distribution those bands should be set from. Broadcast production is the confound: replays and speed ramps break the clock, so the 19.4b metronome check (three PTBs in four seconds is a replay artifact) is a guard on the event, not an afterthought.</p>
 
   <figure id="fig-19-13" class="full">
-    <img src="shared/images/ch19-uc-ptb-timing.png" alt="Rugby league play-the-ball timing: tackled carrier playing ball with foot, stopwatch badge, defenders retreating to ten metre line." loading="lazy"/>
+    <img src="../images/ch19-uc-ptb-timing.png" alt="Rugby league play-the-ball timing: tackled carrier playing ball with foot, stopwatch badge, defenders retreating to ten metre line." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.13</span>: UC 05 — PTB Timing. Two geometric anchors, one interval, every row carrying its evidence. <strong>Rugby league</strong>: ruck tempo per tackle per set. <strong>Pickleball</strong>: inter-contact tempo is the same machinery with less meaning.</figcaption>
   </figure>
 
@@ -846,7 +846,7 @@
   <p>The mechanism is hybrid by design. Vision proposes: defender-carrier contact plus carrier downward velocity plus grounded pose (chapter 11's pose stream). Audio confirms: the referee's held call and whistle (chapter 15). Agreement upgrades the row to confirmed; disagreement queues both hypotheses. Under bodies — the dense-occlusion case chapter 10's UC 09 separates with mask memory — the event stays <code>review_required=yes</code>; the count is too load-bearing to guess. The transition-table consequence: <code>TACKLE_k → PTB</code> fires only from a confirmed or reviewed completion, and a sixth-tackle completion with no terminal guard within the bounded window emits TURNOVER as count expiry — a grammar conclusion, not a perception claim.</p>
 
   <figure id="fig-19-14" class="full">
-    <img src="shared/images/ch19-uc-tackle-completion.png" alt="Tackle completion event: ball carrier held by two defenders, whistle icon, tackle four event token." loading="lazy"/>
+    <img src="../images/ch19-uc-tackle-completion.png" alt="Tackle completion event: ball carrier held by two defenders, whistle icon, tackle four event token." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.14</span>: UC 06 — Tackle Completion. Vision proposes, the whistle confirms, the count increments only on agreement. <strong>Rugby league</strong>: the set's clock tick. <strong>Pickleball</strong>: the let is the same audio-confirmed irregularity shape.</figcaption>
   </figure>
 
@@ -859,7 +859,7 @@
   <p>The mechanism is near-rule from the ball track: in TACKLE_5/6 state (or earlier — the guard is state-aware, not state-captive), foot-ball contact followed by the ball leaving the boot on a long ballistic arc fires KICK. The ball's apex and landing polygon then classify the outcome: in-goal, touch, dead, fielded-in-play. Broadcast ball tracking hits the same visibility wall as pickleball's E04 — a 300 g oval at 25 m altitude against stadium lights — so a lost ball mid-flight emits the kick with <code>landing=unknown</code> and a queue entry rather than a guessed polygon. The pickleball transfer is direct: the lob is the same near-geometric arc event, and 19.6 already flags lob as the taxonomy's rule-assist candidate.</p>
 
   <figure id="fig-19-15" class="full">
-    <img src="shared/images/ch19-uc-kick-event.png" alt="Kick event: rugby league kicker on fifth tackle, high ball arc to landing zone near try line, chasers running." loading="lazy"/>
+    <img src="../images/ch19-uc-kick-event.png" alt="Kick event: rugby league kicker on fifth tackle, high ball arc to landing zone near try line, chasers running." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.15</span>: UC 07 — The Kick Event. Contact, arc, landing polygon — near-rule from the ball track, honest unknown when the ball vanishes. <strong>Rugby league</strong>: fifth-tackle bombs and 40/20s. <strong>Pickleball</strong>: the lob is the same arc grammar.</figcaption>
   </figure>
 
@@ -874,7 +874,7 @@
   <p>The mechanism is three rule-owned classes with explicit priority — adjudication events outrank rally events in the 19.2d table header. <strong>Kitchen foot fault:</strong> the E10 contact instant (0.814 precision, measured) ∧ the striker's foot point inside the NVZ polygon at that instant, both through the calibrated homography (E05/E11, RMSE 3.82–4.65 cm, measured) — pure geometry, no model trusted over the rule. <strong>Net:</strong> the ball track terminates at the net plane without crossing. <strong>Out:</strong> the landing point falls outside the court polygon. E22's measured stream shows the kitchen class at working scale: 27 NVZ foot-fault warnings at p = 0.012, feet 2.4–4.0 cm across the line (constructed stream — a demonstrated ceiling, not a season rate). Every printed foot fault stays human-confirmed, because 4 cm is inside the same order as the homography error and the row must say so.</p>
 
   <figure id="fig-19-16" class="full">
-    <img src="shared/images/ch19-uc-fault-classification.png" alt="Fault classification: three pickleball callouts, kitchen foot fault, net fault, out fault, on a court diagram." loading="lazy"/>
+    <img src="../images/ch19-uc-fault-classification.png" alt="Fault classification: three pickleball callouts, kitchen foot fault, net fault, out fault, on a court diagram." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.16</span>: UC 08 — Fault Classification. One terminal state, three rule-owned classes, adjudication outranking rally play. <strong>Pickleball</strong>: kitchen, net, out. <strong>Rugby league</strong>: forward pass, knock-on, offside carry the same priority.</figcaption>
   </figure>
 
@@ -887,7 +887,7 @@
   <p>The mechanism is E22's two-stage gate (measured, experiments/e22-humans-above-the-loop). Stage one is structural: the state machine suppresses grammar violations — a "speed-up" nominated in SERVE state, a tackle seven, a contact with no legal predecessor. Stage two is statistical: survivors carry a p-value against the team's baseline distribution, and only p &lt; 0.05 alerts. On a 1,000-event constructed stream across both sports, 119 alerts surfaced and <strong>88.1% were structurally suppressed</strong> at 0.08 ms processing cost. The framing is selective prediction (Geifman &amp; El-Yaniv, NeurIPS 2017, source-backed) with the grammar doing most of the rejection work: coverage is the dial, risk is the price, and the risk-coverage curve is the owned policy artifact (chapter 20). The caveat is on record: E22 is a constructed stream, not a season; 88.1% is a demonstrated ceiling [verify suppression rate on real footage].</p>
 
   <figure id="fig-19-17" class="full">
-    <img src="shared/images/ch19-uc-confidence-gating.png" alt="Confidence gating funnel: one thousand event tokens in, one hundred nineteen alerts out through p less than 0.05 gate." loading="lazy"/>
+    <img src="../images/ch19-uc-confidence-gating.png" alt="Confidence gating funnel: one thousand event tokens in, one hundred nineteen alerts out through p less than 0.05 gate." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.17</span>: UC 09 — The Significance Gate. Grammar rejects structurally; the p &lt; 0.05 gate prices what survives. <strong>Pickleball</strong>: 27 NVZ warnings, 25 middle-seam exposures. <strong>Rugby league</strong>: 32 dog-leg ruptures, 35 offside alerts (E22, measured, constructed stream).</figcaption>
   </figure>
 
@@ -900,7 +900,7 @@
   <p>The mechanism is 19.4b made concrete. The 30 fps video frame clock (33 ms grid on pb-003), the millisecond-fine audio onset clock (chapter 15), and the track clock meet at each event; the rule is audio proposes the when, vision confirms the what, and the event timestamp is the contact frame nearest the audio onset whose vision evidence agrees. Agreement upgrades the row to confirmed; disagreement queues both timestamps rather than silently picking one. Rugby league adds the broadcast production clock — replays and speed ramps — detected by the PTB metronome guard: three PTBs in four seconds is a replay artifact, not a set. The binding constraint: <strong>no event carries more precision than its worst agreeing clock</strong> [verify residual distribution on multi-camera footage].</p>
 
   <figure id="fig-19-18" class="full">
-    <img src="shared/images/ch19-uc-video-alignment.png" alt="Event-to-video alignment: video frame ticks, audio waveform onsets, track clock lanes joined at one contact instant." loading="lazy"/>
+    <img src="../images/ch19-uc-video-alignment.png" alt="Event-to-video alignment: video frame ticks, audio waveform onsets, track clock lanes joined at one contact instant." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 19.18</span>: UC 10 — The One-Spine Join. Three clocks, one event row, precision capped by the worst agreeing clock. <strong>Pickleball</strong>: 33 ms frame grid versus millisecond audio. <strong>Rugby league</strong>: plus the broadcast production clock's replays and speed ramps.</figcaption>
   </figure>
 

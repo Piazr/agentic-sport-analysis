@@ -518,7 +518,7 @@
   <p>A pickleball coach enters through C03 (rules as predicates) and C28 (the live cockpit). She leaves able to read the third-shot-drop HUD numbers, ask for the right kitchen-pressure clip, and prescribe one constrained drill. A rugby league analyst enters through C12 (broadcast chaos) and C14 (multicamera line calls). He leaves able to ingest a PTB-heavy set, produce an honest retreat-compliance report, and run the claims check before the Monday review. The engineer must traverse the full pipeline, but even the engineer should know which door to open first, and which chapters can be read in parallel.</p>
 
   <figure id="fig-34-01" class="full">
-    <img src="shared/images/c34-chapter-dependency-graph.png" alt="Chapter dependency graph: numbered C01-C34 nodes in swimlanes Lab, Rules, Geometry, Perception, Representation, Models, Agents, Live, Reference, with orange prerequisite arrows and pickleball court and rugby pitch icons at the boundaries." loading="lazy"/>
+    <img src="../images/c34-chapter-dependency-graph.png" alt="Chapter dependency graph: numbered C01-C34 nodes in swimlanes Lab, Rules, Geometry, Perception, Representation, Models, Agents, Live, Reference, with orange prerequisite arrows and pickleball court and rugby pitch icons at the boundaries." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.1</span>: Chapter Dependency Graph. The swimlane pipeline shows what to read before what: geometry before perception, representation before models, and the C32 laboratory before any agent claim.</figcaption>
   </figure>
 
@@ -565,7 +565,7 @@
   <p>The table is not a suggestion. A coach who reads C28 without C03 will misinterpret the kitchen fault alarm; the rules are the predicate that gives the HUD number meaning. An analyst who reads C20 without C02 will report a trend without knowing whether the clip is a golden fixture or an ad-hoc export; the provenance is what makes the statistic honest. An engineer who skips C32 will build a beautiful pipeline that fails the claims register on day one. The paths are designed to surface these failures early, before the reader has invested time in the wrong chapters.</p>
 
   <figure id="fig-34-02" class="full">
-    <img src="shared/images/c34-two-paths.png" alt="The Two Paths: shared evidence spine with three human tracks and an agent query-lab-value-critic-narrative loop." loading="lazy"/>
+    <img src="../images/c34-two-paths.png" alt="The Two Paths: shared evidence spine with three human tracks and an agent query-lab-value-critic-narrative loop." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.2</span>: The Two Paths. The shared evidence spine (clip_id, frame_idx, pts_s), the three human tracks, and the agent query-lab-value-critic-narrative loop.</figcaption>
   </figure>
 
@@ -574,7 +574,7 @@
   <p>For a pickleball coach, the path is short: C01 (why the method matters), C03 (the NVZ predicate), C28 (what the live HUD shows), C29 (how to turn a number into a drill), and C34 (this glossary). For a rugby league coach, the equivalent path is C01, C03 (the rugby set-grammar predicates), C28 (the live defensive-shape HUD), C29 (the representative practice design), and C34. The analyst path is longer because it requires building the clip, not just reading it. The engineer path is longest because it requires building the machine that builds the clip. The reader path in Figure 34.3 shows these forks and the shared milestones.</p>
 
   <figure id="fig-34-03" class="full">
-    <img src="shared/images/c34-reader-path.png" alt="Human reader path: three horizontal tracks labeled Coach, Analyst, and Engineer with chapter nodes, sport icons, and burnt-orange milestone boxes." loading="lazy"/>
+    <img src="../images/c34-reader-path.png" alt="Human reader path: three horizontal tracks labeled Coach, Analyst, and Engineer with chapter nodes, sport icons, and burnt-orange milestone boxes." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.3</span>: The Reader Path. The coach, analyst, and engineer tracks with chapter nodes and sport-specific milestones. The shared spine is the evidence contract from C02.</figcaption>
   </figure>
 
@@ -584,42 +584,42 @@
   <h3>Use-Path 1 — The Pickleball Practitioner (the full journey)</h3>
   <p><strong>The path.</strong> A coach or serious player with a tripod camera and a doubles match recording who wants to go from raw video to a drill prescription without becoming an engineer. <strong>The chapters:</strong> C03 (the kitchen and double-bounce rules as executable predicates) → C08 (player and ball detection on the fixed-court baseline) → C19 (automatic eventing: tracks become PBN rows) → C22 (expected possession value: what a rally state is worth) → C28 (the live cockpit: reading the third-shot-drop HUD honestly) → C29 (turning the number into one constrained, representative drill). <strong>The expected skill gain</strong> <strong>[verify]</strong>: given a new match clip, produce a kitchen-pressure report (speed-up success rate, NVZ fault count, third-shot depth distribution) and prescribe one drill that targets the weakest link. <strong>The payoff:</strong> coaching — the practitioner stops arguing from memory and starts prescribing from evidence.</p>
   <figure id="fig-34-09" class="full">
-    <img src="shared/images/c34-uc01-pb-practitioner-path.png" alt="Pickleball practitioner path: six chapter nodes C03 RULES, C08 DETECT, C19 EVENT, C22 EPV, C28 COCKPIT, C29 PRACTICE connected by orange arrows over a pickleball court outline." loading="lazy"/>
+    <img src="../images/c34-uc01-pb-practitioner-path.png" alt="Pickleball practitioner path: six chapter nodes C03 RULES, C08 DETECT, C19 EVENT, C22 EPV, C28 COCKPIT, C29 PRACTICE connected by orange arrows over a pickleball court outline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.9</span>: Use-Path 1 — The Pickleball Practitioner. The full journey from rules-as-predicates to a drill prescription, on the fixed-camera clean baseline.</figcaption>
   </figure>
 
   <h3>Use-Path 2 — The Rugby League Practitioner (the broadcast journey)</h3>
   <p><strong>The path.</strong> A club analyst with broadcast footage — panning, zooming, occluding — who needs an honest Monday review. <strong>The chapters:</strong> C03 (the set-grammar predicates: six tackles, PTB, 10m retreat) → C07 (broadcast calibration: GMC and per-frame homography, the chapter that makes pitch-meters possible at all) → C12 (field-sport detection and tracking at scale) → C14 (multicamera line calls, and why a single camera never calls one) → C22 (expected value across the set) → C28 (the live defensive-shape cockpit). <strong>The expected skill gain</strong> <strong>[verify]</strong>: ingest one PTB-heavy broadcast clip and produce a retreat-compliance report, a line-break count with clip-level evidence, and a PTB-speed distribution — each number traceable to a frame. <strong>The payoff:</strong> analysis — the review meeting argues about tactics, not about whether the numbers are real.</p>
   <figure id="fig-34-10" class="full">
-    <img src="shared/images/c34-uc02-rl-practitioner-path.png" alt="Rugby league practitioner path: six chapter nodes C03 RULES, C07 CALIB, C12 TRACK, C14 LINES, C22 EPV, C28 COCKPIT connected by orange arrows over a rugby pitch outline." loading="lazy"/>
+    <img src="../images/c34-uc02-rl-practitioner-path.png" alt="Rugby league practitioner path: six chapter nodes C03 RULES, C07 CALIB, C12 TRACK, C14 LINES, C22 EPV, C28 COCKPIT connected by orange arrows over a rugby pitch outline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.10</span>: Use-Path 2 — The Rugby League Practitioner. The broadcast journey: calibration before perception, multicamera before line calls, evidence before argument.</figcaption>
   </figure>
 
   <h3>Use-Path 3 — The Agent (expanded)</h3>
   <p><strong>The path.</strong> A software agent handed this book as a spec — the Teamwork loop from the research brief made executable. <strong>The chapters:</strong> C17 (the schema first, never the prose: the 31-field PBN row and the NRLSheet set row define what the agent may write) → C32 (the labs: the only ground truth the agent may cite) → the claims register (the 24-claim audit the agent must pass before it speaks) → C27 (the adversarial critic: falsifies detections, flags hallucinated serves and impossible velocities, forces <strong>unknown</strong> where the artifact is missing) → C34 (this chapter: the briefing, the hands-off contract, the human gate). The loop is the brief's own: hypothesis generation (divergence) → adversarial critique (falsification) → oracle execution (verification against the lab) → synthesis (recombination) — <strong>source-backed</strong> (Teamwork, Google Antigravity, 2026-08-27). <strong>The expected skill gain</strong> <strong>[verify]</strong>: an agent that answers only from artifacts, declines line calls from a single camera, and routes every recommendation through the critic before the human gate. <strong>The payoff:</strong> safety — the agent becomes a research partner instead of a hallucination amplifier.</p>
   <figure id="fig-34-11" class="full">
-    <img src="shared/images/c34-uc03-agent-path-expanded.png" alt="Agent path expanded: C17 SCHEMA to C32 LABS to CLAIMS REGISTER to C27 CRITIC to HUMAN GATE, with an UNKNOWN loop back from critic to labs." loading="lazy"/>
+    <img src="../images/c34-uc03-agent-path-expanded.png" alt="Agent path expanded: C17 SCHEMA to C32 LABS to CLAIMS REGISTER to C27 CRITIC to HUMAN GATE, with an UNKNOWN loop back from critic to labs." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.11</span>: Use-Path 3 — The Agent, Expanded. Schema → labs → claims register → critic → human gate, with the unknown loop that keeps the agent honest.</figcaption>
   </figure>
 
   <h3>Use-Path 4 — The Researcher (papers to experiments)</h3>
   <p><strong>The path.</strong> A sports scientist or graduate student who wants to stand on the book's evidence, not just read it. <strong>The chapters:</strong> the references index (34.6: every source with URL, DOI, and verified date) → C02 (provenance: what makes a claim auditable) → C20 (the statistics discipline: CIs, calibration, Brier and ECE) → C24 (simulation: the counterfactual testbed) → C33 (the frontier: what is genuinely open) → a new experiment of the reader's own, filed through the C32 pattern. <strong>The expected skill gain</strong> <strong>[verify]</strong>: replicate one book experiment end-to-end, then extend it — a new fixture, a new sport, a new claim with its own <code>metrics.json</code> and claims-register row. <strong>The payoff:</strong> science — the book becomes a platform for the next paper, and the researcher's contribution enters through the same evidence gate as the author's.</p>
   <figure id="fig-34-12" class="full">
-    <img src="shared/images/c34-uc04-researcher-path.png" alt="Researcher path: PAPERS to C02 PROVENANCE to C20 STATS to C24 SIM to NEW EXPERIMENT, with an arXiv document icon at the start and a flask at the end." loading="lazy"/>
+    <img src="../images/c34-uc04-researcher-path.png" alt="Researcher path: PAPERS to C02 PROVENANCE to C20 STATS to C24 SIM to NEW EXPERIMENT, with an arXiv document icon at the start and a flask at the end." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.12</span>: Use-Path 4 — The Researcher. From verified sources through the statistics and simulation chapters to a new, register-audited experiment.</figcaption>
   </figure>
 
   <h3>Use-Path 5 — The Skeptic (auditing the claims)</h3>
   <p><strong>The path.</strong> A reader who does not trust the book — correctly — and wants to falsify it. <strong>The chapters:</strong> C34.8 (the self-audit: what is verified, what is pending, what was corrected — including the E12 transcript values and the E03 pose-speed correction) → C02 (the provenance contract every claim must satisfy) → the claims register (<code>python lab/claims_register.py</code>: the 24 load-bearing claims, each with an artifact path) → a C32 lab re-run of the skeptic's choosing. <strong>The expected skill gain:</strong> the ability to independently confirm or break any measurable claim in the book — this is <strong>measured</strong>, not projected, because the register is the same artifact the book's own CI runs; the pass bar is "24 claims, 0 problems." <strong>The payoff:</strong> trust — the skeptic who runs the audit and finds zero problems has earned the right to believe the rest, and the skeptic who finds a drift has earned a citation in the errata.</p>
   <figure id="fig-34-13" class="full">
-    <img src="shared/images/c34-uc05-skeptic-path.png" alt="Skeptic path: a magnifying glass over a CLAIMS REGISTER checklist, nodes C02 PROVENANCE, C32 RERUN, C34 AUDIT, VERDICT with a PASS or FAIL badge." loading="lazy"/>
+    <img src="../images/c34-uc05-skeptic-path.png" alt="Skeptic path: a magnifying glass over a CLAIMS REGISTER checklist, nodes C02 PROVENANCE, C32 RERUN, C34 AUDIT, VERDICT with a PASS or FAIL badge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.13</span>: Use-Path 5 — The Skeptic. The audit path: provenance, register, re-run, verdict. Falsification is a first-class reading mode.</figcaption>
   </figure>
 
   <h3>Use-Path 6 — The Builder (reproduce everything)</h3>
   <p><strong>The path.</strong> An engineer who wants the whole machine, not a tour of it. <strong>The chapters:</strong> the reproduction contract (34.5b: clone, enter the lab, run the register, run everything) → C32 in wave order (capture, calibration, perception, representation, models, agents, live, deployment) → C31 (the deployment lane: what it takes to run this outside the lab). <strong>The expected skill gain</strong> <strong>[verify]</strong>: a working dual-sport pipeline on Apple Silicon — pickleball video → PBN rows → dashboard, rugby league broadcast → tracking → eventing → EPV — with per-claim evidence and the Colab lanes identified for the GPU-bound labs. <strong>The payoff:</strong> capability — the builder leaves with a system they own, a claims register they can extend, and the update channel (34.6b) as the contribution route back.</p>
   <figure id="fig-34-14" class="full">
-    <img src="shared/images/c34-uc06-builder-path.png" alt="Builder path: GIT CLONE terminal to C32 RUN to METRICS.JSON to 24 CLAIMS PASS to DASHBOARD monitor, with pickleball paddle and rugby ball icons." loading="lazy"/>
+    <img src="../images/c34-uc06-builder-path.png" alt="Builder path: GIT CLONE terminal to C32 RUN to METRICS.JSON to 24 CLAIMS PASS to DASHBOARD monitor, with pickleball paddle and rugby ball icons." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.14</span>: Use-Path 6 — The Builder. The reproduction contract executed: clone, run, verify, deploy.</figcaption>
   </figure>
 
@@ -632,7 +632,7 @@
   <p>The C27 critic is the agent's safety belt. Before the agent emits a coaching recommendation, a tactical forecast, or a player rating, the critic checks the claim against the schema, the lab artifact, and the failure-mode list. The critic asks: Is the value within the artifact's range? Is the sport boundary respected? Is the causal language warranted? The critic is the adversarial role from the Teamwork multi-agent research loop (C01). It is the reason the agent path does not collapse into the single-agent agreement bias that produces hallucinated serves and imaginary line calls.</p>
 
   <figure id="fig-34-04" class="full">
-    <img src="shared/images/c34-agent-path.png" alt="Agent path: C17 Schema leads to C32 Labs, then to CLAIMS Register, then to C27 Critic, with loops back to Schema and Labs, and a Human Gate at the end." loading="lazy"/>
+    <img src="../images/c34-agent-path.png" alt="Agent path: C17 Schema leads to C32 Labs, then to CLAIMS Register, then to C27 Critic, with loops back to Schema and Labs, and a Human Gate at the end." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.4</span>: The Agent Path. The agent reads C17, runs C32, checks the CLAIMS register, routes through the C27 critic, and stops at the human gate.</figcaption>
   </figure>
 
@@ -695,7 +695,7 @@
   <p><strong>The rest of the acronym universe (by chapter):</strong> C01-C05: ROI, SHA-256, FOV, AV1, HEVC, DuckDB, EPTS; C06-C09: DLT, RANSAC, RMSE, GMC, ReID, MOT; C10-C16: mIoU, PQ, SMPL-X, CoM, Cd (drag coefficient), TDoA; C17-C19: SPADL, MOTChallenge, GS-HOTA, PRTreID, kappa, Landis-Koch; C20-C24: CI, ECE, Wilson, Brier, CV (cross-validation + computer vision — context disambiguates), do-calculus, Wasserstein; C25-C27: MCP, SDK, ADK, RAG, OTel, MoE, MAU; C28-C31: WebRTC, HUD, ACWR, sRPE, GDPR, PML (platform license), NIST AI RMF. The pattern across them: <strong>the acronym is load-bearing in exactly one chapter, and the chapter's first use spells it</strong> — the book's cross-referencing rule.</p>
 
   <figure id="fig-34-05" class="full">
-    <img src="shared/images/c34-glossary-wheel-fixed.png" alt="Glossary wheel: five acronym families around the Evidence Contract hub." loading="lazy"/>
+    <img src="../images/c34-glossary-wheel-fixed.png" alt="Glossary wheel: five acronym families around the Evidence Contract hub." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.5</span>: The Glossary Wheel. Five acronym families around the Evidence Contract hub — the vocabulary map of the book.</figcaption>
   </figure>
 
@@ -704,7 +704,7 @@
   <p>The map is not a suggestion to read only one sport. It is a warning: a rugby league analyst who skips the pickleball baseline will miss the controlled experiment that proves the method works. A pickleball analyst who skips the rugby league chapters will miss the failure modes that only appear in broadcast panning, zoom, and occlusion. The two sports are each other's adversarial critic. The map in Figure 34.6 shows the tracks and the shared checkpoints. At each checkpoint, the reader must produce a sport-specific artifact — a PBN row for pickleball, an NRLSheet row for rugby league — before advancing.</p>
 
   <figure id="fig-34-06" class="full">
-    <img src="shared/images/c34-dual-sport-navigation.png" alt="Dual-sport navigation map: two parallel tracks for pickleball and rugby league branching from a shared evidence spine with chapter nodes and sport icons." loading="lazy"/>
+    <img src="../images/c34-dual-sport-navigation.png" alt="Dual-sport navigation map: two parallel tracks for pickleball and rugby league branching from a shared evidence spine with chapter nodes and sport icons." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.6</span>: The Dual-Sport Navigation Map. Pickleball and rugby league tracks share the evidence spine but diverge at geometry, perception, and live-action chapters.</figcaption>
   </figure>
 
@@ -722,7 +722,7 @@ python run_everything.py</code></pre>
   <p>The reproduction contract is not a guarantee that every experiment will run on every machine. Some labs require a GPU for reasonable speed; some require a specific camera fixture; some require the NRL broadcast clip or the pb-003 pickleball dataset. The contract is honest about these boundaries. If a lab cannot run, the claims register marks the dependent claims as <strong>unknown</strong> rather than <strong>pass</strong>. The contract's purpose is to make the boundary visible, not to hide it.</p>
 
   <figure id="fig-34-07" class="full">
-    <img src="shared/images/c34-reproduction-contract.png" alt="Reproduction contract card: a document shape with exact commands, a PASS badge, SHA-256 tag, and pickleball and rugby league icons." loading="lazy"/>
+    <img src="../images/c34-reproduction-contract.png" alt="Reproduction contract card: a document shape with exact commands, a PASS badge, SHA-256 tag, and pickleball and rugby league icons." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.7</span>: The Reproduction Contract. The exact commands that reproduce the book's claims, with the expected output and the boundary conditions.</figcaption>
   </figure>
 
@@ -736,7 +736,7 @@ python run_everything.py</code></pre>
   <p>The update channel is also where new sports enter. A reader who adapts the method to basketball or netball can contribute a new C17 schema variant, a new C32 lab, and a new row in the dual-sport navigation map. The schema-first design means the book does not need a rewrite for each new sport; it needs a new schema, a new lab, and a new figure in the navigation map. The same update loop applies: the new lab runs, the claims register is updated, and the chapter is patched.</p>
 
   <figure id="fig-34-08" class="full">
-    <img src="shared/images/c34-update-loop.png" alt="Update loop: a circular flow connecting Reader Feedback, Claims Register, Lab Re-run, Chapter Patch, and Release with sport and GitHub icons." loading="lazy"/>
+    <img src="../images/c34-update-loop.png" alt="Update loop: a circular flow connecting Reader Feedback, Claims Register, Lab Re-run, Chapter Patch, and Release with sport and GitHub icons." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 34.8</span>: The Update Channel. Reader feedback drives the claims register, the lab re-run, the chapter patch, and the release.</figcaption>
   </figure>
 

@@ -521,12 +521,12 @@
   <p>Everything in this chapter is <strong>measured</strong> on our own fixture: the probe output, the 6-frame golden extraction (hashes in <code>manifest.json</code>), and the DuckDB query results (<code>experiments/c05-ingest/outputs/</code>). The methodology itself is <strong>source-backed</strong> — it mirrors the documented single-source-of-truth architecture across pro providers (Second Spectrum, SkillCorner, Stats Perform/Opta Vision) and the open standards those providers align to (kloppy, SPADL, FIFA EPTS, MOTChallenge).</p>
 
   <figure id="fig-05-01" class="full">
-    <img src="shared/images/ingest-pipeline.png" alt="Ingest pipeline flow: RAW VIDEO to SLICE to FRAMES to DETECT to TRACK to CALIBRATE to EVENT to DUCKDB SPINE with burnt-orange connectors." loading="lazy"/>
+    <img src="../images/ingest-pipeline.png" alt="Ingest pipeline flow: RAW VIDEO to SLICE to FRAMES to DETECT to TRACK to CALIBRATE to EVENT to DUCKDB SPINE with burnt-orange connectors." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.1</span>: The Ingest Pipeline. Every stage emits a manifest-linked artifact; nothing downstream is trusted unless the stage above it is.</figcaption>
   </figure>
 
     <figure id="fig-05-02" class="full">
-    <img src="shared/images/spine-one-data-model.png" alt="One data spine central column with video frames tracking rows and event rows flowing in, coach reports and model training flowing out." loading="lazy"/>
+    <img src="../images/spine-one-data-model.png" alt="One data spine central column with video frames tracking rows and event rows flowing in, coach reports and model training flowing out." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.2</span>: The One Spine. Tracks and events in one schema, consumed by coaching, training, and replay — the single-source-of-truth pattern used by pro providers.</figcaption>
   </figure>
 
@@ -563,7 +563,7 @@ peak on-court players per frame: 6 (doubles = 4; &gt;4 or &lt;4 -> fragmentation
   <p>For the rally-start problem specifically, the frame map is not enough. A clip boundary is a <em>human decision</em>: serve toss, ball contact, first tackle, play-the-ball. The spine therefore stores a <code>rally_window</code> (or <code>set_of_six_window</code>) table with columns <code>clip_id, start_frame_idx, start_pts_s, end_frame_idx, end_pts_s, annotated_by, evidence_refs</code>. When a downstream query joins tracks to a rally, it joins on the window, not on a filename convention.</p>
 
   <figure id="fig-05-03" class="full">
-    <img src="shared/images/c05-frame-index-event-log.png" alt="Frame index map timeline with rally windows and event log chips anchored to specific frames." loading="lazy"/>
+    <img src="../images/c05-frame-index-event-log.png" alt="Frame index map timeline with rally windows and event log chips anchored to specific frames." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.3</span>: The Frame Index and Event Log. Rally windows are human annotations on top of the frame map; every event chip is anchored to a frame index and a presentation timestamp.</figcaption>
   </figure>
 
@@ -584,7 +584,7 @@ peak on-court players per frame: 6 (doubles = 4; &gt;4 or &lt;4 -> fragmentation
   <p>The manifest is a JSON file per clip. It records the source clip hash, the derived clip hash, the slice boundaries, the FFmpeg version, the frame map path, and the produced timestamp. It is immutable: if you re-slice or re-encode, you mint a new manifest with a <code>supersedes</code> pointer to the parent. This is the row-level provenance discipline that makes the rest of the chapter trustworthy.</p>
 
   <figure id="fig-05-04" class="full">
-    <img src="shared/images/c05-data-quality-fields.png" alt="A data row exploded into six metadata cells: source, model, confidence, evidence, review, with burnt-orange accent." loading="lazy"/>
+    <img src="../images/c05-data-quality-fields.png" alt="A data row exploded into six metadata cells: source, model, confidence, evidence, review, with burnt-orange accent." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.4</span>: Row-Level Metadata. Every track and event row carries source, model, confidence, evidence, and review flags before it is allowed into the spine.</figcaption>
   </figure>
 
@@ -601,7 +601,7 @@ peak on-court players per frame: 6 (doubles = 4; &gt;4 or &lt;4 -> fragmentation
   <p>The join key is the whole point: <code>(clip_id, frame_idx, pts_s)</code>. It appears in every track row, every event row, and every frame file. This is what lets DuckDB ASOF-join a million track rows to a few hundred event rows, and what makes the golden-fixture harness possible. The PBN event dictionary in this repo adds 31 columns including <code>evidence_level</code>, <code>evidence_refs</code>, <code>confidence</code>, <code>human_correction</code>, <code>review_required</code>, and <code>coaching_note</code>. Those are not decoration; they are the filter that keeps the query layer honest.</p>
 
   <figure id="fig-05-05" class="full">
-    <img src="shared/images/c05-one-spine-schema.png" alt="Two tables joined by a central burnt-orange key bar: tracks with a pickleball court sketch and events with a rugby pitch sketch." loading="lazy"/>
+    <img src="../images/c05-one-spine-schema.png" alt="Two tables joined by a central burnt-orange key bar: tracks with a pickleball court sketch and events with a rugby pitch sketch." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.5</span>: The One Spine. The same join key links pickleball tracks and rugby events to a single queryable schema.</figcaption>
   </figure>
 
@@ -613,7 +613,7 @@ peak on-court players per frame: 6 (doubles = 4; &gt;4 or &lt;4 -> fragmentation
   <p>JSON is the right format for the manifest because it is small, human-readable, and versioned by git. It is the wrong format for 8,862 track rows because it is row-oriented, uncompressed, and slow to query. Parquet is columnar, typed, and predicate-pushdown friendly. DuckDB can read a Parquet lake of millions of rows without loading anything into memory. The rule: <strong>JSON for contracts and metadata, Parquet for rows, filesystem for bytes, Zarr for dense arrays</strong> such as court-occupancy heatmaps.</p>
 
   <figure id="fig-05-06" class="full">
-    <img src="shared/images/c05-storage-stack.png" alt="Four-layer storage stack: video files, Parquet tables, Zarr arrays, DuckDB SQL engine on top." loading="lazy"/>
+    <img src="../images/c05-storage-stack.png" alt="Four-layer storage stack: video files, Parquet tables, Zarr arrays, DuckDB SQL engine on top." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.6</span>: Storage Stack. Video bytes stay on the filesystem; rows live in Parquet; dense arrays go to Zarr; DuckDB queries across all of them.</figcaption>
   </figure>
 
@@ -685,7 +685,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The golden seed is six frames: pb-003-frame-01..06, with content hashes in the manifest, and 12 event review rows from the PBN Data Dictionary. Those six frames are the regression harness for the perception pipeline. The README calls for a Tier-1 annotation pass: ball positions on every frame where the ball is visible, court keypoints every 50 frames, and player boxes on all 900 frames (or a 300-frame active-learning spread plus interpolation). The "596-frame annotated corpus" is the planned next milestone: a contiguous, contact-labeled block of frames that is large enough to train a first shot-type classifier and a ball-tracker head. It is not on disk today. The honest current state is a 900-frame source clip with a six-frame golden seed and a 12-row event review.</p>
 
   <figure id="fig-05-07" class="full">
-    <img src="shared/images/c05-pb003-dataset.png" alt="pb-003 dataset tree: root clip, 900 frames, six golden frames, 8,862 track rows, 12 event rows." loading="lazy"/>
+    <img src="../images/c05-pb003-dataset.png" alt="pb-003 dataset tree: root clip, 900 frames, six golden frames, 8,862 track rows, 12 event rows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.7</span>: The pb-003 Dataset Skeleton. A 900-frame source clip, six golden frames, 8,862 track rows, and 12 event review rows. The 596-frame annotated corpus is the next target, not the current state.</figcaption>
   </figure>
 
@@ -701,7 +701,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>Every field is either measured from CV (play-the-ball location from the homography), scraped from nrlR (match/set/outcome), or hand-coded by an analyst (review_required). The <code>source</code> column is not a footnote; it is a join key to the evidence manifest. An EPV query can therefore be written as a single SQL statement: average next-score value grouped by <code>(ptb_x_m, ptb_y_m, tackle_in_set)</code>, filtered to rows where <code>evidence_level</code> is not <code>simulated</code>.</p>
 
   <figure id="fig-05-08" class="full">
-    <img src="shared/images/c05-nrl-event-structure.png" alt="NRL event row table with column headers, a small rugby pitch glyph, and an arrow from nrlR/Useless NRL Stats." loading="lazy"/>
+    <img src="../images/c05-nrl-event-structure.png" alt="NRL event row table with column headers, a small rugby pitch glyph, and an arrow from nrlR/Useless NRL Stats." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.8</span>: NRL-Set Row Structure. A proposed event-row schema for rugby league, with play-the-ball coordinates, Rugby League Project IDs, and the same evidence metadata as PBN.</figcaption>
   </figure>
 
@@ -713,7 +713,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The 2fps VLM sampling problem is worse. A vision-language model that ingests one frame every half-second is cheap, but it will almost always miss the actual contact frame. A serve, a dink, a tackle, or a play-the-ball occurs between the sampled frames. The model then hallucinates the event timing from context. The right use of a VLM is not to spot contacts; it is to narrate a rally after the event rows have been anchored by a high-frame-rate detector or a temporal-difference state machine. If a VLM is the only source, the event row must carry a low confidence and a large review flag.</p>
 
   <figure id="fig-05-09" class="full">
-    <img src="shared/images/c05-fps-sampling-problem.png" alt="Three timelines: 60fps dense ticks, 25fps sparser ticks, 2fps large dots missing the contact between them." loading="lazy"/>
+    <img src="../images/c05-fps-sampling-problem.png" alt="Three timelines: 60fps dense ticks, 25fps sparser ticks, 2fps large dots missing the contact between them." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.9</span>: Frame-Rate Honesty. A 2fps VLM sample almost always misses a contact event; the event row must be anchored to a higher-frame-rate signal or flagged for review.</figcaption>
   </figure>
 
@@ -728,7 +728,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: a coach asks "show every rally where the far-left player was inside the non-volley zone at contact," and the analyst's answer must be a query, not a week of scripting. The mechanism is the join key <code>(clip_id, frame_idx, pts_s)</code> carried by every track row and event row, with the coordinate chain pixel → court feet → court metres (homography from ch. 6; ×0.3048 to metres, canonical). The storage math is why this scales: a track row is ~80 bytes in Parquet (pruned columns, Snappy compression), so 1M rows ≈ 80 MB; a 90-minute NRL broadcast at 25fps is 135,000 frames × ~16 tracked entities ≈ 2.2M rows ≈ 175 MB [verify — practitioner estimate; pb-003 measured 8,862 rows / 900 frames ≈ 9.8 rows per frame]. An entire season fits in laptop RAM; DuckDB's ASOF JOIN resolves each track row to its governing event without a lateral join.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc01-spine-production.png" alt="One spine column with join key badge, pickleball court feeding track rows and rugby pitch feeding event rows, outputs to coach, model, replay." loading="lazy"/>
+    <img src="../images/c05-uc01-spine-production.png" alt="One spine column with join key badge, pickleball court feeding track rows and rugby pitch feeding event rows, outputs to coach, model, replay." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.10</span>: UC 01 — The One Spine in Production. One join key links both sports' rows to one queryable schema. <strong>Pickleball</strong>: kitchen-line SQL over PBN event rows. <strong>Rugby league</strong>: EPV grouping by (ptb_x_m, tackle_in_set) over NRL-set rows.</figcaption>
   </figure>
 
@@ -738,7 +738,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: without a frozen, measured fixture, every pipeline change is an opinion. The mechanism is the measured pb-003 run (measured, E02): a 30-second, 900-frame, 30fps AV1 doubles clip; 8,862 track rows; 3,416 on-court rows; 26 unique ByteTrack IDs for four actual players; 6 golden frames with SHA-256 hashes in the manifest. The math is diagnostic: tracker ID inflation = 26/4 = 6.5× the true player count, and on-court yield = 3,416/8,862 = 38.5% of rows survive the on-court filter — two numbers the spine exposes before anyone claims anything from it. Storage cost of the whole fixture: six PNGs plus expected-output JSON, a few MB, git-safe.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc02-pb003-pipeline.png" alt="pb-003 pipeline: raw clip 900 frames to slice to frames to detect 8862 rows to track to six golden badge to parquet spine." loading="lazy"/>
+    <img src="../images/c05-uc02-pb003-pipeline.png" alt="pb-003 pipeline: raw clip 900 frames to slice to frames to detect 8862 rows to track to six golden badge to parquet spine." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.11</span>: UC 02 — The pb-003 Pipeline (measured). A 900-frame clip reduced to 8,862 rows and six hashed golden frames. <strong>Pickleball</strong>: the regression harness for every perception change. <strong>Rugby league</strong>: the same fixture pattern mirrored on the nrl-001 broadcast clip.</figcaption>
   </figure>
 
@@ -748,7 +748,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: there is no public NRL tackle-by-tackle event corpus (verified: Stats Perform/Opta is the proprietary pipe), so an open EPV model is impossible until the rows exist. The mechanism is the proposed NRL-set row (proposed — design target, not yet a produced file): <code>match_id, set_id, tackle_in_set, ptb_x_m, ptb_y_m, possession_team, ball_carrier_rlp_id, tackle_rlp_ids[], outcome, source, evidence_level, evidence_refs, confidence, review_required</code>, with Rugby League Project IDs as the entity-resolution key and <code>source</code> as a join key to the evidence manifest. The storage math inverts intuition: at ~300 play-the-balls per match and ~200 matches a season, a full NRL season is ~60k rows — a few MB. The scarce resource is annotation labour, not storage; the schema exists so the first manually coded set-of-six lands in the same spine as the pickleball rows.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc03-nrl-event-rows.png" alt="NRL event row exploded into labeled cells with rugby pitch glyph and RLP_ID key bar." loading="lazy"/>
+    <img src="../images/c05-uc03-nrl-event-rows.png" alt="NRL event row exploded into labeled cells with rugby pitch glyph and RLP_ID key bar." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.12</span>: UC 03 — NRL Event Rows (proposed). Play-the-ball coordinates, Rugby League Project IDs, and PBN-grade evidence metadata in one row. <strong>Rugby league</strong>: EPV as a single GROUP BY over (ptb_x_m, ptb_y_m, tackle_in_set). <strong>Pickleball</strong>: the PBN 31-field event row is the working ancestor this schema copies.</figcaption>
   </figure>
 
@@ -760,7 +760,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: the detector's frame 150, the broadcast's frame 150, and the MOT export's frame 151 are the same physical instant — or silently not. The mechanism is the ingest-time frame map (frame_idx 0-based, pts_s, pict_type from ffprobe), with the MOT export as a 1-based projection and the rally window as a human annotation on top. The math is the measured seek result (measured 2026-08-30, M4 Max): on a GOP-30 clip, input-seek + re-encode and output seek both yield 89 frames for a 1.5 s window; <code>-c copy</code> yields 109 — it snapped back to the 4.0 s keyframe, injecting 20 extra frames (~0.67 s at 30fps) before the moment asked for. Every downstream frame_idx is then wrong by up to a GOP [verify per-encode GOP size; 30 measured on our fixture].</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc04-frame-alignment.png" alt="Three timelines broadcast, clip, MOT export with one vertical contact alignment line and pickleball ball glyph." loading="lazy"/>
+    <img src="../images/c05-uc04-frame-alignment.png" alt="Three timelines broadcast, clip, MOT export with one vertical contact alignment line and pickleball ball glyph." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.13</span>: UC 04 — Frame-Index Alignment. One contact instant, three numberings, one frame map. <strong>Pickleball</strong>: rally-start anchored to serve contact, not a filename. <strong>Rugby league</strong>: set_start_frame_idx so EPV knows field position at the set's start, not just at contact.</figcaption>
   </figure>
 
@@ -770,7 +770,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: 8,862 track rows as JSON is a row-oriented, untyped, full-scan blob; as a manifest it is exactly right. The mechanism is the four-layer rule: JSON for contracts and metadata (small, human-readable, git-versioned), Parquet for rows (columnar, typed, predicate pushdown, row-group stats), the filesystem for video bytes (content-hashed, manifest-tracked), Zarr for dense arrays (heatmaps, gridded occupancy). The math: a track row costs ~150-250 bytes as JSON text vs ~30-60 bytes compressed in Parquet — 4-8× smaller, and column pruning means a query reading <code>x_m, y_m</code> never touches the bbox bytes [verify exact ratios on your corpus — practitioner estimate; direction is architectural]. DuckDB reads the lake in-process, zero-copy, no server.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc05-parquet-vs-json.png" alt="JSON full scan versus Parquet pruned column scan comparison with pickleball ball glyph." loading="lazy"/>
+    <img src="../images/c05-uc05-parquet-vs-json.png" alt="JSON full scan versus Parquet pruned column scan comparison with pickleball ball glyph." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.14</span>: UC 05 — Parquet vs JSON. Row-oriented full scans vs columnar pruning. <strong>Pickleball</strong>: 8,862 rows queried by zone in milliseconds. <strong>Rugby league</strong>: a season of play-the-ball rows on a laptop, partitioned by clip_id.</figcaption>
   </figure>
 
@@ -780,7 +780,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: the corpus mixes measured CV rows, scraped rows, and hand-coded rows; without quality columns every number looks equally true. The mechanism is the PBN evidence discipline at row level: <code>evidence_level, evidence_refs, confidence, human_correction, review_required</code>, enforced by a spine gate that refuses rows without evidence refs that resolve. The math is the filter economics: a <code>WHERE evidence_level != 'simulated'</code> predicate costs nothing under column pruning — the expensive side is populating the column (seconds of analyst attention per row), which is why the schema makes the gate structural rather than aspirational. This is the claims-register idea (ch. 2) pushed down to the row.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc06-quality-metadata.png" alt="Data row exploded into six metadata chips with a spine gate rejecting a row missing evidence." loading="lazy"/>
+    <img src="../images/c05-uc06-quality-metadata.png" alt="Data row exploded into six metadata chips with a spine gate rejecting a row missing evidence." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.15</span>: UC 06 — Quality Metadata. Source, model, confidence, evidence, review, hash — or the row does not enter the spine. <strong>Pickleball</strong>: PBN rows carry evidence_level from the Data Dictionary verbatim. <strong>Rugby league</strong>: scraped nrlR rows and CV-derived rows distinguished by source, never blended silently.</figcaption>
   </figure>
 
@@ -792,7 +792,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: a vision-language model fed one frame every half-second is cheap, and it will almost always miss the contact it is asked to time. The mechanism is sampling arithmetic, not model quality: a serve contact lasts ~4 ms, so at 2fps the probability a sample lands on the contact frame is ≈ 4/500 = 0.8% [verify — practitioner model of contact duration]; the model then hallucinates timing from context. Nyquist framing: resolving a 4 ms event needs ≥250fps for two samples per event — broadcast gives 25-30, so the honest contract is that the VLM narrates events anchored by a higher-rate signal (detector, temporal-difference state machine), never detects them. Any VLM-sourced event row carries low confidence and a review flag.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc07-2fps-sampling.png" alt="30fps dense timeline with contact tick versus 2fps sparse dots missing the contact in the gap." loading="lazy"/>
+    <img src="../images/c05-uc07-2fps-sampling.png" alt="30fps dense timeline with contact tick versus 2fps sparse dots missing the contact in the gap." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.16</span>: UC 07 — The 2 FPS Sampling Problem. The contact falls between samples; the gap is the error zone. <strong>Pickleball</strong>: serve and dink contacts anchored at 30fps, narrated by the VLM after. <strong>Rugby league</strong>: play-the-ball boundaries from the eventer; the VLM narrates the set, not the tackle instant.</figcaption>
   </figure>
 
@@ -802,7 +802,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: the auto-eventing state machine (ch. 19) needs an event log it can trust, replay, and re-process when the rules change. The mechanism is an append-only, immutable store of event chips ordered by <code>pts_s</code>, consumed by three independent readers — the state machine, the EPV model (ch. 22), and the live cockpit (ch. 28) — with re-processing defined as replay from raw, never as editing history. The math: event volume is small — a pickleball match yields ~500-1,500 events, an NRL match ~2-4k play-the-ball and tackle rows; a season is well under 1M rows [verify — practitioner estimate]. The design constraint is therefore ordering and replayability, not scale: idempotent consumers, monotonic timestamps, and no destructive updates.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc08-event-store.png" alt="Append-only strip of event chips ordered by pts_s feeding state machine, EPV model, and cockpit." loading="lazy"/>
+    <img src="../images/c05-uc08-event-store.png" alt="Append-only strip of event chips ordered by pts_s feeding state machine, EPV model, and cockpit." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.17</span>: UC 08 — Event Store Design. Immutable chips, three consumers, replay instead of re-annotation. <strong>Pickleball</strong>: serve-dink-speed-up chips reprocessed when the rally grammar changes. <strong>Rugby league</strong>: tackle and play-the-ball chips replayed when the set-of-six rules formalism (ch. 3) is revised.</figcaption>
   </figure>
 
@@ -812,7 +812,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: a number in a report must be traceable to the exact bytes it came from, or it is not evidence. The mechanism is the content-hash DAG: raw → clip → frames → tracks → events → report, each node carrying a SHA-256 badge, each edge a <code>derived_from</code> relation, with re-encodes minting child manifests that point at the parent via <code>supersedes</code>. The math: hashing is cheap and one-time — SHA-256 streams at hundreds of MB/s on Apple Silicon, so a 4 GB match master costs seconds to fingerprint [verify exact throughput on your hardware]; lineage metadata is &lt;1 KB per artifact. The expensive failure is the one the DAG prevents: a re-encode that silently invalidates every hash downstream.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc09-lineage.png" alt="Provenance DAG from raw to clip to frames to tracks to events to report with hash badges and a supersedes edge." loading="lazy"/>
+    <img src="../images/c05-uc09-lineage.png" alt="Provenance DAG from raw to clip to frames to tracks to events to report with hash badges and a supersedes edge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.18</span>: UC 09 — Data Lineage. Every artifact hashed, every derivation an edge, every re-encode a child. <strong>Pickleball</strong>: golden-frame hashes pin the regression harness to exact bytes. <strong>Rugby league</strong>: broadcast clip provenance separates licensed footage from derived, redistributable rows.</figcaption>
   </figure>
 
@@ -822,7 +822,7 @@ WHERE t.class = 'ball';</code></pre>
   <p>The practical problem: a claim in this book must be re-runnable by a stranger, or it is marketing. The mechanism is the contract card: pinned inputs (random seed, weights SHA-256, ffmpeg version, fixture IDs) on one side, outputs (metrics.json, golden-fixture results) on the other, with CI re-running the fixture suite on every change and golden outputs re-blessed only deliberately, with a commit message naming the model change. The math: the fixture suite costs seconds per run — six frames through the detector at interactive rates — so the contract is cheap enough to run on every commit; a full-lab re-run is minutes. The claims register audit (<code>lab/claims_register.py</code>, ch. 32) holds the bar: 24 claims, 0 problems.</p>
 
   <figure class="full">
-    <img src="shared/images/c05-uc10-repro-contract.png" alt="Reproducibility contract card with pinned inputs, outputs, equals sign, and CI pass badge." loading="lazy"/>
+    <img src="../images/c05-uc10-repro-contract.png" alt="Reproducibility contract card with pinned inputs, outputs, equals sign, and CI pass badge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 5.19</span>: UC 10 — The Reproducibility Contract. Pinned inputs, declared outputs, CI as the referee. <strong>Pickleball</strong>: the six-frame pb-003 fixture is the perception unit test. <strong>Rugby league</strong>: the nrl-001 fixture mirrors it so broadcast-lane claims carry the same bar.</figcaption>
   </figure>
 

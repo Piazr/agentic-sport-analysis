@@ -530,12 +530,12 @@
   <p>The four tiers converge on one mathematical object — a continuous-discrete extended Kalman filter, clocked by IEEE 1588 Precision Time Protocol — and one storage object: the columnar match spine of chapter 5. Everything else in this chapter is market reality wrapped around that engineering core: what each tier costs, which products are alive, which are bricked, and what a single practitioner on an Apple M4 Max can honestly replicate.</p>
 
   <figure id="fig-30-01" class="full">
-    <img src="shared/images/2026-09-04-c30-hardware-tier-matrix.svg" alt="Hardware tier matrix: each sensor class, its price band, and whether it earns it." loading="lazy"/>
+    <img src="../images/2026-09-04-c30-hardware-tier-matrix.svg" alt="Hardware tier matrix: each sensor class, its price band, and whether it earns it." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.1</span>: The Hardware Tier Matrix. What each class measures, its price band, and whether it earns it.</figcaption>
   </figure>
 
   <figure id="fig-30-02" class="full">
-    <img src="shared/images/ch30-sensor-hierarchy.png" alt="Four-tier sensor hierarchy: optical, wearable IMU, smart implement, and environmental layers feeding an EKF fusion base." loading="lazy"/>
+    <img src="../images/ch30-sensor-hierarchy.png" alt="Four-tier sensor hierarchy: optical, wearable IMU, smart implement, and environmental layers feeding an EKF fusion base." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.2</span>: The Four-Tier Sensor Hierarchy. Optical (where), wearable (how hard), smart implement (what the ball felt), environment (what the venue did) — four asynchronous streams converging on one fusion filter.</figcaption>
   </figure>
 
@@ -615,7 +615,7 @@
   <p>The lesson generalizes beyond racquets, and it is one of the load-bearing claims of this book: <strong>a sensor that needs a proprietary server dies with the server; a sensor whose data lands in an open, queryable spine outlives its vendor.</strong> It is why chapter 5 insists on DuckDB and open formats, why the inventory table above privileges CSV/API export (Catapult, STATSports, Polar, VALD, Hawkin, PB Vision Premium), and why the rugby league equivalent — the smart ball — only survives because leagues, not consumers, hold the license. When a competition signs the data contract (Adidas Trionda's Kinexon 500 Hz IMU at the FIFA World Cup; the Sportable Gilbert ball in rugby), the telemetry is infrastructure. When a consumer buys it, the telemetry is a subscription hostage.</p>
 
   <figure id="fig-30-03" class="full">
-    <img src="shared/images/ch30-graveyard.png" alt="Timeline 2015-2026 of dead racquet sensors: Zepp 2020, Babolat 2021, Sony 2021, HEAD 2021, with vision AI rising." loading="lazy"/>
+    <img src="../images/ch30-graveyard.png" alt="Timeline 2015-2026 of dead racquet sensors: Zepp 2020, Babolat 2021, Sony 2021, HEAD 2021, with vision AI rising." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.3</span>: The Sensor Graveyard. Four server-dependent racquet sensors bricked in 2020-21 while phone vision AI took the market — the kill-switch timeline.</figcaption>
   </figure>
 
@@ -625,7 +625,7 @@
   <p>The physics is not the obstacle — the engineering case for an instrumented paddle is real. A paddle-ball contact lasts roughly 4–6 ms; to resolve face angle and sweet-spot offset inside that window you need piezoresistive strain gauges sampled near 2 kHz plus an IMU for swing path, and the payoff would be metrics video struggles with: true impact location, face angle at contact (a few degrees' resolution), and dwell-time spin proxies. The obstacle is the business model. A paddle sensor carries the exact architecture that just killed Zepp, Babolat, Sony, and HEAD — small market, proprietary app, cloud dependency — into a sport whose players already get shot speed and placement from the phone in their pocket. The rugby league contrast is instructive: the smart ball shipped because a league's broadcast and officiating budget underwrites it, not because consumers did. Until a pickleball league or manufacturer makes paddle telemetry infrastructure, the honest implement tier for this sport is chapter 12's ball-tracking camera plus chapter 15's impact audio — sensors you already own.</p>
 
   <figure id="fig-30-04" class="full">
-    <img src="shared/images/ch30-smart-paddle.png" alt="Exploded cross-section of a smart pickleball paddle: IMU chip, strain gauges, honeycomb core, Bluetooth link, crossed-out cloud server." loading="lazy"/>
+    <img src="../images/ch30-smart-paddle.png" alt="Exploded cross-section of a smart pickleball paddle: IMU chip, strain gauges, honeycomb core, Bluetooth link, crossed-out cloud server." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.4</span>: Anatomy of the Missing Smart Paddle. The engineering is straightforward (2 kHz strain gauges, handle IMU, BLE link); the business model is what keeps dying — the crossed-out server is the load-bearing component.</figcaption>
   </figure>
 
@@ -635,7 +635,7 @@
   <p>Why did wearables win here while racquet sensors died? Three structural reasons. <strong>(1) No vision substitute:</strong> a camera cannot measure how hard a 105 kg prop accelerated into contact — the physiological question has no optical answer, whereas shot speed did. <strong>(2) Institutional buyer:</strong> clubs and leagues, not consumers, hold the contract, so the data pipeline is maintained as infrastructure with CSV/API export into the athlete-management system. <strong>(3) Mandate, not novelty:</strong> load monitoring is embedded in periodization and, increasingly, in collectively bargained welfare frameworks — the sensor is part of the employment relationship. The pickleball player's watch is optional; the rugby league forward's vest is not. That difference in buyer and mandate, not sensor quality, is what separates a living market from a graveyard.</p>
 
   <figure id="fig-30-05" class="full">
-    <img src="shared/images/ch30-rl-wearable.png" alt="Rugby league player wearing a GPS vest: pod between shoulder blades, GNSS satellite links, IMU 100Hz and PlayerLoad callouts." loading="lazy"/>
+    <img src="../images/ch30-rl-wearable.png" alt="Rugby league player wearing a GPS vest: pod between shoulder blades, GNSS satellite links, IMU 100Hz and PlayerLoad callouts." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.5</span>: The Rugby League Wearable. Vest-mounted GNSS/IMU pod (Catapult Vector class): 10-18 Hz position, 100 Hz accelerometry, PlayerLoad — the primary sensor of the rugby stack.</figcaption>
   </figure>
 
@@ -647,7 +647,7 @@
   <p>Three practitioner rules survive contact with reality. <strong>Identity is the hard join</strong> — mapping tracklet #7 to jersey #7 to vest #7 is where amateur stacks break, and pros solve it with roster management and manual QA, not magic. <strong>Resample the fast stream to the slow one, never upward</strong> — derive events from 100 Hz IMU and aggregate to the 25-60 Hz video cadence; interpolating HR upward fabricates precision you did not measure. And <strong>fusion error exceeds the effect if the clock slips</strong> — a 450 ms offset swamps the 23% EKF improvement in section 30.4b. Get the clock right first.</p>
 
   <figure id="fig-30-06" class="full">
-    <img src="shared/images/c30-fusion-architecture.png" alt="Fusion architecture: wearable GNSS/IMU plus optical tracking plus event metadata joined by clock sync, registration, and identity into the athlete-management system." loading="lazy"/>
+    <img src="../images/c30-fusion-architecture.png" alt="Fusion architecture: wearable GNSS/IMU plus optical tracking plus event metadata joined by clock sync, registration, and identity into the athlete-management system." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.6</span>: The Fusion Architecture. Optical + wearable + event joined by clock sync, court registration, and identity into the AMS — the same schema as the book's chapter-5 spine.</figcaption>
   </figure>
 
@@ -659,7 +659,7 @@
   <p><strong>Honest label: the E20 demo is synthetic</strong> — a simulated player trajectory with simulated camera noise, not real match video. It proves the filter mechanics and quantifies the ceiling, not the field number. A real-video fusion run against the chapter-9 tracked pickleball footage and a logged wearable session is the open next experiment, and section 30.10 puts it on the list. Until that run exists, treat 23.5% as the mechanism's promise, not its production SLA.</p>
 
   <figure id="fig-30-07" class="full">
-    <img src="shared/images/ch30-ekf-pipeline.png" alt="EKF fusion pipeline: optical 60Hz and IMU 100Hz rails feeding a predict-update loop, fused track output, RMSE 19.0 to 14.5 cm gauge." loading="lazy"/>
+    <img src="../images/ch30-ekf-pipeline.png" alt="EKF fusion pipeline: optical 60Hz and IMU 100Hz rails feeding a predict-update loop, fused track output, RMSE 19.0 to 14.5 cm gauge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.7</span>: The Continuous-Discrete EKF. Predict at 100 Hz from the IMU, correct at 60 Hz from the camera — measured 19.0 → 14.5 cm RMSE on the E20 synthetic benchmark (23.5%).</figcaption>
   </figure>
 
@@ -671,7 +671,7 @@
   <p>The same math flips by sport scale. For pickleball — one court, one phone, 90-minute sessions — the edge rig is the whole stack. For a rugby league club analyzing every match and three training sessions a week across grades, the edge machine handles the real-time lane while batch video understanding still goes to the cloud; the break-even calculation is what decides which lane each workload lives in. Measure your own volume against $6.45 a match before choosing.</p>
 
   <figure id="fig-30-08" class="full">
-    <img src="shared/images/ch30-edge-m4.png" alt="M4 Max edge pipeline: camera frame through Neural Engine, GPU and CPU lanes to a courtside tablet, with a latency bar chart of edge 55.7ms versus cloud APIs." loading="lazy"/>
+    <img src="../images/ch30-edge-m4.png" alt="M4 Max edge pipeline: camera frame through Neural Engine, GPU and CPU lanes to a courtside tablet, with a latency bar chart of edge 55.7ms versus cloud APIs." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.8</span>: Edge vs Cloud. The M4 Max pipeline at 55.7 ms glass-to-glass and $0.00/match marginal cost; cloud frontier VLMs at seconds of latency and $3.22-7.81 per 80-minute match (E19, measured).</figcaption>
   </figure>
 
@@ -681,7 +681,7 @@
   <p>The population anchor is the Apple Heart and Movement Study: across 250,000+ logged pickleball and tennis workouts, pickleball sessions averaged <strong>90 minutes</strong> (tennis 81) with average peak HR of <strong>143 bpm</strong> (tennis 152) — the participation-scale baseline for the masters-age pickleball audience, and the sanity check for any intensity claim a consumer device makes about the sport. The practitioner rule, stated once and applied everywhere in this book: <strong>a wearable's HR is a credible intensity signal; its calorie estimate is marketing; its "readiness score" carries the same caveat box as ACWR — contextual, not predictive.</strong> Any athlete-facing metric shipped without its validation study attached is an opinion dressed as a measurement.</p>
 
   <figure id="fig-30-09" class="full">
-    <img src="shared/images/apple-study-chart.png" alt="Apple Heart and Movement Study chart: pickleball versus tennis workout duration and peak heart rate across 250,000+ workouts." loading="lazy"/>
+    <img src="../images/apple-study-chart.png" alt="Apple Heart and Movement Study chart: pickleball versus tennis workout duration and peak heart rate across 250,000+ workouts." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.9</span>: The Pickleball Health Signal. 250k+ workouts, 90-minute average duration, peak HR 143 — the participation-scale anchor for consumer wearable claims.</figcaption>
   </figure>
 
@@ -746,7 +746,7 @@
   <h3 class="sub-heading">UC 01 — The Smart Paddle: Instrumented Contact, Dead Market</h3>
   <p>The practical problem: pickleball's decisive skill is contact quality — where on the face, at what face angle, with how much dwell — and 60 fps video structurally cannot see inside a 4-6 ms paddle-ball contact. The mechanism is well understood: piezoresistive strain gauges sampled near 2 kHz resolve face angle to a few degrees and sweet-spot offset to millimeters inside the dwell window (sampling at 2 kHz against a 4-6 ms event gives 8-12 samples per contact — the minimum for a transient peak fit), plus a handle IMU for swing path. The market verdict is the point of section 30.3b: the only verifiable product, the Potenza SMARTx, is pre-order at $595.95, sold out, and unvalidated [verify] — and every predecessor (Zepp, Babolat, Sony, HEAD) was bricked by its own cloud. The honest case: the physics is easy, the business model is what keeps dying.</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc01-smart-paddle.png" alt="Smart pickleball paddle with handle IMU and face strain gauges, Bluetooth link, and crossed-out cloud server." loading="lazy"/>
+    <img src="../images/ch30-uc01-smart-paddle.png" alt="Smart pickleball paddle with handle IMU and face strain gauges, Bluetooth link, and crossed-out cloud server." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.10</span>: UC 01 — Instrumented Contact. 2 kHz strain gauges plus handle IMU resolve the 4-6 ms dwell window; the crossed-out cloud is the component that killed every predecessor. <strong>Pickleball</strong>: impact location and face angle per shot — the metrics video misses. <strong>Rugby league</strong>: the same architecture lives on in the instrumented kicking tee and ball, because leagues hold the license.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> none you can buy today — the use case is the procurement lesson. Build vision-first (chapter 12), and if instrumented paddles ever ship, buy only one whose data lands in an open spine (chapter 5).</p>
@@ -754,7 +754,7 @@
   <h3 class="sub-heading">UC 02 — The GPS Vest: External Load You Cannot Film</h3>
   <p>The practical problem: no camera measures how hard a 105 kg prop accelerated into contact, and welfare protocols need that number. The mechanism (section 30.3c): a vest pod with 10-18 Hz GNSS fused with 100 Hz tri-axial IMU (±16 g primary, ±100 g shock — the tackle transient is the design constraint), accumulating <strong>PlayerLoad</strong>, the jerk-based kinetic integral PL = Σ √((Δa<sub>x</sub>)² + (Δa<sub>y</sub>)² + (Δa<sub>z</sub>)²) / 100, as the week's external-load currency. Source-backed: Catapult Vector S7/S8 and STATSports Apex are squad-standard; the NRL's Telstra Tracker put receivers in jerseys for broadcast telemetry.</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc02-gps-vest.png" alt="Rugby league player in GPS vest with pod between shoulder blades, GNSS satellite links, IMU and PlayerLoad callouts." loading="lazy"/>
+    <img src="../images/ch30-uc02-gps-vest.png" alt="Rugby league player in GPS vest with pod between shoulder blades, GNSS satellite links, IMU and PlayerLoad callouts." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.11</span>: UC 02 — The Load Vest. GNSS 10-18 Hz plus IMU 100 Hz between the shoulder blades, rated for tackle transients. <strong>Rugby league</strong>: distance, speed zones, accel/decel counts, PlayerLoad — mandated, CBA-governed. <strong>Pickleball</strong>: no vest market; the masters-age equivalent is the Apple Watch HR stream (section 30.6), valid for intensity, not for calories.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> objective weekly load and return-to-play evidence for S&amp;C staff — the sensor wins precisely because the physiological question has no optical answer.</p>
@@ -762,7 +762,7 @@
   <h3 class="sub-heading">UC 03 — The 500 Hz Smart Ball: The Ball Testifies</h3>
   <p>The practical problem: the most contested officiating moments are contact instants — was the ball touched, when did the foot meet it, did it go forward — and 50-60 fps broadcast video aliases all of them. The mechanism: an IMU suspended in the ball's center sampling 500-1,000 Hz, producing sub-millisecond impact timestamps, 3D acceleration, and spin up to 600 rpm; a simple accelerometer transient threshold detects each contact, and the timestamp join (section 30.4) pins it to video. Source-backed: the Adidas Trionda carries a Kinexon 500 Hz chip at the FIFA World Cup 26; the Sportable Gilbert ball brings the same architecture to rugby — league-licensed data, which is exactly why this sensor survives while UC 01's paddle died.</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc06-smart-ball.png" alt="Smart rugby ball cross-section with suspended IMU chip, spin arrows, kicking tee and goal posts." loading="lazy"/>
+    <img src="../images/ch30-uc06-smart-ball.png" alt="Smart rugby ball cross-section with suspended IMU chip, spin arrows, kicking tee and goal posts." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.12</span>: UC 03 — The 500 Hz Ball. Center-suspended IMU: sub-millisecond impact timestamps, 600 rpm spin, contact detection by transient threshold. <strong>Rugby league</strong>: kick timing, forward-pass acceleration signature, knock-on contact evidence. <strong>Pickleball</strong>: no smart pickleball exists [verify] — the nearest truth is PlayReplay-class camera triangulation; the 500 Hz pattern is the reference, not the product.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> officiating-grade contact evidence — and the business-model contrast that proves the chapter's thesis: telemetry survives when a competition, not a consumer, holds the data contract.</p>
@@ -770,7 +770,7 @@
   <h3 class="sub-heading">UC 04 — Whistle &amp; Impact Audio: The Cheapest Sensor You Own</h3>
   <p>The practical problem: event boundaries (stoppages, contacts) are the sparse labels every downstream model needs, and hiring taggers is the expensive way to get them. The mechanism: spectral-flux onset detection on a courtside microphone — the paddle-ball impact is a broadband transient peaking near 2 kHz, the referee whistle a narrowband 2-4 kHz tone — detected by librosa-class onset pickers at 48 kHz. The audio stream does double duty: it is an event feed for chapter 15's audio pipeline <em>and</em> the physical sync anchor that disciplines every other clock in the $1,500 rig (section 30.9, step 2; UC 07 is the pro version of the same problem).</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc05-audio.png" alt="Microphone at net post capturing a 2 kHz paddle impact waveform and a narrowband whistle spectrogram feeding an event detector." loading="lazy"/>
+    <img src="../images/ch30-uc05-audio.png" alt="Microphone at net post capturing a 2 kHz paddle impact waveform and a narrowband whistle spectrogram feeding an event detector." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.13</span>: UC 04 — Audio as Sensor. Impact transient (~2 kHz) and whistle (narrowband 2-4 kHz) detected by onset picking; each spike is both an event and a sync anchor. <strong>Pickleball</strong>: shot clock and impact timestamps for the M4 rig. <strong>Rugby league</strong>: whistle-detected stoppages and crowd-roar segments in broadcast footage, automatic event boundaries for chapter 19.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> near-free event detection plus the universal timestamp that makes the amateur fusion join true — a $20 microphone substitutes for infrastructure pros pay five figures for.</p>
@@ -778,7 +778,7 @@
   <h3 class="sub-heading">UC 05 — Wind &amp; Surface: The Venue Is a Sensor Input</h3>
   <p>The practical problem: a lob that dies in a headwind and a knee that goes on a rock-hard pitch are both data, and neither appears in any tracking stream — so analysts misattribute venue effects to technique. The mechanism: a 3D ultrasonic anemometer (~32 Hz, 0.01 m/s resolution) gives the wind vector that enters the quadratic drag term of chapter 12's ballistics — Δv ≈ (ρ C<sub>d</sub> A / 2m) · v<sub>rel</sub>² · Δt, where a headwind raises v<sub>rel</sub> and drag quadratically; a Clegg impact tester gives surface hardness in CIV, with rugby league pitches playing in the 70-90 CIV band [verify].</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc07-wind-env.png" alt="Ultrasonic anemometer measuring wind over a pickleball court with a deflected lob, and a Clegg impact tester on a rugby pitch." loading="lazy"/>
+    <img src="../images/ch30-uc07-wind-env.png" alt="Ultrasonic anemometer measuring wind over a pickleball court with a deflected lob, and a Clegg impact tester on a rugby pitch." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.14</span>: UC 05 — Environmental Micro-Climate. 32 Hz wind vector as a drag covariate; CIV 70-90 pitch hardness band. <strong>Pickleball</strong>: wind explains drive/dink drift — log it before blaming mechanics. <strong>Rugby league</strong>: goal-kick wind compensation and surface hardness as an injury-risk covariate feeding chapter 31's welfare lane.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> context columns that stop false conclusions — the cheapest corrective to overconfident video-only analysis.</p>
@@ -788,7 +788,7 @@
   <h3 class="sub-heading">UC 06 — EKF Fusion: Optical + IMU Through Occlusion (E20, Measured)</h3>
   <p>The practical problem: occlusion is vision's structural wall — in a rugby league ruck the ball carrier vanishes for frames; in pickleball doubles the far-side player's paddle disappears behind bodies and the net post. The mechanism is section 30.4b's continuous-discrete EKF: state x = [p, v, b<sub>a</sub>]<sup>T</sup>, prediction at the IMU's 100 Hz (x̂ = Fx + Bu; P propagated through F and Q), asynchronous correction whenever the 60 Hz optical measurement lands (K = PH<sup>T</sup>(HPH<sup>T</sup> + R)<sup>−1</sup>). Measured (E20, synthetic benchmark, <code>experiments/e20-telemetry-fusion/telemetry_fusion_results.json</code>): optical-only RMSE 0.1898 m drops to 0.1451 m fused — <strong>23.5%</strong>, with the honest caveat that the field run against real chapter-9 footage is still open (section 30.10).</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc03-ekf-fusion.png" alt="EKF fusion: camera 60Hz and IMU 100Hz rails feeding a predict-update loop, fused track surviving a ruck occlusion gap, RMSE 19.0 to 14.5 cm gauge." loading="lazy"/>
+    <img src="../images/ch30-uc03-ekf-fusion.png" alt="EKF fusion: camera 60Hz and IMU 100Hz rails feeding a predict-update loop, fused track surviving a ruck occlusion gap, RMSE 19.0 to 14.5 cm gauge." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.15</span>: UC 06 — Fusion Through Occlusion. Predict at 100 Hz, correct at 60 Hz; the fused track survives the gap that kills the optical-only one. <strong>Rugby league</strong>: a winger's track stays alive through the ruck. <strong>Pickleball</strong>: 4.7 cm of RMSE is the difference between "at the kitchen line" and "in the kitchen" — a fault call.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> tracking continuity where it matters most — the filter converts a dead reckoning gap from an identity break into a bounded-error interval.</p>
@@ -796,7 +796,7 @@
   <h3 class="sub-heading">UC 07 — PTP Clock Sync: Sync Is the Product</h3>
   <p>The practical problem: consumer clocks drift ~15 ppm — about 450 ms over a 30-minute session — so the heart-rate row you joined to a video frame belongs to a different rally. Fusion error silently exceeds the effect you are measuring; UC 06's 23.5% is fiction if the clock slips. The mechanism: IEEE 1588 PTP (SMPTE ST 2059-2 in broadcast) exchanges t<sub>1</sub>-t<sub>4</sub> timestamps between master and slave to estimate offset = ((t<sub>2</sub>−t<sub>1</sub>) − (t<sub>4</sub>−t<sub>3</sub>))/2 and delay = ((t<sub>2</sub>−t<sub>1</sub>) + (t<sub>4</sub>−t<sub>3</sub>))/2, disciplining every device to sub-millisecond agreement. The amateur fallback is UC 04's impact-audio anchor — a physical event every sensor can hear.</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc04-ptp-sync.png" alt="PTP grandmaster clock synchronizing a camera, GPS vest and microphone, with a drift-corrected timeline." loading="lazy"/>
+    <img src="../images/ch30-uc04-ptp-sync.png" alt="PTP grandmaster clock synchronizing a camera, GPS vest and microphone, with a drift-corrected timeline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.16</span>: UC 07 — One Clock. PTP grandmaster disciplining camera, vest, and microphone; 450 ms consumer drift corrected to sub-millisecond. <strong>Rugby league</strong>: broadcast genlock plus vest NTP discipline across 26 pods. <strong>Pickleball</strong>: phone, watch, and impact mic aligned by the paddle transient.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> the difference between data and fiction — get the clock right before any other fusion work, and measure your own devices' drift rather than trusting the 15 ppm estimate.</p>
@@ -804,7 +804,7 @@
   <h3 class="sub-heading">UC 08 — The Fusion Join: Three Streams, One Row (C30-lab, Measured)</h3>
   <p>The practical problem: wearable, optical, and event streams each answer a different question (how hard / where / what happened), and coaching value exists only in the joined row. The mechanism: join key (athlete_id, timestamp_s) into the chapter-5 columnar spine — video registered to court coordinates by the chapter-6 homography, GNSS projected to the same local frame, identity resolved by roster/vest assignment on the wearable side and jersey detection on the video side. Measured in the C30 lab artifact (<code>experiments/c30-sensors/outputs/metrics.json</code>): athlete A1 at t=4.2 s, court position (1.82, 3.42) m, speed 1.8 m/s, HR 143 bpm (Polar H10), event <em>dink</em> — one row, three sensors.</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc08-fusion-join.png" alt="Three streams — video frame, wearable heart-rate line, event tag — joining on athlete plus timestamp into one spine table row." loading="lazy"/>
+    <img src="../images/ch30-uc08-fusion-join.png" alt="Three streams — video frame, wearable heart-rate line, event tag — joining on athlete plus timestamp into one spine table row." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.17</span>: UC 08 — The Join. Video + wearable + event on key (athlete_id, timestamp_s) — one spine row, the schema the chapter-28 cockpit consumes. <strong>Pickleball</strong>: four-player roster, identity join is a color check. <strong>Rugby league</strong>: 26 vest assignments against a team sheet — same key, more QA; identity is the hard join (section 30.4).</figcaption>
   </figure>
   <p><strong>Payoff:</strong> the fused row is the atomic unit every downstream chapter reads — resample fast streams down to the slow cadence, never interpolate upward into fabricated precision.</p>
@@ -812,7 +812,7 @@
   <h3 class="sub-heading">UC 09 — Edge Compute: The M4 Pipeline at $0.00 a Match (E19, Measured)</h3>
   <p>The practical problem: a sensor stack that costs dollars per match to analyze will not survive a season; the compute location is an economic decision as much as an engineering one. The mechanism is section 30.5's edge profile (E19, <code>experiments/e19-token-economics/token_economics_benchmark.json</code>): on an Apple M4 Max the full pipeline — Neural Engine detection, CPU association and homography, Metal GPU kinematics — runs at <strong>55.7 ms glass-to-glass</strong>, 68.4 fps, 28.5 W, $0.00 marginal per match; the cloud comparison is $6.447 per 80-minute match on GPT-4o-class VLMs, a 496.2-match break-even [verify at print].</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc09-edge-m4.png" alt="M4 Max edge pipeline with Neural Engine, GPU and CPU lanes feeding a courtside tablet, latency bar versus cloud cost bar." loading="lazy"/>
+    <img src="../images/ch30-uc09-edge-m4.png" alt="M4 Max edge pipeline with Neural Engine, GPU and CPU lanes feeding a courtside tablet, latency bar versus cloud cost bar." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.18</span>: UC 09 — Edge vs Cloud. 55.7 ms and $0.00 marginal on the M4 Max; seconds of latency and per-match dollars in the cloud (E19, measured). <strong>Pickleball</strong>: one court, one machine — the edge rig is the whole stack. <strong>Rugby league</strong>: edge handles the real-time lane; batch video understanding still goes to the cloud on volume.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> sub-60 ms live coaching becomes affordable at amateur scale — and the break-even audit (section 30.10) decides per club which workloads live on the edge versus the cloud.</p>
@@ -820,7 +820,7 @@
   <h3 class="sub-heading">UC 10 — The Graveyard: Sensor Failure as Design Input</h3>
   <p>The practical problem is procurement, not engineering: how do you avoid buying hardware that bricks? The mechanism of death is architectural — data routed through a proprietary cloud dies with the vendor's auth server. Section 30.3's verified timeline: Zepp (servers off ~2020), Babolat Play (EOL 2021-12-31), Sony Smart Tennis Sensor (EOL 2021-09-30), HEAD (died with Zepp). The survival pattern is the inverse: open CSV/API export (Catapult, STATSports, Polar, VALD, Hawkin, PB Vision Premium) or an institutional license holder (the league-licensed ball chip of UC 03). Phone vision did not out-sensor the sensors; it out-distributed them — the camera players already owned beat the sensor they had to buy.</p>
   <figure class="full">
-    <img src="shared/images/ch30-uc10-graveyard.png" alt="Timeline of dead racquet sensors as gravestones 2015-2021 with phone vision AI rising above them." loading="lazy"/>
+    <img src="../images/ch30-uc10-graveyard.png" alt="Timeline of dead racquet sensors as gravestones 2015-2021 with phone vision AI rising above them." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 30.19</span>: UC 10 — The Kill-Switch Timeline. Four server-dependent racquet sensors bricked 2020-21 while vision AI took the market. <strong>Pickleball</strong>: the Potenza SMARTx inherits this exact architecture — await, don't build. <strong>Rugby league</strong>: institutional buyers keep the stack alive, but the export clause is still the contract term that matters.</figcaption>
   </figure>
   <p><strong>Payoff:</strong> one procurement rule that outlives every product cycle — data exit before data entry; a sensor whose rows land in your own spine outlives its vendor.</p>

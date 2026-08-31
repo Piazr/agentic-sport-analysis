@@ -561,7 +561,7 @@
   <p>Metrics deserve the same precision. <strong>IoU</strong> (Jaccard) scores one mask: intersection over union against ground truth. <strong>mIoU</strong> averages per-class IoU over classes — the semantic-segmentation standard, with a sport trap: the dominant class (court, background) inflates the mean, so report per-class IoU for the rare class (ball, line pixels) or the number lies. <strong>Mask AP</strong> is the COCO instance-segmentation standard, averaged over IoU thresholds 0.50 to 0.95; its strictness is useful, because AP at high thresholds punishes exactly the sloppy boundaries that break foot-point extraction. <strong>Boundary IoU</strong> computes overlap only on a narrow band around the mask edge — it measures the contour where sport actually cares, since feet are a boundary phenomenon [verify: no published sport-segmentation benchmark reports Boundary IoU; candidate book contribution]. For video, <strong>J&amp;F</strong> (DAVIS) pairs region IoU with boundary accuracy; SAM 2's published video numbers are J&amp;F.</p>
 
   <figure id="fig-10-02" class="full">
-    <img src="shared/images/ch10-segmentation-taxonomy.png" alt="The same pickleball kitchen scene rendered four ways: semantic (players merged in one blob), instance (per-player masks with boxes), panoptic (players instanced plus court, net, fence labeled), promptable (only the clicked ball and prompted player masked). Recreate: white background, black linework, burnt-orange masks." loading="lazy"/>
+    <img src="../images/ch10-segmentation-taxonomy.png" alt="The same pickleball kitchen scene rendered four ways: semantic (players merged in one blob), instance (per-player masks with boxes), panoptic (players instanced plus court, net, fence labeled), promptable (only the clicked ball and prompted player masked). Recreate: white background, black linework, burnt-orange masks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.2</span>: One Scene, Four Tasks. Semantic merges instances, instance separates them, panoptic labels everything, promptable segments only what you name. The metric under each panel — mIoU, mask AP, PQ, clicks-to-90% — is the contract you sign when you pick the task.</figcaption>
   </figure>
 
@@ -587,21 +587,21 @@
   <p>The occlusion-recovery story, stated as a mechanism: during occlusion, memory attention finds no matching evidence in recent frames and the mask degrades gracefully rather than hallucinating — the predicted IoU drops, which is your automatic loss signal. On re-emergence, the prompted-frame FIFO and object pointers re-anchor the object by matching against the original prompt memory, bridging appearance drift across the occlusion window semantically rather than by raw pixels. For a single salient object this is a genuinely stronger temporal prior than a Kalman filter.</p>
 
   <figure id="fig-10-03" class="full">
-    <img src="shared/images/ch10-sam2-memory-loop.png" alt="SAM 2 streaming pipeline: frame into Hiera encoder pyramid; memory bank with two FIFO queues labeled recent and prompted plus object pointer chips; memory attention lattice node; mask decoder emitting a mask with an IoU gauge; memory encoder feedback arrow returning the mask to the bank. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch10-sam2-memory-loop.png" alt="SAM 2 streaming pipeline: frame into Hiera encoder pyramid; memory bank with two FIFO queues labeled recent and prompted plus object pointer chips; memory attention lattice node; mask decoder emitting a mask with an IoU gauge; memory encoder feedback arrow returning the mask to the bank. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.3</span>: The Streaming Memory Loop. One encoder pass per frame, cross-attention into a bounded two-queue memory bank, multi-mask decode with a predicted-IoU gauge, then the memory encoder pushes the digested mask back onto the bank. Bounded memory is what makes hour-long footage streamable.</figcaption>
   </figure>
 
   <p><strong>Pickleball case.</strong> One click on the paddle blade in frame 0 of pb-003, and SAM 2 propagates the paddle mask through the entire rally — prompt-once, track-many. This is the structural cure for the E04 ball-detection wall (1,082 detections at median score 0.1125 — the frame-by-frame detector barely sees the ball): propagation matches on motion-conditioned appearance, and between consecutive frames the ball's mask overlaps itself even at 40 pixels per frame of flight, so smallness hurts detection but not propagation. The paddle — larger, slower, rigid — is the easier case and the lab's hands-on object.</p>
 
   <figure id="fig-10-04" class="full">
-    <img src="shared/images/ch10-sam2-pickleball-mask.png" alt="Pickleball court diagram with a player at the kitchen line: burnt-orange segmentation mask over the player silhouette, a second mask over the paddle blade, and a dashed arrow from the mask bottom to a circled foot point on the court. Recreate: white background, black court linework, burnt-orange masks." loading="lazy"/>
+    <img src="../images/ch10-sam2-pickleball-mask.png" alt="Pickleball court diagram with a player at the kitchen line: burnt-orange segmentation mask over the player silhouette, a second mask over the paddle blade, and a dashed arrow from the mask bottom to a circled foot point on the court. Recreate: white background, black court linework, burnt-orange masks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.4</span>: Prompted Masks on the Kitchen Line. The player mask gives the foot point from its bottom contour — the pixel the homography actually wants. The paddle mask gives the blade contour — the only path to a face angle. Neither is available from a bounding box.</figcaption>
   </figure>
 
   <p><strong>Rugby league case.</strong> Prompt the ball carrier before a tackle on nrl-001 and SAM 2 tracks his mask into and through the ruck — 13-plus bodies, multi-second occlusion, camera pan. The memory bank's prompted-frame anchor is what recovers him on the far side. The failure to teach is the symmetric one: when two same-kit defenders converge on the carrier simultaneously, the mask can exit the tackle attached to the wrong body, and the predicted IoU does not always flag it, because the new region matches the stored memory almost as well. Region tracking survives the occlusion; identity does not.</p>
 
   <figure id="fig-10-05" class="full">
-    <img src="shared/images/ch10-sam2-rugby-masks.png" alt="Rugby league pitch diagram of a tackle scene: burnt-orange segmentation masks over thirteen outlined players and the oval ball, the ball carrier's mask darker. Recreate: white background, black pitch linework, burnt-orange masks." loading="lazy"/>
+    <img src="../images/ch10-sam2-rugby-masks.png" alt="Rugby league pitch diagram of a tackle scene: burnt-orange segmentation masks over thirteen outlined players and the oval ball, the ball carrier's mask darker. Recreate: white background, black pitch linework, burnt-orange masks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.5</span>: Masks at Rugby Density. Thirteen player masks plus the ball in a tackle frame. Per-object promptable segmentation is tractable here only because each mask propagates through bounded memory — but the same-kit convergence inside the ruck is where region tracking and identity part ways.</figcaption>
   </figure>
 
@@ -613,7 +613,7 @@
   <p>Three architectural facts matter. First, a shared <strong>Perception Encoder</strong> feeds both halves: a DETR-based detector conditioned on text, geometry, or exemplars finds and segments all instances per frame, and a memory-based video tracker inherited from SAM 2 propagates them — detector and tracker are decoupled, so tracking can be corrected interactively without re-running detection. Second, a learned <strong>presence token</strong> first answers "does this concept exist in the scene at all?" before localization, decoupling recognition from localization; this is the mechanism that separates near-identical prompts like "player in white" from "player in red" that a DETR head alone confuses — team-color and role phrases become first-class queries. Third, the benchmark it ships with, <strong>SA-Co</strong>, spans 270K unique concepts (over 50x prior open-vocabulary segmentation benchmarks); Meta reports SAM 3 at 75-80% of human performance on SA-Co, roughly doubling prior systems on image and video PCS [verify: Meta-reported; no sport-footage replication exists yet].</p>
 
   <figure id="fig-10-01" class="full">
-    <img src="shared/images/sam3-concept-segmentation.png" alt="SAM 3 promptable concept segmentation: text chip player in white masking white-clad players with persistent IDs. Recreate: white background, burnt-orange masks." loading="lazy"/>
+    <img src="../images/sam3-concept-segmentation.png" alt="SAM 3 promptable concept segmentation: text chip player in white masking white-clad players with persistent IDs. Recreate: white background, burnt-orange masks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.1</span>: Promptable Concept Segmentation. "Track all players in white" — the 2026 paradigm shift: language replaces per-object geometry prompts.</figcaption>
   </figure>
 
@@ -622,7 +622,7 @@
   <p><strong>SAM 3.1</strong> (March 2026) is a drop-in efficiency update, not a new capability — same prompts, same backbone, no accuracy change. It fixes the exact problem rugby hits first: SAM 3 tracked each object independently, so 26 players plus ball plus referees meant roughly 28 sequential tracking passes per frame, cost scaling linearly with object count. <strong>Object Multiplexing</strong> groups tracked objects into buckets processed jointly through shared memory; Meta reports about 7x faster at large object counts (up to 128 objects on a single H100) [verify: vendor claim on vendor hardware; the book's only planned check is the Colab lab on nrl-001]. A 26-player rugby broadcast frame is precisely the regime where SAM 3 was impractical and SAM 3.1 is merely expensive. Pickleball — four players, ball, two paddles — never left the practical zone. The deeper lesson generalizes: per-object-loop architectures die on field sports; shared-computation architectures survive them.</p>
 
   <figure id="fig-10-06" class="full">
-    <img src="shared/images/ch10-sam3-sport-concepts.png" alt="Three-panel concept segmentation: rugby frame with text chip players in white; same frame with only white-kit players masked and ID badges; pickleball frame with chip paddle and both paddles masked. Recreate: white background, black linework, burnt-orange masks." loading="lazy"/>
+    <img src="../images/ch10-sam3-sport-concepts.png" alt="Three-panel concept segmentation: rugby frame with text chip players in white; same frame with only white-kit players masked and ID badges; pickleball frame with chip paddle and both paddles masked. Recreate: white background, black linework, burnt-orange masks." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.6</span>: Sport Concepts as Prompts. "Players in white" separates a rugby frame by team in one query; "paddle" masks both pickleball paddles with no paddle class anywhere in training. Whether "ball" fires at all on sport footage is the E04 wall in PCS form — unmeasured, and on the 10.9 list.</figcaption>
   </figure>
 
@@ -634,7 +634,7 @@
   <p><strong>Gram anchoring</strong> is the training trick that makes the dense features usable, and it is worth one paragraph because dense features are what a sport pipeline actually queries. The known disease of long self-supervised schedules: global similarity objectives keep improving while per-patch spatial consistency rots, killing downstream detection and segmentation. Gram anchoring regularizes the student's Gram matrices — second-order patch-feature correlations — toward those of an early-training "Gram teacher," pinning local feature geometry so it cannot drift while global semantics keep learning. When you k-NN-query DINOv3 patch features for "patches that look like the ball" on a pickleball frame, or pool them into a ReID embedding for a same-kit rugby crop, Gram anchoring is why the dense maps are sharp enough to answer.</p>
 
   <figure id="fig-10-07" class="full">
-    <img src="shared/images/ch10-dinov3-features.png" alt="DINOv3 feature hierarchy: a pickleball frame feeding three stacked layers labeled early patches, mid features, global token; three small heads below labeled k-NN retrieval, linear probe, mask head; a frozen marker on the stack. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch10-dinov3-features.png" alt="DINOv3 feature hierarchy: a pickleball frame feeding three stacked layers labeled early patches, mid features, global token; three small heads below labeled k-NN retrieval, linear probe, mask head; a frozen marker on the stack. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.7</span>: Frozen Features, Small Heads. The backbone stays frozen (snowflake); only the thin heads train on your labels. Early patches carry edges and textures, mid features carry body parts and paddle shapes, the global token carries the scene — and the head you pick decides which level you spend.</figcaption>
   </figure>
 
@@ -690,7 +690,7 @@
   <p>The honest converse: for a single salient object, mask propagation has <em>better occlusion recovery than most motion-model trackers</em> — the memory bank is a genuinely stronger temporal prior than a Kalman filter. The boundary is not "SAM is worse"; it is "SAM answers a different question." Regions yes, identities no.</p>
 
   <figure id="fig-10-08" class="full">
-    <img src="shared/images/ch10-region-vs-identity.png" alt="Two-lane diagram: upper lane shows a mask propagating across five frames then re-attaching to a wrong identical player at an occlusion, ID badge unchanged, warning triangle; lower lane shows the tracker correctly returning the ID to the original player, check mark. Bracket label: mask is not identity. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch10-region-vs-identity.png" alt="Two-lane diagram: upper lane shows a mask propagating across five frames then re-attaching to a wrong identical player at an occlusion, ID badge unchanged, warning triangle; lower lane shows the tracker correctly returning the ID to the original player, check mark. Bracket label: mask is not identity. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.8</span>: The Boundary in One Picture. Through the same occlusion, the region track (top) re-attaches to the most similar body and keeps its ID badge without noticing; the identity track (bottom) re-assigns correctly because ReID and role priors carry the person, not the pixels.</figcaption>
   </figure>
 
@@ -759,7 +759,7 @@
   <p>The standing rule: the Apache-2.0 stack — SAM 2, Hiera, PE, MobileSAM — ships in a commercial product without counsel. SAM 3/3.1 and DINOv3 are <strong>research-and-book assets pending license review</strong>, the same posture chapter 8 set for DEIMv2's non-commercial fence. Attribution-required is not the same as forbidden, but it means the license text appears in your build process, not just your bibliography.</p>
 
   <figure id="fig-10-09" class="full">
-    <img src="shared/images/ch10-license-spectrum.png" alt="License spectrum from Apache 2.0 with open padlock on the left to custom license with closed padlock on the right; four cards for SAM 2, MobileSAM, SAM 3, and DINOv3 positioned along it, each with an M4 chip icon carrying a check or cross. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch10-license-spectrum.png" alt="License spectrum from Apache 2.0 with open padlock on the left to custom license with closed padlock on the right; four cards for SAM 2, MobileSAM, SAM 3, and DINOv3 positioned along it, each with an M4 chip icon carrying a check or cross. Recreate: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.9</span>: Two Independent Axes. License permissiveness (left to right) and M4 viability (check vs cross) do not correlate: the most permissive model here is not the fastest, and the most capable is neither permissive nor local. Choose per junction, not per brand.</figcaption>
   </figure>
 
@@ -778,7 +778,7 @@
   <p>Meta's foundation models provide general-purpose visual representations. To deploy them in high-speed sports environments, researchers and open-source engineers have built specialized satellite frameworks. These are the libraries a practitioner actually reaches for:</p>
 
   <figure class="full">
-    <img src="shared/images/ch10-sam-ecosystem-sports-stack.jpg" alt="The Meta SAM ecosystem for sports analytics assembled around SAM 2 streaming video, SAM 3 open-vocabulary agent, and SAM-3D-Body with DINOv3." loading="lazy"/>
+    <img src="../images/ch10-sam-ecosystem-sports-stack.jpg" alt="The Meta SAM ecosystem for sports analytics assembled around SAM 2 streaming video, SAM 3 open-vocabulary agent, and SAM-3D-Body with DINOv3." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.10</span>: The Meta SAM Ecosystem for Sports Analytics. Central foundation models (SAM 2 Streaming Video, SAM 3 Open-Vocabulary Agent, SAM-3D-Body with DINOv3) interact with surrounding frameworks (DART, Grounded-SAM 2, SAM-Track, HQ-SAM, MobileSAM) to power real-time tactical and biomechanical applications across pickleball and rugby league.</figcaption>
   </figure>
 
@@ -829,7 +829,7 @@
   <p>The use cases below are the applied bridge from the architectures above to the two sports. They follow four quadrants: <strong>Q-I Micro-Equipment &amp; Ballistics (01-05)</strong>, <strong>Q-II Biomechanics &amp; Collision Safety (06-10)</strong>, <strong>Q-III Tactical Space &amp; Group Dynamics (11-15)</strong>, and <strong>Q-IV Real-Time Edge &amp; AI Safety (16-20)</strong>. Each case pairs a pickleball and a rugby league application so the pipeline transfers, and each carries its evidence label: measured (book experiment), source-backed (paper), or [verify] (practitioner model, not yet established in literature).</p>
 
   <figure class="full">
-    <img src="shared/images/ch10-20-sports-usecases-matrix.jpg" alt="Master visual matrix of the 20 sports analytics use cases across four quadrants." loading="lazy"/>
+    <img src="../images/ch10-20-sports-usecases-matrix.jpg" alt="Master visual matrix of the 20 sports analytics use cases across four quadrants." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.11</span>: The 20 Use Cases Master Matrix. Four quadrants: micro-equipment &amp; ballistics, athlete biomechanics &amp; collision, tactical space &amp; group dynamics, real-time edge &amp; AI safety.</figcaption>
   </figure>
 
@@ -839,7 +839,7 @@
   <p>The difference between an unattackable reset dink and a pop-up that gets smashed is often less than 5° of paddle face tilt. HQ-SAM's boundary-refinement tokens segment the outer carbon-fiber rim with sub-pixel precision; second-order image moments (μ20, μ02, μ11) give the blade's principal inertia axis and surface normal in under 0.8ms [verify — practitioner model, no published benchmark].</p>
 
   <figure class="full">
-    <img src="shared/images/uc01-paddle-blade-angle-tracking.jpg" alt="Sub-pixel paddle blade angle and attack vector tracking in pickleball." loading="lazy"/>
+    <img src="../images/uc01-paddle-blade-angle-tracking.jpg" alt="Sub-pixel paddle blade angle and attack vector tracking in pickleball." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.12</span>: UC 01 — Paddle Blade Angle. HQ-SAM boundary tokens segment the carbon-fiber perimeter, extracting the face-tilt angle, surface normal attack vector, and sweet-spot impact point in 0.8ms. <strong>Pickleball</strong>: open face (&gt;55°) causes pop-up dinks; closed face (&lt;42°) causes net faults. <strong>Rugby league</strong>: kicker boot blade orientation during conversion kicks.</figcaption>
   </figure>
 
@@ -847,7 +847,7 @@
   <p>A 74mm outdoor pickleball has 40 drilled holes generating turbulent drag — the ball loses over 50% of forward velocity within 4m. TrackNetV4 heatmaps locate the ball; SAM 2 memory isolates the silhouette and hole contours; a quadratic drag differential equations models the decay [verify — C_d value is a standard approximation, not measured on this ball].</p>
 
   <figure class="full">
-    <img src="shared/images/uc02-wiffle-ball-drag-decay.jpg" alt="Perforated wiffle ball aerodynamic drag decay in pickleball." loading="lazy"/>
+    <img src="../images/uc02-wiffle-ball-drag-decay.jpg" alt="Perforated wiffle ball aerodynamic drag decay in pickleball." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.13</span>: UC 02 — Wiffle Ball Drag Decay. SAM 2 tracks the 74mm perforated sphere in flight, modeling turbulent wake vorticity and steep velocity decay. <strong>Pickleball</strong>: explains why hard drives float into opponent attack zones. <strong>Rugby league</strong>: end-over-end chip vs torpedo spiral drag comparison.</figcaption>
   </figure>
 
@@ -855,7 +855,7 @@
   <p>A rugby ball is a 28cm prolate spheroid; when kicked as a spiral, flight is gyroscopically stable, but a tumbling end-over-end bounce is chaotic and unpredictable for fielders. SAM-PT plus DINOv3 dense patch features track seam landmarks and compute the angular momentum vector to decompose spin vs tumbling precession, projecting a rebound cone [verify — practitioner model].</p>
 
   <figure class="full">
-    <img src="shared/images/uc03-rugby-ball-spin-bounce-cone.jpg" alt="Oval rugby ball gyroscopic spin axis and tumbling bounce cone." loading="lazy"/>
+    <img src="../images/uc03-rugby-ball-spin-bounce-cone.jpg" alt="Oval rugby ball gyroscopic spin axis and tumbling bounce cone." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.14</span>: UC 03 — Rugby Ball Spin &amp; Bounce Cone. SAM-PT tracks ball seam landmarks, calculating 3D spin vs tumbling wobble to forecast irregular fielding bounce cones. <strong>Rugby league</strong>: fullback fielding positioning on bomb kicks. <strong>Pickleball</strong>: cut-spin and top-spin RPM on dink returns.</figcaption>
   </figure>
 
@@ -863,7 +863,7 @@
   <p>The third-shot drop must rise from the baseline, peak on the hitter's side, dip over the 34-inch net, and bounce in the kitchen with minimal clearance. DART segments the net tape and flying ball in one pass; the apex coordinates and clearance margin measure drop quality. The C22 ΔEPV boundary (drop +0.142 vs drive -0.188 [verify]) makes this the value-relevant shot.</p>
 
   <figure class="full">
-    <img src="shared/images/uc04-net-margin-apex-clearance.jpg" alt="Net margin clearance and trajectory apex telemetry in pickleball third-shot drop analysis." loading="lazy"/>
+    <img src="../images/uc04-net-margin-apex-clearance.jpg" alt="Net margin clearance and trajectory apex telemetry in pickleball third-shot drop analysis." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.15</span>: UC 04 — Net Margin &amp; Apex. Single-pass DART tracking measuring third-shot drop apex and net margin clearance. <strong>Pickleball</strong>: flags attackable drops clearing &gt;15cm. <strong>Rugby league</strong>: clearance above the stadium crossbar on conversions.</figcaption>
   </figure>
 
@@ -871,7 +871,7 @@
   <p>When a ball strikes a paddle or boot, elastic deformation occurs over a fraction of a millisecond. HQ-SAM on 120-240 FPS high-speed video measures the transient deformation ratio, integrating the force-time curve for impulse and coefficient of restitution [verify — high-speed footage needed, not yet measured in the book lab].</p>
 
   <figure class="full">
-    <img src="shared/images/uc05-ball-compression-impact-physics.jpg" alt="Ball compression and impact deformation physics in sports." loading="lazy"/>
+    <img src="../images/uc05-ball-compression-impact-physics.jpg" alt="Ball compression and impact deformation physics in sports." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.16</span>: UC 05 — Ball Compression Physics. High-speed segmentation measuring paddle dwell time and wiffle ball compression ratio alongside rugby boot punt impact force-time impulses.</figcaption>
   </figure>
 
@@ -881,7 +881,7 @@
   <p>Kitchen firefights happen in under 250ms; an upright stance with straight knees raises the center of mass and adds ~120ms reaction latency. SAM 3 isolates the player silhouette; pose estimation computes knee flexion angles, base width, and CoM elevation [verify — the 124° value is a coaching-standard target, not a measured population].</p>
 
   <figure class="full">
-    <img src="shared/images/uc06-ready-stance-knee-flexion.jpg" alt="Optimal athletic ready stance vs upright standing posture fault in pickleball." loading="lazy"/>
+    <img src="../images/uc06-ready-stance-knee-flexion.jpg" alt="Optimal athletic ready stance vs upright standing posture fault in pickleball." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.17</span>: UC 06 — Ready Stance Biomechanics. SAM 3 silhouette isolation auditing optimal kitchen ready stance vs upright posture fault. <strong>Pickleball</strong>: 120-130° knee angle at the kitchen line. <strong>Rugby league</strong>: defensive marker stance at the ruck.</figcaption>
   </figure>
 
@@ -889,7 +889,7 @@
   <p>Multi-camera marker mocap is impossible during broadcast matches. Meta's SAM-3D-Body with the DINOv3 backbone reconstructs a full SMPL-X 3D parametric surface mesh (10,475 vertices) directly from a single broadcast view. <strong>This is the chapter's key frontier claim: [verify] — the model is announced by Meta (2025-26); the book has not yet validated it on sport footage.</strong> The honest position: the architecture is real, the 3D biomechanics it unlocks are the motivation, and the C11 chapter documents the monocular 2D-to-3D lifting limits that this specific model targets.</p>
 
   <figure class="full">
-    <img src="shared/images/uc07-sam3d-smplx-body-mesh.jpg" alt="Single-view 3D parametric SMPL-X body mesh recovery using Meta SAM-3D-Body and DINOv3." loading="lazy"/>
+    <img src="../images/uc07-sam3d-smplx-body-mesh.jpg" alt="Single-view 3D parametric SMPL-X body mesh recovery using Meta SAM-3D-Body and DINOv3." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.18</span>: UC 07 — Single-View 3D Mocap. SAM-3D-Body and DINOv3 reconstructing a 10,475-vertex SMPL-X mesh from monocular footage to extract 3D joint rotations and biomechanical skeleton. <strong>Pickleball</strong>: 3D shoulder external rotation and hip torsion on drives. <strong>Rugby league</strong>: true 3D body orientation in tackle collisions.</figcaption>
   </figure>
 
@@ -897,7 +897,7 @@
   <p>Head trauma is the single greatest health and legal risk in collision sport. SAM-3D-Body extracts the tackler's shoulder contact point and carrier's sternum Z; head-to-head proximity flags high tackles above the clavicle. <strong>This is the most consequential use case — officiating-grade, evidence-backed, and directly in the Bunker's interest. [verify] — uses the claimed model, not yet measured.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc08-rugby-high-tackle-safety.jpg" alt="Head-to-head and high-tackle concussion risk mitigation in rugby league." loading="lazy"/>
+    <img src="../images/uc08-rugby-high-tackle-safety.jpg" alt="Head-to-head and high-tackle concussion risk mitigation in rugby league." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.19</span>: UC 08 — High Tackle Officiating. Video Referee Bunker telemetry verifying tackler shoulder height below the sternum safety threshold. <strong>Rugby league</strong>: objective 3D contact height in under 2s. <strong>Pickleball</strong>: partner poach collision prevention.</figcaption>
   </figure>
 
@@ -905,7 +905,7 @@
   <p>After an RL tackle, up to 6 players pile in dense occlusion. SAM 2 streaming memory attention with non-overlap mask constraints disentangles each player; an automated stopwatch clocks the play-the-ball speed. <strong>This directly extends the C28 DLSM/PTB band content — the measured ruck-speed bands come from the practitioner playbook [verify].</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc09-ruck-breakdown-player-separation.jpg" alt="Dense ruck breakdown and player separation in rugby league using SAM 2 memory." loading="lazy"/>
+    <img src="../images/uc09-ruck-breakdown-player-separation.jpg" alt="Dense ruck breakdown and player separation in rugby league using SAM 2 memory." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.20</span>: UC 09 — Dense Ruck Separation. SAM 2 memory separating 5 intertwined players into individual masks to clock peel time, roll-away duration, and dummy half pass release. <strong>Rugby league</strong>: ruck speed green (&lt;3.2s) vs red (&gt;4.0s). <strong>Pickleball</strong>: doubles stacking disambiguation.</figcaption>
   </figure>
 
@@ -913,7 +913,7 @@
   <p>Power transfers sequentially from ground through legs, hips, torso, shoulder, wrist. An "arm-only swing" drops power ~40% and spikes injury risk. Differentiating 3D joint angular velocities by SAM-3D-Body gives torque curves; peak-torque sequencing must satisfy t(hip) &lt; t(torso) &lt; t(shoulder) &lt; t(wrist) [verify — kinetic chain is established biomechanics; the torque extraction from monocular footage is the claimed model's promise].</p>
 
   <figure class="full">
-    <img src="shared/images/uc10-kinetic-chain-torque-transfer.jpg" alt="Kinetic chain torque sequencing in sports." loading="lazy"/>
+    <img src="../images/uc10-kinetic-chain-torque-transfer.jpg" alt="Kinetic chain torque sequencing in sports." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.21</span>: UC 10 — Kinetic Chain Torque. Sequential torque transfer curves from ground reaction force to hip, torso, shoulder, wrist for overhead smashes and passes. <strong>Pickleball</strong>: arm-only swing faults. <strong>Rugby league</strong>: hip hinge leg-drive into contact.</figcaption>
   </figure>
 
@@ -923,7 +923,7 @@
   <p>After every RL tackle, all 13 defenders must retreat 10m behind the ruck. DART detects the ruck and all defenders; pitch homography computes retreat distance. <strong>This extends the C28 RCM metric — the retreat-compliance index — with the line-speed measurement the tactical playbook calls for.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc11-13man-line-retreat-10m-offside.jpg" alt="13-man advancing defensive line retreat and 10m offside compliance in rugby league." loading="lazy"/>
+    <img src="../images/uc11-13man-line-retreat-10m-offside.jpg" alt="13-man advancing defensive line retreat and 10m offside compliance in rugby league." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.22</span>: UC 11 — 10m Offside Compliance. Overhead pitch homography tracking all 13 defenders retreating behind the transverse offside line. <strong>Rugby league</strong>: RCM index across all 6 tackles. <strong>Pickleball</strong>: retreat to baseline on lobs.</figcaption>
   </figure>
 
@@ -931,7 +931,7 @@
   <p>Controlling physical space is everything. SAM masks provide exact foot contact polygons; velocity-weighted Voronoi partitions compute space ownership. <strong>This is the TacticAI-style control map (C23) with SAM grounding — the foot-polygon as ground-truth is the contribution.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc12-voronoi-pitch-control-space.jpg" alt="Dynamic Voronoi pitch control and space ownership via grounded foot polygons." loading="lazy"/>
+    <img src="../images/uc12-voronoi-pitch-control-space.jpg" alt="Dynamic Voronoi pitch control and space ownership via grounded foot polygons." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.23</span>: UC 12 — Voronoi Pitch Control. Comparing dynamic weighted Voronoi cells in pickleball vs team space ownership heatmaps in rugby league. <strong>Pickleball</strong>: middle seam ownership between doubles partners. <strong>Rugby league</strong>: defensive territory control.</figcaption>
   </figure>
 
@@ -939,7 +939,7 @@
   <p>Doubles partners move as if tethered by a ~2.4m elastic cord; drift &gt;3.2m opens the middle seam. SAM 2 tracks both teammates; the distance vector triggers a "split-seam defensive failure" event. <strong>Directly extends C28's seam exposure alerts — this is the measured metric the live cockpit surfaces.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc13-partner-tandem-spacing.jpg" alt="Doubles partner tandem spacing and defensive failure in pickleball." loading="lazy"/>
+    <img src="../images/uc13-partner-tandem-spacing.jpg" alt="Doubles partner tandem spacing and defensive failure in pickleball." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.24</span>: UC 13 — Partner Tandem Spacing. Optimal ~2.4m lateral corridor vs the split-seam failure when partners drift &gt;3.2m. <strong>Pickleball</strong>: the "elastic string" rule. <strong>Rugby league</strong>: halves pairing lateral spacing.</figcaption>
   </figure>
 
@@ -947,7 +947,7 @@
   <p>A 40/20 kick earns a massive turnover; the fullback must balance central line-break coverage against deep touchline coverage. Counterfactual fullback starting positions conditioned on kick launch angle and velocity give reachability ellipses. <strong>This is a counterfactual simulation use case — the C24 twin's honest framing applies: the launch conditions are practitioner-set [verify], simulated not measured.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc14-rugby-4020-kick-chase-defense.jpg" alt="Rugby league 40/20 kick-chase spatial coverage and fullback territory defense." loading="lazy"/>
+    <img src="../images/uc14-rugby-4020-kick-chase-defense.jpg" alt="Rugby league 40/20 kick-chase spatial coverage and fullback territory defense." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.25</span>: UC 14 — 40/20 Kick-Chase. Counterfactual fullback fielding start positions to optimize territorial kick coverage. <strong>Rugby league</strong>: fullback starting depths per opposition kicker. <strong>Pickleball</strong>: counterfactual partner positioning on offensive lobs.</figcaption>
   </figure>
 
@@ -955,7 +955,7 @@
   <p>Defenses break when inside defenders bunch, leaving edge spacing. The defensive line as a graph; edge lengths past 3.5m trigger an equivariant GNN line-break probability heatmap. <strong>This is C23's graph framing applied to C28's DLSM dog-leg metric — the 3.5m threshold [verify] and the DLSM 2.5m threshold [verify] are practitioner values.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc15-line-compression-break-risk.jpg" alt="Defensive line compression and line-break risk heatmap in rugby league." loading="lazy"/>
+    <img src="../images/uc15-line-compression-break-risk.jpg" alt="Defensive line compression and line-break risk heatmap in rugby league." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.26</span>: UC 15 — Line Compression &amp; Break Risk. Defenders bunching inwards causing edge spacing expansion and line-break probability contours. <strong>Rugby league</strong>: edge C-D-W spacing mapping. <strong>Pickleball</strong>: over-commit to one sideline detection.</figcaption>
   </figure>
 
@@ -965,7 +965,7 @@
   <p>YOLO detects generic "person" boxes but cannot distinguish a dummy half from a marker defender without custom labeling. DART lets coaches type arbitrary text queries; the shared O(1) backbone detects all requested roles simultaneously at 15.8 FPS [verify — DART arXiv:2603.11441 AP/FPS numbers are the paper's; the book has not yet run DART on pb-003].</p>
 
   <figure class="full">
-    <img src="shared/images/uc16-dart-realtime-role-decoding.jpg" alt="Real-time open-vocabulary role detection via DART in sports." loading="lazy"/>
+    <img src="../images/uc16-dart-realtime-role-decoding.jpg" alt="Real-time open-vocabulary role detection via DART in sports." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.27</span>: UC 16 — DART Real-Time Role Detection. Single-pass shared backbone detecting custom sports roles across both sports with sub-20ms latency. <strong>Pickleball</strong>: server, returner, kitchen resetter, poaching attacker. <strong>Rugby league</strong>: A-defender, B-defender, sweeper fullback, ball carrier.</figcaption>
   </figure>
 
@@ -973,12 +973,12 @@
   <p>DART runs at 15.8 FPS on an RTX 4080 — great in the lab, but a coaching cockpit sits on a laptop or a sideline tablet. DARTF is the deployment answer: the same shared O(1) class-agnostic backbone quantized to <strong>W8A8 INT8</strong> and serialized as a TensorRT engine, paired with <strong>ByteTrack</strong> for per-frame identity and track assignment. The measured claim [verify] is the frame-by-frame sports simulation at 13.9ms per frame on Apple Silicon / Jetson-class hardware — the chapter does not yet have a DARTF run on pb-003 or nrl-001 footage, so this is the paper's pipeline description, not a book measurement.</p>
 
   <figure class="full">
-    <img src="shared/images/dartf-int8-edge-acceleration-pipeline.jpg" alt="DARTF W8A8 INT8 edge acceleration pipeline: SAM 3 backbone quantized to INT8, serialized TensorRT engine, ByteTrack tracking on Apple M4 and Jetson." loading="lazy"/>
+    <img src="../images/dartf-int8-edge-acceleration-pipeline.jpg" alt="DARTF W8A8 INT8 edge acceleration pipeline: SAM 3 backbone quantized to INT8, serialized TensorRT engine, ByteTrack tracking on Apple M4 and Jetson." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.27a</span>: UC 16b — DARTF INT8 Edge Pipeline. The quantized shared backbone (W8A8) runs once per frame at O(1) cost with the prompt decoders and ByteTrack assignment in the same pass — the deployment variant of the DART architecture.</figcaption>
   </figure>
 
   <figure class="full">
-    <img src="shared/images/dartf-frame-by-frame-sports-simulation.jpg" alt="DARTF frame-by-frame sports simulation: per-frame role detections and track assignments flowing into the tactical analysis pipeline." loading="lazy"/>
+    <img src="../images/dartf-frame-by-frame-sports-simulation.jpg" alt="DARTF frame-by-frame sports simulation: per-frame role detections and track assignments flowing into the tactical analysis pipeline." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.27b</span>: UC 16b — DARTF Frame-by-Frame Sports Simulation. The quantized pipeline carrying per-frame role detections and ByteTrack assignments into the tactical layer. <strong>Pickleball</strong>: role + track per frame through a rally. <strong>Rugby league</strong>: role + track per frame through a set. The book's honest label: the 13.9ms figure is the paper's pipeline description [verify] — no DARTF run exists on the book's datasets yet.</figcaption>
   </figure>
 
@@ -986,7 +986,7 @@
   <p>VLMs generate convincing but false tactical commentary. An adversarial critic agent intercepts every generated sentence and queries the SAM 3 coordinate ground-truth database; contradictions are falsified. <strong>Honest correction: the recommendation's "66.7% → 0.0%" is a fabricated precision. The book's measured state is E07: 66.7% baseline error; the adversarial loop reduces it but the book has NOT measured 0.0%. The design is the contribution; the claim stays honest.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc17-vlm-claim-falsification-audit.jpg" alt="Multi-agent adversarial VLM hallucination falsification in sports AI." loading="lazy"/>
+    <img src="../images/uc17-vlm-claim-falsification-audit.jpg" alt="Multi-agent adversarial VLM hallucination falsification in sports AI." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.28</span>: UC 17 — Adversarial VLM Grounding. The critic verifies generative commentary against SAM 3 coordinate logs. Measured baseline: E07 66.7% hallucination error before grounding [measured]; the grounded-critic error rate is the open measurement the book has not yet run.</figcaption>
   </figure>
 
@@ -994,7 +994,7 @@
   <p>Referees run alongside athletes and corrupt tracking tensors. Grounded-SAM 2 with open-vocabulary color prompts segments the official, producing clean team-versus-team control maps. <strong>Prevents the phantom-14th-defender artifact in line analysis.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc18-referee-official-isolation.jpg" alt="Automatic referee and match official spatial masking in sports tracking." loading="lazy"/>
+    <img src="../images/uc18-referee-official-isolation.jpg" alt="Automatic referee and match official spatial masking in sports tracking." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.29</span>: UC 18 — Referee Isolation. Grounded-SAM 2 segments the official and removes them from tracking tensors. <strong>Pickleball</strong>: sidelines/spectators excluded. <strong>Rugby league</strong>: touch judges masked out.</figcaption>
   </figure>
 
@@ -1002,7 +1002,7 @@
   <p>Coaches need real-time AR in hand; &gt;100ms latency causes nausea and unusable timing. MobileSAM on Apple Silicon M4 via Metal Performance Shaders is the C28 cockpit path. <strong>Honest label: the 55.7ms figure is a design-budget sum (C28's documented framing), not a measured run.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc19-sideline-ipad-ar-hud.jpg" alt="Sub-100ms live sideline AR HUD on Apple Silicon iPad Pro for sports coaching." loading="lazy"/>
+    <img src="../images/uc19-sideline-ipad-ar-hud.jpg" alt="Sub-100ms live sideline AR HUD on Apple Silicon iPad Pro for sports coaching." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.30</span>: UC 19 — Sideline iPad AR HUD. MobileSAM on Apple Silicon delivering sub-100ms glass-to-glass for live kitchen warnings and ready-stance angles. <strong>Pickleball</strong>: NVZ foot-fault overlays. <strong>Rugby league</strong>: 10m retreat compliance lines.</figcaption>
   </figure>
 
@@ -1010,18 +1010,18 @@
   <p>Broadcast cameras pan/zoom constantly; optical flow on raw frames is corrupted by moving players. SAM 2 binary masks zero out moving athletes; Lucas-Kanade on static turf features computes pure affine camera motion. <strong>This is C07's GMC chapter with athlete masking as the robustness upgrade.</strong></p>
 
   <figure class="full">
-    <img src="shared/images/uc20-broadcast-gmc-camera-stabilization.jpg" alt="Dynamic broadcast GMC via moving athlete masking in sports." loading="lazy"/>
+    <img src="../images/uc20-broadcast-gmc-camera-stabilization.jpg" alt="Dynamic broadcast GMC via moving athlete masking in sports." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.31</span>: UC 20 — Broadcast GMC Stabilization. SAM 2 masks out moving players so optical flow on static features calculates pure camera affine motion. <strong>Pickleball</strong>: handheld/high-mast stabilization. <strong>Rugby league</strong>: 50m center-line camera stabilization during line breaks.</figcaption>
   </figure>
 
   <h3 class="sub-heading">The Two Real-Time Telemetry Exhibits</h3>
   <figure class="full">
-    <img src="shared/images/dart-pickleball-realtime-multiclass.jpg" alt="Real-time open-vocabulary detection in pickleball using DART and SAM 3." loading="lazy"/>
+    <img src="../images/dart-pickleball-realtime-multiclass.jpg" alt="Real-time open-vocabulary detection in pickleball using DART and SAM 3." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.32</span>: Real-Time Open-Vocabulary Telemetry in Pickleball (UC 1, 2, 4, 6). One frame simultaneously identifies ready stance, kitchen partner, paddle blade angle, wiffle ball, and NVZ boundary without custom retraining.</figcaption>
   </figure>
 
   <figure class="full">
-    <img src="shared/images/dart-rugby-multiclass-ruck-line.jpg" alt="Real-time open-vocabulary detection in rugby league using DART and SAM 3." loading="lazy"/>
+    <img src="../images/dart-rugby-multiclass-ruck-line.jpg" alt="Real-time open-vocabulary detection in rugby league using DART and SAM 3." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 10.33</span>: Real-Time Open-Vocabulary Telemetry in Rugby League (UC 3, 8, 9, 11, 16). One frame resolves 8 tactical prompt classes: ball carrier hit-up, dummy half, marker defenders, advancing line, referee, oval ball, try line.</figcaption>
   </figure>
 

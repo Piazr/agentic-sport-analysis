@@ -536,11 +536,11 @@
   <p>The serve contract decomposes a physical act into checkable predicates. A volley serve is legal iff: at least one foot contacts the serving area and neither foot touches the court — <strong>the baseline is court, so a toe on the line is a foot fault</strong> (7.A.2); paddle moving in a clear upward arc (7.C.1); paddle head not above the wrist (7.C.2); contact not above the waist (7.C.3). The drop serve (7.D) is simpler: drop from natural height, no propulsion, unlimited bounces. Since 2026, a net-cord serve that lands clear is <strong>live</strong> (7.E); a pre-2026 grammar would replay it.</p>
 
   <figure id="fig-03-01" class="full">
-    <img src="shared/images/pb-rules-court-crosssection.png" alt="Pickleball court cross-section showing NVZ kitchen 2.13m, net 0.86m, and the double-bounce rule: serve bounce on return side, return bounce on serve side." loading="lazy"/>
+    <img src="../images/pb-rules-court-crosssection.png" alt="Pickleball court cross-section showing NVZ kitchen 2.13m, net 0.86m, and the double-bounce rule: serve bounce on return side, return bounce on serve side." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.1</span>: The Double-Bounce Rule as Geometry. A serve must bounce on the receiving side, and the return on the serving side, before volleys are legal. The NVZ (2.13m each side) is where rallies are decided.</figcaption>
   </figure>
   <figure id="fig-03-04" class="full">
-    <img src="shared/images/c03-double-bounce.png" alt="Side-view diagram of the pickleball double-bounce rule: serve arc bouncing once in the receiver box (marker 1), return arc bouncing once on the server side (marker 2), then a flat arrow labelled volley legal, with hatched NVZ bands beside the net." loading="lazy"/>
+    <img src="../images/c03-double-bounce.png" alt="Side-view diagram of the pickleball double-bounce rule: serve arc bouncing once in the receiver box (marker 1), return arc bouncing once on the server side (marker 2), then a flat arrow labelled volley legal, with hatched NVZ bands beside the net." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.4</span>: The Double-Bounce Rule as a Two-Event Gate (USAP 10.A). Volleys become legal only after bounce 1 (serve, receiving side, 10.A.1) and bounce 2 (return, serving side, 10.A.2). A vision pipeline that detects bounce events and hit events can enforce this with two counters; nothing else in the rule requires pose at all.</figcaption>
   </figure>
 
@@ -550,7 +550,7 @@
   <p>The non-volley zone is a <em>spatial predicate over a temporal window</em>. It is a 7 ft × 20 ft (2.13 m × 6.08 m) strip on each side of the net, and — the clause that decides real matches — <strong>all bounding lines are part of the zone</strong> (3.A.4.c). Lines are 2 inches wide; measurements run to the outside edge (3.A.2, 3.A.4.e), so the NVZ boundary sits 7 ft from the net plane: 4.88 m and 8.53 m from each baseline on a 13.41 m court. The zone is explicitly two-dimensional: it "does not extend above the playing surface" (3.A.4.c), which is why reaching <em>over</em> the kitchen to volley is legal while standing on its 2-inch line is not. The rule is a ground-contact predicate, not a volume predicate.</p>
 
   <figure id="fig-03-05" class="full">
-    <img src="shared/images/c03-nvz-geometry.png" alt="Top-down diagram of a pickleball court half: the NVZ as a burnt-orange hatched 7 ft band, the 2-inch NVZ line drawn in orange with the callout line is in, dimension arrows 7 ft and 2.13 m, net as a black bar, centreline dividing two service boxes." loading="lazy"/>
+    <img src="../images/c03-nvz-geometry.png" alt="Top-down diagram of a pickleball court half: the NVZ as a burnt-orange hatched 7 ft band, the 2-inch NVZ line drawn in orange with the callout line is in, dimension arrows 7 ft and 2.13 m, net as a black bar, centreline dividing two service boxes." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.5</span>: The Kitchen as Geometry (USAP 3.A). The NVZ is a 7 ft × 20 ft strip whose bounding lines are <em>part of the zone</em> (3.A.4.c) — the 2-inch painted line is inside the forbidden region, not its border. The zone is 2D: it does not extend above the surface, so airspace over the kitchen is legal.</figcaption>
   </figure>
 
@@ -568,7 +568,7 @@
   <p>Two clauses break naive implementations. First, 11.A.1 counts anything touching the player — including a partner — so a doubles player holding their partner at the kitchen line can fault for them. Second, 11.A.2 is, per 9.B.1, the <strong>only fault that can occur while the ball is not live</strong>: momentum from a volley carries the striker into the zone after the ball is dead. Any pipeline that stops tracking at rally end will miss it; the window must extend past the terminal ball event. Players may call NVZ and service foot faults only on opponents (9.B.3); disagreement produces a replay (9.B.3.b). The line is geometric, but the call is adversarial.</p>
 
   <figure id="fig-03-06" class="full">
-    <img src="shared/images/c03-fault-nvz-predicate.png" alt="Side-view diagram of the NVZ foot-fault rule: a player silhouette mid-volley with the front toe touching the NVZ line marked with a burnt-orange X, a logic box reading volley plus foot on line equals fault, and a faded silhouette falling forward after contact labelled momentum fault." loading="lazy"/>
+    <img src="../images/c03-fault-nvz-predicate.png" alt="Side-view diagram of the NVZ foot-fault rule: a player silhouette mid-volley with the front toe touching the NVZ line marked with a burnt-orange X, a logic box reading volley plus foot on line equals fault, and a faded silhouette falling forward after contact labelled momentum fault." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.6</span>: Fault_NVZ as a Diagram. A toe on the 2-inch line during the act of volleying is a fault (11.A.1); momentum carrying the striker into the zone is a fault even after the ball is dead (11.A.2) — the one clause that outlives the rally.</figcaption>
   </figure>
 
@@ -577,7 +577,7 @@
   <p>Every NVZ clause hangs on the phrase "the act of volleying," and the rulebook gives it temporal extent: the act begins with the swing, includes ball contact and the follow-through, and — via the momentum rule — persists until the striker's motion from that swing has dissipated. A volley is therefore not a frame; it is a <strong>window</strong>. For a vision system the predicate decomposes into a stance term and a timing term: foot-zone state sampled across the window (stance), and window bounds anchored to the contact event and the subsequent decay of forward motion (timing). Sampling foot position only at the contact frame is the classic bug — it misses both the follow-through step onto the line and the momentum carry.</p>
 
   <figure id="fig-03-07" class="full">
-    <img src="shared/images/c03-volley-window.png" alt="Timing diagram of the act of volleying: a horizontal timeline with ticks labelled contact, follow-through, ball dead, a burnt-orange window bracket spanning contact through follow-through labelled act of volleying, and a dashed orange extension after ball dead labelled momentum live." loading="lazy"/>
+    <img src="../images/c03-volley-window.png" alt="Timing diagram of the act of volleying: a horizontal timeline with ticks labelled contact, follow-through, ball dead, a burnt-orange window bracket spanning contact through follow-through labelled act of volleying, and a dashed orange extension after ball dead labelled momentum live." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.7</span>: The Act of Volleying as a Window. The legal window opens at swing initiation and closes only when follow-through momentum dissipates; the dashed tail after ball dead is where 11.A.2 still applies.</figcaption>
   </figure>
 
@@ -597,18 +597,18 @@
   <p>Restart grammar is where the modern game lives. Interference with the PTB or intentional delay resets the count — the "six again" — <em>except</em> ruck interference inside the attacking team's own 40 m zone, which draws a penalty (S11.10 notes, S11.11); the NRL's per-season interpretation memo pins exactly which infringements are set-restart versus penalty [verify current-season NRL]. An accidental breach gives the new team a <em>zero tackle</em> (S11.7.b). An opponent intentionally playing at the ball — including a charge-down — resets the count to one. A 40/20 restarts with a tap (S9.6). Every trajectory model must respect: <strong>forward-pass direction is judged relative to the thrower, not the ground</strong> (S10 notes). A ball that floats backwards over the ground can still be a forward pass if it leaves the hands forwards relative to a decelerating thrower.</p>
 
   <figure id="fig-03-02" class="full">
-    <img src="shared/images/pb-rules-state-machine.png" alt="Pickleball rally state machine flowchart from PRE_SERVE through SERVE_IN_FLIGHT, RECEIVE_IN_FLIGHT, THIRD_SHOT, KITCHEN_DINK_BATTLE to FAULT/POINT/SIDE_OUT terminals with rule callouts 7.C, 10.A, 11.A." loading="lazy"/>
+    <img src="../images/pb-rules-state-machine.png" alt="Pickleball rally state machine flowchart from PRE_SERVE through SERVE_IN_FLIGHT, RECEIVE_IN_FLIGHT, THIRD_SHOT, KITCHEN_DINK_BATTLE to FAULT/POINT/SIDE_OUT terminals with rule callouts 7.C, 10.A, 11.A." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.2</span>: The Pickleball Rally State Machine. Phases are rule-ordered; a third-shot drop is meaningful only relative to the serve and return before it.</figcaption>
   </figure>
 
   <p>For analytics, the load-bearing structure is the <strong>tackle number</strong>: it conditions everything. A run on tackle 1 is a field-position play; a run on tackle 6 that fails to kick is a turnover. Modelling expected value without the tackle number is modelling noise. The verified literature agrees: the canonical NRL possession-value model (Kempton et al., 2016) and the Bayesian smooth-surface EPV update (Sawczuk et al., 2024) both condition on tackle state.</p>
   <figure id="fig-03-03" class="full">
-    <img src="shared/images/rl-set-structure.png" alt="Rugby League six-tackle set structure: T1 to T6 ladder with PTB icons, 10m retreat line, kick at T5/T6 branching to handover." loading="lazy"/>
+    <img src="../images/rl-set-structure.png" alt="Rugby League six-tackle set structure: T1 to T6 ladder with PTB icons, 10m retreat line, kick at T5/T6 branching to handover." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.3</span>: The Rugby League Set Grammar. Six tackles with a play-the-ball after each; the kick option on tackle 5-6 and the 10m retreat define field-position value.</figcaption>
   </figure>
 
   <figure id="fig-03-08" class="full">
-    <img src="shared/images/c03-rl-set-grammar.png" alt="Six-tackle set grammar diagram: tackle nodes T0 to T5 joined by arrows, play-the-ball icon under each node, a burnt-orange six-again loop back to T0, branches from T4 and T5 to kick, try, and handover terminals, and a dashed 10 m retreat line with defender dots." loading="lazy"/>
+    <img src="../images/c03-rl-set-grammar.png" alt="Six-tackle set grammar diagram: tackle nodes T0 to T5 joined by arrows, play-the-ball icon under each node, a burnt-orange six-again loop back to T0, branches from T4 and T5 to kick, try, and handover terminals, and a dashed 10 m retreat line with defender dots." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.8</span>: The Set as a Grammar (IRL S11). Five play-the-balls, then handover on the sixth tackle (S11.7.a); the six-again loop resets the count without a stoppage (S11.11); kick and try are the productive exits from T4/T5. The zero tackle (S11.7.b) means a turnover set still has six to come.</figcaption>
   </figure>
   <h2 class="section-title"><span class="section-num">3.3b</span> The Ruck Law and Retreat Compliance (RCM)</h2>
@@ -621,14 +621,14 @@
   <p>The reference point is the play-the-ball mark, not the tackle location; the sampling instant is the ball-clears-ruck event; defenders on their own goal line satisfy the rule without the full 10 m (S11.10.g). Broadcast parallax makes per-camera field calibration (chapters 6–7) a prerequisite — an uncalibrated RCM measures lens geometry, not discipline. The companion metric is <strong>ruck speed</strong> (tackle-effected to ball-clear). It is the single most valuable CV-only number in the sport [concept-transfer], conditioning line speed and the value of the following tackle in Kempton et al. (2016) and Sawczuk et al. (2024).</p>
 
   <figure id="fig-03-09" class="full">
-    <img src="shared/images/c03-rcm-retreat.png" alt="Top-down rugby pitch strip: the play-the-ball point as a burnt-orange dot, a dashed 10 m retreat arc, three defender dots inside the arc crossed out and labelled offside, four beyond the arc ticked and labelled onside, a formula box RCM equals onside over total, and a ball-clears arrow." loading="lazy"/>
+    <img src="../images/c03-rcm-retreat.png" alt="Top-down rugby pitch strip: the play-the-ball point as a burnt-orange dot, a dashed 10 m retreat arc, three defender dots inside the arc crossed out and labelled offside, four beyond the arc ticked and labelled onside, a formula box RCM equals onside over total, and a ball-clears arrow." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.9</span>: Retreat Compliance at the Ruck (S11.10.g). RCM is the fraction of defenders at or beyond the 10 m line (or on their goal line) at the instant the ball clears the ruck — a predicate over tracked positions at a rule-defined instant.</figcaption>
   </figure>
 
   <h2 class="section-title"><span class="section-num">3.4</span> The Grammar in Code: Executable State Machines (W1.1 Lab)</h2>
   <p>Our lab encodes both grammars as Python state machines. The pickleball machine tracks the serve/receive/third-shot phases, bounce count (double-bounce rule), server number (doubles side-out), and NVZ enforcement:</p>
   <figure id="fig-03-10" class="full">
-    <img src="shared/images/c03-one-formal-system.png" alt="Split-panel concept diagram: left panel a pickleball rally loop with states serve, return, rally, fault, point connected by burnt-orange arrows; right panel a rugby league set loop with states tackle, PTB, kick, try, handover connected by burnt-orange arrows; a shared centre box labelled (s, a) to (s prime, r)." loading="lazy"/>
+    <img src="../images/c03-one-formal-system.png" alt="Split-panel concept diagram: left panel a pickleball rally loop with states serve, return, rally, fault, point connected by burnt-orange arrows; right panel a rugby league set loop with states tackle, PTB, kick, try, handover connected by burnt-orange arrows; a shared centre box labelled (s, a) to (s prime, r)." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.10</span>: One Formal System, Two Sports. Both are <code>(state, event) → (state', reward)</code> machines. Pickleball's events are mostly ball/pose contacts; rugby league's events include referee-gated transitions such as the held call and the six-again signal.</figcaption>
   </figure>
 
@@ -796,7 +796,7 @@ class PickleballMachine:
   <p>Two properties make this the hardest officiating predicate in the sport: the line itself is inside the zone (3.A.4.c), so the test is a 2-inch pixel-precision contact at the volley window, not a zone-membership test; and players may call it only on opponents (9.B.3), with disagreement producing a replay (9.B.3.b) — the machine's output is evidence in an adversarial call, not the call itself.</p>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-nvz-fault-expanded.png" alt="Expanded NVZ foot-fault predicate diagram: volley plus contact with zone or line equals fault, with the momentum silhouette falling in after the ball is dead." loading="lazy"/>
+    <img src="../images/c03-uc-nvz-fault-expanded.png" alt="Expanded NVZ foot-fault predicate diagram: volley plus contact with zone or line equals fault, with the momentum silhouette falling in after the ball is dead." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.12</span>: UC 01 — FootFault_NVZ Expanded. The predicate fires when the volley window and the contact set intersect the zone or its boundary lines. <strong>Pickleball</strong>: toe-on-line detection at contact plus the post-dead momentum tail (11.A.2). <strong>Rugby league</strong>: the same shape appears as goal-line grounding — contact of ball to line over a referee-defined window.</figcaption>
   </figure>
 
@@ -811,7 +811,7 @@ class PickleballMachine:
  OR SecondBounce(ball) with no intervening hit            (10.B.1)</code></pre>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-double-bounce-predicate.png" alt="Double-bounce predicate as a two-event gate: bounce one on the serve, bounce two on the return, then the volley gate opens; counter box bounces greater-or-equal two." loading="lazy"/>
+    <img src="../images/c03-uc-double-bounce-predicate.png" alt="Double-bounce predicate as a two-event gate: bounce one on the serve, bounce two on the return, then the volley gate opens; counter box bounces greater-or-equal two." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.13</span>: UC 02 — The Two-Event Gate. Volleys are legal iff the bounce counter reaches two before the hit. <strong>Pickleball</strong>: the gate defines the third-shot drop's existence. <strong>Rugby league</strong>: the same event-ordering check is the PTB sequence — tackle effected must precede play-the-ball, or the ruck is illegal (S11.10).</figcaption>
   </figure>
 
@@ -827,7 +827,7 @@ class PickleballMachine:
   <p>The reference is the mark, not the tackle location; the sampling instant is the ruck-clear event, not a frame clock. Broadcast parallax makes per-camera calibration (chapters 6–7) a hard prerequisite — an uncalibrated distance is lens geometry, not discipline [verify against calibrated tracking].</p>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-ten-metre-retreat-expanded.png" alt="Expanded 10 metre retreat predicate: dashed arc around the play-the-ball mark, offside defenders crossed inside, onside defenders ticked beyond, sampled at ball-clears-ruck." loading="lazy"/>
+    <img src="../images/c03-uc-ten-metre-retreat-expanded.png" alt="Expanded 10 metre retreat predicate: dashed arc around the play-the-ball mark, offside defenders crossed inside, onside defenders ticked beyond, sampled at ball-clears-ruck." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.14</span>: UC 03 — RetreatFault at the Ruck. A spatial predicate over tracked positions at one rule-defined instant. <strong>Rugby league</strong>: offside pressure quantified per set. <strong>Pickleball</strong>: the same distance-at-instant shape is the NVZ-line foot test — a boundary distance sampled at the contact instant (11.A.1).</figcaption>
   </figure>
 
@@ -841,7 +841,7 @@ ZeroTackle(set) ⇔ PossessionChange(accidental breach)           (S11.7.b)
 CountReset(set) ⇔ SixAgainSignal ∨ OpponentPlaysAtBall          (S11.11, S11.7 notes)</code></pre>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-six-tackle-grammar-expanded.png" alt="Expanded six-tackle set grammar state machine: nodes T0 to T5, six-again loop, zero-tackle entry, kick try and handover terminals with guard conditions." loading="lazy"/>
+    <img src="../images/c03-uc-six-tackle-grammar-expanded.png" alt="Expanded six-tackle set grammar state machine: nodes T0 to T5, six-again loop, zero-tackle entry, kick try and handover terminals with guard conditions." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.15</span>: UC 04 — The Set as a Guarded Counter. Three resets keep the count honest. <strong>Rugby league</strong>: tackle-effected detection plus the referee's six-again signal drive the count (chapter 19). <strong>Pickleball</strong>: the analogous guarded counter is the server number — two servers, then side out, with the game start fixed at 0-0-2 (5.B).</figcaption>
   </figure>
 
@@ -856,7 +856,7 @@ ActOfVolleying(p, t) ⇔ t ∈ VolleyWindow(p)                       (9.B / 11.A
   <p>The window's start is observable (swing initiation); its end is judgement, so the machine uses an operational surrogate — centre-of-mass velocity below walking pace, or a fixed post-contact horizon [verify]. The surrogate is a modelling decision and must be logged with the claim; it is not rule text.</p>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-volley-window-predicate.png" alt="Volley-window predicate timing diagram: swing, contact, follow-through, ball dead ticks; orange window bracket; dashed momentum-live tail after ball dead." loading="lazy"/>
+    <img src="../images/c03-uc-volley-window-predicate.png" alt="Volley-window predicate timing diagram: swing, contact, follow-through, ball dead ticks; orange window bracket; dashed momentum-live tail after ball dead." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.16</span>: UC 05 — The Window Constructor. Every stance predicate (foot, contact) is evaluated inside this window. <strong>Pickleball</strong>: volley faults and the momentum tail. <strong>Rugby league</strong>: the tackle window — held-plus-grounded until the referee's call (S11.2) — is the same constructor with a referee-gated close.</figcaption>
   </figure>
 
@@ -872,7 +872,7 @@ ActOfVolleying(p, t) ⇔ t ∈ VolleyWindow(p)                       (9.B / 11.A
   <p>Chapter 10's UC 08 supplies the measurement layer — 3D contact height from pose reconstruction — while this chapter supplies the rule shape: the vision term is a region-membership test on the carrier's skeleton, and the grading term is referee-gated and enters from the official feed. The honest architecture never infers the second disjunct from pixels.</p>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-high-tackle-predicate.png" alt="High-tackle predicate: tackler contact point at the neck flagged against a shoulder-height threshold line; legal contact below the line ticked." loading="lazy"/>
+    <img src="../images/c03-uc-high-tackle-predicate.png" alt="High-tackle predicate: tackler contact point at the neck flagged against a shoulder-height threshold line; legal contact below the line ticked." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.17</span>: UC 06 — HighTackle as Region Membership. Contact above the neck line fires the predicate; grading stays with the referee. <strong>Rugby league</strong>: objective contact height for bunker review (S15.b). <strong>Pickleball</strong>: no contact sport equivalent, but the same region-membership test is the paddle-below-wrist serve constraint (7.C.2).</figcaption>
   </figure>
 
@@ -890,7 +890,7 @@ RL:  FortyTwenty ⇔ KickOrigin ∈ Own40 ∧ Bounce
   <p>The 8.E "see a space" clause is the remarkable one: it defines the line call as a <em>pixel-gap test</em> — exactly what a calibrated camera computes, and exactly where single-camera systems fail on motion blur at the bounce.</p>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-out-of-bounds-predicate.png" alt="Out-of-bounds predicate in both sports: pickleball line-gap test in versus out; rugby league touchline with ball in versus in touch." loading="lazy"/>
+    <img src="../images/c03-uc-out-of-bounds-predicate.png" alt="Out-of-bounds predicate in both sports: pickleball line-gap test in versus out; rugby league touchline with ball in versus in touch." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.18</span>: UC 07 — Boundary Predicates, Two Sports. <strong>Pickleball</strong>: the visible-gap rule (8.E) is a pixel threshold; the NVZ line is out on the serve only. <strong>Rugby league</strong>: touch and the 40/20 zone composition (S9.6) are pure geometry once the ball is tracked (chapter 12) and the field calibrated (chapters 6–7).</figcaption>
   </figure>
 
@@ -904,7 +904,7 @@ RL:  FortyTwenty ⇔ KickOrigin ∈ Own40 ∧ Bounce
   variant_rl ∈ { IRL_2026, NRL_season }    -- six-again list, HIA, bunker scope</code></pre>
 
   <figure class="full">
-    <img src="shared/images/c03-uc-rules-conflict-matrix.png" alt="Rules conflict resolution: USAP versus UPA-A and IRL versus NRL variant table feeding a rules-variant config box into the state machine." loading="lazy"/>
+    <img src="../images/c03-uc-rules-conflict-matrix.png" alt="Rules conflict resolution: USAP versus UPA-A and IRL versus NRL variant table feeding a rules-variant config box into the state machine." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 3.19</span>: UC 08 — Variant as Configuration. The selector swaps the event alphabet and transition table; the engine, detector interface, and tests stay fixed. <strong>Pickleball</strong>: USAP versus UPA-A serve and equipment deltas. <strong>Rugby league</strong>: IRL base laws versus NRL seasonal interpretations.</figcaption>
   </figure>
 

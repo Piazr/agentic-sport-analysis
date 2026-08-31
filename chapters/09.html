@@ -521,7 +521,7 @@
   <p>Every claim downstream — partner spacing, kitchen occupancy, defensive line speed, rally tempo — depends on knowing <em>who</em> is where. A heatmap built from unidentifiable tracks is a heatmap of fragmentation, not of play. A rally-speed profile computed over a track that silently changes identity at the kitchen line is a profile of two half-rallies stitched together. Identity is the join key of the entire analytics spine (§9.11b); this chapter is about making that key survive contact with real footage.</p>
 
   <figure id="fig-09-03" class="full">
-    <img src="shared/images/ch09-pickleball-tracking.png" alt="Overhead pickleball doubles court, four player tokens with identity trails labeled ID 1-4, one player at the net partially occluded behind the net band in dashed outline. White background, black linework, burnt-orange trails." loading="lazy"/>
+    <img src="../images/ch09-pickleball-tracking.png" alt="Overhead pickleball doubles court, four player tokens with identity trails labeled ID 1-4, one player at the net partially occluded behind the net band in dashed outline. White background, black linework, burnt-orange trails." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.3</span>: The Tractable Case. Four players on a 13.41×6.10 m court with persistent IDs and short movement trails. The dashed token at the net is where every tracker earns its money: occlusion at the exact moment of closest approach.</figcaption>
   </figure>
 
@@ -589,14 +589,14 @@
   </table>
 
   <figure id="fig-09-01" class="full">
-    <img src="shared/images/tracking-metric-anatomy.png" alt="One tracking error scored three ways: MOTA looks fine (93.1), IDF1 charges both fragments (82.0), HOTA 89.1 with the identity switch called out. Recreate: white background, score bars." loading="lazy"/>
+    <img src="../images/tracking-metric-anatomy.png" alt="One tracking error scored three ways: MOTA looks fine (93.1), IDF1 charges both fragments (82.0), HOTA 89.1 with the identity switch called out. Recreate: white background, score bars." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.1</span>: One Error, Three Verdicts. A single identity switch in a 12-frame toy scenario scores 93.1 (MOTA), 82.0 (IDF1), and 89.1 (HOTA). The metric you choose decides whether the error is visible.</figcaption>
   </figure>
 
   <p>The HOTA decomposition deserves the chapter's key structural fact (per the verified definitions): DetA penalizes missed and false detections; AssA penalizes wrong associations of matched detections; LocA scores localization. A tracker can keep DetA high while AssA collapses — exactly E02's 26-ID behavior and E08's 295-ID behavior. In both failures the detector was innocent.</p>
 
   <figure id="fig-09-04" class="full">
-    <img src="shared/images/ch09-metrics-comparison.png" alt="Grouped horizontal bar chart comparing MOTA, IDF1, HOTA for ByteTrack vs BoT-SORT on the same pickleball clip: ByteTrack high MOTA, low IDF1, mid HOTA; BoT-SORT higher across the board; annotation of ID switches 14 vs 2. White background, black axes, burnt-orange bars." loading="lazy"/>
+    <img src="../images/ch09-metrics-comparison.png" alt="Grouped horizontal bar chart comparing MOTA, IDF1, HOTA for ByteTrack vs BoT-SORT on the same pickleball clip: ByteTrack high MOTA, low IDF1, mid HOTA; BoT-SORT higher across the board; annotation of ID switches 14 vs 2. White background, black axes, burnt-orange bars." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.4</span>: The Same Bake-Off, Three Scales. E09's measured numbers: ByteTrack (IDF1 0.581, HOTA 0.642, 14 switches) versus BoT-SORT (IDF1 0.796, HOTA 0.814, 2 switches). MOTA alone would have called this a minor difference; the identity metrics call it a different pipeline.</figcaption>
   </figure>
 
@@ -660,7 +660,7 @@
   <p>Note also the layered license reality: BoT-SORT's source repo is MIT, but the Ultralytics-distributed version inherits the AGPL-3.0 umbrella. For a product, the license read must happen at the <em>distribution chain</em>, not the paper.</p>
 
   <figure id="fig-09-05" class="full">
-    <img src="shared/images/ch09-botsort-architecture.png" alt="BoT-SORT pipeline left to right: detections from a pickleball frame, camera motion compensation, Kalman prediction, cost matrix fusing IoU and ReID appearance, Hungarian matcher, output track IDs over boxes. White background, black linework, burnt-orange data-flow arrows." loading="lazy"/>
+    <img src="../images/ch09-botsort-architecture.png" alt="BoT-SORT pipeline left to right: detections from a pickleball frame, camera motion compensation, Kalman prediction, cost matrix fusing IoU and ReID appearance, Hungarian matcher, output track IDs over boxes. White background, black linework, burnt-orange data-flow arrows." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.5</span>: BoT-SORT Data Path. Detections enter from chapter 8's detector; GMC stabilizes the Kalman prediction against camera motion; the fused IoU + appearance cost matrix feeds the Hungarian assignment; surviving matches update the EMA appearance gallery. Identity lives and dies in the cost matrix, not the detector.</figcaption>
   </figure>
 
@@ -679,7 +679,7 @@
   <p>Two failure modes live here. <em>Drift capture:</em> after an unresolved occlusion, the EMA gallery follows the wrong player and locks the error in — every subsequent frame makes the wrong identity more confident. Guards: freeze gallery updates while association ambiguity is high (low margin between best and second-best cost), cap the update rate, and let role priors veto impossible identity jumps. <em>Greedy collapse:</em> Hungarian is globally optimal for the cost matrix it is given, but the matrix is only as honest as its gates; a missing gate (no net-line check, no team-side prior) turns two crossing players into a coin flip that the optimizer then commits to permanently.</p>
 
   <figure id="fig-09-06" class="full">
-    <img src="shared/images/ch09-association-matching.png" alt="Detection-to-track association: three existing tracks as solid predicted boxes, three new detections as dashed boxes, a 3x3 cost matrix with IoU and appearance cells shaded burnt-orange, matched pairs connected by orange lines, one track unmatched. White background, black linework." loading="lazy"/>
+    <img src="../images/ch09-association-matching.png" alt="Detection-to-track association: three existing tracks as solid predicted boxes, three new detections as dashed boxes, a 3x3 cost matrix with IoU and appearance cells shaded burnt-orange, matched pairs connected by orange lines, one track unmatched. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.6</span>: The Cost Matrix Is the Tracker. Tracks (left) against detections (top); each cell fuses motion and appearance price; the assignment picks one detection per track. The unmatched track on the right is ByteTrack's second pass's whole reason to exist.</figcaption>
   </figure>
 
@@ -752,7 +752,7 @@
   </ul>
 
   <figure id="fig-09-07" class="full">
-    <img src="shared/images/ch09-id-switch-failure.png" alt="Three panels: two pickleball players labeled ID 1 and ID 2 approach the net; they overlap in occlusion as one dashed blob; the labels emerge swapped with a burnt-orange X and the words ID switch. White background, black linework." loading="lazy"/>
+    <img src="../images/ch09-id-switch-failure.png" alt="Three panels: two pickleball players labeled ID 1 and ID 2 approach the net; they overlap in occlusion as one dashed blob; the labels emerge swapped with a burnt-orange X and the words ID switch. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.7</span>: Anatomy of a Switch. Approach, occlusion, emergence with swapped labels. The tracker did nothing irrational frame-by-frame — the cost matrix simply had no surviving discriminating cue in the middle panel. Every fix in this chapter adds a cue that survives occlusion: low-confidence detections, appearance, motion momentum, or geometry.</figcaption>
   </figure>
 
@@ -774,7 +774,7 @@
   <p>E08 quantified the disease (295 spawned IDs for ~30 distinct people, measured); E14 showed GMC alone is not the cure (+3.1% fewer IDs). The rugby stack that stands a chance is: strong detector → BoT-SORT with framewarp GMC → OC-SORT-style motion priors in the ruck → position priors at each play-the-ball → tracklet-level jersey OCR against the time-indexed roster. Each layer repairs a failure the layer above cannot see.</p>
 
   <figure id="fig-09-08" class="full">
-    <img src="shared/images/ch09-rugby-25-player.png" alt="Overhead rugby league pitch, two teams of thirteen as circles and triangles along a defensive line, a crowded tackle ruck highlighted burnt-orange, sideline bench with four substitutes and interchange arrows onto the field, jersey numbers 1-17 on a few players. White background, black linework." loading="lazy"/>
+    <img src="../images/ch09-rugby-25-player.png" alt="Overhead rugby league pitch, two teams of thirteen as circles and triangles along a defensive line, a crowded tackle ruck highlighted burnt-orange, sideline bench with four substitutes and interchange arrows onto the field, jersey numbers 1-17 on a few players. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.8</span>: The 25-Player Problem. Thirteen a side, a ruck that erases appearance, and an interchange bench that mutates the identity set mid-match. The defensive line's periodic reset every ~10 seconds is the structural gift that makes the problem solvable at all.</figcaption>
   </figure>
 
@@ -789,7 +789,7 @@
   </ul>
 
   <figure id="fig-09-02" class="full">
-    <img src="shared/images/tracking-role-priors.png" alt="Overhead court with serve-side rule pinning S and P1, net-line constraint invalidating a crossing track, stacking decay window. Recreate: white background, black court, burnt-orange annotations." loading="lazy"/>
+    <img src="../images/tracking-role-priors.png" alt="Overhead court with serve-side rule pinning S and P1, net-line constraint invalidating a crossing track, stacking decay window. Recreate: white background, black court, burnt-orange annotations." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.2</span>: Role Priors at Serve Time. The score parity fixes the server's partner; the net line is an identity barrier; the stacking decay window predicts the cross. Three zero-cost constraints that kill most identity switches.</figcaption>
   </figure>
 
@@ -939,7 +939,7 @@
   <p>A doubles rally is 20-40 frames of four players converging on the same two square metres at the kitchen line. The mechanism is the full BoT-SORT flow of §9.3: detections from C08, Kalman prediction, and a fused cost <code>C(i,j) = λ·cosine(e_i, e_j) + (1−λ)·(1 − IoU(x̂_i, x_j))</code> solved by Hungarian assignment each frame, with ByteTrack's low-confidence second pass rescuing occluded detections. On pb-003 this is the measured E09 result: HOTA 0.814, IDF1 0.796, 2 switches across 900 frames — versus ByteTrack's 14 switches at HOTA 0.642 (measured, one clip; the n=1 caveat of §9.4 stands).</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-botsort-rally.png" alt="BoT-SORT pipeline on a pickleball rally: detections, camera motion compensation, Kalman prediction, fused cost matrix, Hungarian matcher, output IDs with trails. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-botsort-rally.png" alt="BoT-SORT pipeline on a pickleball rally: detections, camera motion compensation, Kalman prediction, fused cost matrix, Hungarian matcher, output IDs with trails. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.9</span>: UC 01 — BoT-SORT on a Rally. The full data path from C08 detections to persistent IDs. <strong>Pickleball</strong>: four identities survive 20-40 frames of NVZ convergence. <strong>Rugby league</strong>: the same flow tracks the backline movement between tackles, before the ruck regime of UC 03 takes over.</figcaption>
   </figure>
 
@@ -949,7 +949,7 @@
   <p>Rugby league is not a 26-body problem; it is a <em>time-varying set</em> problem: an active identity set A_t of 26 drawn from a roster R of ~34, with interchange events as set deltas that arrive without visual announcement. The mechanism: track birth/death management driven by the roster state machine — every substitution is a guaranteed track birth, so a respawned detection near the sideline is matched against the <em>incoming</em> roster member, not the nearest dead track. The binding number→player must be time-indexed, because interchange and blood-bin replacements churn it (§9.6b). E08 measured the disease the roster cures: 295 spawned IDs for ~30 distinct people; E14 showed GMC alone cuts that only 3.1% (measured).</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-rl-25subs.png" alt="Overhead rugby league pitch with 26 tracked players, interchange bench with substitution arrow, timeline showing track birth and death events. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-rl-25subs.png" alt="Overhead rugby league pitch with 26 tracked players, interchange bench with substitution arrow, timeline showing track birth and death events. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.10</span>: UC 02 — The Substitution-Aware Track Set. <strong>Rugby league</strong>: 26 active tracks from a 34-name roster, births and deaths at the interchange. <strong>Pickleball</strong>: the degenerate case — a fixed roster of 4 per court, which is exactly why per-session gallery enrollment (§9.5) works there.</figcaption>
   </figure>
 
@@ -959,7 +959,7 @@
   <p>Eighty minutes at 25 fps is 120,000 frames; no online tracker holds identity that long unaided. The mechanism is structural re-anchoring: rugby's play-the-ball resets both lines every ~10 seconds, and each reset is a locality event where position priors re-tighten (§9.6b) — the tracker converts one impossible 80-minute problem into ~400 ten-second ones, with EMA galleries carrying appearance across the boundaries. The offline complement is global tracklet linking (the GTA pattern): after the online pass, link fragments globally using team classification, jersey reads, and appearance — the configuration on record at 81.04 HOTA on SportsMOT [verify exact configuration]. Pickleball's version is the side-out: every serve is a serve-side identity pin (§9.7).</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-fullmatch-timeline.png" alt="Full-match timeline of 26 player track lifelines over 80 minutes with track births at substitutions and repair stitches at play-the-ball resets. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-fullmatch-timeline.png" alt="Full-match timeline of 26 player track lifelines over 80 minutes with track births at substitutions and repair stitches at play-the-ball resets. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.11</span>: UC 03 — Full-Match Persistence. <strong>Rugby league</strong>: track lifelines across 80 minutes, stitched at every play-the-ball reset. <strong>Pickleball</strong>: the same timeline over a session, re-pinned at every serve by score parity — persistence comes from the sport's clock, not the model's memory.</figcaption>
   </figure>
 
@@ -971,7 +971,7 @@
   <p>A ruck compresses 4-8 same-kit bodies into one blob for 1-3 seconds; the pickleball net band does the same to legs at the exact moment of closest approach. The mechanism has three layers. (1) Through the gap, the Kalman filter extrapolates — but only within a gating distance: the Mahalanobis gate <code>d² = (z − Hx̂)ᵀS⁻¹(z − Hx̂) ≤ χ²</code> rejects re-emergence candidates too far from the prediction. (2) On re-appearance, OC-SORT's observation-centric re-update re-anchors the state to the observation instead of the accumulated hallucination. (3) Appearance anchors on both sides of the gap: the EMA gallery before occlusion and the fresh embedding after, matched by cosine distance — with updates frozen while the best/second-best margin is small, so the gallery cannot drift-capture the wrong body (§9.3b).</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-occlusion-bridge.png" alt="Track timeline entering an occlusion band, dashed Kalman extrapolation through it, appearance anchors on both sides re-attaching the identity, wrong re-attach crossed out. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-occlusion-bridge.png" alt="Track timeline entering an occlusion band, dashed Kalman extrapolation through it, appearance anchors on both sides re-attaching the identity, wrong re-attach crossed out. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.12</span>: UC 04 — Bridging the Gap. <strong>Rugby league</strong>: a player enters the ruck as ID 41 and leaves as ID 41, not ID 117 — the E08 failure this repairs. <strong>Pickleball</strong>: the net band erases legs for 5-10 frames at the NVZ; the gate plus the frozen gallery carry the identity across.</figcaption>
   </figure>
 
@@ -981,7 +981,7 @@
   <p>The cheapest identity repair in the book is a gate, not a model. When two trajectories cross, the cost matrix contains a coin-flip cell; the mechanism converts the coin flip into a deterministic rejection with rule-derived gates: <code>C(i,j) = ∞</code> when the match would cross the net plane (one homography check per frame with the fixed camera) or violate serve-side parity at serve time (§9.7). In rugby the equivalent is the jersey-swap guard: number→player bindings are time-indexed, and a detection whose tracklet jersey vote contradicts its track's current binding pays an additive penalty rather than inheriting the identity silently. Applied to E09, the net-line gate alone would have killed most of ByteTrack's 14 switches at zero model cost [verify — rule-derived, the §9.11 post-processor lab produces the first measured number].</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-idswitch-recovery.png" alt="Three-panel ID-switch sequence at a pickleball net: approach, occlusion blob, wrong swap crossed out versus correct ReID recovery. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-idswitch-recovery.png" alt="Three-panel ID-switch sequence at a pickleball net: approach, occlusion blob, wrong swap crossed out versus correct ReID recovery. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.13</span>: UC 05 — The Switch and Its Prevention. <strong>Pickleball</strong>: two players cross at the NVZ; the net-line gate forbids the swap geometrically. <strong>Rugby league</strong>: the jersey swap under interchange — the time-indexed roster catches what appearance cannot.</figcaption>
   </figure>
 
@@ -991,7 +991,7 @@
   <p>Multi-camera coverage (C14 territory) needs identity to survive a view change: the same player leaves CAM A's frame and enters CAM B's from a different angle, under different lighting. The mechanism is cross-view appearance matching: L2-normalized embeddings compared by cosine distance, with same-identity pairs in this footage sitting near 0.1 and different-identity pairs near 0.9 [verify — thresholds are venue-calibrated practitioner values, not universal constants]. Two guards make it work in sport: per-view galleries (embeddings are view-conditional, so match within-view first) and a homography consistency check (the re-appearing feet position must be reachable from the exit position in the shared court frame, C06/C07). The uniform collapse of §9.5 is worse cross-view — team blobs shift differently per camera — so in-domain fine-tuning matters more here than anywhere.</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-reid-views.png" alt="Two camera views of a rugby pitch with player crops, embedding bars, accepted cross-view matches in burnt-orange and a rejected match crossed out. White background, black linework." loading="lazy"/>
+    <img src="../images/ch09-uc-reid-views.png" alt="Two camera views of a rugby pitch with player crops, embedding bars, accepted cross-view matches in burnt-orange and a rejected match crossed out. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.14</span>: UC 06 — Identity Across Views. <strong>Rugby league</strong>: broadcast cuts between the main and in-goal cameras mid-set; cross-view ReID plus homography reachability keeps the ball carrier's identity through the cut. <strong>Pickleball</strong>: two-camera tournament rigs hand players off at the net post, the exact spot where single-view tracking is weakest.</figcaption>
   </figure>
 
@@ -1003,7 +1003,7 @@
   <p>Tracking's output is not a video with boxes; it is a column in the analytics spine (§9.11b): detection (frame, box) → track (track_id, frame) → identity (player, track_id) → event (event_id, player, frame). The mechanism is the join itself: every event detector downstream — contact, shot, tackle, fault (C19) — emits events keyed by <code>track_id + frame</code>, and identity resolution maps track_id to player exactly once per track, not once per event. The failure mode is silent: a fragmented track does not error the join, it splits one player's contribution across two rows, and every aggregate is wrong in proportion to the fragmentation. This is why AssA and IDF1 — not DetA — predict downstream stat quality.</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-track-event-join.png" alt="Three-table join diagram: track table, identity table, event table linked by burnt-orange join arrows into one spine, fragmented track splitting into two rows crossed out. White background, black linework." loading="lazy"/>
+    <img src="../images/ch09-uc-track-event-join.png" alt="Three-table join diagram: track table, identity table, event table linked by burnt-orange join arrows into one spine, fragmented track splitting into two rows crossed out. White background, black linework." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.15</span>: UC 07 — The One-Spine Join. <strong>Pickleball</strong>: a dink winner is credited by joining the C19 shot event to the track to the enrolled session player. <strong>Rugby league</strong>: a tackle event joins to the tracklet, then to the time-indexed roster binding — the same column, two sports.</figcaption>
   </figure>
 
@@ -1013,7 +1013,7 @@
   <p>The C28 cockpit wants identity live, not after the match. The constraint is a glass-to-glass budget under ~100 ms: frame capture ~8 ms, detect ~12 ms, track ~3 ms, render ~16 ms leaves headroom for ReID only where it pays. The mechanism is a budgeted pipeline: BoT-SORT at E02's measured 53 fps on the M4 Max fits the window; the ReID forward pass (one CNN call per detection) is the marginal cost, so the live configuration runs appearance fusion only on ambiguous cells — low IoU margin or a gate near-violation — and pure motion on the rest [verify — selective-fusion scheduling is a practitioner pattern, not a published config]. Fixed-camera pickleball needs no GMC, which is the budget line that broadcast rugby spends on framewarp.</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-hud-live.png" alt="Sideline tablet HUD showing overhead pickleball court with named player tokens, speed readouts, alert ring at the kitchen line, and a latency ladder totaling under 100ms. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-hud-live.png" alt="Sideline tablet HUD showing overhead pickleball court with named player tokens, speed readouts, alert ring at the kitchen line, and a latency ladder totaling under 100ms. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.16</span>: UC 08 — The Live Budget. <strong>Pickleball</strong>: sideline iPad showing named tokens, live speeds, and a kitchen-warning ring during the rally (feeds C28). <strong>Rugby league</strong>: the same HUD on the broadcast feed spends its margin on GMC instead of ReID — same budget, different line item.</figcaption>
   </figure>
 
@@ -1023,7 +1023,7 @@
   <p>A fast broadcast pan invalidates every Kalman prediction simultaneously; without compensation the tracker mass-respawns IDs. The mechanism is global motion compensation between frames — estimate the camera's affine warp, apply it to the Kalman state before association — but the E14 measurement is the real lesson: framewarp (dense optical flow) GMC cut spawned IDs 295 → 286 (+3.1%) on nrl-001, while boxshift (sparse feature matching) made things <em>worse</em> (measured). Two implementations of the same datasheet checkbox moved the metric in opposite directions. The C07 calibration feed provides the static-feature correspondences framewarp needs; player-masked flow (the C10 UC-20 pattern) keeps moving bodies out of the camera estimate.</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-gmc-broadcast.png" alt="Broadcast pan across a rugby pitch with drifting boxes, forked framewarp and boxshift paths, results showing framewarp stable at 286 IDs and boxshift crossed out, baseline 295 struck through. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/ch09-uc-gmc-broadcast.png" alt="Broadcast pan across a rugby pitch with drifting boxes, forked framewarp and boxshift paths, results showing framewarp stable at 286 IDs and boxshift crossed out, baseline 295 struck through. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.17</span>: UC 09 — GMC Is a Variable, Not a Checkbox. <strong>Rugby league</strong>: E14's measured fork — framewarp helps, boxshift hurts, on the same clip with the same tracker. <strong>Pickleball</strong>: fixed-camera footage skips the line item entirely; handheld tournament rigs re-enter this regime.</figcaption>
   </figure>
 
@@ -1035,7 +1035,7 @@
   <p>The operational question is never "is the tracker good" but "did this change help, on my footage." The mechanism is the §9.10 protocol run as routine: TrackEval scoring every experiment with HOTA primary and the DetA/AssA decomposition as the self-diagnosis — DetA flat with AssA down means the associator regressed; AssA flat with DetA down means the detector did. Statistics stay honest: paired per-clip ΔHOTA, cluster bootstrap by clip (10k resamples) for the 95% CI, sign test as the floor, ΔHOTA ≥ 0.02 pre-registered as meaningful. And ClusteredIDF1 (§9.2, book construction) answers the question global metrics hide: can the tracker tell apart the two same-kit players who actually meet — per NVZ pair in pickleball, per ruck in rugby.</p>
 
   <figure class="full">
-    <img src="shared/images/ch09-uc-metrics-practice.png" alt="Grouped bar chart of MOTA, IDF1, HOTA across three trackers: MOTA bars nearly equal near 95, IDF1 bars widely separated, HOTA in between, DetA times AssA gauge inset. White background, black axes, burnt-orange bars." loading="lazy"/>
+    <img src="../images/ch09-uc-metrics-practice.png" alt="Grouped bar chart of MOTA, IDF1, HOTA across three trackers: MOTA bars nearly equal near 95, IDF1 bars widely separated, HOTA in between, DetA times AssA gauge inset. White background, black axes, burnt-orange bars." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 9.18</span>: UC 10 — The Decision Chart. <strong>Pickleball</strong>: E09's measured spread — MOTA would have missed the difference that IDF1 and HOTA call a different pipeline. <strong>Rugby league</strong>: the same chart on nrl-001 exposes fragmentation that broadcast-frame counts dilute out of MOTA entirely.</figcaption>
   </figure>
 

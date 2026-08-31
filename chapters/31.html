@@ -521,7 +521,7 @@
   <p>Both of this book's worked sports appear in every section, because the failure modes differ. The pickleball case (pb-003) is fixed-camera amateur footage: the club owns the camera, the players are members, and the governing risk is athlete privacy. The rugby league case (nrl-001) is broadcast PTZ footage: the league and its broadcast partners own the pictures, the data rights run through Stats Perform, and the governing risk is media rights. Governance is one discipline applied to two very different asset classes.</p>
 
   <figure id="fig-31-01" class="full">
-    <img src="shared/images/licensing-decision-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/licensing-decision-tree.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.1</span>: The License Decision Tree. Choose at model-selection time: AGPL for research, Apache path for product, PML gate read before shipping.</figcaption>
   </figure>
 
@@ -535,14 +535,14 @@
   <p><strong>Hybrid.</strong> The architecture the book actually ships: edge does perception and anything latency-bound (line calls, live overlays, court-side cues); cloud does language and anything quality-bound (post-match narrative, weekly coach digests, cross-match aggregation). The boundary is drawn by two numbers — the 100 ms live-feedback budget and the per-match token bill — and by one rule: identity-bearing media stays on the edge box; only derived data (tracks, events, metrics) egresses.</p>
 
   <figure id="fig-31-02" class="full">
-    <img src="shared/images/c31-deployment-landscape.png" alt="Deployment landscape: edge laptop courtside, hybrid split, cloud server rack; pickleball court and rugby pitch feeds." loading="lazy"/>
+    <img src="../images/c31-deployment-landscape.png" alt="Deployment landscape: edge laptop courtside, hybrid split, cloud server rack; pickleball court and rugby pitch feeds." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.2</span>: The Deployment Landscape. Edge (55.7 ms, \$0/match, maximal privacy), cloud (2.4 s, \$3.22+/match, episodic quality work), and the hybrid split that the book ships: perception local, language remote.</figcaption>
   </figure>
 
   <p><strong>The M4 edge economics.</strong> The capital question answers itself quickly. A Mac Studio-class M4 Max is a one-time CAPEX of about \$3,199. Billed against GPT-4o-class cloud inference at \$6.45 per 80-minute match, the machine breaks even after <strong>496 matches</strong> [verify at print]. For a pickleball academy processing 50 hours of court footage a week, payback arrives in under six weeks; for an NRL club analyzing a season of 24 regular-season matches plus training sessions, the edge box pays for itself inside two seasons even if cloud were used for nothing else. The deeper point is structural: token-priced cloud inference scales with usage, while edge inference scales with hardware count. A league analyzing thousands of matches a season is a hardware fleet problem, not an API bill.</p>
 
   <figure id="fig-31-03" class="full">
-    <img src="shared/images/c31-edge-economics.png" alt="Break-even chart: flat M4 Max capex line at 3199 dollars crossed by rising cloud cost line at 496 matches." loading="lazy"/>
+    <img src="../images/c31-edge-economics.png" alt="Break-even chart: flat M4 Max capex line at 3199 dollars crossed by rising cloud cost line at 496 matches." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.3</span>: Edge Economics. The flat \$3,199 CAPEX line against the \$6.45/match cloud line; the crossover sits at 496 matches [verify at print], and every hour of academy footage after that is free at the margin.</figcaption>
   </figure>
 
@@ -596,7 +596,7 @@
   <p><strong>The permissive path.</strong> RF-DETR (Nano–Large) is Apache-2.0 end to end, matches or beats YOLO on accuracy/latency, and exports to ONNX/TensorRT — the book's default commercial-safe recommendation for both the pickleball detector and the rugby ball/player detector. RT-DETR, D-FINE, and the DEIM training recipe (which cuts DETR convergence time by up to 50% per the paper) are Apache-2.0 as well, giving a clean training path for custom fine-tunes. The two caveats the scan teaches: RF-DETR XL/2XL sit behind the PML-1.0 platform license (the constructors refuse to load unless <code>accept_platform_model_license=True</code> is passed — a license gate enforced in code), and DEIMv2's DINOv3 backbones carry Meta's custom DINOv3 license, not Apache [verify whether those terms propagate to downstream weights]. The book's discipline: <strong>pick permissive</strong>, and treat "we only use the weights, not the code" as a question for counsel, not an engineering shortcut.</p>
 
   <figure id="fig-31-04" class="full">
-    <img src="shared/images/c31-license-matrix.png" alt="License comparison matrix: YOLO AGPL marked no-ship; RF-DETR, SAM2, DEIM Apache-2.0 marked ship path." loading="lazy"/>
+    <img src="../images/c31-license-matrix.png" alt="License comparison matrix: YOLO AGPL marked no-ship; RF-DETR, SAM2, DEIM Apache-2.0 marked ship path." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.4</span>: The License Matrix. AGPL (research-only) versus the Apache-2.0 ship path; the orange highlight marks the row the book's product lane uses.</figcaption>
   </figure>
 
@@ -633,7 +633,7 @@
   <p><strong>Fair use is a defense, not a plan.</strong> It is raised after a claim, not granted in advance. The factors that strengthen a book's position are transformative purpose (tactical annotation, data visualization, teaching), small proportion (a single frame from a multi-hour broadcast), no market substitution (the book is not a substitute for watching the match), and the factual nature of a sporting event. The factors that weaken it: commercial publication of the book, taking the most valuable moment (the game-deciding try is the most licensable clip in the match), and unedited reposting — a voiceover alone is usually insufficient; spoken analysis plus diagrams plus data overlays is much stronger. The operational split: one annotated frame from a grand-final try with a tactical overlay is likely defensible as commentary; a 30-second highlight clip of the match-winning play is a licensing transaction; a generated data visualization from licensed event data is fine under the data license; an auto-compiled highlight reel from broadcast footage is not allowed at any scale without a clip-licensing agreement.</p>
 
   <figure id="fig-31-05" class="full">
-    <img src="shared/images/c31-rights-decision-tree.png" alt="Rights decision tree: club camera branch with player consent, broadcast branch blocked for license, self-filmed branch with subject rules." loading="lazy"/>
+    <img src="../images/c31-rights-decision-tree.png" alt="Rights decision tree: club camera branch with player consent, broadcast branch blocked for license, self-filmed branch with subject rules." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.5</span>: Who Owns the Footage. Three branches — club camera (the pb-003 case: club owns, players consent), broadcast (the nrl-001 case: rights held, license first), and self-filmed (subject to venue and subject rules).</figcaption>
   </figure>
 
@@ -643,7 +643,7 @@
   <p>The pickleball mirror is instructive: PPA/MLP footage has no Hudl-equivalent club layer because professional pickleball's media structure is younger and centralized under Pickleball Inc.; a pro pickleball analyst has fewer sanctioned video sources than an NRL analyst, which is exactly why the book's pickleball pipeline is built on self-captured club footage instead. The rights structure you operate under determines the capture architecture you build.</p>
 
   <figure id="fig-31-06" class="full">
-    <img src="shared/images/c31-nrl-broadcast-rights.png" alt="Three stacked rights layers for rugby league: broadcast, league data, club video; club use blocked from broadcast layer, allowed from club video layer." loading="lazy"/>
+    <img src="../images/c31-nrl-broadcast-rights.png" alt="Three stacked rights layers for rugby league: broadcast, league data, club video; club use blocked from broadcast layer, allowed from club video layer." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.6</span>: The NRL Rights Stack. Broadcast pictures (licensed, off-limits for redistribution), league event data (~14,000 points/match via Stats Perform), and club video (Hudl/ARLC) — the club's lawful analysis path runs through the bottom two layers, not the top one.</figcaption>
   </figure>
 
@@ -665,7 +665,7 @@
   </ul>
 
   <figure id="fig-31-07" class="full">
-    <img src="shared/images/c31-athlete-consent-flow.png" alt="Five-stage athlete consent flow: collect, inform, sign, process with no-faces tag, revoke loop; blurred-face athlete silhouette with privacy shield." loading="lazy"/>
+    <img src="../images/c31-athlete-consent-flow.png" alt="Five-stage athlete consent flow: collect, inform, sign, process with no-faces tag, revoke loop; blurred-face athlete silhouette with privacy shield." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.7</span>: The Consent Flow. Collect → inform → sign → process (no faces) → revocable. The loop back is the load-bearing stage: consent that cannot be withdrawn was never consent.</figcaption>
   </figure>
 
@@ -765,7 +765,7 @@
   <p><strong>The pickleball club case in full.</strong> The club owns the camera — that part is easy: a camera mounted by the venue on its own wall records on the club's storage, and the raw recording is the club's asset. The harder question is the subjects. The players are identifiable data subjects: their appearance, movement patterns, and (in the pb-003 footage) their faces are personal data. The club's ownership of the recording does not grant the right to publish the players; that right comes from the consent workflow of §31.4b, signed per player, with parental consent for minors, and with the secondary-use line covering any dataset contribution or model training. The operational result is the three-way split in the figure: labels out (CC-BY-4.0), hashes out (verification without exposure), frames locked. A member who revokes consent triggers removal of their rows from future releases and blurring in any re-published analysis — which is why the provenance hashes of §31.3c matter: you can only honor revocation if you can trace every derived artifact back to its source clip.</p>
 
   <figure id="fig-31-08" class="full">
-    <img src="shared/images/c31-pickleball-club-rights.png" alt="Pickleball court with club cameras feeding three outputs: labels CC-BY ticked, frames locked with X, hashes only ticked." loading="lazy"/>
+    <img src="../images/c31-pickleball-club-rights.png" alt="Pickleball court with club cameras feeding three outputs: labels CC-BY ticked, frames locked with X, hashes only ticked." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.8</span>: The Pickleball Club Split. The club owns the camera and the recording; the players own their identifiability. Labels release under CC-BY-4.0, hashes release for verification, frames stay locked.</figcaption>
   </figure>
 
@@ -790,7 +790,7 @@
   <h3 class="sub-heading">UC 01 — Club Video Rights: The NRL Broadcast Trap</h3>
   <p>The problem: the match was on television, so the analyst assumes the club can cut the telecast into a review package. It cannot. The mechanism is the two-layer rights structure of §31.3b — broadcast pictures are the broadcasters' licensed product, while the club's lawful path is the Hudl/ARLC footage layer plus Stats Perform's ~14,000 event data points per match. The math is asymmetric: a clip-licensing conversation for broadcast footage runs to a per-clip fee and a negotiation cycle measured in weeks [verify — league-specific], while the sanctioned club layer is already paid for inside the ARLC agreement. The cost of getting it wrong is not a fine schedule; it is a takedown plus a damaged league relationship.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-nrl-club-video-rights.png" alt="Rugby league pitch from a broadcast gantry with three stacked rights layers: broadcast blocked, league data and club video open to the analyst laptop." loading="lazy"/>
+    <img src="../images/c31-uc-nrl-club-video-rights.png" alt="Rugby league pitch from a broadcast gantry with three stacked rights layers: broadcast blocked, league data and club video open to the analyst laptop." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.9</span>: UC 01 — The Rights Stack in Practice. <strong>Rugby league</strong>: broadcast layer blocked for reuse; the analyst's lawful path is league data plus club video. <strong>Pickleball</strong>: no broadcast layer exists for club footage — the club camera is the only layer, and consent governs it.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> There is no Hudl-equivalent in amateur pickleball: the club's own fixed camera is simultaneously the capture layer and the rights layer, so the "which layer may I use" question collapses into the consent question of UC 05. PPA/MLP pro footage, by contrast, is Pickleball Inc. property — treat it like the broadcast layer: cite, never cut.</p>
@@ -800,7 +800,7 @@
   <h3 class="sub-heading">UC 02 — Pickleball Club Recording Rights</h3>
   <p>The problem: a club mounts a camera, records a season, and only later asks who may publish what. The mechanism is the three-way split of §31.8: the club owns the recording, the players own their identifiability, and the release separates into labels out (CC-BY-4.0), hashes out (SHA-256 provenance), frames locked. The math is the admin overhead: a nine-field consent form costs roughly 10 minutes per player — about 7 staff-hours for a 40-member roster, once per season — against the alternative cost of a full dataset takedown and re-collection if one parent objects after publication.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-pickleball-recording-rights.png" alt="Pickleball court with club cameras feeding three outputs: labels ticked, hashes ticked, frames padlocked." loading="lazy"/>
+    <img src="../images/c31-uc-pickleball-recording-rights.png" alt="Pickleball court with club cameras feeding three outputs: labels ticked, hashes ticked, frames padlocked." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.10</span>: UC 02 — The Club Split. <strong>Pickleball</strong>: labels and hashes publish, frames stay locked (the pb-003 pattern). <strong>Rugby league</strong>: the same split applies to training-ground footage the club shoots itself, outside the Hudl agreement.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> pb-003 in full: club-mounted cameras, per-player signed consent, parental consent for juniors, frames never leave club storage, labels released with source-clip hashes so any row traces back without the clip egressing.</p>
@@ -810,7 +810,7 @@
   <h3 class="sub-heading">UC 03 — AGPL vs Apache: The YOLO/RF-DETR Decision</h3>
   <p>The problem: the detector that tops the hobby benchmarks is AGPL-3.0, and the product team discovers it at acquisition due diligence, not at model selection. The mechanism is §13: serving an AGPL model over a network triggers source release for the whole combined work, and the licensor reads fine-tuned weights as covered. The math, from this chapter's measured scan: the working venv carries three AGPL packages (ultralytics 8.4.117, opencv-contrib-python 5.0.0.93, opencv-python 5.0.0.93). The escape routes price out as: Ultralytics Enterprise license [verify at print — quote-based], full AGPL source release (usually fatal to a closed product), or migration to RF-DETR (Apache-2.0, ONNX/TensorRT export, accuracy-equivalent) at roughly two engineer-days for a drop-in detector swap [verify — practitioner estimate]. Migration is almost always the cheapest cell in that table.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-agpl-vs-apache.png" alt="Forked decision: YOLO branch ends at an AGPL stop sign; RF-DETR branch ends at a ship tick." loading="lazy"/>
+    <img src="../images/c31-uc-agpl-vs-apache.png" alt="Forked decision: YOLO branch ends at an AGPL stop sign; RF-DETR branch ends at a ship tick." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.11</span>: UC 03 — The Fork. <strong>Pickleball</strong>: the club ball/paddle detector ships on RF-DETR Nano. <strong>Rugby league</strong>: the 26-player broadcast detector ships on RF-DETR Large; XL/2XL stay behind the PML gate.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> The pb-003 detector fine-tune runs the DEIM recipe on an Apache base, so the club's coaching app can be sold or open-sourced on the club's own terms — the license is a choice, not a surprise.</p>
@@ -820,7 +820,7 @@
   <h3 class="sub-heading">UC 04 — Edge vs Cloud: The M4 Economics</h3>
   <p>The problem: cloud inference is priced per token and per match, so a successful season is a growing bill; edge hardware is priced once. The mechanism is the hybrid split of §31.1b — perception local (37.0 ms end-to-end, 55.7 ms glass-to-glass, measured), language remote. The math: the M4 Max box at \$3,199 CAPEX against \$6.45 per 80-minute match of cloud VLM inference breaks even at <strong>496 matches</strong> [verify at print]; a pickleball academy processing 50 court-hours a week crosses inside six weeks, and an NRL club analyzing 24 regular-season matches plus training crosses inside two seasons. Below break-even the cloud is cheaper in cash; above it, every marginal match is free — and identity-bearing frames never leave the building at any volume.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-edge-vs-cloud.png" alt="Edge laptop courtside versus cloud server rack with the hybrid boundary between them." loading="lazy"/>
+    <img src="../images/c31-uc-edge-vs-cloud.png" alt="Edge laptop courtside versus cloud server rack with the hybrid boundary between them." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.12</span>: UC 04 — The Split. <strong>Pickleball</strong>: the court-side iPad cue needs the 55.7 ms edge path. <strong>Rugby league</strong>: the post-match narrative digest tolerates cloud's 2.4 s round trips and pays per match.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> The academy default is edge-only: member footage never egresses, the per-match marginal cost is zero, and live dink-feedback cues stay inside the 100 ms budget.</p>
@@ -832,7 +832,7 @@
   <h3 class="sub-heading">UC 05 — The Athlete Consent Flow</h3>
   <p>The problem: consent collected as a single season-start checkbox cannot support the three different purposes (coaching review, highlights, dataset contribution) a club actually uses footage for. The mechanism is the five-stage flow of §31.4 — collect, inform, sign, process (no faces), revoke — with the nine-field template of §31.4b binding each purpose separately. The math is revocation cost: with the SHA-256 provenance chain of §31.3c, withdrawing one athlete is an O(their labels) deletion — hash-indexed rows drop out of the released dataset without touching anyone else's data. Without provenance, revocation is an O(everything) re-collection.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-consent-flow.png" alt="Five-node consent ring: collect, inform, sign, process, revoke, looping back; blurred-face athlete at center." loading="lazy"/>
+    <img src="../images/c31-uc-consent-flow.png" alt="Five-node consent ring: collect, inform, sign, process, revoke, looping back; blurred-face athlete at center." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.13</span>: UC 05 — Consent as a Loop. <strong>Pickleball</strong>: per-player forms with a parental line for juniors. <strong>Rugby league</strong>: CBA-structured consent, purpose-bound and revocable inside the employment relationship.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> The club's season workflow: forms at registration, the AI-training secondary-use line signed before any label leaves the building, revocation honored by hash-indexed deletion from the published dataset.</p>
@@ -842,7 +842,7 @@
   <h3 class="sub-heading">UC 06 — Data Retention: How Long to Keep the Footage</h3>
   <p>The problem: clubs keep everything forever because deletion feels like waste, and discover the cost when a subject requests erasure across three seasons of unsorted drives. The mechanism is a retention schedule bound to the consent form's retention field: delete after season, after departure, or after a fixed period — enforced by the provenance chain, not by memory. The math is storage plus risk: 1080p30 club footage runs about 8 GB per hour, so a 50-hour week is ~400 GB and a kept-forever academy accumulates ~20 TB per year [verify — bitrate-dependent]; a delete-after-season policy caps that at one NAS drive, and every retained hour beyond its purpose is breach surface with zero analytical value.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-retention-policy.png" alt="Retention timeline from record to delete with season, one-year, and three-year bars and scissors cutting the reel." loading="lazy"/>
+    <img src="../images/c31-uc-retention-policy.png" alt="Retention timeline from record to delete with season, one-year, and three-year bars and scissors cutting the reel." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.14</span>: UC 06 — The Retention Clock. <strong>Pickleball</strong>: delete-after-season caps the academy at one drive. <strong>Rugby league</strong>: Hudl-hosted retention is set by the league agreement; the club's own exports follow the same clock.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> pb-003 policy: raw clips live one season on club storage, derived labels persist (they are the publishable asset), and a season-end script deletes footage whose consent period has lapsed — logged, not manual.</p>
@@ -852,7 +852,7 @@
   <h3 class="sub-heading">UC 07 — Facial Recognition: The Ethical Line</h3>
   <p>The problem: "we already have the video — can we auto-tag players by face?" is technically trivial and ethically indefensible in the amateur case. The mechanism is §31.4's face lane: NIST FRVT measured demographic false-positive differentials of 10–100× mean the error lands unevenly on the athletes least likely to be believed when they dispute it, and the club/employer power imbalance means refusal is not free. The math is expected harm: at even a 0.1% false-match rate across 200 members, the system manufactures false identifications on a schedule, each one carrying reputational cost to the wrongly matched athlete and none to the operator — an asymmetry no accuracy improvement fully closes for non-consenting subjects.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-facial-risk-line.png" alt="A line dividing off-limits facial recognition above from allowed jersey numbers and anonymous IDs below." loading="lazy"/>
+    <img src="../images/c31-uc-facial-risk-line.png" alt="A line dividing off-limits facial recognition above from allowed jersey numbers and anonymous IDs below." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.15</span>: UC 07 — The Line. <strong>Pickleball</strong>: jersey numbers or anonymous IDs, faces blurred, minors under parental consent. <strong>Rugby league</strong>: pro squads may run managed, purpose-bound, DPIA-documented face pipelines — the amateur default never crosses.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> pb-003 default is blur-or-skip: tracking keys on jersey number or anonymous ID, published frames blur faces, and no face template is ever built from club footage.</p>
@@ -864,7 +864,7 @@
   <h3 class="sub-heading">UC 08 — Model License Propagation: Fine-Tuning AGPL</h3>
   <p>The problem: the team fine-tunes an AGPL detector on its own footage and assumes the new weights are theirs. The licensor's position (Ultralytics FAQ) is that fine-tuned weights inherit AGPL — the license propagates through training, not just through code import. The mechanism is the propagation chain: base weights → fine-tuned weights → served API, with §13 firing at the last hop. The math is the retraining premium as insurance: the DEIM recipe cuts DETR convergence time by up to 50% (source-backed, the DEIM paper), so re-deriving the club's detector on an Apache base is measured in Colab-days [verify — dataset-dependent], which is trivially cheaper than open-sourcing the product or buying out of the license after the fact. The derivative-work question is legally unsettled — treat the licensor's broad reading as the planning assumption, not the court's.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-license-propagation.png" alt="License propagation flowchart: AGPL contamination spreading from base weights to fine-tuned weights to served API; parallel clean Apache path." loading="lazy"/>
+    <img src="../images/c31-uc-license-propagation.png" alt="License propagation flowchart: AGPL contamination spreading from base weights to fine-tuned weights to served API; parallel clean Apache path." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.16</span>: UC 08 — Propagation. <strong>Pickleball</strong>: the paddle detector re-derived on DEIM in days. <strong>Rugby league</strong>: the player detector's 26-class fine-tune rebuilt on RF-DETR before any commercial pilot.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> The academy's ball detector, fine-tuned on pb-003 labels, is rebuilt on the Apache path the day the coaching app charges its first dollar — the labels (CC-BY-4.0, club-owned) port cleanly; only the base weights change.</p>
@@ -874,7 +874,7 @@
   <h3 class="sub-heading">UC 09 — The Deploy Checklist</h3>
   <p>The problem: governance fails at the seam between "the model works" and "the system is live" — every control in this chapter exists, but nobody ran them in order. The mechanism is §31.9's binary gate: license scan passed, provenance documented, consent verified or faces anonymized, risk register populated, no-medical-advice guardrail adversarially tested, override and rollback documented, human approval on match-decision outputs, and the 30-day export test. The math is automation cost: the license scanner is under fifty lines over <code>pip show</code> and runs in CI on every dependency change; the full checklist is a one-hour ceremony per release [verify — practitioner estimate] against the alternative of discovering any single gate's failure in production, where each maps to a known incident class (takedown, breach, wrong call, medical misread).</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-deploy-checklist.png" alt="Deployment checklist clipboard with eight ticked gates: license scan, hash, consent, risk, medical shield, stopwatch, export, whistle." loading="lazy"/>
+    <img src="../images/c31-uc-deploy-checklist.png" alt="Deployment checklist clipboard with eight ticked gates: license scan, hash, consent, risk, medical shield, stopwatch, export, whistle." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.17</span>: UC 09 — Eight Gates. <strong>Pickleball</strong>: the club tournament overlay passes all eight before the first live line call. <strong>Rugby league</strong>: the sideline cockpit adds one more — the league's data-agreement check on any Hudl-derived artifact.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> The club tournament deployment: scan, consent audit against the roster, risk register row for the live overlay, guardrail test, referee override drilled before round one.</p>
@@ -884,7 +884,7 @@
   <h3 class="sub-heading">UC 10 — Incident Response: The Mislabeled Line Call</h3>
   <p>The problem: the live line-call overlay calls a ball out that was in, the clip is on social media before the match ends, and the question arrives: who is accountable? The mechanism is the risk register's R-01 row operated as a loop — detect (confidence gate plus the C14 multi-view σ bound), contain (human-in-the-loop challenge rule overrides the model), rollback (model version pinning returns the last known-good), review (the incident log records input clip hash, model version, confidence, and the human decision). The math: inherent risk 3 × 5 = 15 drops to residual 6 under those controls — a 60% risk reduction bought with a challenge rule and a version pin [verify — register scores are the lab's calibrated judgment, not actuarial data]. The residual never reaches zero, which is why the accountability chain (who trained, who deployed, who can override) is named before the first live call, not after the first wrong one.</p>
   <figure class="full">
-    <img src="shared/images/c31-uc-incident-response.png" alt="Incident loop on a pickleball line: miscall alert to referee override to rollback to incident log." loading="lazy"/>
+    <img src="../images/c31-uc-incident-response.png" alt="Incident loop on a pickleball line: miscall alert to referee override to rollback to incident log." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 31.18</span>: UC 10 — The Incident Loop. <strong>Pickleball</strong>: the tournament referee overrides the overlay; the log holds the clip hash and confidence. <strong>Rugby league</strong>: a VLM tactical misread follows the same loop with the coach as the override.</figcaption>
   </figure>
   <p><strong>Pickleball application.</strong> Club tournament: the overlay is advisory, the referee's challenge window is the containment, and a mislabeled call triggers rollback to the pinned model version plus a register review within 48 hours.</p>

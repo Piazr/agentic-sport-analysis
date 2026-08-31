@@ -581,7 +581,7 @@
   <p>The rugby side makes the same point from the other direction. On the nrl-001 broadcast clip the same core loop has to track 13+13 players through a PTZ pan, and E02's tracking run (900 frames in 16.9s, 53.2 fps) produced 26 raw IDs for what should have been 4 tracked bodies even on the easier pickleball clip. The milliseconds are not the hard part of a live rugby cockpit; identity is. A 13.9ms loop that mislabels who is where produces a beautifully rendered wrong answer, faster.</p>
 
   <figure id="fig-28-01" class="full">
-    <img src="shared/images/c28-latency-budget-fixed.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-latency-budget-fixed.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.1</span>: The Measured Latency Budget. Core loop 13.9ms (measured, 500 frames, pb-003, M4 Max); the 55.7ms v1 figure was a design sum. The full glass-to-glass adds pose, encode, network, display — measure those before quoting a system number.</figcaption>
   </figure>
 
@@ -624,7 +624,7 @@
   <p><strong>Rugby worked example.</strong> Live: the 10m offside retreat line overlaid on the broadcast frame (C07 per-frame calibration + C09 tracks) and the play-the-ball stopwatch started by the C15 whistle timestamp. Async: the PTB speed-band trend across a set of six, the line-speed synchronisation report, the dog-leg rupture reel for Monday review. The radio call to the on-field trainer can carry "two defenders slow off the line" — geometry — but "our right edge is structurally vulnerable to the sweep" is a reviewed conclusion, not a beep.</p>
 
   <figure id="fig-28-02" class="full">
-    <img src="shared/images/c28-live-async-split.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-live-async-split.png" alt="Recreate in book style: white background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.2</span>: The Live/Async Split. Geometric cues live; meaning-making async; line calls never from single-cam.</figcaption>
   </figure>
 
@@ -692,7 +692,7 @@
   <p>The book's live prototype (dossier: <code>experiments/c28-live/nvz_alert.py</code>) ran the NVZ alert path at <strong>84.7 fps, logging 525 proximity cues in 500 frames</strong> — about 1.05 cues per frame — and its own honest note is the chapter's lesson in one line: <strong>a proximity cue is not a fault.</strong> The geometry says "foot in kitchen (x ∈ [15, 29] ft)"; the fault semantics need the volley state, which needs the ball, which is async. The HUD wording must say exactly which one it is.</p>
 
   <figure id="fig-28-03" class="full">
-    <img src="shared/images/c28-edge-hardware.png" alt="Edge hardware pipeline: camera to M4 Max core loop to coach tablet via WebRTC and async store. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-edge-hardware.png" alt="Edge hardware pipeline: camera to M4 Max core loop to coach tablet via WebRTC and async store. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.3</span>: The Edge Hardware Pipeline. One M4 Max at the court runs the 13.9ms measured core loop; WebRTC mirrors the HUD to the coach's tablet (a delayed mirror, not the live number); the async store feeds the review lane.</figcaption>
   </figure>
 
@@ -702,12 +702,12 @@
   <p>The <strong>NVZ violation alert</strong> is the cockpit's centrepiece and its honesty test. The prototype's 525 logged cues are <em>proximity</em> events; promoting one to a fault requires two gates, both async: (1) the volley-state worker decides the player hit the ball out of the air (C12 ball wall + C19 eventing), and (2) the human review panel confirms the candidate clip. Until both gates pass, the HUD says "NVZ 3cm — proximity, not a fault," and the wording is load-bearing. A coach who trusts a proximity cue as a fault call will stop trusting the cockpit the first time the replay shows a legal toe-behind-the-line dink.</p>
 
   <figure id="fig-28-04" class="full">
-    <img src="shared/images/c28-hud-pickleball.png" alt="Pickleball live HUD mockup: top-down doubles court, NVZ shaded, proximity ring, telemetry panel with dink-to-drive ratio. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-hud-pickleball.png" alt="Pickleball live HUD mockup: top-down doubles court, NVZ shaded, proximity ring, telemetry panel with dink-to-drive ratio. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.4</span>: The Pickleball Cockpit (mockup). Live geometry — NVZ proximity ring, spacing, trails — beside async-derived stats with freshness stamps; the alert card says "proximity," not "fault."</figcaption>
   </figure>
 
   <figure id="fig-28-05" class="full">
-    <img src="shared/images/c28-hud-screenshot.png" alt="Real pickleball doubles frame from pb-003 with live HUD overlays: player boxes, traces, kitchen-distance telemetry, alert queue. Prototype capture." loading="lazy"/>
+    <img src="../images/c28-hud-screenshot.png" alt="Real pickleball doubles frame from pb-003 with live HUD overlays: player boxes, traces, kitchen-distance telemetry, alert queue. Prototype capture." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.5</span>: The Prototype, Real Frame. The pb-003 HUD from the C28 lab run: bounding boxes, traces, kitchen-distance telemetry, and the alert queue — the measured 13.9ms loop rendering, not a mockup.</figcaption>
   </figure>
 
@@ -756,7 +756,7 @@
   <p><strong>The honest label on E22:</strong> those events come from a thresholded synthetic event distribution — the gate mechanics and suppression rate are measured, but the p-values are model parameters, not statistics of real footage. Chapter 20's warning applies in full: p&lt;0.05 on a small n is a lottery ticket, and the ASA's statement is the canonical citation for not treating 0.05 as a law of nature. The gate is the right <em>architecture</em> — humans above the loop, deciding on the 12% that matters — and validating its thresholds against real video is an open run (28.9).</p>
 
   <figure id="fig-28-06" class="full">
-    <img src="shared/images/c28-alert-gate.png" alt="Alert exception gate funnel: 1000 events in, p<0.05 gate filter, 119 alerts out, 881 routine to silent log, coach decides. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-alert-gate.png" alt="Alert exception gate funnel: 1000 events in, p<0.05 gate filter, 119 alerts out, 881 routine to silent log, coach decides. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.6</span>: The p&lt;0.05 Exception Gate (E22, measured mechanics). 1,000 routine events in, 119 anomalies out — 88.1% suppression; the silent log keeps the 881 for review. The coach sits above the loop, not inside it.</figcaption>
   </figure>
 
@@ -809,7 +809,7 @@
   <p><strong>The problem.</strong> The kitchen foot fault is the most disputed call in doubles, and the player genuinely cannot feel a 2-3cm toe encroachment mid-volley — the rule (source-backed: USA Pickleball rulebook) is unforgiving and the body's proprioception is not. <strong>The mechanism.</strong> The bottom-centre of the player box (or the ankle keypoint when pose is sampled) goes through the homography into court feet; the zone test is <code>15 ≤ x ≤ 29</code>. The C28 lab measured the homography-plus-zone stage at <strong>0.03ms</strong> — 0.2% of the 13.9ms core budget — and the prototype ran the path at 84.7 fps, logging 525 proximity cues in 500 frames. The E22 gate surfaced exactly this cue class at p=0.012 (feet 2.2-4.9cm from the line during an airborne volley; gate mechanics measured, baseline synthetic). <strong>The honesty gate:</strong> a proximity cue becomes a <em>fault</em> only when the async volley-state worker (C12 ball + C19 eventing) confirms the ball was taken out of the air — until then the HUD says "NVZ 3cm — proximity, not a fault."</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc01-nvz-live-alert.png" alt="Pickleball court top-down, kitchen zone shaded, foot marker on the kitchen line, HUD alert card reading NVZ proximity. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc01-nvz-live-alert.png" alt="Pickleball court top-down, kitchen zone shaded, foot marker on the kitchen line, HUD alert card reading NVZ proximity. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.8</span>: UC 01 — NVZ Live Alert. Foot point through the homography into the kitchen band, with the proximity-not-fault wording on the alert card. <strong>Pickleball</strong>: audible beep during dink drills; silent log in match play. <strong>Rugby league</strong>: the same point-vs-line primitive is the kick-chase offside check (chaser ahead of the kicker at contact) and dead-ball-line proximity on attacking kicks.</figcaption>
   </figure>
 
@@ -819,7 +819,7 @@
   <p><strong>The problem.</strong> "Down the middle solves the riddle" is the oldest doubles heuristic because it works: partners drift, the seam corridor opens, and the ball goes through the gap neither player owns. <strong>The mechanism.</strong> One Euclidean distance per frame between the partners' court coordinates; the seam corridor is the lateral gap projected onto the net axis. Alert above 3.2m [verify — practitioner threshold]; the E22 gate surfaced middle-seam exposures at p=0.034 (gaps 3.6-4.3m against a 2.7m norm). Latency math: this is arithmetic on track rows the loop already produces — no new stage, the measured 13.9ms budget is untouched. False-positive cost is low (a teaching cue, not a call), so per the 28.4 grading it runs live and always on.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc04-seam-exposure.png" alt="Pickleball doubles court, partners drifted apart, middle seam corridor shaded, ball passing through the gap. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc04-seam-exposure.png" alt="Pickleball doubles court, partners drifted apart, middle seam corridor shaded, ball passing through the gap. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.9</span>: UC 04 — Seam Exposure. Partner gap beyond 3.2m opens the shaded corridor. <strong>Pickleball</strong>: the elastic-string drill cue — partners move as if tied by a 3m rope. <strong>Rugby league</strong>: the same norm on the edge — ‖P_secondrow − P_centre‖ beyond 6.2m flags inside-shoulder break risk (3.4×) [verify]; optimal band 4.8-5.6m.</figcaption>
   </figure>
 
@@ -829,7 +829,7 @@
   <p><strong>The problem.</strong> Upright at the kitchen means late on the dink; the player cannot see their own posture and the coach cannot watch four players' knees at once. <strong>The mechanism.</strong> Knee angle from the hip-knee-ankle keypoints of the pose model; the target band is 120-130° [verify — practitioner band]. The lane honesty is the point of this case: pose is E03-measured at <strong>25.3ms/frame</strong>, which can never join the 13.9ms hard loop — even sampled every second frame it amortizes to ~12.7ms and breaks the budget. So the stance check runs on a separate worker at 10-15Hz, in the sampled-soft lane, and drives a HUD gauge — never a beep. A beep needs a discrete event; posture is a continuous state, and continuous states get dials, not alarms.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc06-ready-stance.png" alt="Pickleball player side view in ready stance at the kitchen line, knee angle arc labelled, upright posture ghost crossed out. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc06-ready-stance.png" alt="Pickleball player side view in ready stance at the kitchen line, knee angle arc labelled, upright posture ghost crossed out. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.10</span>: UC 06 — Ready-Stance Check. The 120-130° knee band on the sampled-soft lane. <strong>Pickleball</strong>: kitchen-line ready posture during dink rallies. <strong>Rugby league</strong>: marker body height and hip hinge at the ruck — the upright marker is the one the dummy-half runs past.</figcaption>
   </figure>
 
@@ -839,7 +839,7 @@
   <p><strong>The problem.</strong> Players overdrive under pressure, and nobody counts the dink-to-drive ratio accurately by eye — yet it is the discipline stat that decides who controls a kitchen rally. <strong>The mechanism.</strong> A rolling tally from the C19 event stream: dink / drive / lob classifications into a sliding rally window, ratio <code>r = drives / (dinks + drives)</code> with EWMA smoothing, updated only when event confidence clears the C19 threshold. The lane is the honesty: the machine cannot see a dink without the ball, and E04 measured the raw ball detector at 0.1125 median confidence — candidate noise. So the count is an async-derived panel stat with a freshness stamp ("updated 4 rallies ago"), and a live shot-count beep is an architectural error on two grounds: it needs the ball, and it needs completed shots.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc07-shot-count.png" alt="Pickleball rally top-down with ball arcs and a side tally panel counting dinks, drives, lobs with a freshness stamp. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc07-shot-count.png" alt="Pickleball rally top-down with ball arcs and a side tally panel counting dinks, drives, lobs with a freshness stamp. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.11</span>: UC 07 — Shot-Selection Count. The rolling tally panel, freshness-stamped. <strong>Pickleball</strong>: the dink-to-drive discipline check between games. <strong>Rugby league</strong>: the tackle-5 kick-vs-run count and PTB-location distribution — the same rolling tally on the C19 event stream.</figcaption>
   </figure>
 
@@ -851,7 +851,7 @@
   <p><strong>The problem.</strong> Thirteen defenders must retreat 10m at every play-the-ball; the trainer on the sideline can watch one edge, and early lines win penalties that swing field position. <strong>The mechanism.</strong> RCM = (X_ruck − X_defender) / 10m, evaluated at PTB release: thirteen point transforms through the C07 per-frame homography plus a scalar division per defender — arithmetic on C09 track rows, no new stage, the measured core budget untouched. The release timestamp comes from C15 audio (whistle/held) with C19 confirming the event. Alert below RCM 1.0 [verify — practitioner model]. The E22 gate surfaced offside non-compliance at p=0.008 (2-3 defenders short at dummy-half delivery) — the strongest exception signal in the synthetic run. The rugby caveat from 28.1 applies: the cue is only as honest as the calibration, so a fast PTZ pan that breaks C07's re-lock degrades the cue to "tracker degraded" rather than a wrong line.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc02-rcm-compliance.png" alt="Rugby league pitch top-down, ruck marker, dashed 10m retreat line, defenders behind the line, one early defender flagged. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc02-rcm-compliance.png" alt="Rugby league pitch top-down, ruck marker, dashed 10m retreat line, defenders behind the line, one early defender flagged. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.12</span>: UC 02 — RCM Retreat Compliance. The 10m line with one early defender flagged. <strong>Rugby league</strong>: radio cue to the on-field trainer — "two short" — inside the play-to-play window. <strong>Pickleball</strong>: the same ratio as the baseline-reset check — both partners behind the baseline before the opponent's lob lands — and the server-behind-baseline rule check at contact (source-backed: USA Pickleball rulebook).</figcaption>
   </figure>
 
@@ -861,7 +861,7 @@
   <p><strong>The problem.</strong> One lagging defender opens a dog-leg in the line, and by the time it is visible as a line break the play is gone — the box needs the flag one set earlier. <strong>The mechanism.</strong> DLSM = max(line X) − min(line X) across the defensive line each frame after the PTB; flag above 2.5m, with the stated line-break risk shift of 4.2% → 28.6% <strong>[verify — practitioner domain model, not a published benchmark; the NRL literature-validation is the open research lane]</strong>. Compute: a thirteen-element min-max — microseconds on track rows. The E22 gate surfaced dog-leg ruptures at p=0.021 (edge gap 2.8-3.6m between second-rower and centre). This is the case where the chapter's honesty rule does the most work: a live cockpit may <em>flag</em> on a hypothesis; it may not <em>call</em> on one — the alert card reads "dog-leg forming," never "missed tackle coming."</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc03-dlsm-dogleg.png" alt="Rugby league defensive line top-down, one defender lagging, dog-leg gap shaded, ball runner arrow through the gap. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc03-dlsm-dogleg.png" alt="Rugby league defensive line top-down, one defender lagging, dog-leg gap shaded, ball runner arrow through the gap. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.13</span>: UC 03 — DLSM Dog-Leg. The lagging defender opens the shaded gap; the attack arrow finds it. <strong>Rugby league</strong>: flag to the box so the centre calls slide defence next set. <strong>Pickleball</strong>: the vertical equivalent — one partner pinned at the baseline while the other holds the kitchen, a front-back dog-leg that invites the drop shot at the deep player's feet.</figcaption>
   </figure>
 
@@ -871,7 +871,7 @@
   <p><strong>The problem.</strong> Ruck speed decides whether the defence is set, and the box currently learns it from the tackle count two plays late. <strong>The mechanism.</strong> A stopwatch from tackle-held to PTB release: C15 audio timestamps the whistle/held moment, C19 confirms the release event. Bands: under 3.0s is quick ball (42% retreat failure), over 3.8s is controlled (96% set completion) [verify — practitioner bands]. Lane honesty: event timing is not a per-frame geometry read, so the gauge sits at the sampled-soft/async boundary and carries a freshness stamp; the stopwatch itself is a timestamp subtraction — the cost lives in the event detection, which is why the gauge updates per ruck, not per frame. Quick-ball alerts surface through the E22 gate so a fast ruck in a routine set does not beep.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc05-ptb-gauge.png" alt="Rugby league play-the-ball side view with stopwatch gauge, green band under 3 seconds, red band over 3.8 seconds. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc05-ptb-gauge.png" alt="Rugby league play-the-ball side view with stopwatch gauge, green band under 3 seconds, red band over 3.8 seconds. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.14</span>: UC 05 — PTB Speed Gauge. Held-to-release stopwatch with the quick/controlled bands. <strong>Rugby league</strong>: quick-ball alerts to the box; the trend feeds C23 tactical models between sets. <strong>Pickleball</strong>: the tempo analogue — time-between-shots in a kitchen dink rally; a shrinking inter-shot interval predicts the speed-up before it happens [verify].</figcaption>
   </figure>
 
@@ -881,7 +881,7 @@
   <p><strong>The problem.</strong> The slow edge defender is visible as geometry a full play before he is visible as a missed tackle; line speed is the defensive metric coaches cite and cannot see. <strong>The mechanism.</strong> Per-defender advance rate off the PTB: a finite difference of court coordinates over a 0.5s window, giving the line's mean rate and — the useful half — its spread. A defender one band slow gets flagged [verify — band width is practitioner-set]. Latency math: differences on existing track rows, microseconds; the real cost is the C07 calibration that makes the metres real, which is why the meter degrades to "tracker degraded" when a pan outruns re-lock instead of publishing confident garbage. Radio-safe wording: "two slow off the line" is geometry; "our right edge is structurally vulnerable" is a reviewed conclusion, and the meter only says the first.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc08-line-speed.png" alt="Rugby league defensive line advancing top-down, per-player speed arrows, one edge arrow shorter and flagged. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc08-line-speed.png" alt="Rugby league defensive line advancing top-down, per-player speed arrows, one edge arrow shorter and flagged. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.15</span>: UC 08 — Line-Speed Meter. The advance-rate arrows with the slow edge flagged. <strong>Rugby league</strong>: the "two slow" radio cue before the break, not after. <strong>Pickleball</strong>: partner advance synchrony — both players closing to the kitchen line together after the return; the lagging partner is the same geometry at a tenth of the field.</figcaption>
   </figure>
 
@@ -893,7 +893,7 @@
   <p><strong>The problem.</strong> Fatigue shows in the tracking data before the athlete reports it and before the coach's eye catches it — and acting late is a welfare issue, not just a performance one. <strong>The mechanism.</strong> A per-player EWMA of effort proxies against the player's own session baseline: rally-depth decay and approach speed (pickleball); sprint speed off the line and ruck-attendance rate (rugby). Amber zone at −10% from baseline [verify — practitioner threshold]. Lane: sampled soft — the gauge is a trend over minutes, never a per-frame cue, so its latency budget is measured in rallies, not milliseconds. The rugby side carries the contact-welfare frame (source-backed: Bath et al. 2025, <em>Injury Prevention</em>): a fatigue gauge that informs rotation is a welfare screen, and its thresholds must be validated on real squads, not assumed from a formula.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc09-fatigue-gauge.png" alt="Two-panel diagram with pickleball and rugby players, declining performance curves, shared gauge entering amber zone. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc09-fatigue-gauge.png" alt="Two-panel diagram with pickleball and rugby players, declining performance curves, shared gauge entering amber zone. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.16</span>: UC 09 — Fatigue Gauge. Decay against the player's own baseline, amber at −10% [verify]. <strong>Pickleball</strong>: fourth-game dink-depth decay and kitchen-approach slowdown. <strong>Rugby league</strong>: second-half line-speed fade per defender, feeding rotation timing.</figcaption>
   </figure>
 
@@ -903,7 +903,7 @@
   <p><strong>The problem.</strong> A HUD the coach is not watching during the rally is a screensaver; the cue has to reach the voice channel to be acted on. <strong>The mechanism.</strong> The E22 gate (0.08ms/event, measured) feeds a priority queue ordered by false-positive cost; the top entry goes to TTS on the sideline speaker (pickleball, between rallies) or the radio link to the on-field trainer (rugby, play-to-play). The latency math, honestly summed in the chapter's own rule: 13.9ms core + 0.08ms gate + TTS/radio delivery (~1-2s, [verify — not measured in the lab]) — the delivery leg is the dominant term, so quote the sum, never the core. At rugby's play-to-play timescale the sum is still tactically live; in pickleball the audible waits for the dead ball between rallies, because a beep mid-volley is a distraction, not a cue.</p>
 
   <figure class="full">
-    <img src="shared/images/c28-uc10-coach-radio.png" alt="Sideline flow diagram: camera to M4 Max laptop with alert gate, radio link to coach with headset, second link to review tablet. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-uc10-coach-radio.png" alt="Sideline flow diagram: camera to M4 Max laptop with alert gate, radio link to coach with headset, second link to review tablet. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.17</span>: UC 10 — Coach Radio Flow. Gate to queue to voice channel. <strong>Pickleball</strong>: between-rally audible on the sideline speaker. <strong>Rugby league</strong>: the radio call to the trainer — "two slow off the line" — inside the play-to-play window.</figcaption>
   </figure>
 
@@ -963,7 +963,7 @@ for frame in stream:                                  # hard live loop
   <p>The honest note: a 13-player live overlay is a different engineering problem than a 4-player doubles court. Identity resolution (chapter 13) is the prerequisite — E02's 26 raw IDs for 4 players is the measured warning — and without it the overlay is noise rendered at 60fps. The box HUD therefore shows <em>team-shape</em> cues (line position, line spread, retreat compliance) that do not need persistent identity, and leaves per-player overlays to the review lane where identity gets corrected by the human gate.</p>
 
   <figure id="fig-28-07" class="full">
-    <img src="shared/images/c28-hud-rugby.png" alt="Rugby league live HUD mockup: top-down pitch, defensive line, dog-leg gap highlighted, 10m retreat line, telemetry panel with line speed and PTB. White background, black linework, burnt-orange accents." loading="lazy"/>
+    <img src="../images/c28-hud-rugby.png" alt="Rugby league live HUD mockup: top-down pitch, defensive line, dog-leg gap highlighted, 10m retreat line, telemetry panel with line speed and PTB. White background, black linework, burnt-orange accents." loading="lazy"/>
     <figcaption><span class="fig-num">Figure 28.7</span>: The Rugby League Cockpit (mockup). The defensive line with the DLSM dog-leg gap flagged, the 10m retreat line, and team-shape telemetry — identity-free cues that survive the broadcast identity problem.</figcaption>
   </figure>
 

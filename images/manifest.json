@@ -1,0 +1,259 @@
+{
+  "set": "complete-v3-dart",
+  "generated": "2026-09-05",
+  "count": 63,
+  "images": [
+    {
+      "file": "apple-study-chart.png",
+      "sha256": "2a8e8e4180705b27"
+    },
+    {
+      "file": "audio-fusion.png",
+      "sha256": "2167287c5988a630"
+    },
+    {
+      "file": "ball-blur-gallery.png",
+      "sha256": "23eba3c75b7d77c3"
+    },
+    {
+      "file": "book-system-map.png",
+      "sha256": "95ec28efea7a6bbc"
+    },
+    {
+      "file": "c23-feature-importance.png",
+      "sha256": "d145a4d473f4acfc"
+    },
+    {
+      "file": "c23-pickleball-vs-rugby-graph.png",
+      "sha256": "4272ffad2f115a39"
+    },
+    {
+      "file": "c23-rotation-test-grid.png",
+      "sha256": "0b5a5dde4b739994"
+    },
+    {
+      "file": "c23-tacticai-architecture.png",
+      "sha256": "541cf28e89fad6b9"
+    },
+    {
+      "file": "c28-hud-screenshot.png",
+      "sha256": "0dfab2a74d9c59a6"
+    },
+    {
+      "file": "c28-latency-budget-fixed.png",
+      "sha256": "7ca8f24a93c767c5"
+    },
+    {
+      "file": "c28-live-async-split.png",
+      "sha256": "35d616bf355a9f65"
+    },
+    {
+      "file": "c29-acwr-sweet-spot.png",
+      "sha256": "4ebe6b1138891b6d"
+    },
+    {
+      "file": "c29-fault-to-drill-fixed.png",
+      "sha256": "db7f6b5a60c330d3"
+    },
+    {
+      "file": "c29-rld-principles-fixed.png",
+      "sha256": "6f3c743f52904dfe"
+    },
+    {
+      "file": "c34-glossary-wheel-fixed.png",
+      "sha256": "3f9dcb790dd48f9e"
+    },
+    {
+      "file": "c34-mcp-tool-schema-fixed.png",
+      "sha256": "56d3757e2e8867b1"
+    },
+    {
+      "file": "c34-system-map.png",
+      "sha256": "795e2036c444ee52"
+    },
+    {
+      "file": "c34-two-paths.png",
+      "sha256": "f0ca79ad71a0e70a"
+    },
+    {
+      "file": "calibration-distortion.png",
+      "sha256": "16e9e9d2a313a159"
+    },
+    {
+      "file": "calibration-gmc-vs-ht.png",
+      "sha256": "2ebea94da2e5333f"
+    },
+    {
+      "file": "calibration-z-limit.png",
+      "sha256": "49f28ddf6be56027"
+    },
+    {
+      "file": "cam-blur-chart.png",
+      "sha256": "e10a4acdfaec5f21"
+    },
+    {
+      "file": "cam-fov-placement.png",
+      "sha256": "dc08d7eb158bf301"
+    },
+    {
+      "file": "cam-placement-poster.png",
+      "sha256": "529679f0487b00df"
+    },
+    {
+      "file": "ch01-five-verbs.png",
+      "sha256": "f512932047b04a51"
+    },
+    {
+      "file": "ch02-evidence-taxonomy.jpg",
+      "sha256": "2bb08fabf3f190b6"
+    },
+    {
+      "file": "confidence-histogram.png",
+      "sha256": "0aba91c208a9591a"
+    },
+    {
+      "file": "dart-latency-ap-benchmark-comparison.jpg",
+      "sha256": "ef783ef44ab1fe62"
+    },
+    {
+      "file": "dart-pickleball-realtime-multiclass.jpg",
+      "sha256": "34cf28e0ccc0acca"
+    },
+    {
+      "file": "dart-rugby-multiclass-ruck-line.jpg",
+      "sha256": "4e572a891cf6ea79"
+    },
+    {
+      "file": "dart-sam3-architecture-breakdown.jpg",
+      "sha256": "3cf2f2cc51f40d12"
+    },
+    {
+      "file": "describe-vs-decide.png",
+      "sha256": "88161184f262e6b8"
+    },
+    {
+      "file": "epipolar-geometry.png",
+      "sha256": "4a7d6ea56a70065a"
+    },
+    {
+      "file": "event-standards-stack.png",
+      "sha256": "eb6f95be9c3ff889"
+    },
+    {
+      "file": "eventing-pipeline.png",
+      "sha256": "82a074db20debf2a"
+    },
+    {
+      "file": "frontier-timeline.png",
+      "sha256": "8deaa521bdb93e5a"
+    },
+    {
+      "file": "harness-architecture.png",
+      "sha256": "f4455be5a0c4a5c6"
+    },
+    {
+      "file": "harness-chapter-map.png",
+      "sha256": "bff1eb4954de5fcf"
+    },
+    {
+      "file": "identity-architecture.png",
+      "sha256": "44ac87bbbbd94915"
+    },
+    {
+      "file": "ingest-pipeline.png",
+      "sha256": "026877d2680b4294"
+    },
+    {
+      "file": "kappa-workflow.png",
+      "sha256": "7c28e022f00aa00f"
+    },
+    {
+      "file": "lab-runner-status.png",
+      "sha256": "3dd95bb5ae3dfc8b"
+    },
+    {
+      "file": "label-budget-curve.png",
+      "sha256": "06515258f072e3d6"
+    },
+    {
+      "file": "licensing-decision-tree.png",
+      "sha256": "b7c65ea5a7a8135a"
+    },
+    {
+      "file": "pb-rules-court-crosssection.png",
+      "sha256": "b73bf19f2acc2da2"
+    },
+    {
+      "file": "pb-rules-state-machine.png",
+      "sha256": "0c9f2b021e115276"
+    },
+    {
+      "file": "pbn-row-anatomy.png",
+      "sha256": "a2dcc74be517f504"
+    },
+    {
+      "file": "pose-escalation-ladder.png",
+      "sha256": "3cf1c4375825f1f7"
+    },
+    {
+      "file": "rating-dupr-expectation.png",
+      "sha256": "b09888dd315709bb"
+    },
+    {
+      "file": "rating-family-tree.png",
+      "sha256": "d0a4e8a9c74a00a3"
+    },
+    {
+      "file": "report-template-anatomy.png",
+      "sha256": "a1f141abf8f609ba"
+    },
+    {
+      "file": "rl-set-structure.png",
+      "sha256": "7bfe9d09e37466f7"
+    },
+    {
+      "file": "sam3-concept-segmentation.png",
+      "sha256": "7a3681521d12d1c8"
+    },
+    {
+      "file": "simulation-honesty-ladder.png",
+      "sha256": "17b4f5c2df81bd84"
+    },
+    {
+      "file": "spine-one-data-model.png",
+      "sha256": "e8c80bd45e4171bd"
+    },
+    {
+      "file": "stats-bootstrap-ci.png",
+      "sha256": "72ea23911e2bc6d1"
+    },
+    {
+      "file": "stats-calibration.png",
+      "sha256": "66d2f54124c81451"
+    },
+    {
+      "file": "tracking-metric-anatomy.png",
+      "sha256": "87b265b29c746707"
+    },
+    {
+      "file": "tracking-role-priors.png",
+      "sha256": "b95d22913390ebd2"
+    },
+    {
+      "file": "value-vaep-states.png",
+      "sha256": "b7f4fae4a73ee810"
+    },
+    {
+      "file": "value-xt-heatgrid.png",
+      "sha256": "f2fadac5539574f4"
+    },
+    {
+      "file": "vlm-grounding-gate.png",
+      "sha256": "4d13431d1097c30e"
+    },
+    {
+      "file": "vlm-hallucination-bars.png",
+      "sha256": "cce389012bc77406"
+    }
+  ]
+}
