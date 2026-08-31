@@ -279,107 +279,132 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="flex flex-col divide-y divide-black bg-transparent">
           
-          <!-- PART 1: Foundations -->
-          <div class="menu-part-section border-b border-black" data-part="1">
+          <!-- PART 01: Watching -->
+          <div class="menu-part-section border-b border-black" data-part="01">
             <button class="menu-part-btn">
               <span class="bg-slide">
                 <span class="bg-slide-secondary"></span>
                 <span class="bg-slide-primary"></span>
               </span>
               <span class="nav-text-wrapper text-2xl sm:text-3xl font-bold tracking-tight">
-                <span class="nav-text">Foundations <sup class="font-mono text-xs text-black/40">01</sup></span>
-                <span class="nav-text-clone">Foundations <sup class="font-mono text-xs text-white/60">01</sup></span>
+                <span class="nav-text">Watching <sup class="font-mono text-xs text-black/40">01</sup></span>
+                <span class="nav-text-clone">Watching <sup class="font-mono text-xs text-white/60">01</sup></span>
               </span>
               <i data-lucide="plus" class="menu-part-icon size-5"></i>
             </button>
-            <div class="menu-part-content hidden bg-white/25 px-6 py-4 flex flex-col gap-2 font-mono text-xs">
-              <a href="${resolveLink('chapters/preface.html')}" class="${getLinkClass('preface.html')}">Preface</a>
-              <a href="${resolveLink('chapters/copyright.html')}" class="${getLinkClass('copyright.html')}">Copyright & License</a>
-              <a href="${resolveLink('chapters/01.html')}" class="${getLinkClass('01.html')}">Ch 01: The Agentic Design Paradigm</a>
-              <a href="${resolveLink('chapters/02.html')}" class="${getLinkClass('02.html')}">Ch 02: Your Agent Toolkit</a>
-              <a href="${resolveLink('chapters/03.html')}" class="${getLinkClass('03.html')}">Ch 03: Teaching Agents to Design</a>
-              <a href="${resolveLink('chapters/04.html')}" class="${getLinkClass('04.html')}">Ch 04: Design-as-Code</a>
+            <div class="menu-part-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);" data-part-content="01">
+              <div class="px-6 pb-4 pt-2 text-xs flex flex-col gap-2.5">
+              <a href="${resolveLink('chapters/01.html')}" class="${getLinkClass('01.html')}">Ch 01: Why This Book Exists: The Five Verbs of Sport Analytics</a>
+              <a href="${resolveLink('chapters/02.html')}" class="${getLinkClass('02.html')}">Ch 02: The Evidence Contract & Data Provenance</a>
+              <a href="${resolveLink('chapters/03.html')}" class="${getLinkClass('03.html')}">Ch 03: Sport Rules as Formal Systems</a>
+              <a href="${resolveLink('chapters/04.html')}" class="${getLinkClass('04.html')}">Ch 04: Capture: Cameras, Lenses, Shutter, Placement</a>
+              <a href="${resolveLink('chapters/05.html')}" class="${getLinkClass('05.html')}">Ch 05: Data Engineering for Sport Video</a>
+              <a href="${resolveLink('chapters/06.html')}" class="${getLinkClass('06.html')}">Ch 06: Calibration I: Homography, Intrinsics, Distortion</a>
+              <a href="${resolveLink('chapters/07.html')}" class="${getLinkClass('07.html')}">Ch 07: Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t</a>
+              </div>
             </div>
           </div>
 
-          <!-- PART 2: Connected Canvas -->
-          <div class="menu-part-section border-b border-black" data-part="2">
+<!-- PART 02: Tagging -->
+          <div class="menu-part-section border-b border-black" data-part="02">
             <button class="menu-part-btn">
               <span class="bg-slide">
                 <span class="bg-slide-secondary"></span>
                 <span class="bg-slide-primary"></span>
               </span>
               <span class="nav-text-wrapper text-2xl sm:text-3xl font-bold tracking-tight">
-                <span class="nav-text">Canvas Tools <sup class="font-mono text-xs text-black/40">02</sup></span>
-                <span class="nav-text-clone">Canvas Tools <sup class="font-mono text-xs text-white/60">02</sup></span>
+                <span class="nav-text">Tagging <sup class="font-mono text-xs text-black/40">02</sup></span>
+                <span class="nav-text-clone">Tagging <sup class="font-mono text-xs text-white/60">02</sup></span>
               </span>
               <i data-lucide="plus" class="menu-part-icon size-5"></i>
             </button>
-            <div class="menu-part-content hidden bg-white/25 px-6 py-4 flex flex-col gap-2 font-mono text-xs">
-              <a href="${resolveLink('chapters/05.html')}" class="${getLinkClass('05.html')}">Ch 05: Paper and Pencil</a>
-              <a href="${resolveLink('chapters/06.html')}" class="${getLinkClass('06.html')}">Ch 06: Open Design and OpenPencil</a>
-              <a href="${resolveLink('chapters/07.html')}" class="${getLinkClass('07.html')}">Ch 07: Huashu Design</a>
-              <a href="${resolveLink('chapters/08.html')}" class="${getLinkClass('08.html')}">Ch 08: Design Systems and Tokens</a>
+            <div class="menu-part-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);" data-part-content="02">
+              <div class="px-6 pb-4 pt-2 text-xs flex flex-col gap-2.5">
+              <a href="${resolveLink('chapters/08.html')}" class="${getLinkClass('08.html')}">Ch 08: Detection: YOLO, RF-DETR, and the AGPL Decision</a>
+              <a href="${resolveLink('chapters/09.html')}" class="${getLinkClass('09.html')}">Ch 09: Tracking & Identity: Metrics, ReID, and Role Priors</a>
+              <a href="${resolveLink('chapters/10.html')}" class="${getLinkClass('10.html')}">Ch 10: Segmentation & Foundation Models: SAM 2/3, DINOv3</a>
+              <a href="${resolveLink('chapters/11.html')}" class="${getLinkClass('11.html')}">Ch 11: The Body in Motion: 2D Keypoints to 3D Biomechanics</a>
+              <a href="${resolveLink('chapters/12.html')}" class="${getLinkClass('12.html')}">Ch 12: Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery</a>
+              <a href="${resolveLink('chapters/13.html')}" class="${getLinkClass('13.html')}">Ch 13: Identity: Who Is Who</a>
+              <a href="${resolveLink('chapters/14.html')}" class="${getLinkClass('14.html')}">Ch 14: Multi-Camera Geometry, Line Calls, 3D Reconstruction</a>
+              <a href="${resolveLink('chapters/15.html')}" class="${getLinkClass('15.html')}">Ch 15: Audio & Multimodal Cues: The Free Sensor</a>
+              <a href="${resolveLink('chapters/16.html')}" class="${getLinkClass('16.html')}">Ch 16: Video Understanding: Action Recognition, Spatio-Temporal</a>
+              <a href="${resolveLink('chapters/17.html')}" class="${getLinkClass('17.html')}">Ch 17: Event Data &amp; the Common Representation</a>
+              </div>
             </div>
           </div>
 
-          <!-- PART 3: Advanced Topics -->
-          <div class="menu-part-section border-b border-black" data-part="3">
+<!-- PART 03: Modelling -->
+          <div class="menu-part-section border-b border-black" data-part="03">
             <button class="menu-part-btn">
               <span class="bg-slide">
                 <span class="bg-slide-secondary"></span>
                 <span class="bg-slide-primary"></span>
               </span>
               <span class="nav-text-wrapper text-2xl sm:text-3xl font-bold tracking-tight">
-                <span class="nav-text">Advanced Topics <sup class="font-mono text-xs text-black/40">03</sup></span>
-                <span class="nav-text-clone">Advanced Topics <sup class="font-mono text-xs text-white/60">03</sup></span>
+                <span class="nav-text">Modelling <sup class="font-mono text-xs text-black/40">03</sup></span>
+                <span class="nav-text-clone">Modelling <sup class="font-mono text-xs text-white/60">03</sup></span>
               </span>
               <i data-lucide="plus" class="menu-part-icon size-5"></i>
             </button>
-            <div class="menu-part-content hidden bg-white/25 px-6 py-4 flex flex-col gap-2 font-mono text-xs">
-              <a href="${resolveLink('chapters/09.html')}" class="${getLinkClass('09.html')}">Ch 09: Motion and Video</a>
-              <a href="${resolveLink('chapters/10.html')}" class="${getLinkClass('10.html')}">Ch 10: MCP Integrations</a>
-              <a href="${resolveLink('chapters/11.html')}" class="${getLinkClass('11.html')}">Ch 11: Multi-Agent Design Teams</a>
-              <a href="${resolveLink('chapters/12.html')}" class="${getLinkClass('12.html')}">Ch 12: Production UI from Design</a>
+            <div class="menu-part-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);" data-part-content="03">
+              <div class="px-6 pb-4 pt-2 text-xs flex flex-col gap-2.5">
+              <a href="${resolveLink('chapters/18.html')}" class="${getLinkClass('18.html')}">Ch 18: Annotation: The Ground-Truth Workflow</a>
+              <a href="${resolveLink('chapters/19.html')}" class="${getLinkClass('19.html')}">Ch 19: Automatic Eventing: State Machines, Confidence, Review Queues</a>
+              <a href="${resolveLink('chapters/20.html')}" class="${getLinkClass('20.html')}">Ch 20: Statistics for Sport Practitioners</a>
+              <a href="${resolveLink('chapters/21.html')}" class="${getLinkClass('21.html')}">Ch 21: Rating Systems: DUPR, ELO, Glicko, and Skill</a>
+              <a href="${resolveLink('chapters/22.html')}" class="${getLinkClass('22.html')}">Ch 22: Expected Value: xG, VAEP, EPV, and Their Sport Transplants</a>
+              <a href="${resolveLink('chapters/23.html')}" class="${getLinkClass('23.html')}">Ch 23: Tactical ML: Graphs, Equivariance, and Honest Forecasting</a>
+              <a href="${resolveLink('chapters/24.html')}" class="${getLinkClass('24.html')}">Ch 24: Simulation & Counterfactuals: The Honest Rebuild</a>
+              </div>
             </div>
           </div>
 
-          <!-- PART 4: Practice & Outlook -->
-          <div class="menu-part-section border-b border-black" data-part="4">
+<!-- PART 04: Interpreting -->
+          <div class="menu-part-section border-b border-black" data-part="04">
             <button class="menu-part-btn">
               <span class="bg-slide">
                 <span class="bg-slide-secondary"></span>
                 <span class="bg-slide-primary"></span>
               </span>
               <span class="nav-text-wrapper text-2xl sm:text-3xl font-bold tracking-tight">
-                <span class="nav-text">Practice & Outlook <sup class="font-mono text-xs text-black/40">04</sup></span>
-                <span class="nav-text-clone">Practice & Outlook <sup class="font-mono text-xs text-white/60">04</sup></span>
+                <span class="nav-text">Interpreting <sup class="font-mono text-xs text-black/40">04</sup></span>
+                <span class="nav-text-clone">Interpreting <sup class="font-mono text-xs text-white/60">04</sup></span>
               </span>
               <i data-lucide="plus" class="menu-part-icon size-5"></i>
             </button>
-            <div class="menu-part-content hidden bg-white/25 px-6 py-4 flex flex-col gap-2 font-mono text-xs">
-              <a href="${resolveLink('chapters/13.html')}" class="${getLinkClass('13.html')}">Ch 13: Real-World Case Studies</a>
-              <a href="${resolveLink('chapters/14.html')}" class="${getLinkClass('14.html')}">Ch 14: The Future of Agentic Design</a>
+            <div class="menu-part-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);" data-part-content="04">
+              <div class="px-6 pb-4 pt-2 text-xs flex flex-col gap-2.5">
+              <a href="${resolveLink('chapters/25.html')}" class="${getLinkClass('25.html')}">Ch 25: Where Vision-Language Models Help, and Where They Lie</a>
+              <a href="${resolveLink('chapters/26.html')}" class="${getLinkClass('26.html')}">Ch 26: From Numbers to Narrative: Reports, Scouting, Coach UX</a>
+              <a href="${resolveLink('chapters/27.html')}" class="${getLinkClass('27.html')}">Ch 27: The Agent Harness for Sport Analytics</a>
+              <a href="${resolveLink('chapters/28.html')}" class="${getLinkClass('28.html')}">Ch 28: The Live Coaching Cockpit: Real-Time Systems, Honestly Measured</a>
+              </div>
             </div>
           </div>
 
-          <!-- PART 5: Appendices -->
-          <div class="menu-part-section border-b border-black" data-part="5">
+<!-- PART 05: Acting -->
+          <div class="menu-part-section border-b border-black" data-part="05">
             <button class="menu-part-btn">
               <span class="bg-slide">
                 <span class="bg-slide-secondary"></span>
                 <span class="bg-slide-primary"></span>
               </span>
               <span class="nav-text-wrapper text-2xl sm:text-3xl font-bold tracking-tight">
-                <span class="nav-text">Appendices <sup class="font-mono text-xs text-black/40">05</sup></span>
-                <span class="nav-text-clone">Appendices <sup class="font-mono text-xs text-white/60">05</sup></span>
+                <span class="nav-text">Acting <sup class="font-mono text-xs text-black/40">05</sup></span>
+                <span class="nav-text-clone">Acting <sup class="font-mono text-xs text-white/60">05</sup></span>
               </span>
               <i data-lucide="plus" class="menu-part-icon size-5"></i>
             </button>
-            <div class="menu-part-content hidden bg-white/25 px-6 py-4 flex flex-col gap-2 font-mono text-xs">
-              <a href="${resolveLink('chapters/A.html')}" class="${getLinkClass('A.html')}">Appendix A: Tool Comparison Matrix</a>
-              <a href="${resolveLink('chapters/B.html')}" class="${getLinkClass('B.html')}">Appendix B: MCP Server Reference</a>
-              <a href="${resolveLink('chapters/C.html')}" class="${getLinkClass('C.html')}">Appendix C: Prompt Library</a>
+            <div class="menu-part-content" style="max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);" data-part-content="05">
+              <div class="px-6 pb-4 pt-2 text-xs flex flex-col gap-2.5">
+              <a href="${resolveLink('chapters/29.html')}" class="${getLinkClass('29.html')}">Ch 29: Practice Design & Interventions: The Acting Loop</a>
+              <a href="${resolveLink('chapters/30.html')}" class="${getLinkClass('30.html')}">Ch 30: Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine</a>
+              <a href="${resolveLink('chapters/31.html')}" class="${getLinkClass('31.html')}">Ch 31: Deployment, Licensing, Rights & Ethics</a>
+              <a href="${resolveLink('chapters/32.html')}" class="${getLinkClass('32.html')}">Ch 32: The Laboratory: Reproducing the Book's Claims</a>
+              <a href="${resolveLink('chapters/33.html')}" class="${getLinkClass('33.html')}">Ch 33: The Frontier: What's Changing in 2025-2026</a>
+              <a href="${resolveLink('chapters/34.html')}" class="${getLinkClass('34.html')}">Ch 34: The Book as a System: How to Use It (Human + Agent)</a>
+              </div>
             </div>
           </div>
 
