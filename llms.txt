@@ -1,39 +1,59 @@
-# Agentic Sport Analytics
+# Agentic Sport Analytics: The Evidence-Contract Field Guide
 
-> *Agentic Sport Analytics* is a comprehensive guide to how AI agents, design-as-code, Model Context Protocol (MCP), and multi-agent systems are transforming product design. Written by Mehran Mozaffari (AI Operator & Systems Designer based in Sydney, Australia), the book is free for personal use under a CC BY-NC-SA 4.0 license.
+> *Agentic Sport Analytics* is a comprehensive, evidence-bound guide to building AI-powered sport analytics: capture and calibration, detection and tracking, trajectory recovery, event data, statistics and rating systems, expected value, vision-language models, and the agent harness that turns analysis into coaching action. Every claim is measured in a local laboratory on two real sports — pickleball as the fixed-camera baseline, Australian rugby league as the moving-camera stress test. Written by Mehran Mozaffari (AI Operator & Applied AI Builder based in Sydney, Australia), the book is free for personal use under a CC BY-NC-ND 4.0 license (code under Apache-2.0/MIT).
 
-## Core Resources
-*   **Official Website**: [https://piazr.github.io/the-agentic-designer/](https://piazr.github.io/the-agentic-designer/) - Read the full book online.
-*   **Book Repository**: [https://github.com/imehr/the-agentic-designer](https://github.com/imehr/the-agentic-designer) - Download the book's source HTML, PDF, and EPUB files.
-*   **Website Repository**: [https://github.com/Piazr/the-agentic-designer](https://github.com/Piazr/the-agentic-designer) - Repository for the preview website.
+## Book Information
 
-## Front Matter
-*   [Preface](https://piazr.github.io/the-agentic-designer/chapters/preface.html): Context, background, and author's overview of AI's inflection point.
-*   [Copyright & License](https://piazr.github.io/the-agentic-designer/chapters/copyright.html): Licensing terms, attribution, and permissions guidelines.
+*   **Official Website**: [https://piazr.github.io/agentic-sport-analysis/](https://piazr.github.io/agentic-sport-analysis/) - Read the full book online.
+*   **Book Repository**: [https://github.com/imehr/agentic-sport-analytics](https://github.com/imehr/agentic-sport-analytics) - Download the book's source HTML, PDF, and EPUB files.
+*   **Website Repository**: [https://github.com/Piazr/agentic-sport-analysis](https://github.com/Piazr/agentic-sport-analysis) - Repository for the preview website.
+*   **Author**: [Mehran Mozaffari](https://github.com/imehr) - AI Operator & Applied AI Builder, Sydney, Australia.
 
-## Part I: Foundations (The Agentic Design Paradigm)
-*   [Chapter 01: The Agentic Design Paradigm](https://piazr.github.io/the-agentic-designer/chapters/01.html): The shift from mouse-driven GUI canvases to programmatic, natural-language agent loops.
-*   [Chapter 02: Your Agent Toolkit](https://piazr.github.io/the-agentic-designer/chapters/02.html): Setting up and running Claude Code, Codex CLI, OpenCode, and Gemini CLI.
-*   [Chapter 03: Teaching Agents to Design](https://piazr.github.io/the-agentic-designer/chapters/03.html): Customizing agent context using CLAUDE.md, AGENTS.md, and standard SKILL.md files.
-*   [Chapter 04: Design-as-Code](https://piazr.github.io/the-agentic-designer/chapters/04.html): Managing design systems as versioned, diffable text structures (JSON/CSS).
+## Part I: Foundations (Watching the Field)
 
-## Part II: Tools & Workflows (The Connected Canvas)
-*   [Chapter 05: Paper and Pencil](https://piazr.github.io/the-agentic-designer/chapters/05.html): Using Paper and Pencil design tool frameworks for agent-driven canvas workflows.
-*   [Chapter 06: Open Design and OpenPencil](https://piazr.github.io/the-agentic-designer/chapters/06.html): Integrating Open Design vectors and .op file specifications.
-*   [Chapter 07: Huashu Design](https://piazr.github.io/the-agentic-designer/chapters/07.html): Scaffolding and executing visual changes with the Huashu Design interface.
-*   [Chapter 08: Design Systems and Tokens](https://piazr.github.io/the-agentic-designer/chapters/08.html): Expressing brand styles as JSON design tokens that agents can parse and execute.
+*   [Chapter 1: Why This Book Exists: The Five Verbs of Sport Analytics](https://piazr.github.io/agentic-sport-analysis/chapters/01.html): Watching, tagging, modelling, interpreting, acting — and why the field's arguments are really about which verb a tool performs
+*   [Chapter 2: The Evidence Contract & Data Provenance](https://piazr.github.io/agentic-sport-analysis/chapters/02.html): The four-tier hierarchy, the claims register, and why "measured" is a word with a disk path
+*   [Chapter 3: Sport Rules as Formal Systems](https://piazr.github.io/agentic-sport-analysis/chapters/03.html): Pickleball and Rugby League grammar: state machines, event semantics, and what vision can never infer
+*   [Chapter 5: Data Engineering for Sport Video](https://piazr.github.io/agentic-sport-analysis/chapters/05.html): Ingest, provenance, the one-spine schema, DuckDB querying, and the golden-fixture regression harness
 
-## Part III: Advanced Topics (From Motion to Multi-Agent)
-*   [Chapter 09: Motion and Video](https://piazr.github.io/the-agentic-designer/chapters/09.html): Generating programmatic motion graphics and video layouts with Remotion and Hyperframes.
-*   [Chapter 10: MCP Integrations](https://piazr.github.io/the-agentic-designer/chapters/10.html): Connecting agents to Figma, Miro, and external design canvases using Model Context Protocol (MCP).
-*   [Chapter 11: Multi-Agent Design Teams](https://piazr.github.io/the-agentic-designer/chapters/11.html): Coordinating specialized agent swarms to execute concurrent layout and styling tasks.
-*   [Chapter 12: Production UI from Design](https://piazr.github.io/the-agentic-designer/chapters/12.html): Closing the loop between canvas blueprints and production-ready React/HTML layouts.
+## Part II: Watching (Capture, Geometry, Perception)
 
-## Part IV: Practice & Outlook
-*   [Chapter 13: Real-World Case Studies](https://piazr.github.io/the-agentic-designer/chapters/13.html): Four detailed industry case studies showcasing successful and failed agentic design workflows.
-*   [Chapter 14: The Future of Agentic Design](https://piazr.github.io/the-agentic-designer/chapters/14.html): Trends, projections for 2027–2028, autonomous pipelines, and systemic risks.
+*   [Chapter 4: Capture: Cameras, Lenses, Shutter, Placement](https://piazr.github.io/agentic-sport-analysis/chapters/04.html): The physics of getting footage your models can use: sensor geometry, motion blur, rolling shutter, and the placement math
+*   [Chapter 6: Calibration I: Homography, Intrinsics, Distortion](https://piazr.github.io/agentic-sport-analysis/chapters/06.html): Why pixels lie, how the camera model works, and the Z-limit that forces multi-view
+*   [Chapter 7: Calibration II: Broadcast Dynamics, GMC, and Per-Frame H_t](https://piazr.github.io/agentic-sport-analysis/chapters/07.html): Why camera-motion compensation is not enough, and what a real broadcast calibration loop looks like
+*   [Chapter 8: Detection: YOLO, RF-DETR, and the AGPL Decision](https://piazr.github.io/agentic-sport-analysis/chapters/08.html): The 2026 detector landscape, the license that shapes your architecture, and the noise floor
+*   [Chapter 9: Tracking & Identity: Metrics, ReID, and Role Priors](https://piazr.github.io/agentic-sport-analysis/chapters/09.html): Why 26 IDs on 4 players matters, which metric tells you the truth, and how role priors repair identity
+*   [Chapter 10: Segmentation & Foundation Models: SAM 2/3, DINOv3](https://piazr.github.io/agentic-sport-analysis/chapters/10.html): Promptable masks, concept segmentation, and the measured cost of pixels over boxes
+*   [Chapter 11: The Body in Motion: 2D Keypoints to 3D Biomechanics](https://piazr.github.io/agentic-sport-analysis/chapters/11.html): What stance tells you, what 2D cannot prove, and the escalation ladder to 3D
+*   [Chapter 12: Smashing the Ball Wall: Spatio-Temporal Trajectory Recovery](https://piazr.github.io/agentic-sport-analysis/chapters/12.html): Why single-frame detectors fail on projectiles, and the physics prior that rectifies them
+*   [Chapter 13: Identity: Who Is Who](https://piazr.github.io/agentic-sport-analysis/chapters/13.html): Track IDs are not people: jersey OCR, ReID embeddings, team clustering, roster priors, and the consent line
+*   [Chapter 14: Multi-Camera Geometry, Line Calls, 3D Reconstruction](https://piazr.github.io/agentic-sport-analysis/chapters/14.html): Why line calls are 3D measurements, how triangulation works, and the cost ladder that makes it real
+*   [Chapter 15: Audio & Multimodal Cues: The Free Sensor](https://piazr.github.io/agentic-sport-analysis/chapters/15.html): Paddle pops, whistles, and crowd roar: why the audio track is your cheapest event detector
+*   [Chapter 16: Video Understanding: Action Recognition, Spatio-Temporal](https://piazr.github.io/agentic-sport-analysis/chapters/16.html): The 2026 recipe, the SoccerNet suite, and the measured gap between describing and deciding
 
-## Appendices
-*   [Appendix A: Tool Comparison Matrix](https://piazr.github.io/the-agentic-designer/chapters/A.html): Feature-by-feature matrix comparison of all main visual and canvas toolkits.
-*   [Appendix B: MCP Server Reference](https://piazr.github.io/the-agentic-designer/chapters/B.html): Sample configurations and parameters for connecting Figma and Miro MCP servers.
-*   [Appendix C: Prompt Library](https://piazr.github.io/the-agentic-designer/chapters/C.html): Battle-tested prompt recipes for landing pages, layouts, and component generation.
+## Part III: Tagging and Modelling
+
+*   [Chapter 17: Event Data &amp; the Common Representation](https://piazr.github.io/agentic-sport-analysis/chapters/17.html): PBN formalization, rugby's missing schema, and the one-spine standards that make it all queryable
+*   [Chapter 18: Annotation: The Ground-Truth Workflow](https://piazr.github.io/agentic-sport-analysis/chapters/18.html): Tooling, label budgets, inter-annotator agreement, and the discipline that makes labels trustworthy
+*   [Chapter 19: Automatic Eventing: State Machines, Confidence, Review Queues](https://piazr.github.io/agentic-sport-analysis/chapters/19.html): From coordinate streams to coach-ready events without hallucinating a single one
+*   [Chapter 20: Statistics for Sport Practitioners](https://piazr.github.io/agentic-sport-analysis/chapters/20.html): The n-trap, honest confidence intervals, multiple comparisons, shrinkage, Bayesian updates, and the calibration discipline no model chapter can skip
+*   [Chapter 21: Rating Systems: DUPR, ELO, Glicko, and Skill](https://piazr.github.io/agentic-sport-analysis/chapters/21.html): The rating math, the three rival systems, and the honest truth about small samples
+*   [Chapter 22: Expected Value: xG, VAEP, EPV, and Their Sport Transplants](https://piazr.github.io/agentic-sport-analysis/chapters/22.html): The possession-value ladder, pickleball's missing model, and the rugby anchor that needs no tracking data
+*   [Chapter 23: Tactical ML: Graphs, Equivariance, and Honest Forecasting](https://piazr.github.io/agentic-sport-analysis/chapters/23.html): TacticAI's architecture, the rotation test, and why 84.6% on one clip is a hypothesis
+*   [Chapter 24: Simulation & Counterfactuals: The Honest Rebuild](https://piazr.github.io/agentic-sport-analysis/chapters/24.html): What-IF is only well-posed with an explicit response model — and the v1 book proved the cost of forgetting
+
+## Part IV: Interpreting and Acting
+
+*   [Chapter 25: Where Vision-Language Models Help, and Where They Lie](https://piazr.github.io/agentic-sport-analysis/chapters/25.html): The lie exhibit rebuilt: current models, the grounded critic, and the honesty anchors that say describe, don't decide
+*   [Chapter 26: From Numbers to Narrative: Reports, Scouting, Coach UX](https://piazr.github.io/agentic-sport-analysis/chapters/26.html): The analyst-to-coach bridge, the SportsCode XML contract, and the honesty rules in prose
+*   [Chapter 27: The Agent Harness for Sport Analytics](https://piazr.github.io/agentic-sport-analysis/chapters/27.html): The role registry, the Teamwork loop, and how the book becomes a spec your agents can execute
+*   [Chapter 28: The Live Coaching Cockpit: Real-Time Systems, Honestly Measured](https://piazr.github.io/agentic-sport-analysis/chapters/28.html): The latency budget re-verified, the live/async split, and the alert semantics coaches can trust
+*   [Chapter 29: Practice Design & Interventions: The Acting Loop](https://piazr.github.io/agentic-sport-analysis/chapters/29.html): From match faults to constrained practice, grounded in the coaching science that actually has evidence
+*   [Chapter 30: Sensors & Hardware: Wearables, Smart Courts, the Fusion Spine](https://piazr.github.io/agentic-sport-analysis/chapters/30.html): The verified inventory, the dead-sensor market reality, and the ~$1,500 M4-native rig
+
+## Part V: The Laboratory and the Frontier
+
+*   [Chapter 31: Deployment, Licensing, Rights & Ethics](https://piazr.github.io/agentic-sport-analysis/chapters/31.html): The AGPL trap, media rights, athlete data, and the no-medical-advice boundary
+*   [Chapter 32: The Laboratory: Reproducing the Book's Claims](https://piazr.github.io/agentic-sport-analysis/chapters/32.html): One runner, every lab, and the status table that separates measured from pending
+*   [Chapter 33: The Frontier: What's Changing in 2025-2026](https://piazr.github.io/agentic-sport-analysis/chapters/33.html): The living chapter — models, hardware, benchmarks, agents, and the staleness triggers that keep it honest
+*   [Chapter 34: The Book as a System: How to Use It (Human + Agent)](https://piazr.github.io/agentic-sport-analysis/chapters/34.html): The reader path, the agent path, the chapter dependency graph, the dual-sport navigation map, the reproduction contract, and the update channel
