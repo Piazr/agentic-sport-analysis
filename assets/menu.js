@@ -516,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const partNum = parseInt(section.getAttribute('data-part'));
 
     function togglePart(expand) {
-      const isHidden = content.classList.contains('hidden');
+      const isHidden = content.classList.contains('hidden') || content.style.maxHeight === '0px';
       const shouldExpand = expand !== undefined ? expand : isHidden;
 
       if (shouldExpand) {
