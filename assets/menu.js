@@ -521,9 +521,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (shouldExpand) {
         content.classList.remove('hidden');
+        content.style.maxHeight = content.scrollHeight + 'px';
         if (icon) icon.setAttribute('data-lucide', 'minus');
       } else {
         content.classList.add('hidden');
+        content.style.maxHeight = '0px';
         if (icon) icon.setAttribute('data-lucide', 'plus');
       }
       // Re-render the icons for this section
